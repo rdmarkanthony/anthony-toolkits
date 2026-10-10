@@ -16,8 +16,6 @@ pnpm-debug.log*
 .DS_Store
 
 .firebase
-.firebaserc
-firebase.json
 
 # Environment files
 .env
