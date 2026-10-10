@@ -44,12 +44,12 @@
     {% block headerscript -%}{%- endblock %}
 </head>
 <body>
-    {{ header() }}
+    {{ header({ site: site }) }}
     <div class="main-content min-h-[calc(100vh-var(--header-height,0rem)-var(--footer-height,0rem))]">
         {{ content | safe }}
     </div>
     {% block popup -%}{%- endblock %}
-    {{ footer() }}
+    {{ footer({ site: site, components: components }) }}
 
     <script src="/assets/js/script.js" type="module"></script>
     {% block footerscript -%}{%- endblock %}

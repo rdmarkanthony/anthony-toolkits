@@ -1,8 +1,10 @@
 import { _event } from "./utils/_event";
+import { _filter } from "./utils/_filter";
 
 // expose for inline scripts
 Object.assign(window, {
     _event,
+    _filter,
 });
 
 class _projName {
@@ -27,6 +29,9 @@ class _projName {
     init() {
         // for resize
         _event.resize(() => this.resize());
+
+        // component search
+        _filter.init();
 
         if (this.debug) console.log("_projName", this);
     }
