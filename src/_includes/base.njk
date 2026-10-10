@@ -1,0 +1,57 @@
+{%- from "templates/header.njk" import header -%}
+{%- from "templates/footer.njk" import footer -%}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ title | default('Home') | safe }}</title>
+    {% if pageKeywords or pageDescription or pageURL -%}
+    <meta name="keywords" content="{{ pageKeywords }}" />
+    <meta name="description" content="{{ pageDescription }}" />
+    <meta property="og:image" content="og-image.jpg" />
+    <meta property="og:title" content="{{ pageTitle }}" />
+    <meta property="og:description" content="{{ pageDescription }}" />
+    <meta property="og:url" content="{{ pageURL }}" />
+    <link rel="canonical" href="{{ pageURL }}" />
+    {%- endif %}
+
+    {#
+    <link rel="apple-touch-icon" sizes="57x57" href="/favicon/fapple-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="/favicon/fapple-icon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/favicon/fapple-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/favicon/fapple-icon-76x76.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="/favicon/fapple-icon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="/favicon/fapple-icon-120x120.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="/favicon/fapple-icon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/favicon/fapple-icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/fapple-icon-180x180.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon/fandroid-icon-192x192.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="/favicon/manifest.json" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png" />
+    <meta name="theme-color" content="#ffffff" />
+    #}
+
+    <link rel="stylesheet" href="/assets/css/style.css" media="all" />
+    {% block styles -%}{%- endblock %}
+
+    {% block headerscript -%}{%- endblock %}
+</head>
+<body>
+    {{ header() }}
+    <div class="main-content min-h-[calc(100vh-var(--header-height,0rem)-var(--footer-height,0rem))]">
+        {{ content | safe }}
+    </div>
+    {% block popup -%}{%- endblock %}
+    {{ footer() }}
+
+    <script src="/assets/js/script.js" type="module"></script>
+    {% block footerscript -%}{%- endblock %}
+</body>
+</html>

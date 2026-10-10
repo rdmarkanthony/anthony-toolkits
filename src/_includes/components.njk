@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ title | default('Components') | safe }}</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css" media="all" />
+    {% block styles -%}{%- endblock %}
+
+    <script src="/assets/js/script.js"></script>
+    {% block headerscript -%}{%- endblock %}
+</head>
+<body>
+    {% block content -%}{%- endblock %}
+    {% block popup -%}{%- endblock %}
+
+    {% block footerscript -%}{%- endblock %}
+</body>
+</html>

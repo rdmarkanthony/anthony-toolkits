@@ -1,0 +1,32 @@
+---
+layout: base.njk
+title: Anthony Toolkits
+---
+
+{% from "components/atoms/button.njk" import renderButton %}
+
+<section class="py-10 px-4">
+    <div class="container mx-auto">
+        <div class="flex flex-wrap gap-4">
+            <div>
+                {{
+                    renderButton({
+                        label: "Primary Button",
+                        url: "https://www.youtube.com/",
+                        target: "_blank",
+                        class: "primary-button",
+                        attr: [{ "data-fancybox": "" }]
+                    })
+                }}
+            </div>
+            <div>
+                {{
+                    renderButton({
+                        type: "secondary",
+                        label: "Secondary Button"
+                    })
+                }}
+            </div>
+        </div>
+    </div>
+</section>

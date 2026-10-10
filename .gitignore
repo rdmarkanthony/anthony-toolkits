@@ -1,0 +1,24 @@
+# Eleventy build output
+public/
+dist/
+_site/
+
+# Dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# System files
+.DS_Store
+
+.firebase
+.firebaserc
+firebase.json
+
+# Environment files
+.env
+.env.local

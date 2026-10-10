@@ -1,0 +1,23 @@
+.link-underline,
+.link-underline2 {
+    --underline-color: currentColor;
+    text-decoration: none;
+    background-image: linear-gradient(transparent 0, var(--underline-color, black) 1px, var(--underline-color, black) 2px, transparent 2px);
+    background-size: 100% 3px;
+    background-position: 100% 100%;
+    background-repeat: no-repeat;
+    transition:
+        color var(--animation-delay) ease-in-out,
+        background-size var(--animation-delay) ease-in-out;
+}
+.link-underline:hover {
+    background-size: 0% 3px;
+}
+
+.link-underline2 {
+    background-size: 0% 3px;
+    background-position: 0% 100%;
+}
+.link-underline2:hover {
+    background-size: 100% 3px;
+}

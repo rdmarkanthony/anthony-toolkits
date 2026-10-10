@@ -1,0 +1,21 @@
+{
+    "plugins": ["prettier-plugin-jinja-template"],
+    "overrides": [
+        {
+            "files": ["*.html", "*.njk"],
+            "options": {
+                "parser": "jinja-template"
+            }
+        }
+    ],
+    "printWidth": 300,
+    "htmlWhitespaceSensitivity": "ignore",
+    "tabWidth": 4,
+    "endOfLine": "auto",
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": false,
+    "trailingComma": "es5",
+    "bracketSpacing": true,
+    "arrowParens": "always"
+}

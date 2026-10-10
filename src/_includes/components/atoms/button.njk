@@ -1,0 +1,37 @@
+{%- from "utils/combine-classes.njk" import combineClasses -%}
+{%- from "utils/dynamic-element.njk" import dynamicElement -%}
+
+{% macro renderButton(props) -%}
+    {%- set type = props.type | default('primary') -%}
+    {%- set label = props.label | default('Button') -%}
+    {%- set url = props.url | default('') -%}
+    {%- set target = props.target | default('') -%}
+    {%- set class = props.class | default('') -%}
+    {%- set attributes = props.attr | default([]) -%}
+
+    {%- set className = combineClasses([
+        class,
+        'block',
+        (type == 'primary') and 'p-4 text-base bg-green-600 hover:bg-green-700',
+        (type == 'secondary') and 'p-3 text-sm bg-blue-600 hover:bg-blue-700',
+        'text-white transition-colors duration-300'
+    ]) -%}
+
+    {%- set buttonTag = "a" if props.url else "button" -%}
+    {%- set buttonAttrs = {
+        "class": className,
+        "href": url if url else "",
+        "target": target if url else ""
+    } %}
+    
+    {%- set extraAttrs = '' %}
+    {% for attr in attributes %}
+        {% for key, value in attr %}
+            {% set extraAttrs = extraAttrs + ' ' + key + (('="' + value + '"') if value else '') %}
+        {% endfor %}
+    {% endfor %}
+
+    {%- call dynamicElement(buttonTag, buttonAttrs, extraAttrs) -%}
+        <span>{{ label }}</span>
+    {%- endcall -%}
+{%- endmacro %}

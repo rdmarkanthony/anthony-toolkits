@@ -1,0 +1,3 @@
+{%- macro combineClasses(classes) -%}
+    {{ classes | reject("falsy") | join(" ") | trim | replace("\n", " ") }}
+{%- endmacro -%}
