@@ -1,7 +1,23 @@
 {% macro header(props) %}
-<header class="header-content p-4">
-    <div class="container mx-auto">
-        header content
+{%- set links = [
+    { label: 'Components', url: '/#components' },
+    { label: 'GitHub', url: props.site.github, external: true }
+] -%}
+<header class="header-content sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
+    <div class="container mx-auto flex items-center justify-between gap-4 px-4 py-4">
+        <a class="flex items-center gap-2 font-semibold text-slate-900" href="/">
+            <span class="grid size-8 place-items-center rounded-md bg-slate-900 text-sm text-white">AT</span>
+            <span>{{ props.site.name }}</span>
+        </a>
+        <nav aria-label="Main">
+            <ul class="flex items-center gap-5 text-sm text-slate-600">
+                {% for link in links %}
+                    <li>
+                        <a class="transition-colors hover:text-slate-900" href="{{ link.url }}" {% if link.external %}target="_blank" rel="noopener"{% endif %}>{{ link.label }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </nav>
     </div>
 </header>
 {% endmacro %}
