@@ -1,5 +1,15 @@
-[data-animate]:not(.animate__animated) {
+.js-animate [data-animate]:not(.animate__animated) {
     opacity: 0;
+}
+
+/* if _animate never starts */
+.js-animate:not(.js-animate-ready) [data-animate]:not(.animate__animated) {
+    animation: dataAnimateFallback 0s 3s forwards;
+}
+@keyframes dataAnimateFallback {
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes fadeInUpSmall {
@@ -17,9 +27,33 @@
     animation-name: fadeInUpSmall;
 }
 
+@keyframes fadeInDownSmall {
+    0% {
+        opacity: 0;
+        transform: translate3d(0, -40px, 0);
+    }
+    100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+.animate__fadeInDownSmall {
+    -webkit-animation-name: fadeInDownSmall;
+    animation-name: fadeInDownSmall;
+}
+
 @keyframes pullUp {
     0% {
         transform: translateY(calc(102% + 0.25em));
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes pullDown {
+    0% {
+        transform: translateY(calc(-102% - 0.25em));
     }
     100% {
         transform: translateY(0);
@@ -47,6 +81,9 @@
     animation-delay: calc(var(--pullup-delay) + 0.1s * var(--index));
     animation-fill-mode: forwards;
     animation-name: pullUp;
+}
+.js-splittext-animated.pullDown .word {
+    animation-name: pullDown;
 }
 .js-splittext-animated .word .emoji {
     animation-duration: 1s;

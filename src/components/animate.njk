@@ -33,7 +33,25 @@ title: Animate | Anthony Toolkits
     </div>
 </section>
 
+{# demo: a title on its own, a Down keyframe pulls the words down #}
+<section class="px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="js-splittext max-w-5xl text-4xl font-bold tracking-tight md:text-6xl md:leading-[1.2]" data-animate="fadeInDownSmall">Words pull down with a Down keyframe</h2>
+    </div>
+</section>
+
+{# demo: content added later, set up with refresh() #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <div class="js-animate-list grid gap-4 sm:grid-cols-2 md:grid-cols-4"></div>
+        <button class="js-animate-more mt-8 rounded-full bg-gray-950 px-6 py-3 font-medium text-white transition-colors hover:bg-gray-700" type="button">Load more</button>
+    </div>
+</section>
+
 {% set markup %}{% raw %}
+<!-- in <head> -->
+<script>document.documentElement.classList.add("js-animate");</script>
+
 <!-- a parent, its children animate in order -->
 <section data-animate>
     <div data-animate="parent">
@@ -52,6 +70,15 @@ title: Animate | Anthony Toolkits
 
 <!-- a single element: data-animate="keyframe,delay,duration", in seconds -->
 <p data-animate="fadeInDown,1,0.8">...</p>
+
+<!-- a Down keyframe pulls the words down -->
+<h2 class="js-splittext" data-animate="fadeInDownSmall">Title</h2>
+
+<!-- added later, then refresh() -->
+<div class="js-animate-list">
+    <div data-animate="fadeInUpSmall,0.1">...</div>
+    <div data-animate="fadeInUpSmall,0.2">...</div>
+</div>
 {% endraw %}{% endset %}
 
 {% set pageScript %}{% raw %}
@@ -62,23 +89,45 @@ title: Animate | Anthony Toolkits
         // src/assets/js/utils/_inview.js
         // src/assets/js/utils/_splitText.js (optional, for .js-splittext)
         // src/assets/js/utils/_animate.js
+    // HTML
+        // document.documentElement.classList.add("js-animate") in <head>
     // CSS
         // animate.css
         // src/assets/css/components/data-animate.css
 
 // once per page, for every [data-animate]
-new _animate({
+const _animation = new _animate({
     debug: false, // true keeps the inline animation styles on the elements
     delay: 0.1,
     adjacentDelay: 0.2, // added for each next child
     duration: 0.8,
-    keyframe: 'fadeInUpSmall', // default, from data-animate.css
+    keyframe: 'fadeInUpSmall', // default, fadeInUpSmall or fadeInDownSmall from data-animate.css
 });
+
+// load more
+const _list = document.querySelector('.js-animate-list');
+let _count = 0;
+
+const _loadMore = () => {
+    const _cards = Array.from({ length: 4 }, (_, index) => {
+        _count++;
+        return `<div class="rounded-2xl border border-gray-200 bg-white p-6" data-animate="fadeInUpSmall,${(0.1 * (index + 1)).toFixed(1)}">
+            <p class="font-mono text-sm text-gray-500">Card ${_count}</p>
+        </div>`;
+    });
+
+    _list.insertAdjacentHTML('beforeend', _cards.join(''));
+    _animation.refresh(_list);
+};
+
+_loadMore();
+document.querySelector('.js-animate-more').addEventListener('click', _loadMore);
 {% endraw %}{% endset %}
 
 {{ scriptUsage({
     markup: markup,
-    markupNote: 'Any <a class="link-underline" href="https://animate.style/" target="_blank" rel="noopener">Animate.css</a> keyframe works, plus <code class="font-mono text-sm">fadeInUpSmall</code>. Elements stay hidden until they animate.',
+    markupNote: 'Any <a class="link-underline" href="https://animate.style/" target="_blank" rel="noopener">Animate.css</a> keyframe works, plus <code class="font-mono text-sm">fadeInUpSmall</code> and <code class="font-mono text-sm">fadeInDownSmall</code>. Elements stay hidden until they animate. With JS off they show right away, and if <code class="font-mono text-sm">_animate</code> never starts they show after 3s.',
+    note: 'Content added later stays hidden until <code class="font-mono text-sm">refresh(container)</code> sets it up. Each element cleans up when its keyframe ends.',
     code: pageScript
 }) }}
 
