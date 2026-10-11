@@ -1,0 +1,130 @@
+---
+title: Lightbox | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_lightbox', title: 'Lightbox', description: 'Opens any element on the page in a popup, and puts it back on close. Lightboxes replace each other, while modals open on top of the current one.' }) }}
+
+{% set button = 'inline-block rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700' %}
+{% set link = 'link-underline font-medium hover:text-gray-600' %}
+
+{# demo #}
+<section class="px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <div class="flex flex-col gap-3 md:flex-row">
+            <a class="{{ button }}" href="#sample-lightbox" data-lightbox>Open a lightbox</a>
+            <a class="{{ button }}" href="#sample-lightbox" target="_blank" data-lightbox>Open in a new tab (skipped)</a>
+            <a class="{{ button }}" href="#" data-lightbox>Open without content</a>
+        </div>
+
+        {# the contents, hidden until opened #}
+        <div class="hidden">
+            <div id="sample-lightbox" class="mx-auto max-w-3xl rounded-2xl bg-white p-6 md:p-12">
+                <div class="flex flex-col gap-8">
+                    <h2 class="text-3xl font-bold tracking-tight">Lightbox usage</h2>
+                    <div class="flex flex-col gap-2">
+                        <p class="font-semibold">Opening</p>
+                        <ul class="ml-1 list-inside list-disc text-gray-600">
+                            <li>Open a <a class="{{ link }}" data-lightbox="modal" href="#sample-modal">modal</a> on top of this one.</li>
+                            <li>Open <a class="{{ link }}" data-lightbox href="#sample-lightbox2">another lightbox</a> in place of this one.</li>
+                            <li>From a script: <code class="font-mono text-sm">new _lightbox({ target: '#sample-lightbox2' })</code></li>
+                        </ul>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <p class="font-semibold">Closing</p>
+                        <ul class="ml-1 list-inside list-disc text-gray-600">
+                            <li>Press <code class="font-mono text-sm">Escape</code>.</li>
+                            <li>Click the <code class="font-mono text-sm">X</code> at the top right of the page.</li>
+                            <li>From a script: <code class="font-mono text-sm">_lightbox.close()</code>, or <code class="font-mono text-sm">_lightbox.close('all')</code>.</li>
+                            <li>Click <a class="{{ link }}" onclick="_lightbox.close(); event.preventDefault();" href="#">this link</a>.</li>
+                        </ul>
+                    </div>
+                    <div class="text-center">
+                        <a class="{{ button }} min-w-32" onclick="_lightbox.close(); event.preventDefault();" href="#">Close</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sample-modal" class="mx-auto max-w-2xl rounded-2xl bg-white p-6 text-center md:p-12">
+                <p class="text-gray-600">A modal opens on top of the current lightbox. Close <a class="{{ link }}" onclick="_lightbox.close(); event.preventDefault();" href="#">just this one</a> or <a class="{{ link }}" onclick="_lightbox.close('all'); event.preventDefault();" href="#">all of them</a>.</p>
+                <div class="mt-10 flex flex-col justify-center gap-3 md:flex-row">
+                    <a class="{{ button }}" onclick="_lightbox.close(); event.preventDefault();" href="#">Close this modal</a>
+                    <a class="{{ button }}" onclick="_lightbox.close('all'); event.preventDefault();" href="#">Close all</a>
+                    <a class="{{ button }}" data-lightbox href="#sample-lightbox2">Close all and open another</a>
+                </div>
+            </div>
+
+            <div id="sample-lightbox2" class="mx-auto max-w-3xl rounded-2xl bg-white p-6 text-center md:p-12">
+                <h2 class="text-2xl font-bold tracking-tight">The second lightbox</h2>
+                <p class="mt-4 text-gray-600">Or open <a class="{{ link }}" data-lightbox href="#sample-lightbox3">a lightbox with long content</a>, which scrolls.</p>
+                <div class="mt-10">
+                    <a class="{{ button }} min-w-32" onclick="_lightbox.close(); event.preventDefault();" href="#">Close</a>
+                </div>
+            </div>
+
+            <div id="sample-lightbox3" class="mx-auto max-w-3xl rounded-2xl bg-white p-6 md:p-12">
+                <div class="flex flex-col gap-4 text-gray-600">
+                    {% for i in range(0, 8) %}
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam corporis possimus natus! Nemo laboriosam placeat, sapiente quo, dignissimos sequi expedita odit, quibusdam esse facere maxime quod tenetur enim dolores qui. Cupiditate culpa accusamus molestias nostrum incidunt tempora recusandae aperiam. At eius cupiditate sunt, vel exercitationem quod quia! Repellendus sapiente repudiandae laudantium.</p>
+                    {% endfor %}
+                </div>
+                <div class="mt-10 text-center">
+                    <a class="{{ button }} min-w-32" onclick="_lightbox.close(); event.preventDefault();" href="#">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<a href="#my-lightbox" data-lightbox>Open</a>
+<!-- data-lightbox="modal" opens on top of the current lightbox -->
+<a href="#my-modal" data-lightbox="modal">Open a modal</a>
+
+<div class="hidden">
+    <div id="my-lightbox" class="mx-auto max-w-3xl rounded-2xl bg-white p-12">...</div>
+</div>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_lightbox.js
+
+document.querySelectorAll('[data-lightbox]').forEach((item) => {
+    if (item.getAttribute('target') === '_blank') return;
+
+    const _modal = item.dataset.lightbox.split(',')[0] === 'modal';
+
+    item.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const _href = item.getAttribute('href');
+
+        new _lightbox({
+            target: _href && _href !== '#' ? document.querySelector(_href) : null,
+            modal: _modal,
+            animation: 'zoom', // zoom, fade, fadeUp or none
+            events: {
+                beforeShow: (lightbox) => {},
+                afterShow: (lightbox) => {},
+                beforeClose: (lightbox) => {},
+                afterClose: (lightbox) => {},
+            },
+        });
+    });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The content is moved into the lightbox while it\'s open, and back to its place on close.',
+    code: pageScript
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

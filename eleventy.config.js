@@ -7,18 +7,29 @@ export default function (eleventyConfig) {
         lstripBlocks: true,
     });
 
-    // show network url for other devices
     eleventyConfig.setServerOptions({
+        // reload on css/js output change
+        watch: ["public/assets/**/*.css", "public/assets/**/*.js"],
+        // show network url for other devices
         showAllHosts: true,
     });
+
+    // page slots for base.njk
+    eleventyConfig.addBundle("styles");
+    eleventyConfig.addBundle("headerscript");
+    eleventyConfig.addBundle("popup");
+    eleventyConfig.addBundle("footerscript");
 
     // watch css change
     eleventyConfig.addWatchTarget("src/assets/css/");
 
     // port the assets
     eleventyConfig.addPassthroughCopy("src/assets/img");
-    // eleventyConfig.addPassthroughCopy("src/assets/video");
+    eleventyConfig.addPassthroughCopy("src/assets/video");
     // eleventyConfig.addPassthroughCopy("src/assets/data");
+
+    // zero-pad numbers
+    eleventyConfig.addFilter("pad", (value, length = 2) => String(value).padStart(length, "0"));
 
     // prettify HTML
     eleventyConfig.addTransform("prettify-html", function (content, outputPath) {
@@ -27,6 +38,8 @@ export default function (eleventyConfig) {
                 parser: "html",
                 printWidth: 300,
                 tabWidth: 4,
+                // keep inline scripts as written, e.g. the indented // Requirements
+                embeddedLanguageFormatting: "off",
             });
         }
         return content;

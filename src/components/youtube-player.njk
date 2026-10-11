@@ -1,0 +1,82 @@
+---
+title: YouTube player | Anthony Toolkits
+---
+
+{% from "components/atoms/back-link.njk" import backLink %}
+{% from "components/atoms/component-page.njk" import scriptUsage %}
+
+{# demo: a stretched autoplay video as the background #}
+<section class="relative overflow-hidden bg-gray-950 px-4 pt-24 pb-16 text-white md:pt-32">
+    <div class="pointer-events-none absolute inset-0">
+        <div class="absolute inset-0" data-yt-player="gPIfZ2Zrv5w,autoplay,stretch"></div>
+        <div class="absolute inset-0 bg-black/50"></div>
+    </div>
+    <div class="relative mx-auto max-w-295">
+        <div class="text-gray-300 [&>a]:text-gray-300 [&>a:hover]:text-white">{{ backLink() }}</div>
+        <p class="mb-4 font-mono text-sm text-gray-300">_youtubePlayer</p>
+        <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">YouTube player</h1>
+        <p class="max-w-2xl text-lg text-gray-300 md:text-xl">YouTube embeds from a data attribute. Autoplay videos are muted backgrounds without YouTube's buttons, and stretch covers the box at any ratio. Playing one video pauses the others.</p>
+    </div>
+</section>
+
+{# demo #}
+<section class="px-4 py-16">
+    <div class="mx-auto grid max-w-295 gap-10 md:grid-cols-2">
+        {% set players = [
+            { label: 'Standard', attr: '23atch1EPLM', ratio: 'aspect-video' },
+            { label: 'Standard', attr: '25QyCxVkXwQ', ratio: 'aspect-video' },
+            { label: 'Autoplay', attr: '25QyCxVkXwQ,autoplay', ratio: 'aspect-video' },
+            { label: 'Stretched, square', attr: '25QyCxVkXwQ,autoplay,stretch', ratio: 'aspect-square' },
+            { label: 'Stretched, vertical', attr: '25QyCxVkXwQ,autoplay,stretch', ratio: 'aspect-9/16' }
+        ] %}
+        {% for player in players %}
+        <div class="flex flex-col gap-3">
+            <p class="font-semibold">{{ player.label }} <code class="ml-2 font-mono text-xs font-normal text-gray-500">{{ player.attr }}</code></p>
+            <div class="relative {{ player.ratio }} bg-black" data-yt-player="{{ player.attr }}">
+                {% if 'autoplay' in player.attr %}<div class="absolute inset-0 z-10"></div>{% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- data-yt-player="id,autoplay,stretch" -->
+<div class="relative aspect-video bg-black" data-yt-player="23atch1EPLM"></div>
+
+<!-- a muted background that covers its box -->
+<div class="relative aspect-square bg-black" data-yt-player="25QyCxVkXwQ,autoplay,stretch"></div>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_media.js
+        // src/assets/js/utils/_youtubePlayer.js
+
+document.querySelectorAll('[data-yt-player]').forEach((target) => {
+    const [_id, _autoplay, _stretch] = target.dataset.ytPlayer.split(',');
+    if (!_id) return;
+
+    new _youtubePlayer({
+        target,
+        id: _id,
+        autoplay: _autoplay === 'autoplay',
+        controls: _autoplay !== 'autoplay',
+        stretch: _stretch === 'stretch',
+    });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The player fills its box, so give the box a size, e.g. <code class="font-mono text-sm">aspect-video</code>.',
+    code: pageScript,
+    note: 'Loads the YouTube iframe API once. Events: <code class="font-mono text-sm">beforeInit</code>, <code class="font-mono text-sm">afterInit</code>, <code class="font-mono text-sm">onReady</code>, <code class="font-mono text-sm">onStateChange</code>.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

@@ -1,6 +1,11 @@
 @import "tailwindcss";
 
+/* libraries */
+@import "animate.css";
+@import "flatpickr/dist/flatpickr.min.css";
+
 @import "./components/variables.css";
+@import "./components/data-animate.css";
 @import "./components/link-underline.css";
 
 @theme {

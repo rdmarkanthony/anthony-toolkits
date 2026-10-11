@@ -1,0 +1,102 @@
+---
+title: Group height | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_groupHeight', title: 'Group height', description: 'Gives elements of the same group the height of the tallest one, so text blocks in cards line up. Optionally only from a window width up, or only between cards on the same row.' }) }}
+
+{% set texts = [
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius quo alias repellat blanditiis molestiae fuga dolorum vero rem eveniet, voluptatem eos mollitia minus quaerat culpa aperiam consectetur quod neque voluptatibus.',
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur illum expedita quibusdam laudantium architecto quaerat, esse hic consequatur illo ipsam ipsa earum.',
+    'Tempore nostrum quos obcaecati ipsum error nulla placeat magnam voluptatibus odio in animi.',
+    'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatem fugiat dolorem pariatur placeat autem rem magnam, excepturi at voluptatibus ut delectus alias qui consequuntur nisi praesentium soluta eligendi minus id!',
+    'Quibusdam, optio? Sed explicabo assumenda, quasi doloribus reprehenderit error molestiae iusto vitae tempore distinctio animi non atque enim rem qui! Rerum, eligendi.',
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae voluptatibus doloribus magnam nihil vel asperiores.'
+] %}
+
+{# demo: groups 1 and 2, some only from 768px up #}
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-8">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Group height</h2>
+            <p class="max-w-2xl text-gray-600">Columns 1 to 3 are group 1, columns 4 to 6 are group 2. The dashed blocks get the same height within their group.</p>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3" data-gh-parent>
+            {% set groups = ['1,768', '1', '1,768', '2', '2,768', '2'] %}
+            {% for text in texts %}
+            <div class="flex flex-col gap-3 rounded-2xl border border-gray-200 p-4">
+                <p class="font-semibold">Column {{ loop.index }}</p>
+                <div class="flex grow flex-col gap-2 outline-1 outline-gray-400 outline-dashed" data-gh="{{ groups[loop.index0] }}">
+                    <p class="text-gray-600">{{ text }}</p>
+                    <p><code class="font-mono text-xs text-gray-500">data-gh="{{ groups[loop.index0] }}"</code></p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# demo: row group height, each row is equalized on its own #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-8">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Row group height</h2>
+            <p class="max-w-2xl text-gray-600">Each card has two blocks, groups 1 and 2. They're equalized only with the cards on the same row, so a short row doesn't take the height of a tall one.</p>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3" data-rgh-parent>
+            {% set spans = ['', '', '', 'md:col-span-2', '', 'md:col-span-full'] %}
+            {% for text in texts %}
+            <div class="{{ spans[loop.index0] }} flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-4" data-rgh-item>
+                <p class="font-semibold">Column {{ loop.index }}</p>
+                <div class="outline-1 outline-gray-400 outline-dashed" data-rgh="1">
+                    {% if loop.index != 2 %}<p class="text-gray-600">{{ text }}</p>{% endif %}
+                </div>
+                {% if loop.index not in [4, 5] %}
+                <div class="outline-1 outline-gray-400 outline-dashed" data-rgh="2">
+                    <p class="text-gray-600">{{ texts[(loop.index0 + 1) % 6] }}</p>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- group height -->
+<div class="grid grid-cols-3" data-gh-parent>
+    <div><div data-gh="1">...</div></div>
+    <!-- data-gh="group,within": only from 768px wide up -->
+    <div><div data-gh="1,768">...</div></div>
+</div>
+
+<!-- row group height -->
+<div class="grid grid-cols-3" data-rgh-parent>
+    <div data-rgh-item>
+        <div data-rgh="1">...</div>
+        <div data-rgh="2">...</div>
+    </div>
+</div>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_groupHeight.js
+
+// equalizes on load and after each resize
+_groupHeight.init();
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Elements with the same group in a <code class="font-mono text-sm">[data-gh-parent]</code> get the same <code class="font-mono text-sm">min-height</code>. In a <code class="font-mono text-sm">[data-rgh-parent]</code>, only those in <code class="font-mono text-sm">[data-rgh-item]</code>s on the same row.',
+    code: pageScript,
+    note: 'Call <code class="font-mono text-sm">_groupHeight.update()</code> after the content changes, e.g. loaded with ajax.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

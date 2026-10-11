@@ -11,8 +11,12 @@ const ctx = await esbuild.context({
     bundle: true,
     minify: isWatch ? false : true,
     sourcemap: true,
-    outfile: "public/assets/js/script.js",
-    format: "iife",
+    outbase: "src/assets/js",
+    outdir: "public/assets/js",
+    // dynamic imports go to chunks, e.g. hls.js loads only on pages with a video
+    splitting: true,
+    chunkNames: "chunks/[name]-[hash]",
+    format: "esm",
     target: ["es2020"],
 });
 

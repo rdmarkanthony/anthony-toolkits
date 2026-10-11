@@ -1,0 +1,60 @@
+---
+title: Breakpoints | Anthony Toolkits
+---
+
+{% from "components/atoms/back-link.njk" import backLink %}
+
+{% set breakpoints = [
+    { name: 'xxs', width: '0px', device: 'small phones', show: 'block xs:hidden', size: 'text-xl' },
+    { name: 'xs', width: '320px', device: 'iPhone SE, older Android phones', show: 'hidden xs:block sm:hidden', size: 'text-2xl' },
+    { name: 'sm', width: '414px', device: 'iPhone 11 to 15, Galaxy S series', show: 'hidden sm:block md:hidden', size: 'text-2xl' },
+    { name: 'md', width: '768px', device: 'iPad Mini, Galaxy Tab S series', show: 'hidden md:block lg:hidden', size: 'text-3xl' },
+    { name: 'lg', width: '992px', device: 'iPad Air, some Surface tablets', show: 'hidden lg:block xl:hidden', size: 'text-3xl' },
+    { name: 'xl', width: '1024px', device: 'iPad Pro 11" landscape, Surface Go', show: 'hidden xl:block 2xl:hidden', size: 'text-4xl' },
+    { name: '2xl', width: '1240px', device: 'MacBook Air 13", small laptops', show: 'hidden 2xl:block 3xl:hidden', size: 'text-5xl' },
+    { name: '3xl', width: '1440px', device: 'MacBook Pro 14", standard desktops', show: 'hidden 3xl:block 4xl:hidden', size: 'text-5xl' },
+    { name: '4xl', width: '1920px', device: '4K monitors, large desktops', show: 'hidden 4xl:block', size: 'text-6xl' }
+] %}
+
+{# demo: the color and label change at each breakpoint, resize the window #}
+<section class="relative flex min-h-[calc(100vh-var(--header-height,0px))] items-center justify-center bg-red-500 px-4 text-white transition-colors duration-300 xs:bg-orange-500 sm:bg-yellow-500 md:bg-lime-500 lg:bg-green-500 xl:bg-emerald-500 2xl:bg-teal-500 3xl:bg-blue-500 4xl:bg-violet-500">
+    <div class="absolute top-4 left-4 flex flex-col items-start gap-2">
+        <div class="rounded-full bg-white px-4 [&>a]:mb-0 [&>a]:py-2">{{ backLink() }}</div>
+        <p class="font-mono text-sm"><span class="js-window-width">0</span> window width</p>
+    </div>
+    <div class="text-center">
+        {% for item in breakpoints %}
+        <div class="{{ item.show }} {{ item.size }}">
+            <p class="font-mono font-bold">{{ item.name }}: {{ item.width }}</p>
+            <p class="mt-2 text-base opacity-80">{{ item.device }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="px-4 py-24">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-2 text-3xl font-bold tracking-tight">Breakpoints</h2>
+        <p class="mb-8 max-w-2xl text-gray-600">Set in <code class="font-mono text-sm">@theme</code> in <code class="font-mono text-sm">src/assets/css/style.css</code>, used as Tailwind prefixes, e.g. <code class="font-mono text-sm">md:grid-cols-2</code>.</p>
+        <dl class="grid gap-x-6 gap-y-1 rounded-2xl border border-gray-200 p-6 text-sm md:grid-cols-[auto_auto_1fr] md:gap-y-3">
+            {% for item in breakpoints %}
+            <dt class="font-mono font-semibold">{{ item.name }}</dt>
+            <dd class="font-mono text-gray-600">{{ item.width }}</dd>
+            <dd class="mb-3 text-gray-600 last:mb-0 md:mb-0">{{ item.device }}</dd>
+            {% endfor %}
+        </dl>
+    </div>
+</section>
+
+{% footerscript %}
+<script type="module">
+    // Requirements
+        // JS
+            // src/assets/js/utils/_event.js
+        // CSS
+            // the breakpoints in @theme, src/assets/css/style.css
+
+    const _label = document.querySelector('.js-window-width');
+    _event.resize(() => (_label.textContent = `${window.innerWidth}px`));
+</script>
+{% endfooterscript %}

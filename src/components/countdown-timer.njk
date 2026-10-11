@@ -1,0 +1,144 @@
+---
+title: Countdown timer | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_countdownTimer · _rollingNumber', title: 'Countdown timer', description: 'Counts down to a date and time in a set time zone, updating every second. The second timer rolls its digits with the rolling number util.' }) }}
+
+{% macro countdown() %}
+<div class="js-countdown-timer flex flex-col gap-4 text-center">
+    <p class="text-xl md:text-2xl">Counting down to <strong class="js-countdown-timer-label">--</strong></p>
+    <div class="flex justify-center gap-6 text-center md:gap-11 md:text-xl">
+        {% for unit in ['days', 'hours', 'minutes', 'seconds'] %}
+        <div class="flex flex-col gap-1">
+            <div class="js-countdown-timer-{{ unit }} flex justify-center text-5xl font-bold tabular-nums md:text-8xl">00</div>
+            <div class="text-gray-500">{{ unit }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endmacro %}
+
+{# demo: plain, then rolling digits #}
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-16">
+        <label class="mx-auto flex flex-col gap-2 text-center">
+            <span class="text-gray-600">Change the target date and time</span>
+            <input class="js-datetime-picker min-w-60 rounded-md border border-gray-300 px-3 py-2 text-center focus:border-gray-950 focus:outline-none" type="text" placeholder="Select a date and time" />
+        </label>
+        {{ countdown() }}
+        {{ countdown() }}
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // luxon
+        // flatpickr (optional, for the date picker)
+        // gsap (optional, for rolling digits)
+        // src/assets/js/utils/_event.js (optional, for rolling digits)
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_countdownTimer.js
+        // src/assets/js/utils/_rollingNumber.js (optional, for rolling digits)
+    // CSS
+        // flatpickr/dist/flatpickr.min.css (optional, for the date picker)
+
+const _timeZone = 'Asia/Manila';
+const _minDateTime = DateTime.now().setZone(_timeZone).plus({ minutes: 3 }).set({ second: 0 }); // earliest date to select
+const _picker = document.querySelector('.js-datetime-picker');
+const _pad = (value) => String(value).padStart(2, '0');
+const _units = ['days', 'hours', 'minutes', 'seconds'];
+
+const _countdowns = []; // _countdownTimer instances
+
+const _updateCountdown = (dateTime) => {
+    _countdowns.forEach((countdown) => countdown.destroy());
+    _countdowns.length = 0;
+
+    document.querySelectorAll('.js-countdown-timer').forEach((item, index) => {
+        const _label = item.querySelector('.js-countdown-timer-label');
+        const _el = Object.fromEntries(_units.map((unit) => [unit, item.querySelector(`.js-countdown-timer-${unit}`)]));
+        const _animated = index === 1; // the second one rolls its digits
+        const _rolling = Object.fromEntries(_units.map((unit) => [unit, []]));
+
+        // one _rollingNumber per digit
+        const _createDigits = (unit, value) => {
+            _el[unit].innerHTML = '';
+            _rolling[unit] = value.split('').map((digit, index) => {
+                const _div = document.createElement('div');
+                _el[unit].appendChild(_div);
+
+                // highest first digit, e.g. 5 for minutes (59)
+                let _max = 9;
+                if (unit === 'hours' && index === 0) _max = 2;
+                if ((unit === 'minutes' || unit === 'seconds') && index === 0) _max = 5;
+
+                return new _rollingNumber({ target: _div, startNumber: _max + 1, maxNumber: _max, duration: 250 });
+            });
+        };
+
+        const _updateLabels = (instance, state) => {
+            _units.forEach((unit) => {
+                const _value = _pad(Math.floor(instance.dateTime.diff[unit]));
+
+                if (!_animated) {
+                    _el[unit].textContent = _value;
+                    return;
+                }
+
+                _value.split('').forEach((digit, index) => {
+                    const _digit = _rolling[unit][index];
+                    _digit?.roll({ from: state === 'init' ? _digit.startNumber : _digit.currentNumber, to: digit });
+                });
+            });
+        };
+
+        _countdowns.push(
+            new _countdownTimer({
+                dateTime,
+                timeZone: _timeZone,
+                events: {
+                    beforeInit: (instance) => {
+                        _label.parentNode.style.display = '';
+                        _label.textContent = instance.dateTime.target.toFormat('MMMM d, yyyy hh:mm a');
+                    },
+                    afterInit: (instance) => {
+                        if (_animated) _units.forEach((unit) => _createDigits(unit, _pad(Math.floor(instance.dateTime.diff[unit]))));
+                        _updateLabels(instance, 'init');
+                    },
+                    update: (instance) => _updateLabels(instance),
+                    end: (instance) => {
+                        if (!instance.dateTime.ended) return; // destroyed, not ended
+
+                        _label.parentNode.style.display = 'none';
+                        _picker.parentNode.style.display = 'none';
+                    },
+                },
+            })
+        );
+    });
+};
+_updateCountdown(_minDateTime);
+
+// date and time picker
+flatpickr(_picker, {
+    enableTime: true,
+    dateFormat: 'F j, Y h:i K',
+    defaultDate: _minDateTime.toJSDate(),
+    minDate: _minDateTime.toJSDate(),
+    onClose: (selectedDates) => {
+        if (selectedDates.length) _updateCountdown(DateTime.fromJSDate(selectedDates[0]).setZone(_timeZone));
+    },
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _countdownTimer({ dateTime, timeZone, events })</code>. Events: <code class="font-mono text-sm">beforeInit</code>, <code class="font-mono text-sm">afterInit</code>, <code class="font-mono text-sm">update</code> every second, <code class="font-mono text-sm">end</code>. <code class="font-mono text-sm">dateTime.diff</code> has the days, hours, minutes and seconds left.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

@@ -1,0 +1,79 @@
+---
+title: Animated number | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_animatedNumber · _inview', title: 'Animated number', description: 'Counts from one number to another, formatted with commas and optional decimals. Here it counts up when it scrolls into view, then to any number you enter.' }) }}
+
+{# demo #}
+<section class="px-4 py-16">
+    <div class="js-animated-number mx-auto flex max-w-295 flex-col gap-6">
+        <p class="js-animated-number-label text-6xl font-bold tracking-tight tabular-nums md:text-8xl">0</p>
+        <form class="flex max-w-md gap-2">
+            <label class="grow">
+                <span class="sr-only">Number</span>
+                <input class="h-12 w-full rounded-md border border-gray-300 px-3 focus:border-gray-950 focus:outline-none" type="text" inputmode="decimal" placeholder="Enter a number" autocomplete="off" />
+            </label>
+            <button class="h-12 min-w-24 rounded-md bg-gray-950 px-4 font-medium text-white transition-colors hover:bg-gray-700" type="submit">Go</button>
+        </form>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_animatedNumber.js
+        // src/assets/js/utils/_inview.js (optional, to start in view)
+
+const _wrap = document.querySelector('.js-animated-number');
+const _label = _wrap.querySelector('.js-animated-number-label');
+const _input = _wrap.querySelector('input');
+let _instance = null;
+
+const _cleanNumber = (value) => value.replace(/,/g, '').replace(/[^0-9.]/g, '');
+
+// only numbers, one decimal point and 2 decimals, with commas
+_input.addEventListener('input', () => {
+    const _parts = _cleanNumber(_input.value).split('.');
+    const _integer = _parts[0] ? Number(_parts[0]).toLocaleString() : '';
+    const _decimal = _parts.length > 1 ? '.' + _parts.slice(1).join('').slice(0, 2) : '';
+
+    _input.value = _integer + _decimal;
+});
+
+// count to the entered number
+_wrap.querySelector('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const _value = parseFloat(_cleanNumber(_input.value));
+    if (isNaN(_value) || _instance) return;
+
+    _instance = new _animatedNumber({
+        target: _label,
+        from: parseFloat(_cleanNumber(_label.innerText)) || 0,
+        to: _value,
+        decimals: _value % 1 !== 0 ? 2 : null,
+        duration: 500,
+        callback: () => (_instance = null),
+    });
+});
+
+// count up when it scrolls into view
+new _inview({
+    target: _label,
+    delay: 500,
+    callback: () => {
+        new _animatedNumber({ target: _label, from: 0, to: 1234567890, duration: 2000 });
+    },
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _animatedNumber({ target, from, to, decimals, duration, callback })</code>, the duration in ms. A new count on the same target stops the one running.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

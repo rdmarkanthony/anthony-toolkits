@@ -1,0 +1,109 @@
+---
+title: Rolling number | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_rollingNumber · _inview', title: 'Rolling number', description: 'Odometer-style digits that roll to the next value. One instance per digit, so any number of digits, commas and decimal points can roll at once.' }) }}
+
+{# demo #}
+<section class="px-4 py-16">
+    <div class="js-rolling-number mx-auto flex max-w-295 flex-col gap-6">
+        <div class="js-rolling-number-label flex text-6xl font-bold tracking-tight md:text-8xl">0</div>
+        <form class="flex max-w-md gap-2">
+            <label class="grow">
+                <span class="sr-only">Number</span>
+                <input class="h-12 w-full rounded-md border border-gray-300 px-3 focus:border-gray-950 focus:outline-none" type="text" inputmode="decimal" placeholder="Enter a number" autocomplete="off" />
+            </label>
+            <button class="h-12 min-w-24 rounded-md bg-gray-950 px-4 font-medium text-white transition-colors hover:bg-gray-700" type="submit">Go</button>
+        </form>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // gsap
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_rollingNumber.js
+        // src/assets/js/utils/_inview.js (optional, to start in view)
+
+const _wrap = document.querySelector('.js-rolling-number');
+const _label = _wrap.querySelector('.js-rolling-number-label');
+const _input = _wrap.querySelector('input');
+
+const _cleanNumber = (value) => value.replace(/,/g, '').replace(/[^0-9.]/g, '');
+
+// one _rollingNumber per character
+const _digits = [];
+let _rolling = false;
+
+const _update = (value) => {
+    if (_rolling) return;
+    _rolling = true;
+
+    const _characters = value.toLocaleString('en-US', value % 1 !== 0 ? { minimumFractionDigits: 2, maximumFractionDigits: 2 } : {}).split('');
+
+    // hide the extra digits
+    _digits.forEach((digit, index) => {
+        digit.target.style.display = index >= _characters.length ? 'none' : 'block';
+    });
+
+    // add digits when needed, numeric: false to also roll commas and points
+    _characters.forEach((character, index) => {
+        if (_digits[index]) return;
+
+        const _div = document.createElement('div');
+        _label.appendChild(_div);
+        _digits.push(new _rollingNumber({ target: _div, numeric: false }));
+    });
+
+    // roll each digit
+    _characters.forEach((character, index) => {
+        const _digit = _digits[index];
+
+        _digit.roll({
+            from: _digit.currentNumber,
+            to: character,
+            duration: 1000,
+            callback: () => (_rolling = false),
+        });
+    });
+};
+
+// only numbers, one decimal point and 2 decimals, with commas
+_input.addEventListener('input', () => {
+    const _parts = _cleanNumber(_input.value).split('.');
+    const _integer = _parts[0] ? Number(_parts[0]).toLocaleString() : '';
+    const _decimal = _parts.length > 1 ? '.' + _parts.slice(1).join('').slice(0, 2) : '';
+
+    _input.value = _integer + _decimal;
+});
+
+// roll to the entered number
+_wrap.querySelector('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const _value = parseFloat(_cleanNumber(_input.value));
+    if (!isNaN(_value)) _update(_value);
+});
+
+// roll when it scrolls into view
+new _inview({
+    target: _label,
+    delay: 500,
+    callback: () => {
+        _label.innerHTML = '';
+        _update(123456789.1);
+    },
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _rollingNumber({ target, numeric, maxNumber, startNumber, duration })</code> makes one digit, <code class="font-mono text-sm">roll({ from, to, duration, callback })</code> moves it. Durations in ms.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

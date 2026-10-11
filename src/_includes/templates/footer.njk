@@ -1,34 +1,38 @@
 {% macro footer(props) %}
-    <footer class="footer-content border-t border-slate-200 bg-slate-50">
-        <div class="container mx-auto flex flex-col gap-10 px-4 py-10 lg:flex-row lg:justify-between">
-            <div class="shrink-0">
-                <a class="font-semibold text-slate-900" href="/">{{ props.site.name }}</a>
-                <p class="mt-2 max-w-xs text-sm text-slate-600">{{ props.site.description }}</p>
-            </div>
-            <div class="grid grid-cols-2 gap-8 md:grid-cols-5 lg:gap-12">
-                {% for group in props.components %}
-                    <div>
-                        <p class="text-xs font-semibold tracking-wider text-slate-500 uppercase">{{ group.category }}</p>
-                        <ul class="mt-3 space-y-2 text-sm">
-                            {% for item in group.items %}
-                                <li>
-                                    {% if item.ready %}
-                                        <a class="text-slate-700 transition-colors hover:text-slate-900" href="{{ item.url }}">{{ item.label }}</a>
-                                    {% else %}
-                                        <span class="text-slate-400">{{ item.label }}</span>
-                                    {% endif %}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endfor %}
-            </div>
+<footer class="footer-content border-t border-gray-200 px-4">
+    <div class="mx-auto flex max-w-295 flex-col gap-10 py-16 lg:flex-row lg:justify-between">
+        <div class="shrink-0">
+            <a class="text-lg font-bold tracking-tight text-gray-950" href="/">{{ props.site.name }}</a>
+            <p class="mt-2 max-w-xs text-sm text-gray-600">{{ props.site.description }}</p>
         </div>
-        <div class="border-t border-slate-200">
-            <div class="container mx-auto flex flex-wrap justify-between gap-2 px-4 py-4 text-xs text-slate-500">
-                <p>&copy; {{ props.site.year }} {{ props.site.name }}</p>
-                <a class="hover:text-slate-900" href="{{ props.site.github }}" target="_blank" rel="noopener">GitHub</a>
+        <div class="grid grid-cols-2 gap-8 md:grid-cols-5 lg:gap-12">
+            {% for group in props.components %}
+            <div>
+                <p class="font-mono text-xs text-gray-500">
+                    {% if group.url %}
+                    <a class="transition-colors hover:text-gray-950" href="{{ group.url }}">{{ group.category }}</a>
+                    {% else %}
+                    {{ group.category }}
+                    {% endif %}
+                </p>
+                <ul class="mt-3 space-y-2 text-sm">
+                    {% for item in group.items %}
+                    <li>
+                        {% if item.ready %}
+                        <a class="text-gray-700 transition-colors hover:text-gray-950" href="{{ item.url }}">{{ item.label }}</a>
+                        {% else %}
+                        <span class="text-gray-400">{{ item.label }}</span>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
             </div>
+            {% endfor %}
         </div>
-    </footer>
+    </div>
+    <div class="mx-auto flex max-w-295 flex-wrap justify-between gap-2 border-t border-gray-200 py-6 text-xs text-gray-500">
+        <p>&copy; {{ props.site.year }} {{ props.site.name }}</p>
+        <a class="transition-colors hover:text-gray-950" href="{{ props.site.github }}" target="_blank" rel="noopener">GitHub</a>
+    </div>
+</footer>
 {% endmacro %}

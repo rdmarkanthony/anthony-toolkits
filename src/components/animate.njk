@@ -1,0 +1,87 @@
+---
+title: Animate | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_animate · _inview · _splitText', title: 'Animate', description: '<a class="link-underline hover:text-gray-900" href="https://animate.style/" target="_blank" rel="noopener">Animate.css</a> effects that play when elements scroll into view, set with a data attribute. Children can be staggered, and titles can pull up word by word.' }) }}
+
+{# demo: a parent with staggered children #}
+<section class="px-4 py-16" data-animate>
+    <div class="mx-auto max-w-295" data-animate="parent">
+        <div class="flex max-w-5xl flex-col gap-10" data-animate="children">
+            <h2 class="js-splittext text-4xl font-bold tracking-tight md:text-7xl md:leading-[1.2]">Lorem ipsum dolor sit amet consectetur adipisicing elit</h2>
+            <div class="flex flex-col gap-4 text-gray-600" data-animate="children-inview">
+                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aut, blanditiis fuga! Quod, recusandae optio cupiditate laborum aspernatur facilis expedita pariatur nulla obcaecati, reiciendis quas, perferendis consequuntur laboriosam. Quis, vel exercitationem?</p>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Porro eaque inventore sit nostrum suscipit neque hic minima iusto! Rerum quisquam provident quibusdam quis sint minus, amet id! Ducimus, voluptatibus dolorum.</p>
+                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam quia illum nostrum cum nihil doloribus, quaerat amet repellendus provident doloremque possimus molestias rem dolorum nesciunt quam facere harum nulla deleniti!</p>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis, dignissimos excepturi? Quo quas distinctio vero, tempore atque aliquam, non excepturi voluptas adipisci quae expedita obcaecati totam quibusdam, at molestiae recusandae!</p>
+            </div>
+            <div>
+                <div class="inline-block" data-animate="rubberBand,calc(var(--animate-delay) + 0.8s)">
+                    <p><a class="link-underline font-medium hover:text-gray-600" href="https://animate.style/" target="_blank" rel="noopener">animate.style</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# demo: a single element with its own keyframe, delay and duration #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <p class="text-3xl font-bold tracking-tight" data-animate="fadeInDown,1,0.8">fadeInDown, 1s delay</p>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- a parent, its children animate in order -->
+<section data-animate>
+    <div data-animate="parent">
+        <div data-animate="children">
+            <!-- pulls up word by word -->
+            <h2 class="js-splittext">Title</h2>
+            <!-- these children animate on their own, as each scrolls into view -->
+            <div data-animate="children-inview">
+                <p>...</p>
+            </div>
+            <!-- keyframe and delay for this child -->
+            <div data-animate="rubberBand,calc(var(--animate-delay) + 0.8s)">...</div>
+        </div>
+    </div>
+</section>
+
+<!-- a single element: data-animate="keyframe,delay,duration", in seconds -->
+<p data-animate="fadeInDown,1,0.8">...</p>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // split-type (optional, for .js-splittext)
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_inview.js
+        // src/assets/js/utils/_splitText.js (optional, for .js-splittext)
+        // src/assets/js/utils/_animate.js
+    // CSS
+        // animate.css
+        // src/assets/css/components/data-animate.css
+
+// once per page, for every [data-animate]
+new _animate({
+    debug: false, // true keeps the inline animation styles on the elements
+    delay: 0.1,
+    adjacentDelay: 0.2, // added for each next child
+    duration: 0.8,
+    keyframe: 'fadeInUpSmall', // default, from data-animate.css
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Any <a class="link-underline" href="https://animate.style/" target="_blank" rel="noopener">Animate.css</a> keyframe works, plus <code class="font-mono text-sm">fadeInUpSmall</code>. Elements stay hidden until they animate.',
+    code: pageScript
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

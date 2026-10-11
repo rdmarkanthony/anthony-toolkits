@@ -1,0 +1,54 @@
+[data-animate]:not(.animate__animated) {
+    opacity: 0;
+}
+
+@keyframes fadeInUpSmall {
+    0% {
+        opacity: 0;
+        transform: translate3d(0, 40px, 0);
+    }
+    100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+.animate__fadeInUpSmall {
+    -webkit-animation-name: fadeInUpSmall;
+    animation-name: fadeInUpSmall;
+}
+
+@keyframes pullUp {
+    0% {
+        transform: translateY(calc(102% + 0.25em));
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.js-splittext .line-parent {
+    position: relative;
+    overflow: hidden;
+}
+
+.js-splittext-animate .word {
+    transform: translateY(100%);
+}
+
+.js-splittext-animated {
+    opacity: 1;
+    animation: none;
+    animation-delay: 0.1s;
+    --pullup-delay: 0.1s;
+}
+.js-splittext-animated .word {
+    animation-duration: 0.6s;
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    animation-delay: calc(var(--pullup-delay) + 0.1s * var(--index));
+    animation-fill-mode: forwards;
+    animation-name: pullUp;
+}
+.js-splittext-animated .word .emoji {
+    animation-duration: 1s;
+    animation-name: popIn;
+}

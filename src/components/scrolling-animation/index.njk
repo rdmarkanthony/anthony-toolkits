@@ -1,0 +1,312 @@
+---
+title: Scrolling Animation | Anthony Toolkits
+---
+
+{% from "components/atoms/back-link.njk" import backLink %}
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/code-block.njk" import codeBlock %}
+
+{# hero: the headphone turns as the page scrolls, pinned below the sticky site header #}
+<section class="js-hero relative h-[250vh]">
+    <div class="sticky top-(--header-height) h-[calc(100vh-var(--header-height,0px))] overflow-hidden px-4">
+        <div class="mx-auto grid h-full max-w-295 grid-rows-[auto_1fr] gap-6 pt-10 pb-6 md:grid-cols-2 md:grid-rows-1 md:items-center md:gap-10 md:py-0">
+            <div>
+                {{ backLink() }}
+                <p class="mb-4 font-mono text-sm text-gray-500">11ty · Nunjucks · Tailwind · gsap</p>
+                <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">Scrolling Animation</h1>
+                <p class="mb-10 max-w-2xl text-lg text-gray-600 md:text-xl">Animations that follow the scroll: video intros, image sequences and parallax backgrounds. Each demo shows its markup and script, ready to use on any website.</p>
+                <div class="flex flex-wrap gap-3">
+                    <a class="js-auto-scroll rounded-full bg-gray-950 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-gray-700" href="#demos">See the demos</a>
+                    <a class="rounded-full border border-gray-300 px-5 py-3 text-sm font-medium text-gray-950 transition-colors hover:border-gray-950" href="{{ site.github }}" target="_blank" rel="noopener">View on GitHub</a>
+                </div>
+            </div>
+            <div class="flex min-h-0 items-center justify-center md:h-full md:py-16">
+                <canvas class="js-hero-canvas"></canvas>
+            </div>
+        </div>
+        <p class="js-hero-hint absolute bottom-6 left-1/2 hidden -translate-x-1/2 animate-bounce items-center gap-1 text-sm font-medium md:flex">Scroll {{ angle('down') }}</p>
+    </div>
+</section>
+
+<section id="demos" class="px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-8 text-3xl font-bold tracking-tight">Demos</h2>
+        <div class="grid gap-6 md:grid-cols-3">
+            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/scrolling-animation/video-intro/">
+                {# preview: the cover fades as the card scrolls in #}
+                <div class="js-preview-video relative aspect-4/3 overflow-hidden bg-black">
+                    <video class="js-hls-video absolute inset-0 size-full object-cover" data-src="/assets/video/video1/video1.m3u8" muted playsinline loop autoplay disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
+                    <div class="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/70 to-transparent"></div>
+                    <div class="js-preview-video-cover absolute inset-0 bg-black"></div>
+                    <p class="absolute inset-x-6 bottom-6 text-xl leading-tight font-bold text-white">Scroll to drive the animation</p>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">Video intro</h3>
+                    <p class="mb-6 flex-1 text-gray-600">A sticky video whose dark cover fades as the section scrolls in, then titles step in one at a time.</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">_parallaxScroller · _hlsVideo</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
+            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/scrolling-animation/canvas/">
+                {# preview: a few frames of the sequence #}
+                <div class="flex aspect-4/3 items-center gap-4 bg-white px-8">
+                    <figure class="flex-1">
+                        <img class="w-full" src="/assets/img/headphone/small_{{ 0 | pad(4) }}.webp" alt="" loading="lazy" />
+                        <figcaption class="mt-2 text-center font-mono text-xs text-gray-400">01</figcaption>
+                    </figure>
+                    <figure class="flex-1">
+                        <img class="w-full" src="/assets/img/headphone/small_{{ 24 | pad(4) }}.webp" alt="" loading="lazy" />
+                        <figcaption class="mt-2 text-center font-mono text-xs text-gray-400">25</figcaption>
+                    </figure>
+                    <figure class="flex-1">
+                        <img class="w-full" src="/assets/img/headphone/small_{{ 49 | pad(4) }}.webp" alt="" loading="lazy" />
+                        <figcaption class="mt-2 text-center font-mono text-xs text-gray-400">50</figcaption>
+                    </figure>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">Canvas image sequence</h3>
+                    <p class="mb-6 flex-1 text-gray-600">50 frames drawn on a canvas, the frame follows the scroll position like a video scrubber.</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">_canvasBanner</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
+            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/scrolling-animation/background/">
+                {# preview: the background moves as the card scrolls past #}
+                <div class="relative aspect-4/3 overflow-hidden bg-black">
+                    <div class="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat" data-parallax-background="80" style="background-image: url('/assets/img/banner1.jpg')"></div>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">Parallax background</h3>
+                    <p class="mb-6 flex-1 text-gray-600">Backgrounds move slower than the page, with or without easing, plus a floating image.</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">_parallaxBackground · _parallaxFloating</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-8 text-3xl font-bold tracking-tight">How it works</h2>
+        <ol class="grid gap-10">
+            <li class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
+                <div>
+                    <p class="mb-2 font-mono text-sm text-gray-500">01</p>
+                    <h3 class="mb-2 text-xl font-semibold">script.js loads the utils</h3>
+                    <p class="text-gray-600">It imports gsap and the utils from <code class="font-mono text-sm">src/assets/js/utils/</code>, and puts every util on <code class="font-mono text-sm">window</code> for page scripts. In your project, import only the utils you use. Bundle it with any bundler, this site uses esbuild.</p>
+                </div>
+                {% set code %}{% raw %}
+// src/assets/js/script.js, the scrolling utils
+Object.assign(window, {
+    gsap,
+    _event,
+    _parallax,
+    _parallaxScroller,
+    _parallaxBackground,
+    _parallaxFloating,
+    _canvasBanner,
+    _autoScroll,
+    _hlsVideo,
+});
+                {% endraw %}{% endset %}
+                {{ codeBlock(code, 'js') }}
+            </li>
+            <li class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
+                <div>
+                    <p class="mb-2 font-mono text-sm text-gray-500">02</p>
+                    <h3 class="mb-2 text-xl font-semibold">Mark up the section</h3>
+                    <p class="text-gray-600">Style it however you like, the demos use Tailwind. Add <code class="font-mono text-sm">js-</code> classes for elements the script looks up, and <code class="font-mono text-sm">data-</code> attributes for options.</p>
+                </div>
+                {% set code %}{% raw %}
+<div class="js-fade-section relative min-h-screen bg-black text-white">
+    <h2 class="sticky top-0 py-40 text-center text-5xl">Fades in on scroll</h2>
+</div>
+                {% endraw %}{% endset %}
+                {{ codeBlock(code, 'html') }}
+            </li>
+            <li class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
+                <div>
+                    <p class="mb-2 font-mono text-sm text-gray-500">03</p>
+                    <h3 class="mb-2 text-xl font-semibold">Add the page script</h3>
+                    <p class="text-gray-600">Add it below <code class="font-mono text-sm">script.js</code>, both as <code class="font-mono text-sm">type="module"</code> so it runs after the utils are loaded. On this site, pages put it in <code class="font-mono text-sm">{% raw %}{% footerscript %}{% endraw %}</code>, which renders below <code class="font-mono text-sm">script.js</code>.</p>
+                </div>
+                {% set code %}{% raw %}
+<script type="module" src="/assets/js/script.js"></script>
+<script type="module">
+    new _parallaxScroller({
+        target: document.querySelector('.js-fade-section'),
+        events: {
+            // offset.current is 0 when the section enters the screen and 1 when it leaves
+            update(scroller) {
+                gsap.set(scroller.target, { opacity: _parallax.clamp(scroller.portion('0%', '50%')) });
+            },
+        },
+    });
+</script>
+                {% endraw %}{% endset %}
+                {{ codeBlock(code, 'html') }}
+            </li>
+        </ol>
+    </div>
+</section>
+
+<div class="px-4 py-24">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-4 text-3xl font-bold tracking-tight">Utilities</h2>
+        <p class="mb-12 max-w-2xl text-gray-600">The scroll and parallax utils, all in <code class="font-mono text-sm">src/assets/js/utils/</code> and used in page scripts.</p>
+
+        <div class="grid grid-cols-1 gap-6">
+            <div class="rounded-2xl border border-gray-200 p-6">
+                <h3 class="mb-1 font-mono font-semibold">_parallaxScroller</h3>
+                <p class="mb-4 text-gray-600">Measures the target when the page resizes, then on scroll only does the math, at most once per frame. <code class="font-mono text-sm">offset.current</code> is 0 when the target enters the screen and 1 when it leaves, unclamped. Change <code class="font-mono text-sm">offset.top</code> and <code class="font-mono text-sm">offset.bottom</code> in <code class="font-mono text-sm">resize</code> for another range. <code class="font-mono text-sm">portion(min, max)</code> gives the progress within part of the range, as percents of <code class="font-mono text-sm">offset.current</code> or as scroll positions.</p>
+                {% set code %}{% raw %}
+const scroller = new _parallaxScroller({
+    target: document.querySelector('.js-my-section'),
+    events: {
+        // once, before measuring
+        init(scroller) {},
+        // after measuring, e.g. from the section's top until its end reaches the bottom of the screen
+        resize(scroller) {
+            const _offset = _parallax.getOffset(scroller.target);
+            scroller.offset.top = _offset.top;
+            scroller.offset.bottom = _offset.bottom - _parallax.height();
+        },
+        // on scroll
+        update(scroller) {
+            const _progress = _parallax.clamp(scroller.portion('20%', '60%'));
+            gsap.set(scroller.target, { scale: 0.8 + _progress * 0.2 });
+        },
+    },
+});
+
+scroller.on('update', (scroller) => {}); // more listeners, remove with off()
+scroller.destroy();
+                {% endraw %}{% endset %}
+                {{ codeBlock(code, 'js') }}
+            </div>
+            <div class="rounded-2xl border border-gray-200 p-6">
+                <h3 class="mb-1 font-mono font-semibold">_parallax · _event</h3>
+                <p class="mb-4 text-gray-600">Helpers the other utils are built on. <code class="font-mono text-sm">_event</code> keeps one scroll and one resize listener for the whole page, however many callbacks are added.</p>
+                {% set code %}{% raw %}
+_parallax.scrollTop();        // current scroll position
+_parallax.width();            // viewport size without the scrollbar
+_parallax.height();           // pass true for the document height
+_parallax.getOffset(el);      // { top, left, bottom, right } in the document, transforms ignored
+_parallax.getRange(min, max); // 0 at min, 1 at max, unclamped
+_parallax.clamp(value);       // limit to 0 - 1
+
+_event.resize((state) => {});  // state: init, ready, resize, after, skips the phone address bar
+_event.scroll((e) => {});      // runs once now, then at most once per frame while scrolling
+_event.observeResize((entry) => {}, el); // el changes size, e.g. images load above it
+
+const off = _event.scroll(callback); // every subscribe returns a function that removes it
+off();
+
+_event.dispatch(el, 'visible', { index: 1 }); // listeners read e.detail
+                {% endraw %}{% endset %}
+                {{ codeBlock(code, 'js') }}
+            </div>
+            <div class="grid gap-6 md:grid-cols-2">
+                <a class="group flex items-center justify-between gap-4 rounded-2xl border border-gray-200 p-6 transition-colors hover:border-gray-950" href="/components/scrolling-animation/canvas/">
+                    <span>
+                        <span class="mb-1 block font-mono font-semibold">_canvasBanner</span>
+                        <span class="block text-gray-600">Options and usage on the canvas demo</span>
+                    </span>
+                    {{ angle('right', 'group-hover:translate-x-0.5') }}
+                </a>
+                <a class="group flex items-center justify-between gap-4 rounded-2xl border border-gray-200 p-6 transition-colors hover:border-gray-950" href="/components/scrolling-animation/background/">
+                    <span>
+                        <span class="mb-1 block font-mono font-semibold">_parallaxBackground · _parallaxFloating</span>
+                        <span class="block text-gray-600">Options and usage on the background demo</span>
+                    </span>
+                    {{ angle('right', 'group-hover:translate-x-0.5') }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% footerscript %}
+<!-- this script is just for this page -->
+<script type="module">
+    // Requirements
+        // JS
+            // gsap
+            // src/assets/js/utils/_event.js
+            // src/assets/js/utils/_parallax.js
+            // src/assets/js/utils/_canvasBanner.js
+            // src/assets/js/utils/_autoScroll.js
+            // hls.js, src/assets/js/utils/_hlsVideo.js (for the video preview)
+
+    // smooth scroll for the "See the demos" link
+    document.querySelectorAll('.js-auto-scroll').forEach((item) => {
+        item.addEventListener('click', (e) => {
+            const _target = document.getElementById((item.getAttribute('href') ?? '').split('#')[1]);
+            if (!_target) return;
+
+            e.preventDefault();
+            _autoScroll({ target: _target });
+        });
+    });
+
+    // hls videos
+    document.querySelectorAll('.js-hls-video').forEach((target) => new _hlsVideo({ target }));
+
+    // hero, the headphone turns while the section is pinned
+    const canvas = new _canvasBanner({
+        target: document.querySelector('.js-hero-canvas'),
+        assets: {
+            count: 50,
+            path: '/assets/img/headphone/large_',
+            digits: 4,
+            size: [1004, 1214],
+            resizeMode: 'contain',
+            // below 768px wide
+            mobile: {
+                path: '/assets/img/headphone/small_',
+                type: 'webp',
+                size: [502, 607],
+                step: 2,
+            },
+        },
+    });
+
+    new _parallaxScroller({
+        target: document.querySelector('.js-hero'),
+        events: {
+            init(scroller) {
+                scroller.el.hint = scroller.target.querySelector('.js-hero-hint');
+            },
+            resize(scroller) {
+                const _offset = _parallax.getOffset(scroller.target);
+
+                scroller.offset.top = _offset.top;
+                scroller.offset.bottom = _offset.bottom - _parallax.height();
+            },
+            update(scroller) {
+                canvas.update(scroller.offset.current);
+
+                // hide the hint once scrolling starts
+                gsap.set(scroller.el.hint, { opacity: 1 - _parallax.clamp(scroller.portion('0%', '10%')) });
+            },
+        },
+    });
+
+    // video intro preview, the cover fades as the card scrolls in
+    new _parallaxScroller({
+        target: document.querySelector('.js-preview-video'),
+        events: {
+            init(scroller) {
+                scroller.el.cover = scroller.target.querySelector('.js-preview-video-cover');
+            },
+            update(scroller) {
+                gsap.set(scroller.el.cover, { opacity: 1 - _parallax.clamp(scroller.portion('0%', '40%')) });
+            },
+        },
+    });
+
+    // parallax background preview
+    document.querySelectorAll('[data-parallax-background]').forEach((target) => new _parallaxBackground({ target }));
+</script>
+{% endfooterscript %}

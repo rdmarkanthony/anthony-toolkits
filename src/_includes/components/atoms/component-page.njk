@@ -1,0 +1,59 @@
+{%- from "components/atoms/back-link.njk" import backLink -%}
+{%- from "components/atoms/code-block.njk" import codeBlock -%}
+
+{#
+    page title, for component pages
+    usage: {{ pageIntro({ label: '_tabs', title: 'Tabs', description: '...' }) }}
+    back: { label, url } for another parent page (default: all components)
+#}
+{% macro pageIntro(props) -%}
+<section class="px-4 pt-24 pb-16 md:pt-32">
+    <div class="mx-auto max-w-295">
+        {{ backLink(props.back) }}
+        {% if props.label -%}
+        <p class="mb-4 font-mono text-sm text-gray-500">{{ props.label }}</p>
+        {%- endif %}
+        <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">{{ props.title }}</h1>
+        {% if props.description -%}
+        <p class="max-w-2xl text-lg text-gray-600 md:text-xl">{{ props.description | safe }}</p>
+        {%- endif %}
+    </div>
+</section>
+{%- endmacro %}
+
+{#
+    the page script, shown as code, starting with its // Requirements
+    usage:
+    {% set pageScript %}{% raw %}// Requirements ... new _tabs({ target });{% endraw %}{% endset %}
+    {{ scriptUsage({ code: pageScript, note: '...' }) }}
+    then run the same script: {% footerscript %}<script type="module">{{ pageScript | safe }}</script>{% endfooterscript %}
+#}
+{% macro scriptUsage(props) -%}
+<section class="px-4 py-24">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-8 text-3xl font-bold tracking-tight">How to use</h2>
+        <div class="grid gap-10">
+            {% if props.markup -%}
+            <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
+                <div>
+                    <h3 class="mb-2 text-xl font-semibold">Markup</h3>
+                    {% if props.markupNote -%}
+                    <p class="text-gray-600">{{ props.markupNote | safe }}</p>
+                    {%- endif %}
+                </div>
+                {{ codeBlock(props.markup, 'html') }}
+            </div>
+            {%- endif %}
+            <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
+                <div>
+                    <h3 class="mb-2 text-xl font-semibold">Script</h3>
+                    {% if props.note -%}
+                    <p class="text-gray-600">{{ props.note | safe }}</p>
+                    {%- endif %}
+                </div>
+                {{ codeBlock(props.code, 'js') }}
+            </div>
+        </div>
+    </div>
+</section>
+{%- endmacro %}
