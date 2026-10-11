@@ -46,7 +46,7 @@
     {% getBundle "styles" %}
     {% getBundle "headerscript" %}
 </head>
-<body>
+<body class="bg-white text-gray-950">
     {{ header({ site: site }) }}
     <div class="main-content min-h-[calc(100vh-var(--header-height,0rem)-var(--footer-height,0rem))]">
         {{ content | safe }}

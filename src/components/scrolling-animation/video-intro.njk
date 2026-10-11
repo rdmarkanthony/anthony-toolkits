@@ -3,6 +3,7 @@ title: Video Intro | Scrolling Animation | Anthony Toolkits
 ---
 
 {% from "components/atoms/back-link.njk" import backLink %}
+{% from "components/atoms/icon.njk" import angle %}
 {% from "components/atoms/code-block.njk" import codeBlock %}
 
 {# covers the sticky video until the intro #}
@@ -10,10 +11,10 @@ title: Video Intro | Scrolling Animation | Anthony Toolkits
     <section class="px-4 pt-24 pb-16 md:pt-32">
         <div class="mx-auto max-w-295">
             {{ backLink({ label: 'Scrolling animation', url: '/components/scrolling-animation/' }) }}
-            <p class="mb-4 font-mono text-sm text-slate-500">Demo · _parallaxScroller · _hlsVideo</p>
+            <p class="mb-4 font-mono text-sm text-gray-500">Demo · _parallaxScroller · _hlsVideo</p>
             <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">Video intro</h1>
-            <p class="mb-16 max-w-2xl text-lg text-slate-600 md:text-xl">A sticky video whose dark cover fades as the section scrolls in, then titles step in one at a time as each reaches the middle of the screen.</p>
-            <p class="animate-bounce text-sm font-medium">Scroll down ↓</p>
+            <p class="mb-16 max-w-2xl text-lg text-gray-600 md:text-xl">A sticky video whose dark cover fades as the section scrolls in, then titles step in one at a time as each reaches the middle of the screen.</p>
+            <p class="flex animate-bounce items-center gap-1 text-sm font-medium">Scroll down {{ angle('down') }}</p>
         </div>
     </section>
 </div>
@@ -48,7 +49,7 @@ title: Video Intro | Scrolling Animation | Anthony Toolkits
             <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
                 <div>
                     <h3 class="mb-2 text-xl font-semibold">Markup</h3>
-                    <p class="text-slate-600">A tall section with a sticky, screen-high video. The negative top margin pulls the video up a screen so it's already pinned when the section scrolls in, so the content above needs a higher <code class="font-mono text-sm">z-index</code> and a background. Each title is styled by its <code class="font-mono text-sm">data-state</code>: <code class="font-mono text-sm">active</code> or <code class="font-mono text-sm">past</code>.</p>
+                    <p class="text-gray-600">A tall section with a sticky, screen-high video. The negative top margin pulls the video up a screen so it's already pinned when the section scrolls in, so the content above needs a higher <code class="font-mono text-sm">z-index</code> and a background. Each title is styled by its <code class="font-mono text-sm">data-state</code>: <code class="font-mono text-sm">active</code> or <code class="font-mono text-sm">past</code>.</p>
                 </div>
                 {% set code %}{% raw %}
 <section class="js-title-intro relative min-h-[150vh] bg-black text-white">
@@ -68,7 +69,7 @@ title: Video Intro | Scrolling Animation | Anthony Toolkits
             <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
                 <div>
                     <h3 class="mb-2 text-xl font-semibold">Script</h3>
-                    <p class="text-slate-600"><code class="font-mono text-sm">_parallaxScroller</code> follows the content from when it enters the screen until its top reaches the top, and fades the cover out over that range. On resize it also measures where the titles start fading in, and where each title reaches the middle of the screen. On scroll, the last title past that point is <code class="font-mono text-sm">active</code>.</p>
+                    <p class="text-gray-600"><code class="font-mono text-sm">_parallaxScroller</code> follows the content from when it enters the screen until its top reaches the top, and fades the cover out over that range. On resize it also measures where the titles start fading in, and where each title reaches the middle of the screen. On scroll, the last title past that point is <code class="font-mono text-sm">active</code>.</p>
                 </div>
                 {% set code %}{% raw %}
 new _parallaxScroller({

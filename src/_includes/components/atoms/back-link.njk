@@ -2,6 +2,8 @@
     link to the parent page, above a page title
     usage: {{ backLink({ label: 'Scrolling animation', url: '/components/scrolling-animation/' }) }}
 #}
+{%- from "components/atoms/icon.njk" import angle -%}
+
 {% macro backLink(props) -%}
-<a class="group mb-6 inline-flex items-center gap-1 text-sm font-medium text-slate-500 transition-colors hover:text-slate-900" href="{{ props.url | default('/#components') }}"><span class="inline-block transition-transform group-hover:-translate-x-1">←</span> {{ props.label | default('All components') }}</a>
+<a class="group mb-6 inline-flex items-center gap-1 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900" href="{{ props.url | default('/#components') }}">{{ angle('left', 'group-hover:-translate-x-0.5') }} {{ props.label | default('All components') }}</a>
 {%- endmacro %}

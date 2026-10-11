@@ -35,12 +35,12 @@ title: Breakpoints | Anthony Toolkits
 <section class="px-4 py-24">
     <div class="mx-auto max-w-295">
         <h2 class="mb-2 text-3xl font-bold tracking-tight">Breakpoints</h2>
-        <p class="mb-8 max-w-2xl text-slate-600">Set in <code class="font-mono text-sm">@theme</code> in <code class="font-mono text-sm">src/assets/css/style.css</code>, used as Tailwind prefixes, e.g. <code class="font-mono text-sm">md:grid-cols-2</code>.</p>
-        <dl class="grid gap-x-6 gap-y-1 rounded-2xl border border-slate-200 p-6 text-sm md:grid-cols-[auto_auto_1fr] md:gap-y-3">
+        <p class="mb-8 max-w-2xl text-gray-600">Set in <code class="font-mono text-sm">@theme</code> in <code class="font-mono text-sm">src/assets/css/style.css</code>, used as Tailwind prefixes, e.g. <code class="font-mono text-sm">md:grid-cols-2</code>.</p>
+        <dl class="grid gap-x-6 gap-y-1 rounded-2xl border border-gray-200 p-6 text-sm md:grid-cols-[auto_auto_1fr] md:gap-y-3">
             {% for item in breakpoints %}
             <dt class="font-mono font-semibold">{{ item.name }}</dt>
-            <dd class="font-mono text-slate-600">{{ item.width }}</dd>
-            <dd class="mb-3 text-slate-600 last:mb-0 md:mb-0">{{ item.device }}</dd>
+            <dd class="font-mono text-gray-600">{{ item.width }}</dd>
+            <dd class="mb-3 text-gray-600 last:mb-0 md:mb-0">{{ item.device }}</dd>
             {% endfor %}
         </dl>
     </div>

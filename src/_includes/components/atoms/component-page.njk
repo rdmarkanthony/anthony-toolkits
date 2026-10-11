@@ -11,11 +11,11 @@
     <div class="mx-auto max-w-295">
         {{ backLink(props.back) }}
         {% if props.label -%}
-        <p class="mb-4 font-mono text-sm text-slate-500">{{ props.label }}</p>
+        <p class="mb-4 font-mono text-sm text-gray-500">{{ props.label }}</p>
         {%- endif %}
         <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">{{ props.title }}</h1>
         {% if props.description -%}
-        <p class="max-w-2xl text-lg text-slate-600 md:text-xl">{{ props.description | safe }}</p>
+        <p class="max-w-2xl text-lg text-gray-600 md:text-xl">{{ props.description | safe }}</p>
         {%- endif %}
     </div>
 </section>
@@ -38,7 +38,7 @@
                 <div>
                     <h3 class="mb-2 text-xl font-semibold">Markup</h3>
                     {% if props.markupNote -%}
-                    <p class="text-slate-600">{{ props.markupNote | safe }}</p>
+                    <p class="text-gray-600">{{ props.markupNote | safe }}</p>
                     {%- endif %}
                 </div>
                 {{ codeBlock(props.markup, 'html') }}
@@ -48,11 +48,11 @@
                 <div>
                     <h3 class="mb-2 text-xl font-semibold">Script</h3>
                     {% if props.note -%}
-                    <p class="mb-4 text-slate-600">{{ props.note | safe }}</p>
+                    <p class="mb-4 text-gray-600">{{ props.note | safe }}</p>
                     {%- endif %}
                     {% if props.requires -%}
                     <p class="mb-2 text-sm font-medium">Requires</p>
-                    <ul class="space-y-1 font-mono text-sm text-slate-600">
+                    <ul class="space-y-1 font-mono text-sm text-gray-600">
                         {% for item in props.requires %}
                         <li>{{ item }}</li>
                         {% endfor %}

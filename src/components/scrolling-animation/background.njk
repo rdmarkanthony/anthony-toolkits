@@ -3,15 +3,16 @@ title: Background | Scrolling Animation | Anthony Toolkits
 ---
 
 {% from "components/atoms/back-link.njk" import backLink %}
+{% from "components/atoms/icon.njk" import angle %}
 {% from "components/atoms/code-block.njk" import codeBlock %}
 
 <section class="px-4 pt-24 pb-16 md:pt-32">
     <div class="mx-auto max-w-295">
         {{ backLink({ label: 'Scrolling animation', url: '/components/scrolling-animation/' }) }}
-        <p class="mb-4 font-mono text-sm text-slate-500">Demo · _parallaxBackground · _parallaxFloating</p>
+        <p class="mb-4 font-mono text-sm text-gray-500">Demo · _parallaxBackground · _parallaxFloating</p>
         <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">Parallax background</h1>
-        <p class="mb-16 max-w-2xl text-lg text-slate-600 md:text-xl">Backgrounds that move slower than the page, so they look further away. Add a data attribute to the background, the script does the rest.</p>
-        <p class="animate-bounce text-sm font-medium">Scroll down ↓</p>
+        <p class="mb-16 max-w-2xl text-lg text-gray-600 md:text-xl">Backgrounds that move slower than the page, so they look further away. Add a data attribute to the background, the script does the rest.</p>
+        <p class="flex animate-bounce items-center gap-1 text-sm font-medium">Scroll down {{ angle('down') }}</p>
     </div>
 </section>
 
@@ -27,7 +28,7 @@ title: Background | Scrolling Animation | Anthony Toolkits
 <section class="px-4 py-24">
     <div class="mx-auto max-w-295">
         <h2 class="mb-2 text-3xl font-bold tracking-tight">Range and easing</h2>
-        <p class="mb-10 max-w-2xl text-slate-600">The range is how far the background moves, in pixels. Easing makes it trail behind the scroll a little instead of following it exactly.</p>
+        <p class="mb-10 max-w-2xl text-gray-600">The range is how far the background moves, in pixels. Easing makes it trail behind the scroll a little instead of following it exactly.</p>
         <div class="grid gap-10 md:grid-cols-2">
             <figure>
                 <div class="relative aspect-1006/1584 overflow-hidden rounded-2xl bg-black">
@@ -35,7 +36,7 @@ title: Background | Scrolling Animation | Anthony Toolkits
                 </div>
                 <figcaption class="mt-4">
                     <code class="font-mono text-sm font-semibold">data-parallax-background</code>
-                    <p class="text-slate-600">Default, 500px range, follows the scroll exactly</p>
+                    <p class="text-gray-600">Default, 500px range, follows the scroll exactly</p>
                 </figcaption>
             </figure>
             <figure>
@@ -44,7 +45,7 @@ title: Background | Scrolling Animation | Anthony Toolkits
                 </div>
                 <figcaption class="mt-4">
                     <code class="font-mono text-sm font-semibold">data-parallax-background="100,easing"</code>
-                    <p class="text-slate-600">100px range, eased</p>
+                    <p class="text-gray-600">100px range, eased</p>
                 </figcaption>
             </figure>
         </div>
@@ -54,12 +55,12 @@ title: Background | Scrolling Animation | Anthony Toolkits
 {# demo: floating image #}
 <section class="px-4 py-24">
     <div class="mx-auto grid max-w-295 items-center gap-10 md:grid-cols-2">
-        <div class="relative overflow-hidden rounded-2xl bg-slate-100">
+        <div class="relative overflow-hidden rounded-2xl bg-gray-100">
             <img data-parallax-floating src="/assets/img/banner1.jpg" alt="" />
         </div>
         <div>
             <h2 class="mb-2 text-3xl font-bold tracking-tight">Floating</h2>
-            <p class="mb-4 text-slate-600">The image drifts down as it crosses the screen, up to its range (50px by default), eased. It sits in an <code class="font-mono text-sm">overflow-hidden</code> wrapper so it stays in its frame.</p>
+            <p class="mb-4 text-gray-600">The image drifts down as it crosses the screen, up to its range (50px by default), eased. It sits in an <code class="font-mono text-sm">overflow-hidden</code> wrapper so it stays in its frame.</p>
             <code class="font-mono text-sm font-semibold">data-parallax-floating</code>
         </div>
     </div>
@@ -72,7 +73,7 @@ title: Background | Scrolling Animation | Anthony Toolkits
             <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
                 <div>
                     <h3 class="mb-2 text-xl font-semibold">Background markup</h3>
-                    <p class="text-slate-600">The background fills an <code class="font-mono text-sm">overflow-hidden</code> parent. The script makes it taller by the range so it always covers the parent, and moves it from <code class="font-mono text-sm">-range</code> to 0 as the parent crosses the screen.</p>
+                    <p class="text-gray-600">The background fills an <code class="font-mono text-sm">overflow-hidden</code> parent. The script makes it taller by the range so it always covers the parent, and moves it from <code class="font-mono text-sm">-range</code> to 0 as the parent crosses the screen.</p>
                 </div>
                 {% set code %}{% raw %}
 <section class="relative min-h-screen">
@@ -86,7 +87,7 @@ title: Background | Scrolling Animation | Anthony Toolkits
             <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
                 <div>
                     <h3 class="mb-2 text-xl font-semibold">Floating markup</h3>
-                    <p class="text-slate-600">Any element works, keep it in an <code class="font-mono text-sm">overflow-hidden</code> wrapper if it shouldn't spill out.</p>
+                    <p class="text-gray-600">Any element works, keep it in an <code class="font-mono text-sm">overflow-hidden</code> wrapper if it shouldn't spill out.</p>
                 </div>
                 {% set code %}{% raw %}
 <div class="relative overflow-hidden">
@@ -98,7 +99,7 @@ title: Background | Scrolling Animation | Anthony Toolkits
             <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
                 <div>
                     <h3 class="mb-2 text-xl font-semibold">Script</h3>
-                    <p class="text-slate-600">One instance per element. The options come from the data attributes. Both stay still when reduced motion is on.</p>
+                    <p class="text-gray-600">One instance per element. The options come from the data attributes. Both stay still when reduced motion is on.</p>
                 </div>
                 {% set code %}{% raw %}
 document.querySelectorAll('[data-parallax-background]').forEach((target) => {
@@ -114,15 +115,15 @@ document.querySelectorAll('[data-parallax-floating]').forEach((target) => {
             <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
                 <div>
                     <h3 class="mb-2 text-xl font-semibold">Options</h3>
-                    <p class="text-slate-600">Set in the data attribute, or as props when there's no attribute value.</p>
+                    <p class="text-gray-600">Set in the data attribute, or as props when there's no attribute value.</p>
                 </div>
-                <dl class="grid gap-x-6 gap-y-1 rounded-2xl border border-slate-200 p-6 text-sm md:grid-cols-[auto_1fr] md:gap-y-3">
+                <dl class="grid gap-x-6 gap-y-1 rounded-2xl border border-gray-200 p-6 text-sm md:grid-cols-[auto_1fr] md:gap-y-3">
                     <dt class="font-mono font-semibold">data-parallax-background="range,easing"</dt>
-                    <dd class="mb-3 text-slate-600 last:mb-0 md:mb-0">range in pixels, default 500. Add <code class="font-mono">easing</code> to ease it.</dd>
+                    <dd class="mb-3 text-gray-600 last:mb-0 md:mb-0">range in pixels, default 500. Add <code class="font-mono">easing</code> to ease it.</dd>
                     <dt class="font-mono font-semibold">data-parallax-floating="range"</dt>
-                    <dd class="mb-3 text-slate-600 last:mb-0 md:mb-0">range in pixels, default 50. Always eased.</dd>
+                    <dd class="mb-3 text-gray-600 last:mb-0 md:mb-0">range in pixels, default 50. Always eased.</dd>
                     <dt class="font-mono font-semibold">{ range, easing }</dt>
-                    <dd class="mb-3 text-slate-600 last:mb-0 md:mb-0">Same options as props, e.g. <code class="font-mono">new _parallaxBackground({ target, range: 200 })</code></dd>
+                    <dd class="mb-3 text-gray-600 last:mb-0 md:mb-0">Same options as props, e.g. <code class="font-mono">new _parallaxBackground({ target, range: 200 })</code></dd>
                 </dl>
             </div>
         </div>

@@ -21,16 +21,16 @@ scripts: ["/assets/js/components/group-height.js"]
     <div class="mx-auto flex max-w-295 flex-col gap-8">
         <div>
             <h2 class="mb-2 text-3xl font-bold tracking-tight">Group height</h2>
-            <p class="max-w-2xl text-slate-600">Columns 1 to 3 are group 1, columns 4 to 6 are group 2. The dashed blocks get the same height within their group.</p>
+            <p class="max-w-2xl text-gray-600">Columns 1 to 3 are group 1, columns 4 to 6 are group 2. The dashed blocks get the same height within their group.</p>
         </div>
         <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3" data-gh-parent>
             {% set groups = ['1,768', '1', '1,768', '2', '2,768', '2'] %}
             {% for text in texts %}
-            <div class="flex flex-col gap-3 rounded-2xl border border-slate-200 p-4">
+            <div class="flex flex-col gap-3 rounded-2xl border border-gray-200 p-4">
                 <p class="font-semibold">Column {{ loop.index }}</p>
-                <div class="flex grow flex-col gap-2 outline-1 outline-slate-400 outline-dashed" data-gh="{{ groups[loop.index0] }}">
-                    <p class="text-slate-600">{{ text }}</p>
-                    <p><code class="font-mono text-xs text-slate-500">data-gh="{{ groups[loop.index0] }}"</code></p>
+                <div class="flex grow flex-col gap-2 outline-1 outline-gray-400 outline-dashed" data-gh="{{ groups[loop.index0] }}">
+                    <p class="text-gray-600">{{ text }}</p>
+                    <p><code class="font-mono text-xs text-gray-500">data-gh="{{ groups[loop.index0] }}"</code></p>
                 </div>
             </div>
             {% endfor %}
@@ -39,23 +39,23 @@ scripts: ["/assets/js/components/group-height.js"]
 </section>
 
 {# demo: row group height, each row is equalized on its own #}
-<section class="bg-slate-50 px-4 py-16">
+<section class="bg-gray-50 px-4 py-16">
     <div class="mx-auto flex max-w-295 flex-col gap-8">
         <div>
             <h2 class="mb-2 text-3xl font-bold tracking-tight">Row group height</h2>
-            <p class="max-w-2xl text-slate-600">Each card has two blocks, groups 1 and 2. They're equalized only with the cards on the same row, so a short row doesn't take the height of a tall one.</p>
+            <p class="max-w-2xl text-gray-600">Each card has two blocks, groups 1 and 2. They're equalized only with the cards on the same row, so a short row doesn't take the height of a tall one.</p>
         </div>
         <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3" data-rgh-parent>
             {% set spans = ['', '', '', 'md:col-span-2', '', 'md:col-span-full'] %}
             {% for text in texts %}
-            <div class="{{ spans[loop.index0] }} flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4" data-rgh-item>
+            <div class="{{ spans[loop.index0] }} flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-4" data-rgh-item>
                 <p class="font-semibold">Column {{ loop.index }}</p>
-                <div class="outline-1 outline-slate-400 outline-dashed" data-rgh="1">
-                    {% if loop.index != 2 %}<p class="text-slate-600">{{ text }}</p>{% endif %}
+                <div class="outline-1 outline-gray-400 outline-dashed" data-rgh="1">
+                    {% if loop.index != 2 %}<p class="text-gray-600">{{ text }}</p>{% endif %}
                 </div>
                 {% if loop.index not in [4, 5] %}
-                <div class="outline-1 outline-slate-400 outline-dashed" data-rgh="2">
-                    <p class="text-slate-600">{{ texts[(loop.index0 + 1) % 6] }}</p>
+                <div class="outline-1 outline-gray-400 outline-dashed" data-rgh="2">
+                    <p class="text-gray-600">{{ texts[(loop.index0 + 1) % 6] }}</p>
                 </div>
                 {% endif %}
             </div>

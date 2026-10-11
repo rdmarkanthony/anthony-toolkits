@@ -7,8 +7,8 @@ scripts: ["/assets/js/components/lightbox.js"]
 
 {{ pageIntro({ label: '_lightbox', title: 'Lightbox', description: 'Opens any element on the page in a popup, and puts it back on close. Lightboxes replace each other, while modals open on top of the current one.' }) }}
 
-{% set button = 'inline-block rounded-md bg-slate-950 px-4 py-2 font-medium text-white transition-colors hover:bg-slate-700' %}
-{% set link = 'link-underline font-medium hover:text-slate-600' %}
+{% set button = 'inline-block rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700' %}
+{% set link = 'link-underline font-medium hover:text-gray-600' %}
 
 {# demo #}
 <section class="px-4 py-16">
@@ -26,7 +26,7 @@ scripts: ["/assets/js/components/lightbox.js"]
                     <h2 class="text-3xl font-bold tracking-tight">Lightbox usage</h2>
                     <div class="flex flex-col gap-2">
                         <p class="font-semibold">Opening</p>
-                        <ul class="ml-1 list-inside list-disc text-slate-600">
+                        <ul class="ml-1 list-inside list-disc text-gray-600">
                             <li>Open a <a class="{{ link }}" data-lightbox="modal" href="#sample-modal">modal</a> on top of this one.</li>
                             <li>Open <a class="{{ link }}" data-lightbox href="#sample-lightbox2">another lightbox</a> in place of this one.</li>
                             <li>From a script: <code class="font-mono text-sm">new _lightbox({ target: '#sample-lightbox2' })</code></li>
@@ -34,7 +34,7 @@ scripts: ["/assets/js/components/lightbox.js"]
                     </div>
                     <div class="flex flex-col gap-2">
                         <p class="font-semibold">Closing</p>
-                        <ul class="ml-1 list-inside list-disc text-slate-600">
+                        <ul class="ml-1 list-inside list-disc text-gray-600">
                             <li>Press <code class="font-mono text-sm">Escape</code>.</li>
                             <li>Click the <code class="font-mono text-sm">X</code> at the top right of the page.</li>
                             <li>From a script: <code class="font-mono text-sm">_lightbox.close()</code>, or <code class="font-mono text-sm">_lightbox.close('all')</code>.</li>
@@ -48,7 +48,7 @@ scripts: ["/assets/js/components/lightbox.js"]
             </div>
 
             <div id="sample-modal" class="mx-auto max-w-2xl rounded-2xl bg-white p-6 text-center md:p-12">
-                <p class="text-slate-600">A modal opens on top of the current lightbox. Close <a class="{{ link }}" onclick="_lightbox.close(); event.preventDefault();" href="#">just this one</a> or <a class="{{ link }}" onclick="_lightbox.close('all'); event.preventDefault();" href="#">all of them</a>.</p>
+                <p class="text-gray-600">A modal opens on top of the current lightbox. Close <a class="{{ link }}" onclick="_lightbox.close(); event.preventDefault();" href="#">just this one</a> or <a class="{{ link }}" onclick="_lightbox.close('all'); event.preventDefault();" href="#">all of them</a>.</p>
                 <div class="mt-10 flex flex-col justify-center gap-3 md:flex-row">
                     <a class="{{ button }}" onclick="_lightbox.close(); event.preventDefault();" href="#">Close this modal</a>
                     <a class="{{ button }}" onclick="_lightbox.close('all'); event.preventDefault();" href="#">Close all</a>
@@ -58,14 +58,14 @@ scripts: ["/assets/js/components/lightbox.js"]
 
             <div id="sample-lightbox2" class="mx-auto max-w-3xl rounded-2xl bg-white p-6 text-center md:p-12">
                 <h2 class="text-2xl font-bold tracking-tight">The second lightbox</h2>
-                <p class="mt-4 text-slate-600">Or open <a class="{{ link }}" data-lightbox href="#sample-lightbox3">a lightbox with long content</a>, which scrolls.</p>
+                <p class="mt-4 text-gray-600">Or open <a class="{{ link }}" data-lightbox href="#sample-lightbox3">a lightbox with long content</a>, which scrolls.</p>
                 <div class="mt-10">
                     <a class="{{ button }} min-w-32" onclick="_lightbox.close(); event.preventDefault();" href="#">Close</a>
                 </div>
             </div>
 
             <div id="sample-lightbox3" class="mx-auto max-w-3xl rounded-2xl bg-white p-6 md:p-12">
-                <div class="flex flex-col gap-4 text-slate-600">
+                <div class="flex flex-col gap-4 text-gray-600">
                     {% for i in range(0, 8) %}
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam corporis possimus natus! Nemo laboriosam placeat, sapiente quo, dignissimos sequi expedita odit, quibusdam esse facere maxime quod tenetur enim dolores qui. Cupiditate culpa accusamus molestias nostrum incidunt tempora recusandae aperiam. At eius cupiditate sunt, vel exercitationem quod quia! Repellendus sapiente repudiandae laudantium.</p>
                     {% endfor %}
