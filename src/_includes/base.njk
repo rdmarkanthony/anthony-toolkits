@@ -39,6 +39,10 @@
     #}
 
     <link rel="stylesheet" href="/assets/css/style.css" media="all" />
+    {# component styles, set in front matter or a directory data file #}
+    {% for style in styles %}
+    <link rel="stylesheet" href="{{ style }}" media="all" />
+    {% endfor %}
     {% getBundle "styles" %}
     {% getBundle "headerscript" %}
 </head>

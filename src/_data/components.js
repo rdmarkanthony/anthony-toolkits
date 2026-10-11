@@ -14,33 +14,33 @@ export default [
     {
         category: "Layout",
         items: [
-            { label: "Breakpoints", url: "/components/breakpoints/", description: "Responsive breakpoint reference and helpers." },
-            { label: "Group height", url: "/components/group-height/", description: "Equalize heights across grouped elements." },
-            { label: "Tabs", url: "/components/tabs/", description: "Accessible tabbed content panels." },
+            { label: "Breakpoints", url: "/components/breakpoints/", description: "The responsive breakpoints, shown live as you resize.", ready: true },
+            { label: "Group height", url: "/components/group-height/", description: "Equalize heights across grouped elements.", ready: true },
+            { label: "Tabs", url: "/components/tabs/", description: "Links that switch between content panels, nestable.", ready: true },
             { label: "Sliders", url: "/components/sliders/", description: "Carousels, including the pixel slider." },
         ],
     },
     {
         category: "Animation",
         items: [
-            { label: "Animate", url: "/components/animate/", description: "Animate.css effects triggered in view." },
-            { label: "Animated number", url: "/components/animated-number/", description: "Count up to a value on scroll." },
-            { label: "Rolling number", url: "/components/rolling-number/", description: "Odometer-style rolling digits." },
-            { label: "Typing animation", url: "/components/typing-animation/", description: "Typewriter text effect." },
+            { label: "Animate", url: "/components/animate/", description: "Animate.css effects triggered in view.", ready: true },
+            { label: "Animated number", url: "/components/animated-number/", description: "Count up to a value on scroll.", ready: true },
+            { label: "Rolling number", url: "/components/rolling-number/", description: "Odometer-style rolling digits.", ready: true },
+            { label: "Typing animation", url: "/components/typing-animation/", description: "Typewriter text effect.", ready: true },
         ],
     },
     {
         category: "Media",
         items: [
-            { label: "Lightbox", url: "/components/lightbox/", description: "Image and video lightbox popup." },
-            { label: "YouTube player", url: "/components/youtube-player/", description: "Custom-controlled YouTube embeds." },
-            { label: "Video player", url: "/components/video-player/", description: "HTML5 and HLS video player." },
+            { label: "Lightbox", url: "/components/lightbox/", description: "Opens any element on the page in a popup, modals stack.", ready: true },
+            { label: "YouTube player", url: "/components/youtube-player/", description: "YouTube embeds, with muted autoplay backgrounds.", ready: true },
+            { label: "Video player", url: "/components/video-player/", description: "MP4 and HLS videos, with muted autoplay backgrounds.", ready: true },
         ],
     },
     {
         category: "Utilities",
         items: [
-            { label: "Countdown timer", url: "/components/countdown-timer/", description: "Countdown to a date and time." },
+            { label: "Countdown timer", url: "/components/countdown-timer/", description: "Countdown to a date and time.", ready: true },
         ],
     },
 ];

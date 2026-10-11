@@ -1,0 +1,88 @@
+---
+title: Video player | Anthony Toolkits
+scripts: ["/assets/js/components/video-player.js"]
+---
+
+{% from "components/atoms/back-link.njk" import backLink %}
+{% from "components/atoms/component-page.njk" import scriptUsage %}
+
+{% set video = '/assets/video/video1/video1.m3u8' %}
+
+{# demo: a stretched autoplay video as the background #}
+<section class="relative overflow-hidden bg-slate-950 px-4 pt-24 pb-16 text-white md:pt-32">
+    <div class="pointer-events-none absolute inset-0">
+        <div class="absolute inset-0" data-video-player="{{ video }},autoplay,stretch"></div>
+        <div class="absolute inset-0 bg-black/50"></div>
+    </div>
+    <div class="relative mx-auto max-w-295">
+        <div class="text-slate-300 [&>a]:text-slate-300 [&>a:hover]:text-white">{{ backLink() }}</div>
+        <p class="mb-4 font-mono text-sm text-slate-300">_videoPlayer</p>
+        <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">Video player</h1>
+        <p class="max-w-2xl text-lg text-slate-300 md:text-xl">MP4 and HLS (<code class="font-mono text-base">.m3u8</code>) videos from a data attribute. Autoplay videos are muted loops, and stretch covers the box at any ratio. Playing one video pauses the others, YouTube players too.</p>
+    </div>
+</section>
+
+{# demo #}
+<section class="px-4 py-16">
+    <div class="mx-auto grid max-w-295 gap-10 md:grid-cols-2">
+        {% set players = [
+            { label: 'Standard', options: '', ratio: 'aspect-video' },
+            { label: 'Autoplay', options: ',autoplay', ratio: 'aspect-video' },
+            { label: 'Stretched, square', options: ',autoplay,stretch', ratio: 'aspect-square' },
+            { label: 'Stretched, vertical', options: ',autoplay,stretch', ratio: 'aspect-9/16' }
+        ] %}
+        {% for player in players %}
+        <div class="flex flex-col gap-3">
+            <p class="font-semibold">{{ player.label }} <code class="ml-2 font-mono text-xs font-normal text-slate-500">src{{ player.options }}</code></p>
+            <div class="relative {{ player.ratio }} bg-black" data-video-player="{{ video }}{{ player.options }}">
+                {% if 'autoplay' in player.options %}<div class="absolute inset-0 z-10"></div>{% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- data-video-player="src,autoplay,stretch" -->
+<div class="relative aspect-video bg-black" data-video-player="/assets/video/name/name.m3u8"></div>
+
+<!-- a muted loop that covers its box -->
+<div class="relative aspect-square bg-black" data-video-player="/assets/video/name.mp4,autoplay,stretch"></div>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+document.querySelectorAll('[data-video-player]').forEach((target) => {
+    const [_src, _autoplay, _stretch] = target.dataset.videoPlayer.split(',');
+    if (!_src) return;
+
+    const _player = new _videoPlayer({
+        target,
+        src: _src,
+        autoplay: _autoplay === 'autoplay',
+        stretch: _stretch === 'stretch',
+        events: {
+            // fade autoplay videos in when they start
+            beforeInit: (instance) => {
+                if (!instance.autoplay) return;
+
+                instance.el.video.style.transition = 'opacity 0.8s';
+                instance.el.video.style.opacity = 0;
+            },
+        },
+    });
+
+    _player.on('play', (instance) => (instance.el.video.style.opacity = ''));
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The video fills its box, so give the box a size, e.g. <code class="font-mono text-sm">aspect-video</code>.',
+    code: pageScript,
+    note: 'hls.js loads only for <code class="font-mono text-sm">.m3u8</code> videos where the browser has Media Source Extensions, others (e.g. iOS Safari) play them natively. Events: <code class="font-mono text-sm">beforeInit</code>, <code class="font-mono text-sm">afterInit</code>, <code class="font-mono text-sm">play</code>, <code class="font-mono text-sm">pause</code>, <code class="font-mono text-sm">ended</code>.',
+    requires: ['hls.js (for .m3u8)', 'src/assets/js/utils/_event.js', 'src/assets/js/utils/_emitter.js', 'src/assets/js/utils/_media.js', 'src/assets/js/utils/_videoPlayer.js']
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

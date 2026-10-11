@@ -1,0 +1,94 @@
+---
+title: Tabs | Anthony Toolkits
+scripts: ["/assets/js/components/tabs.js"]
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_tabs', title: 'Tabs', description: 'Links that switch between content panels. Each link points to its panel by id, and tab groups can be nested.' }) }}
+
+{% set tabLink = 'block rounded border border-slate-300 px-3 py-2 transition-colors duration-200 hover:bg-slate-100 [&.js-tabs-active]:border-slate-950 [&.js-tabs-active]:bg-slate-950 [&.js-tabs-active]:text-white' %}
+{% set lorem = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero est illo eius laudantium laborum earum culpa corporis vel deleniti, ipsam mollitia quo unde architecto velit.' %}
+
+{# demo: the first tab is active #}
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <h2 class="text-3xl font-bold tracking-tight">Default</h2>
+        <ul class="js-tabs flex flex-wrap gap-1">
+            {% for i in range(1, 5) %}
+            <li><a class="{{ tabLink }}" href="#tab{{ i }}">Tab {{ i }}</a></li>
+            {% endfor %}
+        </ul>
+        <div>
+            {% for i in range(1, 5) %}
+            <div id="tab{{ i }}" class="hidden">
+                <h3 class="mb-2 text-2xl font-semibold">Tab {{ i }}</h3>
+                <p class="max-w-2xl text-slate-600">{{ lorem }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# demo: starts on tab 7, which has tabs inside #}
+<section class="bg-slate-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <h2 class="text-3xl font-bold tracking-tight">Start tab and nested tabs</h2>
+        <ul class="js-tabs flex flex-wrap gap-1">
+            {% for i in range(5, 9) %}
+            <li><a class="{{ 'js-tabs-active ' if i == 7 }}{{ tabLink }}" href="#tab{{ i }}">Tab {{ i }}</a></li>
+            {% endfor %}
+        </ul>
+        <div>
+            {% for i in range(5, 9) %}
+            <div id="tab{{ i }}" class="hidden">
+                <h3 class="mb-2 text-2xl font-semibold">Tab {{ i }}</h3>
+                <p class="max-w-2xl text-slate-600">{{ lorem }}</p>
+                {% if i == 7 %}
+                <div class="mt-8 flex flex-col gap-6 rounded-2xl border border-slate-200 bg-white p-6">
+                    <ul class="js-tabs flex flex-wrap gap-1">
+                        {% for j in range(9, 13) %}
+                        <li><a class="{{ tabLink }}" href="#tab{{ j }}">Tab {{ j }}</a></li>
+                        {% endfor %}
+                    </ul>
+                    <div>
+                        {% for j in range(9, 13) %}
+                        <div id="tab{{ j }}" class="hidden">
+                            <h4 class="mb-2 text-xl font-semibold">Tab {{ j }}</h4>
+                            <p class="max-w-2xl text-slate-600">{{ lorem }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<ul class="js-tabs flex gap-1">
+    <li><a class="[&.js-tabs-active]:bg-slate-950 [&.js-tabs-active]:text-white" href="#tab1">Tab 1</a></li>
+    <!-- add .js-tabs-active to start on another tab -->
+    <li><a class="js-tabs-active [&.js-tabs-active]:bg-slate-950 [&.js-tabs-active]:text-white" href="#tab2">Tab 2</a></li>
+</ul>
+<div id="tab1" class="hidden">...</div>
+<div id="tab2" class="hidden">...</div>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+document.querySelectorAll('.js-tabs').forEach((target) => {
+    const tabs = new _tabs({ target });
+
+    // tabs.show(index) switches from a script
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Each link\'s <code class="font-mono text-sm">href</code> is the id of its panel. The active link gets <code class="font-mono text-sm">.js-tabs-active</code>, the other panels get <code class="font-mono text-sm">.hidden</code>.',
+    code: pageScript,
+    note: 'On this site the tabs bundle runs this for every <code class="font-mono text-sm">.js-tabs</code>.',
+    requires: ['src/assets/js/utils/_tabs.js']
+}) }}

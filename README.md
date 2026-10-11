@@ -38,6 +38,7 @@ Reusable components and utilities for site development, built on Eleventy + Nunj
 
 1. Put shared utils in `src/assets/js/utils/`. Each util lives once and is imported by whichever component needs it.
 2. Add a bundle entry in `src/assets/js/components/<name>.js` that imports its utils and libraries and exposes them on `window` for page scripts. esbuild builds every file there; code shared by more than one bundle (e.g. `_event`) goes into a common chunk in `public/assets/js/chunks/`, so it's downloaded once.
-3. Put the demo pages in `src/components/<name>/`, with a `<name>.11tydata.json` that sets `layout: base.njk` and `scripts: ["/assets/js/components/<name>.js"]`. `base.njk` loads those after `script.js`.
-4. Page scripts go in `{% footerscript %}` as `type="module"`, so they run after the bundles.
-5. List the pages in `src/_data/components.js` with `ready: true`. A category `url` links its heading to an overview page.
+3. Put the demo page in `src/components/<name>.njk` (or a folder for several pages), with `scripts: ["/assets/js/components/<name>.js"]` in its front matter or a `<folder>.11tydata.json`. `base.njk` loads those after `script.js`. Library CSS goes in `styles` the same way, e.g. `styles: ["/assets/css/vendor/animate.min.css"]`, copied from `node_modules` in `eleventy.config.js`.
+4. Page scripts go in `{% footerscript %}` as `type="module"`, so they run after the bundles. To show the script on the page too, set it once with `{% set pageScript %}` and pass it to `scriptUsage()` from `components/atoms/component-page.njk`.
+5. Utils with `events` / `on()` / `off()` extend `_emitter` instead of copying them.
+6. List the pages in `src/_data/components.js` with `ready: true`. A category `url` links its heading to an overview page.

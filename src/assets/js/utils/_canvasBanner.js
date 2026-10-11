@@ -1,9 +1,12 @@
 import { _event } from "./_event";
+import { _emitter } from "./_emitter";
 
 // usage: new _canvasBanner({ target, assets: { count, path, type, digits, size, resizeMode, step, buffer, mobile }, transition: { duration }, events })
 // assets.mobile: { path, type, size, step, media }, replaces those options when media matches (default below 768px)
-export class _canvasBanner {
+export class _canvasBanner extends _emitter {
     constructor(props) {
+        super(props.events);
+
         this.target = props.target ?? null;
         this.context = this.target?.getContext("2d");
 
@@ -43,8 +46,6 @@ export class _canvasBanner {
             active: false,
         };
 
-        this.events = props.events ?? {};
-        this.listeners = {};
         this.unsubscribe = [];
 
         if (this.target) this.init();
@@ -249,23 +250,6 @@ export class _canvasBanner {
         }
 
         this.emit("resize");
-    }
-
-    // register event listener
-    on(event, callback) {
-        if (!this.listeners[event]) this.listeners[event] = new Set();
-        this.listeners[event].add(callback);
-    }
-
-    // remove event listener
-    off(event, callback) {
-        this.listeners[event]?.delete(callback);
-    }
-
-    // emit certain event
-    emit(event) {
-        this.events[event]?.(this);
-        this.listeners[event]?.forEach((callback) => callback(this));
     }
 
     destroy() {

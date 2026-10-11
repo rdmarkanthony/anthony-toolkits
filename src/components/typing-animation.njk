@@ -1,0 +1,66 @@
+---
+title: Typing animation | Anthony Toolkits
+scripts: ["/assets/js/components/typing-animation.js"]
+---
+
+{% from "components/atoms/back-link.njk" import backLink %}
+{% from "components/atoms/component-page.njk" import scriptUsage %}
+
+{# demo: the title types itself #}
+<section class="px-4 pt-24 pb-16 md:pt-32">
+    <div class="mx-auto max-w-295">
+        {{ backLink() }}
+        <p class="mb-4 font-mono text-sm text-slate-500">_typing</p>
+        <h1 class="js-typing mb-6 min-h-[1.2em] text-5xl font-bold tracking-tight md:text-7xl"></h1>
+        <p class="max-w-2xl text-lg text-slate-600 md:text-xl">Types and erases text letter by letter, with a blinking cursor. Try the methods below in your browser's console, <code class="font-mono text-base">typing</code> is the title above.</p>
+    </div>
+</section>
+
+<section class="px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <dl class="grid gap-x-6 gap-y-1 rounded-2xl border border-slate-200 p-6 text-sm md:grid-cols-[auto_1fr] md:gap-y-3">
+            <dt class="font-mono font-semibold">typing.text = 'New message'</dt>
+            <dd class="mb-3 text-slate-600 md:mb-0">Sets the text to type</dd>
+            <dt class="font-mono font-semibold">typing.start(callback)</dt>
+            <dd class="mb-3 text-slate-600 md:mb-0">Types the text</dd>
+            <dt class="font-mono font-semibold">typing.erase(callback)</dt>
+            <dd class="mb-3 text-slate-600 md:mb-0">Erases it letter by letter</dd>
+            <dt class="font-mono font-semibold">typing.clear()</dt>
+            <dd class="mb-3 text-slate-600 md:mb-0">Clears it at once</dd>
+            <dt class="font-mono font-semibold">typing.showCursor() / hideCursor()</dt>
+            <dd class="text-slate-600">Shows or hides the blinking cursor</dd>
+        </dl>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+const typing = new _typing({
+    target: document.querySelector('.js-typing'),
+    speed: 50, // ms per letter
+});
+window.typing = typing; // for trying it in the console
+
+setTimeout(() => {
+    typing.text = 'Hello world!';
+    typing.start(() => {
+        setTimeout(() => {
+            typing.erase(() => {
+                typing.text = 'Typing animation';
+                typing.start((instance) => {
+                    setTimeout(() => instance.hideCursor(), 5000);
+                });
+            });
+        }, 1000);
+    });
+}, 500);
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: 'Events: <code class="font-mono text-sm">beforeStart</code>, <code class="font-mono text-sm">afterStart</code>, <code class="font-mono text-sm">beforeErase</code>, <code class="font-mono text-sm">afterErase</code>, in <code class="font-mono text-sm">events</code> or with <code class="font-mono text-sm">on()</code>.',
+    requires: ['src/assets/js/utils/_emitter.js', 'src/assets/js/utils/_typing.js']
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

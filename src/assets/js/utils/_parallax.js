@@ -1,5 +1,6 @@
 import { gsap } from "gsap";
 import { _event } from "./_event";
+import { _emitter } from "./_emitter";
 
 const _reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -38,8 +39,10 @@ export const _parallax = {
 
 // usage: new _parallaxScroller({ target, events: { init, resize, update } })
 // offset.current is 0 when the target enters the screen and 1 when it leaves, change offset.top/bottom on resize
-export class _parallaxScroller {
+export class _parallaxScroller extends _emitter {
     constructor(props) {
+        super(props.events);
+
         this.target = props.target ?? null;
 
         this.el = {};
@@ -49,8 +52,6 @@ export class _parallaxScroller {
             current: 0,
         };
 
-        this.events = props.events ?? {};
-        this.listeners = {};
         this.unsubscribe = [];
 
         if (this.target) this.init();
@@ -101,23 +102,6 @@ export class _parallaxScroller {
         }
 
         return _parallax.getRange(min, max);
-    }
-
-    // register event listener
-    on(event, callback) {
-        if (!this.listeners[event]) this.listeners[event] = new Set();
-        this.listeners[event].add(callback);
-    }
-
-    // remove event listener
-    off(event, callback) {
-        this.listeners[event]?.delete(callback);
-    }
-
-    // emit certain event
-    emit(event) {
-        this.events[event]?.(this);
-        this.listeners[event]?.forEach((callback) => callback(this));
     }
 
     destroy() {
