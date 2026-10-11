@@ -1,12 +1,14 @@
 // component registry: drives the home page, header and footer
 // set `ready: true` once the component is migrated to src/components/
+// a category `url` links its heading to an overview page
 export default [
     {
         category: "Scrolling animation",
+        url: "/components/scrolling-animation/",
         items: [
-            { label: "Video intro", url: "/components/scrolling-animation/video-intro/", description: "Sticky video whose cover fades in, then titles step in on scroll." },
-            { label: "Canvas image sequence", url: "/components/scrolling-animation/canvas/", description: "Scrub through image frames on a canvas as you scroll." },
-            { label: "Parallax background", url: "/components/scrolling-animation/background/", description: "Backgrounds and floating elements that move slower than the page." },
+            { label: "Video intro", url: "/components/scrolling-animation/video-intro/", description: "Sticky video whose cover fades in, then titles step in on scroll.", ready: true },
+            { label: "Canvas image sequence", url: "/components/scrolling-animation/canvas/", description: "Scrub through image frames on a canvas as you scroll.", ready: true },
+            { label: "Parallax background", url: "/components/scrolling-animation/background/", description: "Backgrounds and floating elements that move slower than the page.", ready: true },
         ],
     },
     {

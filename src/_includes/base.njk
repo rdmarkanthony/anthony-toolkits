@@ -39,19 +39,22 @@
     #}
 
     <link rel="stylesheet" href="/assets/css/style.css" media="all" />
-    {% block styles -%}{%- endblock %}
-
-    {% block headerscript -%}{%- endblock %}
+    {% getBundle "styles" %}
+    {% getBundle "headerscript" %}
 </head>
 <body>
     {{ header({ site: site }) }}
     <div class="main-content min-h-[calc(100vh-var(--header-height,0rem)-var(--footer-height,0rem))]">
         {{ content | safe }}
     </div>
-    {% block popup -%}{%- endblock %}
+    {% getBundle "popup" %}
     {{ footer({ site: site, components: components }) }}
 
     <script src="/assets/js/script.js" type="module"></script>
-    {% block footerscript -%}{%- endblock %}
+    {# component bundles, set in front matter or a directory data file #}
+    {% for script in scripts %}
+    <script src="{{ script }}" type="module"></script>
+    {% endfor %}
+    {% getBundle "footerscript" %}
 </body>
 </html>

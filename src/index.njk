@@ -18,7 +18,13 @@ title: Anthony Toolkits
     <div class="container mx-auto space-y-12">
         {% for group in components %}
             <div data-filter-group>
-                <h2 class="text-xs font-semibold tracking-wider text-slate-500 uppercase">{{ group.category }}</h2>
+                <h2 class="text-xs font-semibold tracking-wider text-slate-500 uppercase">
+                    {% if group.url %}
+                        <a class="transition-colors hover:text-slate-900" href="{{ group.url }}">{{ group.category }} <span aria-hidden="true">→</span></a>
+                    {% else %}
+                        {{ group.category }}
+                    {% endif %}
+                </h2>
                 <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
                     {% for item in group.items %}
                         <li data-filter-item="{{ item.label }} {{ item.description }} {{ group.category }}">

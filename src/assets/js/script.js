@@ -45,6 +45,6 @@ class _projName {
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    new _projName({ debug: true });
-});
+// modules run after the html is parsed, and before the component bundles,
+// so --header-height is set before the components measure
+new _projName({ debug: true });

@@ -7,12 +7,17 @@ dotenv.config();
 const isWatch = process.argv.includes("--watch");
 
 const ctx = await esbuild.context({
-    entryPoints: ["src/assets/js/script.js"],
+    // site script, plus one bundle per component group
+    entryPoints: ["src/assets/js/script.js", "src/assets/js/components/*.js"],
     bundle: true,
     minify: isWatch ? false : true,
     sourcemap: true,
-    outfile: "public/assets/js/script.js",
-    format: "iife",
+    outbase: "src/assets/js",
+    outdir: "public/assets/js",
+    // utils shared by bundles, and dynamic imports (hls.js), go to chunks
+    splitting: true,
+    chunkNames: "chunks/[name]-[hash]",
+    format: "esm",
     target: ["es2020"],
 });
 

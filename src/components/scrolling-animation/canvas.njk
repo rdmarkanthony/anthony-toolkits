@@ -1,0 +1,181 @@
+---
+title: Canvas | Scrolling Animation | Anthony Toolkits
+---
+
+{% from "components/atoms/back-link.njk" import backLink %}
+{% from "components/atoms/code-block.njk" import codeBlock %}
+
+<section class="px-4 pt-24 pb-16 md:pt-32">
+    <div class="mx-auto max-w-295">
+        {{ backLink({ label: 'Scrolling animation', url: '/components/scrolling-animation/' }) }}
+        <p class="mb-4 font-mono text-sm text-slate-500">Demo · _canvasBanner · _parallaxScroller</p>
+        <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">Canvas image sequence</h1>
+        <p class="max-w-2xl text-lg text-slate-600 md:text-xl">A set of frames drawn on a canvas, picked by the scroll position. Scrolling moves through the frames like scrubbing a video, forward and back.</p>
+    </div>
+</section>
+
+<section class="px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-2 text-3xl font-bold tracking-tight">The frames</h2>
+        <p class="mb-8 max-w-2xl text-slate-600">50 JPGs named <code class="font-mono text-sm">large_0000.jpg</code> to <code class="font-mono text-sm">large_0049.jpg</code>, and a half-size WebP set <code class="font-mono text-sm">small_0000.webp</code> for phones. Only the frames near the current one stay loaded, decoded ahead so drawing one is instant.</p>
+        <ul class="grid grid-cols-10 gap-1">
+            {% for i in range(0, 50) %}
+            <li><img class="w-full" src="/assets/img/headphone/large_{{ i | pad(4) }}.jpg" alt="" loading="lazy" /></li>
+            {% endfor %}
+        </ul>
+        <p class="mt-16 animate-bounce text-sm font-medium">Scroll down ↓</p>
+    </div>
+</section>
+
+{# demo, pinned below the sticky site header #}
+<section class="js-canvas-section relative min-h-[300vh]">
+    <div class="sticky top-(--header-height) flex h-[calc(100vh-var(--header-height,0px))] items-center justify-center p-6">
+        <canvas class="js-canvas"></canvas>
+        <p class="absolute right-6 bottom-6 rounded-full bg-white px-4 py-2 font-mono text-sm shadow-md">Frame <span class="js-canvas-frame">1</span> / 50</p>
+    </div>
+</section>
+
+<section class="px-4 py-24">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-8 text-3xl font-bold tracking-tight">How it's built</h2>
+        <div class="grid gap-10">
+            <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
+                <div>
+                    <h3 class="mb-2 text-xl font-semibold">Markup</h3>
+                    <p class="text-slate-600">A tall section with a sticky, screen-high wrapper. The canvas stays pinned while the section scrolls past. With <code class="font-mono text-sm">resizeMode: 'contain'</code> the script fits it inside the wrapper at its frame ratio. It's drawn at the screen's pixel density, up to the frame size, so it stays sharp.</p>
+                </div>
+                {% set code %}{% raw %}
+<section class="js-canvas-section relative min-h-[300vh]">
+    <div class="sticky top-0 flex h-screen items-center justify-center p-6">
+        <canvas class="js-canvas"></canvas>
+    </div>
+</section>
+                {% endraw %}{% endset %}
+                {{ codeBlock(code, 'html') }}
+            </div>
+            <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
+                <div>
+                    <h3 class="mb-2 text-xl font-semibold">Script</h3>
+                    <p class="text-slate-600"><code class="font-mono text-sm">_parallaxScroller</code> measures the section on resize. Its range is set to while the section is pinned: from its top until its end reaches the bottom of the screen. On scroll, <code class="font-mono text-sm">update(progress)</code> draws the frame for <code class="font-mono text-sm">offset.current</code>, from the first frame at 0 to the last at 1.</p>
+                </div>
+                {% set code %}{% raw %}
+const canvas = new _canvasBanner({
+    target: document.querySelector('.js-canvas'),
+    assets: {
+        count: 50,
+        path: '/assets/img/headphone/large_',
+        digits: 4,
+        size: [1004, 1214],
+        resizeMode: 'contain',
+        // below 768px wide
+        mobile: {
+            path: '/assets/img/headphone/small_',
+            type: 'webp',
+            size: [502, 607],
+            step: 2,
+        },
+    },
+});
+
+new _parallaxScroller({
+    target: document.querySelector('.js-canvas-section'),
+    events: {
+        resize(scroller) {
+            const _offset = _parallax.getOffset(scroller.target);
+
+            scroller.offset.top = _offset.top;
+            scroller.offset.bottom = _offset.bottom - _parallax.height();
+        },
+        update(scroller) {
+            canvas.update(scroller.offset.current);
+        },
+    },
+});
+                {% endraw %}{% endset %}
+                {{ codeBlock(code, 'js') }}
+            </div>
+            <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
+                <div>
+                    <h3 class="mb-2 text-xl font-semibold">Options</h3>
+                    <p class="text-slate-600">Frames are named <code class="font-mono text-sm">path</code> + a zero-padded number + <code class="font-mono text-sm">.type</code>, starting at 0.</p>
+                </div>
+                <dl class="grid gap-x-6 gap-y-1 rounded-2xl border border-slate-200 p-6 text-sm md:grid-cols-[auto_1fr] md:gap-y-3">
+                    <dt class="font-mono font-semibold">assets.count</dt>
+                    <dd class="mb-3 text-slate-600 last:mb-0 md:mb-0">Number of frames</dd>
+                    <dt class="font-mono font-semibold">assets.path</dt>
+                    <dd class="mb-3 text-slate-600 last:mb-0 md:mb-0">Frame path without the number, e.g. <code class="font-mono">/assets/img/frames/frame_</code></dd>
+                    <dt class="font-mono font-semibold">assets.type</dt>
+                    <dd class="mb-3 text-slate-600 last:mb-0 md:mb-0">File extension, default <code class="font-mono">jpg</code></dd>
+                    <dt class="font-mono font-semibold">assets.digits</dt>
+                    <dd class="mb-3 text-slate-600 last:mb-0 md:mb-0">Zero-padding of the number, default from the count, e.g. 2 for <code class="font-mono">00</code> to <code class="font-mono">49</code></dd>
+                    <dt class="font-mono font-semibold">assets.size</dt>
+                    <dd class="mb-3 text-slate-600 last:mb-0 md:mb-0">Frame size in pixels, <code class="font-mono">[width, height]</code>, for the ratio</dd>
+                    <dt class="font-mono font-semibold">assets.resizeMode</dt>
+                    <dd class="mb-3 text-slate-600 last:mb-0 md:mb-0"><code class="font-mono">width</code> (default) fills the parent's width, <code class="font-mono">height</code> its height, <code class="font-mono">contain</code> fits inside it</dd>
+                    <dt class="font-mono font-semibold">assets.step</dt>
+                    <dd class="mb-3 text-slate-600 last:mb-0 md:mb-0">Use every nth frame, default 1, e.g. 2 for half the frames. The last frame is always kept</dd>
+                    <dt class="font-mono font-semibold">assets.buffer</dt>
+                    <dd class="mb-3 text-slate-600 last:mb-0 md:mb-0">Frames kept loaded before and after the current one, default 20. Further ones are unloaded to save memory</dd>
+                    <dt class="font-mono font-semibold">assets.mobile</dt>
+                    <dd class="mb-3 text-slate-600 last:mb-0 md:mb-0">Any of <code class="font-mono">path</code>, <code class="font-mono">type</code>, <code class="font-mono">size</code>, <code class="font-mono">step</code>, <code class="font-mono">buffer</code> to use instead below 768px wide, or when <code class="font-mono">media</code> matches</dd>
+                    <dt class="font-mono font-semibold">transition.duration</dt>
+                    <dd class="mb-3 text-slate-600 last:mb-0 md:mb-0">Crossfade between frames in ms, default 0</dd>
+                    <dt class="font-mono font-semibold">events</dt>
+                    <dd class="mb-3 text-slate-600 last:mb-0 md:mb-0"><code class="font-mono">init</code>, <code class="font-mono">beforeUpdate</code>, <code class="font-mono">afterUpdate</code>, <code class="font-mono">resize</code>, more with <code class="font-mono">on()</code> / <code class="font-mono">off()</code></dd>
+                    <dt class="font-mono font-semibold">update(progress)</dt>
+                    <dd class="mb-3 text-slate-600 last:mb-0 md:mb-0">Draws the frame for 0 (first) to 1 (last)</dd>
+                    <dt class="font-mono font-semibold">canvas.assets.current</dt>
+                    <dd class="mb-3 text-slate-600 last:mb-0 md:mb-0">Index of the current frame, <code class="font-mono">canvas.assets.frames[index]</code> is its file number</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% footerscript %}
+<!-- this script is just for this page -->
+<script type="module">
+    // Requirements
+        // JS
+            // src/assets/js/utils/_event.js
+            // src/assets/js/utils/_parallax.js
+            // src/assets/js/utils/_canvasBanner.js
+
+    // image sequence drawn on canvas while scrolling
+    const _canvas = new _canvasBanner({
+        target: document.querySelector('.js-canvas'),
+        assets: {
+            count: 50,
+            path: '/assets/img/headphone/large_',
+            digits: 4,
+            size: [1004, 1214],
+            resizeMode: 'contain',
+            // below 768px wide
+            mobile: {
+                path: '/assets/img/headphone/small_',
+                type: 'webp',
+                size: [502, 607],
+                step: 2,
+            },
+        },
+    });
+    const _frame = document.querySelector('.js-canvas-frame');
+
+    new _parallaxScroller({
+        target: document.querySelector('.js-canvas-section'),
+        events: {
+            // while the section is pinned
+            resize(scroller) {
+                const _offset = _parallax.getOffset(scroller.target);
+
+                scroller.offset.top = _offset.top;
+                scroller.offset.bottom = _offset.bottom - _parallax.height();
+            },
+            update(scroller) {
+                _canvas.update(scroller.offset.current);
+                _frame.textContent = _canvas.assets.frames[_canvas.assets.current] + 1;
+            },
+        },
+    });
+</script>
+{% endfooterscript %}
