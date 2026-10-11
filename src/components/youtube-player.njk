@@ -49,6 +49,13 @@ title: YouTube player | Anthony Toolkits
 {% endraw %}{% endset %}
 
 {% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_media.js
+        // src/assets/js/utils/_youtubePlayer.js
+
 document.querySelectorAll('[data-yt-player]').forEach((target) => {
     const [_id, _autoplay, _stretch] = target.dataset.ytPlayer.split(',');
     if (!_id) return;
@@ -67,8 +74,7 @@ document.querySelectorAll('[data-yt-player]').forEach((target) => {
     markup: markup,
     markupNote: 'The player fills its box, so give the box a size, e.g. <code class="font-mono text-sm">aspect-video</code>.',
     code: pageScript,
-    note: 'Loads the YouTube iframe API once. Events: <code class="font-mono text-sm">beforeInit</code>, <code class="font-mono text-sm">afterInit</code>, <code class="font-mono text-sm">onReady</code>, <code class="font-mono text-sm">onStateChange</code>.',
-    requires: ['src/assets/js/utils/_event.js', 'src/assets/js/utils/_emitter.js', 'src/assets/js/utils/_media.js', 'src/assets/js/utils/_youtubePlayer.js']
+    note: 'Loads the YouTube iframe API once. Events: <code class="font-mono text-sm">beforeInit</code>, <code class="font-mono text-sm">afterInit</code>, <code class="font-mono text-sm">onReady</code>, <code class="font-mono text-sm">onStateChange</code>.'
 }) }}
 
 {% footerscript %}

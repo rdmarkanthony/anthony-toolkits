@@ -21,6 +21,13 @@ title: Rolling number | Anthony Toolkits
 </section>
 
 {% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // gsap
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_rollingNumber.js
+        // src/assets/js/utils/_inview.js (optional, to start in view)
+
 const _wrap = document.querySelector('.js-rolling-number');
 const _label = _wrap.querySelector('.js-rolling-number-label');
 const _input = _wrap.querySelector('input');
@@ -94,8 +101,7 @@ new _inview({
 
 {{ scriptUsage({
     code: pageScript,
-    note: '<code class="font-mono text-sm">new _rollingNumber({ target, numeric, maxNumber, startNumber, duration })</code> makes one digit, <code class="font-mono text-sm">roll({ from, to, duration, callback })</code> moves it. Durations in ms.',
-    requires: ['gsap', 'src/assets/js/utils/_event.js', 'src/assets/js/utils/_rollingNumber.js', 'src/assets/js/utils/_inview.js (optional)']
+    note: '<code class="font-mono text-sm">new _rollingNumber({ target, numeric, maxNumber, startNumber, duration })</code> makes one digit, <code class="font-mono text-sm">roll({ from, to, duration, callback })</code> moves it. Durations in ms.'
 }) }}
 
 {% footerscript %}

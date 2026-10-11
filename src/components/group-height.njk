@@ -81,6 +81,11 @@ title: Group height | Anthony Toolkits
 {% endraw %}{% endset %}
 
 {% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_groupHeight.js
+
 // equalizes on load and after each resize
 _groupHeight.init();
 {% endraw %}{% endset %}
@@ -89,8 +94,7 @@ _groupHeight.init();
     markup: markup,
     markupNote: 'Elements with the same group in a <code class="font-mono text-sm">[data-gh-parent]</code> get the same <code class="font-mono text-sm">min-height</code>. In a <code class="font-mono text-sm">[data-rgh-parent]</code>, only those in <code class="font-mono text-sm">[data-rgh-item]</code>s on the same row.',
     code: pageScript,
-    note: 'Call <code class="font-mono text-sm">_groupHeight.update()</code> after the content changes, e.g. loaded with ajax.',
-    requires: ['src/assets/js/utils/_event.js', 'src/assets/js/utils/_groupHeight.js']
+    note: 'Call <code class="font-mono text-sm">_groupHeight.update()</code> after the content changes, e.g. loaded with ajax.'
 }) }}
 
 {% footerscript %}

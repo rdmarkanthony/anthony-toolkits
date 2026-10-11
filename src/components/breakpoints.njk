@@ -48,7 +48,12 @@ title: Breakpoints | Anthony Toolkits
 
 {% footerscript %}
 <script type="module">
-    // _event is in the site script
+    // Requirements
+        // JS
+            // src/assets/js/utils/_event.js
+        // CSS
+            // the breakpoints in @theme, src/assets/css/style.css
+
     const _label = document.querySelector('.js-window-width');
     _event.resize(() => (_label.textContent = `${window.innerWidth}px`));
 </script>

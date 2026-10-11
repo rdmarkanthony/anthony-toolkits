@@ -77,6 +77,10 @@ title: Tabs | Anthony Toolkits
 {% endraw %}{% endset %}
 
 {% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_tabs.js
+
 document.querySelectorAll('.js-tabs').forEach((target) => {
     const tabs = new _tabs({ target });
 
@@ -87,8 +91,7 @@ document.querySelectorAll('.js-tabs').forEach((target) => {
 {{ scriptUsage({
     markup: markup,
     markupNote: 'Each link\'s <code class="font-mono text-sm">href</code> is the id of its panel. The active link gets <code class="font-mono text-sm">.js-tabs-active</code>, the other panels get <code class="font-mono text-sm">.hidden</code>.',
-    code: pageScript,
-    requires: ['src/assets/js/utils/_tabs.js']
+    code: pageScript
 }) }}
 
 {% footerscript %}

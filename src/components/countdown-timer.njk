@@ -33,6 +33,18 @@ title: Countdown timer | Anthony Toolkits
 </section>
 
 {% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // luxon
+        // flatpickr (optional, for the date picker)
+        // gsap (optional, for rolling digits)
+        // src/assets/js/utils/_event.js (optional, for rolling digits)
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_countdownTimer.js
+        // src/assets/js/utils/_rollingNumber.js (optional, for rolling digits)
+    // CSS
+        // flatpickr/dist/flatpickr.min.css (optional, for the date picker)
+
 const _timeZone = 'Asia/Manila';
 const _minDateTime = DateTime.now().setZone(_timeZone).plus({ minutes: 3 }).set({ second: 0 }); // earliest date to select
 const _picker = document.querySelector('.js-datetime-picker');
@@ -124,8 +136,7 @@ flatpickr(_picker, {
 
 {{ scriptUsage({
     code: pageScript,
-    note: '<code class="font-mono text-sm">new _countdownTimer({ dateTime, timeZone, events })</code>. Events: <code class="font-mono text-sm">beforeInit</code>, <code class="font-mono text-sm">afterInit</code>, <code class="font-mono text-sm">update</code> every second, <code class="font-mono text-sm">end</code>. <code class="font-mono text-sm">dateTime.diff</code> has the days, hours, minutes and seconds left.',
-    requires: ['luxon', 'flatpickr (optional, for the picker)', 'gsap (for rolling digits)', 'src/assets/js/utils/_emitter.js', 'src/assets/js/utils/_countdownTimer.js', 'src/assets/js/utils/_rollingNumber.js (optional)']
+    note: '<code class="font-mono text-sm">new _countdownTimer({ dateTime, timeZone, events })</code>. Events: <code class="font-mono text-sm">beforeInit</code>, <code class="font-mono text-sm">afterInit</code>, <code class="font-mono text-sm">update</code> every second, <code class="font-mono text-sm">end</code>. <code class="font-mono text-sm">dateTime.diff</code> has the days, hours, minutes and seconds left.'
 }) }}
 
 {% footerscript %}

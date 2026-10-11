@@ -33,6 +33,11 @@ title: Typing animation | Anthony Toolkits
 </section>
 
 {% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_typing.js
+
 const typing = new _typing({
     target: document.querySelector('.js-typing'),
     speed: 50, // ms per letter
@@ -56,8 +61,7 @@ setTimeout(() => {
 
 {{ scriptUsage({
     code: pageScript,
-    note: 'Events: <code class="font-mono text-sm">beforeStart</code>, <code class="font-mono text-sm">afterStart</code>, <code class="font-mono text-sm">beforeErase</code>, <code class="font-mono text-sm">afterErase</code>, in <code class="font-mono text-sm">events</code> or with <code class="font-mono text-sm">on()</code>.',
-    requires: ['src/assets/js/utils/_emitter.js', 'src/assets/js/utils/_typing.js']
+    note: 'Events: <code class="font-mono text-sm">beforeStart</code>, <code class="font-mono text-sm">afterStart</code>, <code class="font-mono text-sm">beforeErase</code>, <code class="font-mono text-sm">afterErase</code>, in <code class="font-mono text-sm">events</code> or with <code class="font-mono text-sm">on()</code>.'
 }) }}
 
 {% footerscript %}

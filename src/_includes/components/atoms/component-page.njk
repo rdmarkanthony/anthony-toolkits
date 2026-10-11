@@ -22,10 +22,10 @@
 {%- endmacro %}
 
 {#
-    the page script, shown as code with what it needs
+    the page script, shown as code, starting with its // Requirements
     usage:
-    {% set pageScript %}{% raw %}new _tabs({ target });{% endraw %}{% endset %}
-    {{ scriptUsage({ code: pageScript, requires: ['src/assets/js/utils/_tabs.js'] }) }}
+    {% set pageScript %}{% raw %}// Requirements ... new _tabs({ target });{% endraw %}{% endset %}
+    {{ scriptUsage({ code: pageScript, note: '...' }) }}
     then run the same script: {% footerscript %}<script type="module">{{ pageScript | safe }}</script>{% endfooterscript %}
 #}
 {% macro scriptUsage(props) -%}
@@ -48,15 +48,7 @@
                 <div>
                     <h3 class="mb-2 text-xl font-semibold">Script</h3>
                     {% if props.note -%}
-                    <p class="mb-4 text-gray-600">{{ props.note | safe }}</p>
-                    {%- endif %}
-                    {% if props.requires -%}
-                    <p class="mb-2 text-sm font-medium">Requires</p>
-                    <ul class="space-y-1 font-mono text-sm text-gray-600">
-                        {% for item in props.requires %}
-                        <li>{{ item }}</li>
-                        {% endfor %}
-                    </ul>
+                    <p class="text-gray-600">{{ props.note | safe }}</p>
                     {%- endif %}
                 </div>
                 {{ codeBlock(props.code, 'js') }}

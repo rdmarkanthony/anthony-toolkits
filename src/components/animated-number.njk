@@ -21,6 +21,11 @@ title: Animated number | Anthony Toolkits
 </section>
 
 {% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_animatedNumber.js
+        // src/assets/js/utils/_inview.js (optional, to start in view)
+
 const _wrap = document.querySelector('.js-animated-number');
 const _label = _wrap.querySelector('.js-animated-number-label');
 const _input = _wrap.querySelector('input');
@@ -66,8 +71,7 @@ new _inview({
 
 {{ scriptUsage({
     code: pageScript,
-    note: '<code class="font-mono text-sm">new _animatedNumber({ target, from, to, decimals, duration, callback })</code>, the duration in ms. A new count on the same target stops the one running.',
-    requires: ['src/assets/js/utils/_animatedNumber.js', 'src/assets/js/utils/_inview.js (optional)']
+    note: '<code class="font-mono text-sm">new _animatedNumber({ target, from, to, decimals, duration, callback })</code>, the duration in ms. A new count on the same target stops the one running.'
 }) }}
 
 {% footerscript %}

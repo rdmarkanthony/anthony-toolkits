@@ -55,6 +55,17 @@ title: Animate | Anthony Toolkits
 {% endraw %}{% endset %}
 
 {% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // split-type (optional, for .js-splittext)
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_inview.js
+        // src/assets/js/utils/_splitText.js (optional, for .js-splittext)
+        // src/assets/js/utils/_animate.js
+    // CSS
+        // animate.css
+        // src/assets/css/components/data-animate.css
+
 // once per page, for every [data-animate]
 new _animate({
     debug: false, // true keeps the inline animation styles on the elements
@@ -68,8 +79,7 @@ new _animate({
 {{ scriptUsage({
     markup: markup,
     markupNote: 'Any <a class="link-underline" href="https://animate.style/" target="_blank" rel="noopener">Animate.css</a> keyframe works, plus <code class="font-mono text-sm">fadeInUpSmall</code>. Elements stay hidden until they animate.',
-    code: pageScript,
-    requires: ['animate.css', 'split-type (for .js-splittext)', 'src/assets/css/components/data-animate.css', 'src/assets/js/utils/_event.js', 'src/assets/js/utils/_inview.js', 'src/assets/js/utils/_splitText.js', 'src/assets/js/utils/_animate.js']
+    code: pageScript
 }) }}
 
 {% footerscript %}
