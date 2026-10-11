@@ -127,6 +127,10 @@ new _parallaxScroller({
             // gsap
             // src/assets/js/utils/_event.js
             // src/assets/js/utils/_parallax.js
+            // hls.js, src/assets/js/utils/_hlsVideo.js
+
+    // hls videos
+    document.querySelectorAll('.js-hls-video').forEach((target) => new _hlsVideo({ target }));
 
     // animate the intro section with video banner
     new _parallaxScroller({

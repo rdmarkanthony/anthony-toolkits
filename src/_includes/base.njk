@@ -39,10 +39,6 @@
     #}
 
     <link rel="stylesheet" href="/assets/css/style.css" media="all" />
-    {# component styles, set in front matter or a directory data file #}
-    {% for style in styles %}
-    <link rel="stylesheet" href="{{ style }}" media="all" />
-    {% endfor %}
     {% getBundle "styles" %}
     {% getBundle "headerscript" %}
 </head>
@@ -55,10 +51,6 @@
     {{ footer({ site: site, components: components }) }}
 
     <script src="/assets/js/script.js" type="module"></script>
-    {# component bundles, set in front matter or a directory data file #}
-    {% for script in scripts %}
-    <script src="{{ script }}" type="module"></script>
-    {% endfor %}
     {% getBundle "footerscript" %}
 </body>
 </html>

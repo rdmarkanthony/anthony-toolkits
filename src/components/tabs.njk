@@ -1,6 +1,5 @@
 ---
 title: Tabs | Anthony Toolkits
-scripts: ["/assets/js/components/tabs.js"]
 ---
 
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
@@ -89,6 +88,9 @@ document.querySelectorAll('.js-tabs').forEach((target) => {
     markup: markup,
     markupNote: 'Each link\'s <code class="font-mono text-sm">href</code> is the id of its panel. The active link gets <code class="font-mono text-sm">.js-tabs-active</code>, the other panels get <code class="font-mono text-sm">.hidden</code>.',
     code: pageScript,
-    note: 'On this site the tabs bundle runs this for every <code class="font-mono text-sm">.js-tabs</code>.',
     requires: ['src/assets/js/utils/_tabs.js']
 }) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

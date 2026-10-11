@@ -26,12 +26,6 @@ export default function (eleventyConfig) {
     // port the assets
     eleventyConfig.addPassthroughCopy("src/assets/img");
     eleventyConfig.addPassthroughCopy("src/assets/video");
-
-    // library css, linked only on the pages that use it (`styles` in front matter)
-    eleventyConfig.addPassthroughCopy({
-        "node_modules/animate.css/animate.min.css": "assets/css/vendor/animate.min.css",
-        "node_modules/flatpickr/dist/flatpickr.min.css": "assets/css/vendor/flatpickr.min.css",
-    });
     // eleventyConfig.addPassthroughCopy("src/assets/data");
 
     // zero-pad numbers

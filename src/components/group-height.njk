@@ -1,6 +1,5 @@
 ---
 title: Group height | Anthony Toolkits
-scripts: ["/assets/js/components/group-height.js"]
 ---
 
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
@@ -84,15 +83,16 @@ scripts: ["/assets/js/components/group-height.js"]
 {% set pageScript %}{% raw %}
 // equalizes on load and after each resize
 _groupHeight.init();
-
-// after the content changes, e.g. loaded with ajax
-_groupHeight.update();
 {% endraw %}{% endset %}
 
 {{ scriptUsage({
     markup: markup,
     markupNote: 'Elements with the same group in a <code class="font-mono text-sm">[data-gh-parent]</code> get the same <code class="font-mono text-sm">min-height</code>. In a <code class="font-mono text-sm">[data-rgh-parent]</code>, only those in <code class="font-mono text-sm">[data-rgh-item]</code>s on the same row.',
     code: pageScript,
-    note: 'On this site the group height bundle calls <code class="font-mono text-sm">init()</code>.',
+    note: 'Call <code class="font-mono text-sm">_groupHeight.update()</code> after the content changes, e.g. loaded with ajax.',
     requires: ['src/assets/js/utils/_event.js', 'src/assets/js/utils/_groupHeight.js']
 }) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

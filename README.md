@@ -36,9 +36,13 @@ Reusable components and utilities for site development, built on Eleventy + Nunj
 
 ### Adding a component
 
-1. Put shared utils in `src/assets/js/utils/`. Each util lives once and is imported by whichever component needs it.
-2. Add a bundle entry in `src/assets/js/components/<name>.js` that imports its utils and libraries and exposes them on `window` for page scripts. esbuild builds every file there; code shared by more than one bundle (e.g. `_event`) goes into a common chunk in `public/assets/js/chunks/`, so it's downloaded once.
-3. Put the demo page in `src/components/<name>.njk` (or a folder for several pages), with `scripts: ["/assets/js/components/<name>.js"]` in its front matter or a `<folder>.11tydata.json`. `base.njk` loads those after `script.js`. Library CSS goes in `styles` the same way, e.g. `styles: ["/assets/css/vendor/animate.min.css"]`, copied from `node_modules` in `eleventy.config.js`.
-4. Page scripts go in `{% footerscript %}` as `type="module"`, so they run after the bundles. To show the script on the page too, set it once with `{% set pageScript %}` and pass it to `scriptUsage()` from `components/atoms/component-page.njk`.
+1. Put the util in `src/assets/js/utils/`. Each util is a standalone file that imports what it needs (e.g. `_event`, `_emitter`, gsap), so it can be copied into another project with those files.
+2. Import it in `src/assets/js/script.js` and add it to `window`, so page scripts can use it. `script.js` only loads the utils, it doesn't set up any component. Library CSS goes in `src/assets/css/style.css`.
+3. Put the demo page in `src/components/<name>.njk` (or a folder for several pages). Its layout comes from `src/components/components.11tydata.json`.
+4. Set the component up in the page's inline script, in `{% footerscript %}` as `type="module"` so it runs after `script.js`, and list what it needs. To show the script on the page too, set it once with `{% set pageScript %}` and pass it to `scriptUsage({ code, requires })` from `components/atoms/component-page.njk`.
 5. Utils with `events` / `on()` / `off()` extend `_emitter` instead of copying them.
-6. List the pages in `src/_data/components.js` with `ready: true`. A category `url` links its heading to an overview page.
+6. List the page in `src/_data/components.js` with `ready: true` and its `utils`. A category `url` links its heading to an overview page.
+
+### Using a component in another project
+
+`script.js` here loads every util, so every demo works on any page. In a project, import only the utils you use, from the component's Requires list, and copy its page script. hls.js is the only library loaded on demand, when a page has a video.

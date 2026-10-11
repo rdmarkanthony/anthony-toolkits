@@ -93,11 +93,11 @@ title: Scrolling Animation | Anthony Toolkits
             <li class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
                 <div>
                     <p class="mb-2 font-mono text-sm text-gray-500">01</p>
-                    <h3 class="mb-2 text-xl font-semibold">The bundle loads the utils</h3>
-                    <p class="text-gray-600">It imports gsap and the shared utils from <code class="font-mono text-sm">src/assets/js/utils/</code>, sets up auto scroll links and HLS videos, and puts every util on <code class="font-mono text-sm">window</code> for page scripts. Bundle it with any bundler, this site uses esbuild, which moves utils shared with other components to a common chunk.</p>
+                    <h3 class="mb-2 text-xl font-semibold">script.js loads the utils</h3>
+                    <p class="text-gray-600">It imports gsap and the utils from <code class="font-mono text-sm">src/assets/js/utils/</code>, and puts every util on <code class="font-mono text-sm">window</code> for page scripts. In your project, import only the utils you use. Bundle it with any bundler, this site uses esbuild.</p>
                 </div>
                 {% set code %}{% raw %}
-// src/assets/js/components/scrolling-animation.js
+// src/assets/js/script.js, the scrolling utils
 Object.assign(window, {
     gsap,
     _event,
@@ -129,10 +129,10 @@ Object.assign(window, {
                 <div>
                     <p class="mb-2 font-mono text-sm text-gray-500">03</p>
                     <h3 class="mb-2 text-xl font-semibold">Add the page script</h3>
-                    <p class="text-gray-600">Add it below the bundle, both as <code class="font-mono text-sm">type="module"</code> so it runs after the utils are loaded. On this site, pages put it in <code class="font-mono text-sm">{% raw %}{% footerscript %}{% endraw %}</code>, which renders below the bundles.</p>
+                    <p class="text-gray-600">Add it below <code class="font-mono text-sm">script.js</code>, both as <code class="font-mono text-sm">type="module"</code> so it runs after the utils are loaded. On this site, pages put it in <code class="font-mono text-sm">{% raw %}{% footerscript %}{% endraw %}</code>, which renders below <code class="font-mono text-sm">script.js</code>.</p>
                 </div>
                 {% set code %}{% raw %}
-<script type="module" src="/assets/js/components/scrolling-animation.js"></script>
+<script type="module" src="/assets/js/script.js"></script>
 <script type="module">
     new _parallaxScroller({
         target: document.querySelector('.js-fade-section'),
@@ -236,6 +236,22 @@ _event.dispatch(el, 'visible', { index: 1 }); // listeners read e.detail
             // src/assets/js/utils/_event.js
             // src/assets/js/utils/_parallax.js
             // src/assets/js/utils/_canvasBanner.js
+            // src/assets/js/utils/_autoScroll.js
+            // hls.js, src/assets/js/utils/_hlsVideo.js (for the video preview)
+
+    // smooth scroll for the "See the demos" link
+    document.querySelectorAll('.js-auto-scroll').forEach((item) => {
+        item.addEventListener('click', (e) => {
+            const _target = document.getElementById((item.getAttribute('href') ?? '').split('#')[1]);
+            if (!_target) return;
+
+            e.preventDefault();
+            _autoScroll({ target: _target });
+        });
+    });
+
+    // hls videos
+    document.querySelectorAll('.js-hls-video').forEach((target) => new _hlsVideo({ target }));
 
     // hero, the headphone turns while the section is pinned
     const canvas = new _canvasBanner({
