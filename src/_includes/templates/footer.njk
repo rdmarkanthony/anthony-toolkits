@@ -1,9 +1,16 @@
-{%- from "components/atoms/icon.njk" import external -%}
+{%- from "components/atoms/icon.njk" import angle, external -%}
+{#
+    site footer, with the big wordmark
+#}
 {% macro footer(props) %}
-<footer class="footer-content border-t border-gray-200 px-4">
-    <div class="mx-auto flex max-w-295 flex-wrap items-center justify-between gap-2 py-6 text-xs text-gray-500">
-        <p>&copy; {{ props.site.year }} {{ props.site.name }}</p>
-        <a class="group inline-flex items-center gap-1 transition-colors hover:text-gray-950" href="{{ props.site.github }}" target="_blank" rel="noopener">GitHub{{ external('group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}</a>
+<footer class="footer-content overflow-hidden border-t border-kit-line px-4 pt-16 pb-8 lg:pb-12">
+    <div class="mx-auto flex max-w-295 flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
+        <p class="font-display text-[22vw] leading-[0.85] font-semibold tracking-[-0.05em] whitespace-nowrap lg:text-[13rem]" aria-hidden="true">{{ props.site.shortName }}<span class="text-kit-accent">.</span></p>
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-kit-muted lg:flex-col lg:items-end lg:gap-3">
+            <a class="group inline-flex items-center gap-1 transition-colors duration-300 hover:text-kit-text lg:order-first" href="#" data-auto-scroll>Back to top {{ angle('up', 'duration-500 ease-out-expo group-hover:-translate-y-0.5') }}</a>
+            <a class="group inline-flex items-center gap-1 transition-colors duration-300 hover:text-kit-text" href="{{ props.site.github }}" target="_blank" rel="noopener">GitHub{{ external('duration-500 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}</a>
+            <p class="w-full lg:w-auto">&copy; {{ props.site.year }} {{ props.site.name }}</p>
+        </div>
     </div>
 </footer>
 {% endmacro %}

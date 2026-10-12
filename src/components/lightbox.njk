@@ -14,6 +14,7 @@ title: Lightbox | Anthony Toolkits
     <div class="mx-auto max-w-295">
         <div class="flex flex-col gap-3 md:flex-row">
             <a class="{{ button }}" href="#sample-lightbox" data-lightbox>Open a lightbox</a>
+            <a class="{{ button }}" href="#sample-image" data-lightbox>Open an image</a>
             <a class="{{ button }}" href="#sample-lightbox" target="_blank" data-lightbox>Open in a new tab (skipped)</a>
             <a class="{{ button }}" href="#" data-lightbox>Open without content</a>
         </div>
@@ -55,6 +56,10 @@ title: Lightbox | Anthony Toolkits
                 </div>
             </div>
 
+            <figure id="sample-image" class="mx-auto max-w-5xl">
+                <img class="block w-full rounded-2xl" src="/assets/img/sample-image.webp" width="2400" height="1600" loading="lazy" alt="A bird of paradise flower against dark leaves" />
+            </figure>
+
             <div id="sample-lightbox2" class="mx-auto max-w-3xl rounded-2xl bg-white p-6 text-center md:p-12">
                 <h2 class="text-2xl font-bold tracking-tight">The second lightbox</h2>
                 <p class="mt-4 text-gray-600">Or open <a class="{{ link }}" data-lightbox href="#sample-lightbox3">a lightbox with long content</a>, which scrolls.</p>
@@ -94,34 +99,41 @@ title: Lightbox | Anthony Toolkits
         // src/assets/js/utils/_emitter.js
         // src/assets/js/utils/_lightbox.js
 
+const openLightbox = (trigger) => {
+    const _href = trigger.getAttribute('href');
+
+    new _lightbox({
+        target: _href && _href !== '#' ? document.querySelector(_href) : null,
+        modal: trigger.dataset.lightbox.split(',')[0] === 'modal',
+        animation: 'zoom', // zoom, fade, fadeUp or none
+        events: {
+            beforeShow: (lightbox) => {},
+            afterShow: (lightbox) => {},
+            beforeClose: (lightbox) => {},
+            afterClose: (lightbox) => {},
+        },
+    });
+};
+
 document.querySelectorAll('[data-lightbox]').forEach((item) => {
     if (item.getAttribute('target') === '_blank') return;
 
-    const _modal = item.dataset.lightbox.split(',')[0] === 'modal';
-
     item.addEventListener('click', (e) => {
         e.preventDefault();
-
-        const _href = item.getAttribute('href');
-
-        new _lightbox({
-            target: _href && _href !== '#' ? document.querySelector(_href) : null,
-            modal: _modal,
-            animation: 'zoom', // zoom, fade, fadeUp or none
-            events: {
-                beforeShow: (lightbox) => {},
-                afterShow: (lightbox) => {},
-                beforeClose: (lightbox) => {},
-                afterClose: (lightbox) => {},
-            },
-        });
+        openLightbox(item);
     });
 });
+
+// auto open on page load if the url hash belongs to a lightbox, e.g. /page/#my-lightbox
+if (location.hash.length > 1) {
+    const _trigger = [...document.querySelectorAll('[data-lightbox]')].find((item) => item.getAttribute('href') === location.hash);
+    if (_trigger) openLightbox(_trigger);
+}
 {% endraw %}{% endset %}
 
 {{ scriptUsage({
     markup: markup,
-    markupNote: 'The content is moved into the lightbox while it\'s open, and back to its place on close.',
+    markupNote: 'The content is moved into the lightbox while it\'s open, and back to its place on close. Visiting the page with a lightbox\'s hash in the url (e.g. <code class="font-mono text-sm">/page/#my-lightbox</code>) opens it on load.',
     code: pageScript
 }) }}
 

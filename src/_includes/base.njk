@@ -39,12 +39,15 @@
     <meta name="theme-color" content="#ffffff" />
     #}
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@200..800&family=DM+Sans:wght@100..1000&display=swap" />
     <link rel="stylesheet" href="/assets/css/style.css" media="all" />
     {% getBundle "styles" %}
     {% getBundle "headerscript" %}
 </head>
-<body class="bg-white text-gray-950">
-    {{ header({ site: site }) }}
+<body class="bg-kit-bg font-sans text-kit-text">
+    {{ header({ site: site, url: page.url }) }}
     <div class="main-content min-h-[calc(100vh-var(--header-height,0rem)-var(--footer-height,0rem))]">
         {{ content | safe }}
     </div>

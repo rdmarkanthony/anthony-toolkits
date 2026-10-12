@@ -5,6 +5,7 @@ import flatpickr from "flatpickr";
 
 // utils, each one also works on its own: copy it with the files it imports
 import { _event } from "./utils/_event";
+import { _emitter } from "./utils/_emitter";
 import { _filter } from "./utils/_filter";
 import { _inview } from "./utils/_inview";
 import { _splitText } from "./utils/_splitText";
@@ -29,6 +30,7 @@ Object.assign(window, {
     DateTime,
     flatpickr,
     _event,
+    _emitter,
     _filter,
     _inview,
     _splitText,
@@ -61,5 +63,17 @@ _event.resize(() => {
     document.body.style.setProperty("--footer-height", `${footer?.offsetHeight ?? 0}px`);
 });
 
-// component search
-_filter.init();
+// smooth scroll for links with data-auto-scroll to a section of the same page, "#" goes to the top
+document.addEventListener("click", (e) => {
+    const link = e.target.closest("a[data-auto-scroll]");
+    if (!link) return;
+
+    const url = new URL(link.href);
+    if (url.pathname !== location.pathname) return;
+
+    const target = url.hash.length > 1 ? document.getElementById(url.hash.slice(1)) : document.body;
+    if (!target) return;
+
+    e.preventDefault();
+    _autoScroll({ target });
+});

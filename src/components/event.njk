@@ -1,0 +1,96 @@
+---
+title: Events | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_event', title: 'Events', description: 'Shared resize, scroll and element-size listeners. However many utils listen, the window gets one listener each, scroll runs once per frame and resize skips the phone address bar showing and hiding.' }) }}
+
+{% set card = 'flex flex-col gap-4 rounded-2xl border border-gray-200 p-6' %}
+{% set label = 'font-mono text-sm text-gray-500' %}
+{% set value = 'font-mono text-2xl font-semibold tabular-nums' %}
+
+{# demo: live readouts, resize the window, scroll, drag the box corner #}
+<section class="px-4 py-16">
+    <div class="mx-auto grid max-w-295 gap-4 md:grid-cols-2">
+        <div class="{{ card }}">
+            <p class="{{ label }}">_event.resize(callback)</p>
+            <p class="{{ value }}"><span class="js-event-size">0 × 0</span></p>
+            <p class="text-gray-600">State: <code class="js-event-state font-mono text-sm">init</code>. Resize the window to see <code class="font-mono text-sm">resize</code>, then <code class="font-mono text-sm">after</code> once you stop.</p>
+        </div>
+        <div class="{{ card }}">
+            <p class="{{ label }}">_event.scroll(callback)</p>
+            <p class="{{ value }}"><span class="js-event-scroll">0</span>px</p>
+            <div class="h-2 overflow-hidden rounded-full bg-gray-100">
+                <div class="js-event-progress h-full origin-left scale-x-0 bg-gray-950"></div>
+            </div>
+        </div>
+        <div class="{{ card }}">
+            <p class="{{ label }}">_event.observeResize(callback, element)</p>
+            <div class="js-event-box flex h-40 w-full max-w-full min-w-32 resize items-center justify-center overflow-auto rounded-xl border border-dashed border-gray-400 bg-gray-50 md:w-2/3">
+                <p class="js-event-box-size font-mono text-sm text-gray-600">drag the corner</p>
+            </div>
+        </div>
+        <div class="{{ card }}">
+            <p class="{{ label }}">_event.dispatch(element, name, detail)</p>
+            <button class="js-event-dispatch self-start rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700" type="button">Dispatch "toolkit:ping"</button>
+            <p class="js-event-received text-gray-600">Nothing received yet.</p>
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_event.js
+
+// resize: state is init, ready (page loaded), resize, or after (300ms after the last resize)
+const _size = document.querySelector('.js-event-size');
+const _state = document.querySelector('.js-event-state');
+
+_event.resize((state) => {
+    _state.textContent = state;
+    _size.textContent = `${window.innerWidth} × ${window.innerHeight}`;
+});
+
+// scroll: once per frame at most
+const _scroll = document.querySelector('.js-event-scroll');
+const _progress = document.querySelector('.js-event-progress');
+
+_event.scroll(() => {
+    const _max = document.documentElement.scrollHeight - window.innerHeight;
+
+    _scroll.textContent = Math.round(window.scrollY);
+    _progress.style.transform = `scaleX(${_max ? window.scrollY / _max : 0})`;
+});
+
+// element size: when the element itself changes size, not only the window
+const _box = document.querySelector('.js-event-box');
+const _boxSize = document.querySelector('.js-event-box-size');
+
+_event.observeResize(() => {
+    _boxSize.textContent = `${_box.offsetWidth} × ${_box.offsetHeight}`;
+}, _box);
+
+// dispatch: a CustomEvent with detail, listen with addEventListener
+const _button = document.querySelector('.js-event-dispatch');
+const _received = document.querySelector('.js-event-received');
+let _count = 0;
+
+_button.addEventListener('toolkit:ping', (e) => {
+    _received.textContent = `Received "toolkit:ping", detail: ${JSON.stringify(e.detail)}`;
+});
+
+_button.addEventListener('click', () => {
+    _event.dispatch(_button, 'toolkit:ping', { count: ++_count });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: 'Each callback also runs once right away. <code class="font-mono text-sm">resize</code>, <code class="font-mono text-sm">scroll</code> and <code class="font-mono text-sm">observeResize</code> return a function that removes the listener, the same as <code class="font-mono text-sm">offResize(callback)</code>, <code class="font-mono text-sm">offScroll(callback)</code> and <code class="font-mono text-sm">offObserveResize(callback, element)</code>.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

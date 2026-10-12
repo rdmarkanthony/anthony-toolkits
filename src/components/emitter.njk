@@ -1,0 +1,107 @@
+---
+title: Emitter | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_emitter', title: 'Emitter', description: 'A base class that gives your own utils events. Extend it, and callers can pass <code class="font-mono text-base">events</code> in the props or add listeners later with <code class="font-mono text-base">on()</code> and <code class="font-mono text-base">off()</code>. _typing, _lightbox, _countdownTimer, the players and the scrolling animation all extend it.' }) }}
+
+{% set button = 'rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700' %}
+
+{# demo: a small counter util built on _emitter #}
+<section class="px-4 py-16">
+    <div class="js-emitter mx-auto grid max-w-295 gap-8 md:grid-cols-2">
+        <div class="flex flex-col gap-6">
+            <div>
+                <h2 class="mb-2 text-3xl font-bold tracking-tight">A counter util</h2>
+                <p class="max-w-xl text-gray-600">It emits <code class="font-mono text-sm">change</code> on each count, <code class="font-mono text-sm">max</code> when it reaches 5 and <code class="font-mono text-sm">reset</code>.</p>
+            </div>
+            <p class="js-emitter-value text-8xl font-bold tracking-tight tabular-nums">0</p>
+            <div class="flex flex-wrap items-center gap-3">
+                <button class="js-emitter-add {{ button }}" type="button">Add one</button>
+                <button class="js-emitter-reset {{ button }}" type="button">Reset</button>
+            </div>
+            <label class="flex items-center gap-2 text-gray-600">
+                <input class="js-emitter-listen size-4 accent-gray-950" type="checkbox" checked />
+                Log <code class="font-mono text-sm">change</code> with <code class="font-mono text-sm">on()</code>, unchecking calls <code class="font-mono text-sm">off()</code>
+            </label>
+        </div>
+        <div class="rounded-2xl border border-gray-200 p-6">
+            <p class="mb-4 font-mono text-sm text-gray-500">event log, newest first</p>
+            <ul class="js-emitter-log flex flex-col gap-1 font-mono text-sm"></ul>
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+
+// your own util: pass props.events to super(), then emit() when something happens
+class _counter extends _emitter {
+    constructor(props) {
+        super(props.events);
+
+        this.count = 0;
+        this.max = props.max ?? 5;
+    }
+
+    add() {
+        if (this.count >= this.max) return;
+
+        this.count++;
+        this.emit('change');
+
+        if (this.count === this.max) this.emit('max');
+    }
+
+    reset() {
+        this.count = 0;
+        this.emit('reset');
+        this.emit('change');
+    }
+}
+
+const _wrap = document.querySelector('.js-emitter');
+const _value = _wrap.querySelector('.js-emitter-value');
+const _log = _wrap.querySelector('.js-emitter-log');
+
+const _write = (text) => {
+    const _item = document.createElement('li');
+    _item.textContent = text;
+    _log.prepend(_item);
+
+    while (_log.children.length > 8) _log.lastChild.remove();
+};
+
+// events in the props, one callback each, they get the instance
+const counter = new _counter({
+    max: 5,
+    events: {
+        change: (instance) => (_value.textContent = instance.count),
+        max: (instance) => _write(`max: ${instance.max}, from events`),
+    },
+});
+
+// more listeners with on(), removed with off()
+const _onChange = (instance) => _write(`change: ${instance.count}, from on()`);
+counter.on('change', _onChange);
+counter.on('reset', () => _write('reset, from on()'));
+
+_wrap.querySelector('.js-emitter-add').addEventListener('click', () => counter.add());
+_wrap.querySelector('.js-emitter-reset').addEventListener('click', () => counter.reset());
+_wrap.querySelector('.js-emitter-listen').addEventListener('change', (e) => {
+    if (e.target.checked) counter.on('change', _onChange);
+    else counter.off('change', _onChange);
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: '<code class="font-mono text-sm">on(event, callback)</code> and <code class="font-mono text-sm">off(event, callback)</code>, <code class="font-mono text-sm">off()</code> needs the same function. <code class="font-mono text-sm">emit(event)</code> calls the <code class="font-mono text-sm">events</code> callback first, then the <code class="font-mono text-sm">on()</code> ones.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
