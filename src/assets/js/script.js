@@ -5,6 +5,7 @@ import flatpickr from "flatpickr";
 
 // utils, each one also works on its own: copy it with the files it imports
 import { _event } from "./utils/_event";
+import { _enquire } from "./utils/_enquire";
 import { _emitter } from "./utils/_emitter";
 import { _filter } from "./utils/_filter";
 import { _autocomplete } from "./utils/_autocomplete";
@@ -34,6 +35,7 @@ Object.assign(window, {
     DateTime,
     flatpickr,
     _event,
+    _enquire,
     _emitter,
     _filter,
     _autocomplete,
