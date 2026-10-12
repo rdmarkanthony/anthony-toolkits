@@ -2,7 +2,7 @@
 {#
     site header, sticky with a frosted background
     url: the current page.url, marks Components as active on component pages
-    inner pages get the search here, the home page has its own in the hero
+    inner pages get the search here, the home page has its own in the hero (both use #search-items)
     below lg the links and the search move into the sliding menu
 #}
 {% macro header(props) %}
@@ -46,7 +46,6 @@
     </div>
 </div>
 
-{% if not onHome %}
 {# the suggestions, text is what the home page filters on, so both agree #}
 {%- set searchItems = [] -%}
 {%- for group in props.components -%}
@@ -57,7 +56,6 @@
     {%- endfor -%}
 {%- endfor %}
 <script type="application/json" id="search-items">{{ searchItems | dump | safe }}</script>
-{% endif %}
 {% endmacro %}
 
 {# Components link with the active dot #}

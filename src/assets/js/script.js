@@ -96,20 +96,23 @@ document.addEventListener("click", (e) => {
     _autoScroll({ target });
 });
 
-// header search, a suggestion opens its component, Enter with none picked submits to the home page (?q=) for the results
+// header and home search, a suggestion opens its component, Enter with none picked submits to the home page (?q=) for the results
 // same match as the home page filter, so the suggestions and the results agree
 const searchItems = JSON.parse(document.getElementById("search-items")?.textContent ?? "[]");
 const escapeHTML = (text) => String(text).replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 
 document.querySelectorAll("[data-search]").forEach((form) => {
+    // the home page shows the results under its search, so no "See all" or empty message there
+    const onHome = form.hasAttribute("data-home-search");
+
     new _autocomplete({
         input: form.querySelector("[data-search-input]"),
         list: form.querySelector("[data-search-list]"),
         items: searchItems,
         match: (item, query) => _filter.match(item.text, query),
         render: (item) => `<span class="font-medium">${escapeHTML(item.label)}</span><span class="shrink-0 text-sm whitespace-nowrap text-kit-muted">${escapeHTML(item.category)}</span>`,
-        more: (value, total) => ({ url: `/?q=${encodeURIComponent(value)}`, html: `<span class="font-medium text-kit-accent">See all ${total} results</span>` }),
-        empty: (value) => `<p class="px-4 py-3 text-kit-muted">No components match “${escapeHTML(value)}”.</p>`,
+        more: onHome ? null : (value, total) => ({ url: `/?q=${encodeURIComponent(value)}`, html: `<span class="font-medium text-kit-accent">See all ${total} results</span>` }),
+        empty: onHome ? null : (value) => `<p class="px-4 py-3 text-kit-muted">No components match “${escapeHTML(value)}”.</p>`,
         optionClass: "flex items-baseline justify-between gap-4 rounded-2xl px-4 py-3 transition-colors duration-200 aria-selected:bg-kit-surface",
     });
 });
