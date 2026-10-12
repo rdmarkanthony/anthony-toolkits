@@ -27,7 +27,7 @@ title: Video Intro | Scrolling Animation | Anthony Toolkits
         <div class="absolute inset-0 bg-black/50"></div>
         <div class="js-title-intro-cover absolute inset-0 bg-black"></div>
     </div>
-    <div class="js-title-intro-content relative z-2 pt-[50vh] pb-[35vh]">
+    <div class="js-title-intro-content relative z-2 pt-[50vh]">
         <div class="px-4">
             <div class="mx-auto max-w-295 text-center">
                 <ul class="js-title-intro-list">
@@ -35,7 +35,10 @@ title: Video Intro | Scrolling Animation | Anthony Toolkits
                     <li class="translate-y-17.5 pb-20 opacity-0 transition duration-500 last:pb-0 data-[state=active]:translate-y-0 data-[state=active]:opacity-100 data-[state=past]:-translate-y-17.5"><h2 class="mb-2 text-5xl leading-[1.2] font-bold md:text-[80px]">The cover fades as the section enters</h2></li>
                     <li class="translate-y-17.5 pb-20 opacity-0 transition duration-500 last:pb-0 data-[state=active]:translate-y-0 data-[state=active]:opacity-100 data-[state=past]:-translate-y-17.5"><h2 class="mb-2 text-5xl leading-[1.2] font-bold md:text-[80px]">Each title steps in at mid screen</h2></li>
                     <li class="translate-y-17.5 pb-20 opacity-0 transition duration-500 last:pb-0 data-[state=active]:translate-y-0 data-[state=active]:opacity-100 data-[state=past]:-translate-y-17.5"><h2 class="mb-2 text-5xl leading-[1.2] font-bold md:text-[80px]">States are data attributes</h2></li>
-                    <li class="translate-y-17.5 pb-20 opacity-0 transition duration-500 last:pb-0 data-[state=active]:translate-y-0 data-[state=active]:opacity-100 data-[state=past]:-translate-y-17.5"><h2 class="mb-2 text-5xl leading-[1.2] font-bold md:text-[80px]">Copy the section and its script</h2></li>
+                    {# the last title holds at mid screen: a screen-high sticky box whose bottom meets the section's, so both unpin together. flow-root keeps the box's negative margin inside the li, min-h is 50vh for the box + 30vh hold #}
+                    <li class="flow-root min-h-[80vh] translate-y-17.5 opacity-0 transition duration-500 data-[state=active]:translate-y-0 data-[state=active]:opacity-100">
+                        <div class="sticky top-0 -mt-[50vh] min-h-screen pt-[50vh]"><h2 class="mb-2 -translate-y-1/2 text-5xl leading-[1.2] font-bold md:text-[80px]">Copy the section and its script</h2></div>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -49,7 +52,7 @@ title: Video Intro | Scrolling Animation | Anthony Toolkits
             <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
                 <div>
                     <h3 class="mb-2 text-xl font-semibold">Markup</h3>
-                    <p class="text-gray-600">A tall section with a sticky, screen-high video. The negative top margin pulls the video up a screen so it's already pinned when the section scrolls in, so the content above needs a higher <code class="font-mono text-sm">z-index</code> and a background. A fixed dim keeps the titles readable over bright footage, and the black cover on top of it fades out. Each title is styled by its <code class="font-mono text-sm">data-state</code>: <code class="font-mono text-sm">active</code> or <code class="font-mono text-sm">past</code>.</p>
+                    <p class="text-gray-600">A tall section with a sticky, screen-high video. The negative top margin pulls the video up a screen so it's already pinned when the section scrolls in, so the content above needs a higher <code class="font-mono text-sm">z-index</code> and a background. A fixed dim keeps the titles readable over bright footage, and the black cover on top of it fades out. The last title sits in a screen-high sticky box, pulled up half a screen so the title starts at its middle. The box's bottom meets the section's, so the title holds at mid screen and unpins together with the video. Its <code class="font-mono text-sm">min-h</code> beyond <code class="font-mono text-sm">50vh</code> sets how long it holds. Each title is styled by its <code class="font-mono text-sm">data-state</code>: <code class="font-mono text-sm">active</code> or <code class="font-mono text-sm">past</code>.</p>
                 </div>
                 {% set code %}{% raw %}
 <section class="js-title-intro relative min-h-[150vh] bg-black text-white">
@@ -60,9 +63,13 @@ title: Video Intro | Scrolling Animation | Anthony Toolkits
         <!-- fades out as the section scrolls in -->
         <div class="js-title-intro-cover absolute inset-0 bg-black"></div>
     </div>
-    <div class="js-title-intro-content relative pt-[50vh] pb-[35vh] text-center">
+    <div class="js-title-intro-content relative pt-[50vh] text-center">
         <ul class="js-title-intro-list">
-            <li class="opacity-0 transition data-[state=active]:opacity-100">...</li>
+            <li class="pb-20 opacity-0 transition data-[state=active]:opacity-100"><h2>...</h2></li>
+            <!-- the last title holds at mid screen until the video unpins. flow-root keeps the negative margin inside the li, min-h is 50vh + the hold -->
+            <li class="flow-root min-h-[80vh] opacity-0 transition data-[state=active]:opacity-100">
+                <div class="sticky top-0 -mt-[50vh] min-h-screen pt-[50vh]"><h2 class="-translate-y-1/2">...</h2></div>
+            </li>
         </ul>
     </div>
 </section>
@@ -95,7 +102,7 @@ new _parallaxScroller({
             scroller.fade = [_top - _height * 0.4, _parallax.getOffset(scroller.el.listWrap).top - _height * 0.55];
 
             // when each title reaches the middle of the display
-            scroller.steps = scroller.el.list.map((item) => _parallax.getOffset(item).top - _height * 0.5 - item.offsetHeight * 0.25);
+            scroller.steps = scroller.el.list.map((item) => _parallax.getOffset(item).top - _height * 0.5 - item.querySelector('h2').offsetHeight * 0.25);
         },
         update(scroller) {
             // animate the video dim cover
@@ -156,7 +163,7 @@ new _parallaxScroller({
                 scroller.fade = [_top - _height * 0.4, _parallax.getOffset(scroller.el.listWrap).top - _height * 0.55];
 
                 // when each title reaches the middle of the display
-                scroller.steps = scroller.el.list.map((item) => _parallax.getOffset(item).top - _height * 0.5 - item.offsetHeight * 0.25);
+                scroller.steps = scroller.el.list.map((item) => _parallax.getOffset(item).top - _height * 0.5 - item.querySelector('h2').offsetHeight * 0.25);
             },
             update(scroller) {
                 // animate the video dim cover
