@@ -5,7 +5,8 @@ title: Video player | Anthony Toolkits
 {% from "components/atoms/back-link.njk" import backLink %}
 {% from "components/atoms/component-page.njk" import scriptUsage %}
 
-{% set video = '/assets/video/video1/video1.m3u8' %}
+{% set video = '/assets/video/sample-video.mp4' %}
+{% set videoHls = '/assets/video/sample-video/sample-video.m3u8' %}
 
 {# demo: a stretched autoplay video as the background #}
 <section class="relative overflow-hidden bg-gray-950 px-4 pt-24 pb-16 text-white md:pt-32">
@@ -22,24 +23,44 @@ title: Video player | Anthony Toolkits
 </section>
 
 {# demo #}
-<section class="px-4 py-16">
-    <div class="mx-auto grid max-w-295 gap-10 md:grid-cols-2">
-        {% set players = [
+{% set groups = [
+    {
+        title: 'MP4',
+        src: video,
+        players: [
             { label: 'Standard', options: '', ratio: 'aspect-video' },
             { label: 'Autoplay', options: ',autoplay', ratio: 'aspect-video' },
             { label: 'Stretched, square', options: ',autoplay,stretch', ratio: 'aspect-square' },
             { label: 'Stretched, vertical', options: ',autoplay,stretch', ratio: 'aspect-9/16' }
-        ] %}
-        {% for player in players %}
-        <div class="flex flex-col gap-3">
-            <p class="font-semibold">{{ player.label }} <code class="ml-2 font-mono text-xs font-normal text-gray-500">src{{ player.options }}</code></p>
-            <div class="relative {{ player.ratio }} bg-black" data-video-player="{{ video }}{{ player.options }}">
-                {% if 'autoplay' in player.options %}<div class="absolute inset-0 z-10"></div>{% endif %}
+        ]
+    },
+    {
+        title: 'HLS (.m3u8)',
+        src: videoHls,
+        players: [
+            { label: 'Standard', options: '', ratio: 'aspect-video' },
+            { label: 'Autoplay', options: ',autoplay', ratio: 'aspect-video' }
+        ]
+    }
+] %}
+{% for group in groups %}
+<section class="px-4 py-16 {{ 'pt-0' if not loop.first }}">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-2 text-3xl font-bold tracking-tight">{{ group.title }}</h2>
+        <p class="mb-8 font-mono text-sm text-gray-500">{{ group.src }}</p>
+        <div class="grid gap-10 md:grid-cols-2">
+            {% for player in group.players %}
+            <div class="flex flex-col gap-3">
+                <p class="font-semibold">{{ player.label }} <code class="ml-2 font-mono text-xs font-normal text-gray-500">src{{ player.options }}</code></p>
+                <div class="relative {{ player.ratio }} bg-black" data-video-player="{{ group.src }}{{ player.options }}">
+                    {% if 'autoplay' in player.options %}<div class="absolute inset-0 z-10"></div>{% endif %}
+                </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
 </section>
+{% endfor %}
 
 {% set markup %}{% raw %}
 <!-- data-video-player="src,autoplay,stretch" -->
