@@ -26,6 +26,7 @@ import { _hlsVideo } from "./utils/_hlsVideo";
 import { _autoScroll } from "./utils/_autoScroll";
 import { _parallax, _parallaxScroller, _parallaxBackground, _parallaxFloating } from "./utils/_parallax";
 import { _canvasBanner } from "./utils/_canvasBanner";
+import { _themeScroller } from "./utils/_themeScroller";
 
 // expose for inline scripts, each page sets up its own components
 Object.assign(window, {
@@ -57,6 +58,7 @@ Object.assign(window, {
     _parallaxBackground,
     _parallaxFloating,
     _canvasBanner,
+    _themeScroller,
 });
 
 // modules run after the html is parsed, and before the inline page scripts,

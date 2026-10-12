@@ -1,0 +1,92 @@
+---
+title: Theme scroller | Anthony Toolkits
+bodyClass: dark
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{% set markup %}{% raw %}
+<!-- the first theme in the html, to avoid a flash -->
+<body class="dark">
+<section data-scroll-theme="dark">...</section>
+<section data-scroll-theme="light">...</section>
+
+<div class="bg-white text-gray-950 dark:bg-gray-950 dark:text-white">...</div>
+{% endraw %}{% endset %}
+
+{% set css %}{% raw %}
+/* Tailwind v4: dark: follows .dark */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* or variables, e.g. bg-(--page-bg) */
+.light { --page-bg: #fff; --page-text: #111; }
+.dark { --page-bg: #0c0c0e; --page-text: #f2f1ec; }
+
+/* ease colors only while switching */
+@layer base {
+    :where(.theme-transition, .theme-transition *) {
+        transition-property: color, background-color, border-color, fill, stroke;
+        transition-duration: 0.5s;
+    }
+}
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_themeScroller.js
+    // CSS
+        // the theme classes, see above
+
+const _name = document.querySelector('.js-theme-name');
+
+new _themeScroller({
+    // sections: '[data-scroll-theme]', target: document.body, defaultTheme: '', duration: 600
+    events: {
+        change: (scroller) => (_name.textContent = scroller.theme || '-'),
+    },
+});
+{% endraw %}{% endset %}
+
+{% macro demo(theme, name) -%}
+<div class="px-4 py-32">
+    <div class="mx-auto flex min-h-[50vh] max-w-295 flex-col justify-center gap-8">
+        <div class="flex flex-col gap-3">
+            <p class="font-mono text-sm opacity-60">data-scroll-theme="{{ theme }}"</p>
+            <h2 class="text-5xl font-bold tracking-tight md:text-7xl">{{ name }}</h2>
+        </div>
+        <div class="max-w-xl rounded-2xl border border-gray-200 bg-gray-50 p-6 text-gray-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-400">
+            This card uses Tailwind's <code class="font-mono text-sm">dark:</code>, which follows the class on the body, the same as the header and footer.
+        </div>
+    </div>
+</div>
+{%- endmacro %}
+
+<span class="fixed right-4 bottom-4 z-20 rounded-full border border-current bg-kit-bg px-3 py-1 font-mono text-sm">theme: <span class="js-theme-name">-</span></span>
+
+<div data-scroll-theme="dark">
+    {{ pageIntro({ label: '_themeScroller', title: 'Theme scroller', description: 'Each section names its theme, and the whole page takes the theme of the section filling the screen, header and footer included. Scroll down: this page goes dark, light, then dark again.' }) }}
+    {{ demo('dark', 'Dark') }}
+</div>
+
+<div data-scroll-theme="light">
+    {{ demo('light', 'Light') }}
+</div>
+
+<div data-scroll-theme="dark">
+    {{ demo('dark', 'Dark again') }}
+    {{ scriptUsage({
+        markup: markup,
+        markupNote: 'Give each section a <code class="font-mono text-sm">data-scroll-theme</code>, any name works, and several are allowed: <code class="font-mono text-sm">"dark contrast"</code>. Sections without one keep the page as it is.',
+        css: css,
+        cssNote: 'The theme class does the work. This site\'s header and footer use color variables that <code class="font-mono text-sm">.light</code> and <code class="font-mono text-sm">.dark</code> redefine, in <code class="font-mono text-sm">src/assets/css/components/themes.css</code>.',
+        code: pageScript,
+        note: 'It follows the section that fills most of the screen. <code class="font-mono text-sm">target</code> puts the class on another element, and <code class="font-mono text-sm">line</code> follows the section under a line instead, in px from the top of the screen or a function returning it, e.g. for a header that switches on its own: <code class="font-mono text-sm">new _themeScroller({ target: header, line: () =&gt; header.offsetHeight / 2 })</code>. <code class="font-mono text-sm">refresh()</code> finds the sections again after adding some, <code class="font-mono text-sm">destroy()</code> stops it.'
+    }) }}
+</div>
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
