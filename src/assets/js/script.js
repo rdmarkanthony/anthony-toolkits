@@ -7,6 +7,7 @@ import flatpickr from "flatpickr";
 import { _event } from "./utils/_event";
 import { _emitter } from "./utils/_emitter";
 import { _filter } from "./utils/_filter";
+import { _autocomplete } from "./utils/_autocomplete";
 import { _inview } from "./utils/_inview";
 import { _splitText } from "./utils/_splitText";
 import { _animate } from "./utils/_animate";
@@ -32,6 +33,7 @@ Object.assign(window, {
     _event,
     _emitter,
     _filter,
+    _autocomplete,
     _inview,
     _splitText,
     _animate,
@@ -77,3 +79,45 @@ document.addEventListener("click", (e) => {
     e.preventDefault();
     _autoScroll({ target });
 });
+
+// header search, a suggestion opens its component, Enter with none picked submits to the home page (?q=) for the results
+// same match as the home page filter, so the suggestions and the results agree
+const searchItems = JSON.parse(document.getElementById("search-items")?.textContent ?? "[]");
+const escapeHTML = (text) => String(text).replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
+
+document.querySelectorAll("[data-search]").forEach((form) => {
+    new _autocomplete({
+        input: form.querySelector("[data-search-input]"),
+        list: form.querySelector("[data-search-list]"),
+        items: searchItems,
+        match: (item, query) => _filter.match(item.text, query),
+        render: (item) => `<span class="font-medium">${escapeHTML(item.label)}</span><span class="shrink-0 text-sm whitespace-nowrap text-kit-muted">${escapeHTML(item.category)}</span>`,
+        more: (value, total) => ({ url: `/?q=${encodeURIComponent(value)}`, html: `<span class="font-medium text-kit-accent">See all ${total} results</span>` }),
+        empty: (value) => `<p class="px-4 py-3 text-kit-muted">No components match “${escapeHTML(value)}”.</p>`,
+        optionClass: "flex items-baseline justify-between gap-4 rounded-2xl px-4 py-3 transition-colors duration-200 aria-selected:bg-kit-surface",
+    });
+});
+
+// sliding menu below lg, the rest of the page is inert while it's open
+const menu = document.querySelector("[data-mobile-menu]");
+const menuButton = document.querySelector("[data-mobile-menu-open]");
+const pageParts = [header, document.querySelector(".main-content"), footer].filter(Boolean);
+
+const toggleMenu = (open) => {
+    if (!menu || open === menu.hasAttribute("data-open")) return;
+
+    menu.toggleAttribute("data-open", open);
+    menuButton.setAttribute("aria-expanded", String(open));
+    document.documentElement.classList.toggle("overflow-hidden", open);
+    pageParts.forEach((part) => (part.inert = open));
+
+    // the close button, not the search, so the phone keyboard doesn't cover the menu
+    (open ? menu.querySelector("button[data-mobile-menu-close]") : menuButton).focus({ preventScroll: true });
+};
+
+if (menu) {
+    menuButton.addEventListener("click", () => toggleMenu(true));
+    menu.addEventListener("click", (e) => e.target.closest("[data-mobile-menu-close], a") && toggleMenu(false));
+    document.addEventListener("keydown", (e) => e.key === "Escape" && !e.defaultPrevented && toggleMenu(false));
+    window.matchMedia("(min-width: 992px)").addEventListener("change", (e) => e.matches && toggleMenu(false));
+}

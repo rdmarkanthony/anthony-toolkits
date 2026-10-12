@@ -3,7 +3,7 @@ layout: base.njk
 title: Anthony Toolkits
 ---
 
-{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/icon.njk" import angle, search %}
 {% from "components/atoms/tag.njk" import tags %}
 {% from "components/atoms/button.njk" import renderButton %}
 
@@ -12,10 +12,13 @@ title: Anthony Toolkits
         <h1 class="mb-6 font-display text-[3.25rem] leading-[0.95] font-semibold tracking-tight md:text-[6.5rem]">{{ site.name }}<span class="text-kit-accent">.</span></h1>
         <p class="mb-10 max-w-2xl text-lg text-kit-muted md:text-xl">{{ site.description }} Each component shows its markup and script, ready to copy into any website.</p>
         <div class="flex flex-wrap gap-3">
-            <label class="w-full max-w-md">
-                <span class="sr-only">Search components</span>
-                <input class="h-13 w-full rounded-full border border-kit-line bg-kit-bg px-6 transition-colors duration-300 placeholder:text-kit-muted focus:border-kit-accent focus:outline-none" type="search" placeholder="Search components or utils…" autocomplete="off" data-filter-input />
-            </label>
+            <form class="w-full max-w-md" action="/" method="get" role="search" data-home-search>
+                <label class="relative block">
+                    <span class="sr-only">Search components</span>
+                    <span class="pointer-events-none absolute top-1/2 left-5 -translate-y-1/2 text-kit-muted">{{ search() }}</span>
+                    <input class="h-13 w-full rounded-full border border-kit-line bg-kit-bg pr-6 pl-12 transition-colors duration-300 placeholder:text-kit-muted focus:border-kit-accent focus:outline-none" type="search" name="q" placeholder="Search components or utils…" autocomplete="off" data-filter-input />
+                </label>
+            </form>
             {{ renderButton({ type: 'outline', label: 'View on GitHub', url: site.github, target: '_blank' }) }}
         </div>
     </div>
@@ -65,5 +68,28 @@ title: Anthony Toolkits
 <script type="module">
     // component search, the input is in the hero, so the scope is the whole page
     _filter.init();
+
+    // ?q= comes from the header search on the other pages, the url keeps the search for sharing and the back button
+    const form = document.querySelector("[data-home-search]");
+    const input = form.querySelector("[data-filter-input]");
+    const query = new URLSearchParams(location.search).get("q");
+
+    if (query) {
+        input.value = query;
+        input.dispatchEvent(new Event("input"));
+    }
+
+    input.addEventListener("input", () => {
+        const url = new URL(location.href);
+        const value = input.value.trim();
+        value ? url.searchParams.set("q", value) : url.searchParams.delete("q");
+        history.replaceState(history.state, "", url);
+    });
+
+    // the results are already on the page, Enter only closes the phone keyboard
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        input.blur();
+    });
 </script>
 {% endfooterscript %}

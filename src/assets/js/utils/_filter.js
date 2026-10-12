@@ -1,6 +1,11 @@
 // filters [data-filter-item] by the text typed in [data-filter-input]
 // optional: [data-filter-group] hides when none of its items match, [data-filter-empty] shows when nothing matches
 export const _filter = {
+    // the same test for anything that should agree with the list, e.g. search suggestions
+    match(text, query) {
+        return String(text).toLowerCase().includes(query.trim().toLowerCase());
+    },
+
     init(scope = document) {
         const input = scope.querySelector("[data-filter-input]");
         if (!input) return;
@@ -10,11 +15,10 @@ export const _filter = {
         const empty = scope.querySelector("[data-filter-empty]");
 
         input.addEventListener("input", () => {
-            const query = input.value.trim().toLowerCase();
             let total = 0;
 
             items.forEach((item) => {
-                const match = item.dataset.filterItem.toLowerCase().includes(query);
+                const match = _filter.match(item.dataset.filterItem, input.value);
                 item.hidden = !match;
                 if (match) total++;
             });

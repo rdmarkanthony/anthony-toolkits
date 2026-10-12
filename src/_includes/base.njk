@@ -47,7 +47,7 @@
     {% getBundle "headerscript" %}
 </head>
 <body class="bg-kit-bg font-sans text-kit-text">
-    {{ header({ site: site, url: page.url }) }}
+    {{ header({ site: site, url: page.url, components: components }) }}
     <div class="main-content min-h-[calc(100vh-var(--header-height,0rem)-var(--footer-height,0rem))]">
         {{ content | safe }}
     </div>
