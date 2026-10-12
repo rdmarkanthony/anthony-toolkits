@@ -55,12 +55,12 @@ title: Background | Scrolling Animation | Anthony Toolkits
 {# demo: floating image #}
 <section class="px-4 py-24">
     <div class="mx-auto grid max-w-295 items-center gap-10 md:grid-cols-2">
-        <div class="relative overflow-hidden rounded-2xl bg-gray-100">
-            <img class="block w-full" data-parallax-floating src="/assets/img/sample-image.webp" width="2400" height="1600" alt="" />
+        <div class="relative aspect-3/2 overflow-hidden rounded-2xl bg-black">
+            <img class="absolute inset-x-0 -top-12.5 h-[calc(100%+50px)] w-full object-cover" data-parallax-floating src="/assets/img/sample-image.webp" width="2400" height="1600" alt="" />
         </div>
         <div>
             <h2 class="mb-2 text-3xl font-bold tracking-tight">Floating</h2>
-            <p class="mb-4 text-gray-600">The image drifts down as it crosses the screen, up to its range (50px by default), eased. It sits in an <code class="font-mono text-sm">overflow-hidden</code> wrapper so it stays in its frame.</p>
+            <p class="mb-4 text-gray-600">The image drifts down as it crosses the screen, up to its range (50px by default), eased. It's taller than its <code class="font-mono text-sm">overflow-hidden</code> frame by the range and starts that far above it, so the frame stays covered.</p>
             <code class="font-mono text-sm font-semibold">data-parallax-floating</code>
         </div>
     </div>
@@ -87,11 +87,12 @@ title: Background | Scrolling Animation | Anthony Toolkits
             <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
                 <div>
                     <h3 class="mb-2 text-xl font-semibold">Floating markup</h3>
-                    <p class="text-gray-600">Any element works, keep it in an <code class="font-mono text-sm">overflow-hidden</code> wrapper if it shouldn't spill out.</p>
+                    <p class="text-gray-600">Any element works. To fill a frame, make it taller than the frame by the range and start it that far above, so no gap shows at the top as it moves down.</p>
                 </div>
                 {% set code %}{% raw %}
-<div class="relative overflow-hidden">
-    <img data-parallax-floating="80" src="/assets/img/sample-image.webp" alt="" />
+<!-- 80px range: 80px taller, starting 80px above -->
+<div class="relative aspect-3/2 overflow-hidden">
+    <img class="absolute inset-x-0 -top-20 h-[calc(100%+80px)] w-full object-cover" data-parallax-floating="80" src="/assets/img/sample-image.webp" alt="" />
 </div>
                 {% endraw %}{% endset %}
                 {{ codeBlock(code, 'html') }}

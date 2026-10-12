@@ -7,12 +7,8 @@ title: Anthony Toolkits
 {% from "components/atoms/tag.njk" import tags %}
 {% from "components/atoms/button.njk" import renderButton %}
 
-{%- set readyCount = 0 -%}
-{%- for group in components -%}{%- for item in group.items -%}{%- if item.ready %}{% set readyCount = readyCount + 1 %}{% endif -%}{%- endfor -%}{%- endfor -%}
-
 <section class="px-4 pt-20 pb-16 md:pt-32">
     <div class="mx-auto max-w-295">
-        <p class="mb-6 flex items-center gap-2 text-sm font-medium tracking-widest text-kit-muted uppercase"><span class="size-1.5 rounded-full bg-kit-accent" aria-hidden="true"></span>{{ readyCount }} components, ready to copy</p>
         <h1 class="mb-6 font-display text-[3.25rem] leading-[0.95] font-semibold tracking-tight md:text-[6.5rem]">{{ site.name }}<span class="text-kit-accent">.</span></h1>
         <p class="mb-10 max-w-2xl text-lg text-kit-muted md:text-xl">{{ site.description }} Each component shows its markup and script, ready to copy into any website.</p>
         <div class="flex flex-wrap gap-3">
