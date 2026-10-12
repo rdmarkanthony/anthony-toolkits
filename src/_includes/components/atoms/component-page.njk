@@ -4,12 +4,12 @@
 {#
     page title, for component pages
     usage: {{ pageIntro({ label: '_tabs', title: 'Tabs', description: '...' }) }}
-    back: { label, url } for another parent page (default: all components)
+    back: { label, url } for a parent page, optional
 #}
 {% macro pageIntro(props) -%}
 <section class="px-4 pt-24 pb-16 md:pt-32">
     <div class="mx-auto max-w-295">
-        {{ backLink(props.back) }}
+        {% if props.back %}{{ backLink(props.back) }}{% endif %}
         {% if props.label -%}
         <p class="mb-4 font-mono text-sm text-gray-500">{{ props.label }}</p>
         {%- endif %}

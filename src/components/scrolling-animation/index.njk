@@ -2,8 +2,7 @@
 title: Scrolling Animation | Anthony Toolkits
 ---
 
-{% from "components/atoms/back-link.njk" import backLink %}
-{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/icon.njk" import angle, external %}
 {% from "components/atoms/code-block.njk" import codeBlock %}
 
 {# hero: the headphone turns as the page scrolls, pinned below the sticky site header #}
@@ -11,13 +10,11 @@ title: Scrolling Animation | Anthony Toolkits
     <div class="sticky top-(--header-height) h-[calc(100vh-var(--header-height,0px))] overflow-hidden px-4">
         <div class="mx-auto grid h-full max-w-295 grid-rows-[auto_1fr] gap-6 pt-10 pb-6 md:grid-cols-2 md:grid-rows-1 md:items-center md:gap-10 md:py-0">
             <div>
-                {{ backLink() }}
-                <p class="mb-4 font-mono text-sm text-gray-500">11ty · Nunjucks · Tailwind · gsap</p>
                 <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">Scrolling Animation</h1>
                 <p class="mb-10 max-w-2xl text-lg text-gray-600 md:text-xl">Animations that follow the scroll: video intros, image sequences and parallax backgrounds. Each demo shows its markup and script, ready to use on any website.</p>
                 <div class="flex flex-wrap gap-3">
                     <a class="js-auto-scroll rounded-full bg-gray-950 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-gray-700" href="#demos">See the demos</a>
-                    <a class="rounded-full border border-gray-300 px-5 py-3 text-sm font-medium text-gray-950 transition-colors hover:border-gray-950" href="{{ site.github }}" target="_blank" rel="noopener">View on GitHub</a>
+                    <a class="group inline-flex items-center gap-1.5 rounded-full border border-gray-300 px-5 py-3 text-sm font-medium text-gray-950 transition-colors hover:border-gray-950" href="{{ site.github }}" target="_blank" rel="noopener">View on GitHub{{ external('group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}</a>
                 </div>
             </div>
             <div class="flex min-h-0 items-center justify-center md:h-full md:py-16">
@@ -35,7 +32,7 @@ title: Scrolling Animation | Anthony Toolkits
             <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/scrolling-animation/video-intro/">
                 {# preview: the cover fades as the card scrolls in #}
                 <div class="js-preview-video relative aspect-4/3 overflow-hidden bg-black">
-                    <video class="js-hls-video absolute inset-0 size-full object-cover" data-src="/assets/video/video1/video1.m3u8" muted playsinline loop autoplay disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
+                    <video class="js-hls-video absolute inset-0 size-full object-cover" data-src="/assets/video/sample-video/sample-video.m3u8" muted playsinline loop autoplay disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
                     <div class="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/70 to-transparent"></div>
                     <div class="js-preview-video-cover absolute inset-0 bg-black"></div>
                     <p class="absolute inset-x-6 bottom-6 text-xl leading-tight font-bold text-white">Scroll to drive the animation</p>

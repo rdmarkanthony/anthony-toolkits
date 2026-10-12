@@ -2,10 +2,10 @@
 title: Video player | Anthony Toolkits
 ---
 
-{% from "components/atoms/back-link.njk" import backLink %}
 {% from "components/atoms/component-page.njk" import scriptUsage %}
 
-{% set video = '/assets/video/video1/video1.m3u8' %}
+{% set video = '/assets/video/sample-video.mp4' %}
+{% set videoHls = '/assets/video/sample-video/sample-video.m3u8' %}
 
 {# demo: a stretched autoplay video as the background #}
 <section class="relative overflow-hidden bg-gray-950 px-4 pt-24 pb-16 text-white md:pt-32">
@@ -14,7 +14,6 @@ title: Video player | Anthony Toolkits
         <div class="absolute inset-0 bg-black/50"></div>
     </div>
     <div class="relative mx-auto max-w-295">
-        <div class="text-gray-300 [&>a]:text-gray-300 [&>a:hover]:text-white">{{ backLink() }}</div>
         <p class="mb-4 font-mono text-sm text-gray-300">_videoPlayer</p>
         <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">Video player</h1>
         <p class="max-w-2xl text-lg text-gray-300 md:text-xl">MP4 and HLS (<code class="font-mono text-base">.m3u8</code>) videos from a data attribute. Autoplay videos are muted loops, and stretch covers the box at any ratio. Playing one video pauses the others, YouTube players too.</p>
@@ -22,24 +21,44 @@ title: Video player | Anthony Toolkits
 </section>
 
 {# demo #}
-<section class="px-4 py-16">
-    <div class="mx-auto grid max-w-295 gap-10 md:grid-cols-2">
-        {% set players = [
+{% set groups = [
+    {
+        title: 'MP4',
+        src: video,
+        players: [
             { label: 'Standard', options: '', ratio: 'aspect-video' },
             { label: 'Autoplay', options: ',autoplay', ratio: 'aspect-video' },
             { label: 'Stretched, square', options: ',autoplay,stretch', ratio: 'aspect-square' },
             { label: 'Stretched, vertical', options: ',autoplay,stretch', ratio: 'aspect-9/16' }
-        ] %}
-        {% for player in players %}
-        <div class="flex flex-col gap-3">
-            <p class="font-semibold">{{ player.label }} <code class="ml-2 font-mono text-xs font-normal text-gray-500">src{{ player.options }}</code></p>
-            <div class="relative {{ player.ratio }} bg-black" data-video-player="{{ video }}{{ player.options }}">
-                {% if 'autoplay' in player.options %}<div class="absolute inset-0 z-10"></div>{% endif %}
+        ]
+    },
+    {
+        title: 'HLS (.m3u8)',
+        src: videoHls,
+        players: [
+            { label: 'Standard', options: '', ratio: 'aspect-video' },
+            { label: 'Autoplay', options: ',autoplay', ratio: 'aspect-video' }
+        ]
+    }
+] %}
+{% for group in groups %}
+<section class="px-4 py-16 {{ 'pt-0' if not loop.first }}">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-2 text-3xl font-bold tracking-tight">{{ group.title }}</h2>
+        <p class="mb-8 font-mono text-sm text-gray-500">{{ group.src }}</p>
+        <div class="grid gap-10 md:grid-cols-2">
+            {% for player in group.players %}
+            <div class="flex flex-col gap-3">
+                <p class="font-semibold">{{ player.label }} <code class="ml-2 font-mono text-xs font-normal text-gray-500">src{{ player.options }}</code></p>
+                <div class="relative {{ player.ratio }} bg-black" data-video-player="{{ group.src }}{{ player.options }}">
+                    {% if 'autoplay' in player.options %}<div class="absolute inset-0 z-10"></div>{% endif %}
+                </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
 </section>
+{% endfor %}
 
 {% set markup %}{% raw %}
 <!-- data-video-player="src,autoplay,stretch" -->

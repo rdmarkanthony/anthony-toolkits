@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>{{ title | default('Home') | safe }}</title>
+    <script>document.documentElement.classList.add("js-animate");</script>
     {% if pageKeywords or pageDescription or pageURL -%}
     <meta name="keywords" content="{{ pageKeywords }}" />
     <meta name="description" content="{{ pageDescription }}" />
@@ -48,7 +49,7 @@
         {{ content | safe }}
     </div>
     {% getBundle "popup" %}
-    {{ footer({ site: site, components: components }) }}
+    {{ footer({ site: site }) }}
 
     <script src="/assets/js/script.js" type="module"></script>
     {% getBundle "footerscript" %}

@@ -1,3 +1,4 @@
+{%- from "components/atoms/icon.njk" import external -%}
 {% macro header(props) %}
 <header class="header-content sticky top-0 z-40 border-b border-gray-200 bg-white/90 px-4 backdrop-blur">
     <div class="mx-auto flex max-w-295 items-center justify-between gap-4 py-3">
@@ -5,7 +6,7 @@
         <nav aria-label="Main">
             <ul class="flex items-center gap-1 text-sm font-medium">
                 <li><a class="rounded-full px-3 py-2 text-gray-600 md:px-4 transition-colors hover:text-gray-950" href="/#components">Components</a></li>
-                <li><a class="rounded-full border border-gray-300 px-3 py-2 text-gray-950 md:px-4 transition-colors hover:border-gray-950" href="{{ props.site.github }}" target="_blank" rel="noopener">GitHub</a></li>
+                <li><a class="group inline-flex items-center gap-1 rounded-full border border-gray-300 px-3 py-2 text-gray-950 md:px-4 transition-colors hover:border-gray-950" href="{{ props.site.github }}" target="_blank" rel="noopener">GitHub{{ external('group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}</a></li>
             </ul>
         </nav>
     </div>

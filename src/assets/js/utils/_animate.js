@@ -4,7 +4,8 @@ import { _splitText } from "./_splitText";
 
 export class _animate {
     constructor(props = {}) {
-        if (window._animateInstance) throw new Error("_animate is already running");
+        // one per page, use refresh() for new content
+        if (window._animateInstance) return window._animateInstance;
 
         window._animateInstance = this;
 
@@ -15,12 +16,25 @@ export class _animate {
         this.duration = props.duration ?? 0.8;
         this.keyframe = props.keyframe ?? "fadeInUpSmall";
 
+        this.items = new WeakSet();
+
         this.init();
     }
 
     init() {
+        document.documentElement.classList.add("js-animate-ready");
+
+        this.refresh();
+
+        if (this.debug) console.log("_animate", this);
+    }
+
+    // for content added later
+    refresh(root = document) {
+        const _find = (selector) => [...(root.matches?.(selector) ? [root] : []), ...root.querySelectorAll(selector)].filter((item) => !this.items.has(item));
+
         // find all the animate containers
-        document.querySelectorAll("[data-animate]").forEach((item) => {
+        _find("[data-animate]").forEach((item) => {
             const _item = item;
             const _dataset = _item.dataset.animate.split(",");
 
@@ -30,6 +44,13 @@ export class _animate {
 
             if (_relation === "parent") {
                 // for parent
+                const _startDelay = _delay;
+                let _index = 0;
+
+                const _nextDelay = () => {
+                    _index++;
+                    return typeof _startDelay === "number" ? _startDelay + this.adjacentDelay * _index : `calc(${_startDelay} + ${(this.adjacentDelay * _index).toFixed(2)}s)`;
+                };
 
                 // find all the children of this parent
                 _item.querySelectorAll('[data-animate="children"]').forEach((item) => {
@@ -48,7 +69,7 @@ export class _animate {
 
                                 this.set(_item, _delay, _duration);
 
-                                _delay += this.adjacentDelay; // stagger the delay for all child
+                                _delay = _nextDelay(); // stagger the delay for all child
                             });
                         } else {
                             if (_item.dataset.animate) return;
@@ -57,7 +78,7 @@ export class _animate {
 
                             this.set(_item, _delay, _duration);
 
-                            _delay += this.adjacentDelay; // stagger the delay for all child
+                            _delay = _nextDelay(); // stagger the delay for all child
                         }
                     });
                 });
@@ -65,7 +86,6 @@ export class _animate {
                 _item.querySelectorAll('[data-animate="children-inview"]').forEach((item) => {
                     Array.from(item.children).forEach((item) => {
                         item.dataset.animate = "";
-                        // item.dataset.animateDelay = "stagger";
                         item.classList.add("opacity-0");
                     });
                 });
@@ -75,11 +95,18 @@ export class _animate {
             }
         });
 
+        const _items = _find("[data-animate]");
+        const _titles = _find(".js-splittext");
+
+        [..._items, ..._titles].forEach((item) => this.items.add(item));
+
         // animate the containers upon inview
-        document.querySelectorAll("[data-animate]").forEach((item) => {
+        _items.forEach((item) => {
             const _item = item;
             const _dataset = _item.dataset.animate.split(",");
             const _relation = _dataset[0] ? _dataset[0] : "";
+
+            if (_relation === "child") return;
 
             new _inview({
                 target: _item,
@@ -103,78 +130,83 @@ export class _animate {
                         // this is the parent of child, no animation, just show the content
                         _item.classList.remove("opacity-0");
                         _item.removeAttribute("data-animate");
-                    } else if (_relation === "child") {
-                        // do nothing, as their parent will trigger visibility for each of them
-                        return;
                     } else {
                         // for single item
                         this.show(_item, (target) => {
                             this.clean(target);
                         });
+
+                        _event.dispatch(_item, "visible");
                     }
                 },
             });
         });
 
         // for header titles or splittext animate
-        if (document.querySelector(".js-splittext")) {
-            document.querySelectorAll(".js-splittext").forEach((item) => {
-                const _item = item;
-                const _splittext = new _splitText({ target: _item });
+        _titles.forEach((item) => {
+            const _item = item;
+            const _splittext = new _splitText({ target: _item });
 
-                if (!_item.dataset.animate) return;
-                _item.classList.add("js-splittext-animate");
+            if (!_item.dataset.animate) return;
+            _item.classList.add("js-splittext-animate");
 
-                _item.addEventListener("visible", () => {
+            _item.addEventListener(
+                "visible",
+                () => {
+                    if (this.keyframeOf(_item).includes("Down")) _item.classList.add("pullDown");
+
                     _item.classList.add("js-splittext-animated");
                     _item.style.setProperty("--pullup-delay", window.getComputedStyle(_item).animationDelay);
 
-                    if (this.debug) return;
+                    if (this.debug || !_splittext.split?.words?.length) return;
 
-                    const _words = _splittext?.split?.words;
+                    // revert once the last word is in place
+                    const _onEnd = (e) => {
+                        if (e.target !== _splittext.split?.words?.at(-1)) return;
 
-                    if (!_words) return;
+                        _item.removeEventListener("animationend", _onEnd);
+                        _splittext.destroy();
 
-                    let _timeOut = (_words.length + 1) * parseFloat(window.getComputedStyle(_words[0]).animationDuration);
-                    if (_timeOut <= 1) _timeOut = 1;
-
-                    window.setTimeout(() => {
-                        _splittext?.split?.revert();
-                        _splittext.split = null;
-
-                        _item.classList.remove("js-splittext-animate", "js-splittext-animated");
+                        _item.classList.remove("js-splittext-animate", "js-splittext-animated", "pullDown");
                         _item.style.setProperty("--pullup-delay", "");
-                    }, _timeOut * 1000);
-                });
-            });
-        }
+                    };
 
-        if (this.debug) console.log("_animate", this);
+                    _item.addEventListener("animationend", _onEnd);
+                },
+                { once: true }
+            );
+        });
+    }
+
+    keyframeOf(target) {
+        const _className = target.dataset.animateClass || target.dataset.animate?.split(",")[0] || this.keyframe;
+
+        return ["parent", "children", "child"].includes(_className) ? this.keyframe : _className;
     }
 
     set(target, delay, duration) {
-        const _delay = parseFloat(delay) ? `${delay.toFixed(2)}s` : delay;
+        const _isNumber = typeof delay === "number";
+        const _delay = _isNumber ? `${delay.toFixed(2)}s` : delay;
 
         target.style.animationDelay = _delay;
-        if (parseFloat(delay)) target.style.setProperty("--animate-delay", _delay);
+        if (_isNumber) target.style.setProperty("--animate-delay", _delay);
         target.style.setProperty("--animate-duration", `${duration}s`);
     }
 
     show(target, callback) {
         this.staggerDelay += this.adjacentDelay;
 
-        let _className = target.dataset.animateClass || target.dataset.animate?.split(",")[0] || this.keyframe;
-        if (["parent", "children", "child"].includes(_className)) _className = this.keyframe;
+        const _className = this.keyframeOf(target);
 
         // show and animate the element
         target.classList.remove("opacity-0");
         target.classList.add("animate__animated", `animate__${_className}`);
 
-        let _styles = window.getComputedStyle(target);
-        // if no animation-duration
-        if (parseFloat(_styles.animationDuration) === 0) target.style.animationDuration = `${this.duration}s`;
+        const _styles = window.getComputedStyle(target);
+        // if no animation-duration of its own
+        if (!target.style.getPropertyValue("--animate-duration")) target.style.setProperty("--animate-duration", `${this.duration}s`);
         // if no animation-delay
-        if (parseFloat(_styles.animationDelay) === 0) {
+        if (!target.style.animationDelay && parseFloat(_styles.animationDelay) === 0) {
             const _delay = `${this.adjacentDelay.toFixed(2)}s`;
 
             target.style.setProperty("--animate-delay", _delay);
@@ -189,25 +221,15 @@ export class _animate {
             target.style.animationDelay = _delay;
         }
 
-        // for callback
+        // keep its own timing, a parent's --animate-* is removed on clean
+        target.style.animationDuration = _styles.animationDuration;
+        target.style.animationDelay = _styles.animationDelay;
+
+        // for callback, once the keyframe ends
         if (callback) {
-            _styles = window.getComputedStyle(target);
-            const _delay = parseFloat(_styles.animationDuration) + parseFloat(_styles.animationDelay);
+            const _animations = target.getAnimations().filter((animation) => animation.animationName === _className);
 
-            // console.log(
-            //     "show",
-            //     "_delay",
-            //     parseFloat(_styles.animationDuration),
-            //     parseFloat(_styles.animationDelay),
-            //     _delay * 1000
-            // );
-
-            window.setTimeout(
-                () => {
-                    callback(target);
-                },
-                Math.max(_delay * 1000, 1400)
-            );
+            Promise.allSettled(_animations.map((animation) => animation.finished)).then(() => callback(target));
         }
     }
 
@@ -216,40 +238,22 @@ export class _animate {
 
         if (this.debug) return;
 
-        let _className = target.dataset.animateClass || target.dataset.animate?.split(",")[0] || this.keyframe;
-        if (["parent", "children", "child"].includes(_className)) _className = this.keyframe;
+        const _className = this.keyframeOf(target);
 
-        // hide the element after delay
-        const _styles = window.getComputedStyle(target);
-        let _delay = parseFloat(_styles.animationDuration) + parseFloat(_styles.animationDelay);
+        target.removeAttribute("data-animate");
+        target.removeAttribute("data-animate-delay");
+        target.classList.remove("animate__animated", `animate__${_className}`, "opacity-0");
 
-        // console.log(
-        //     "clean",
-        //     "_delay",
-        //     parseFloat(_styles.animationDuration),
-        //     parseFloat(_styles.animationDelay),
-        //     _delay * 1000
-        // );
+        target.style.animationDelay = "";
+        target.style.setProperty("--animate-delay", "");
+        target.style.animationDuration = "";
+        target.style.setProperty("--animate-duration", "");
+        target.style.animationFillMode = "";
 
-        window.setTimeout(
-            () => {
-                target.removeAttribute("data-animate");
-                target.removeAttribute("data-animate-delay");
-                target.classList.remove("animate__animated", `animate__${_className}`, "opacity-0");
+        target.removeAttribute("data-animate-class");
 
-                target.style.animationDelay = "";
-                target.style.setProperty("--animate-delay", "");
-                target.style.animationDuration = "";
-                target.style.setProperty("--animate-duration", "");
-                target.style.animationFillMode = "";
+        if (target.getAttribute("style")?.length <= 0) target.removeAttribute("style");
 
-                target.removeAttribute("data-animate-class");
-
-                if (target.getAttribute("style")?.length <= 0) target.removeAttribute("style");
-
-                if (callback) callback(target);
-            },
-            Math.max(_delay * 1000, 1400)
-        );
+        if (callback) callback(target);
     }
 }

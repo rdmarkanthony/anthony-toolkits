@@ -2,8 +2,6 @@
 title: Breakpoints | Anthony Toolkits
 ---
 
-{% from "components/atoms/back-link.njk" import backLink %}
-
 {% set breakpoints = [
     { name: 'xxs', width: '0px', device: 'small phones', show: 'block xs:hidden', size: 'text-xl' },
     { name: 'xs', width: '320px', device: 'iPhone SE, older Android phones', show: 'hidden xs:block sm:hidden', size: 'text-2xl' },
@@ -18,10 +16,7 @@ title: Breakpoints | Anthony Toolkits
 
 {# demo: the color and label change at each breakpoint, resize the window #}
 <section class="relative flex min-h-[calc(100vh-var(--header-height,0px))] items-center justify-center bg-red-500 px-4 text-white transition-colors duration-300 xs:bg-orange-500 sm:bg-yellow-500 md:bg-lime-500 lg:bg-green-500 xl:bg-emerald-500 2xl:bg-teal-500 3xl:bg-blue-500 4xl:bg-violet-500">
-    <div class="absolute top-4 left-4 flex flex-col items-start gap-2">
-        <div class="rounded-full bg-white px-4 [&>a]:mb-0 [&>a]:py-2">{{ backLink() }}</div>
-        <p class="font-mono text-sm"><span class="js-window-width">0</span> window width</p>
-    </div>
+    <p class="absolute top-4 left-4 font-mono text-sm"><span class="js-window-width">0</span> window width</p>
     <div class="text-center">
         {% for item in breakpoints %}
         <div class="{{ item.show }} {{ item.size }}">
