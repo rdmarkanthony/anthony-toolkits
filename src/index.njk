@@ -3,11 +3,10 @@ layout: base.njk
 title: Anthony Toolkits
 ---
 
-{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/icon.njk" import angle, external %}
 
 <section class="px-4 pt-24 pb-16 md:pt-32">
     <div class="mx-auto max-w-295">
-        <p class="mb-4 font-mono text-sm text-gray-500">11ty · Nunjucks · Tailwind · gsap</p>
         <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">{{ site.name }}</h1>
         <p class="mb-10 max-w-2xl text-lg text-gray-600 md:text-xl">{{ site.description }} Each component shows its markup and script, ready to copy into any website.</p>
         <div class="flex flex-wrap gap-3">
@@ -15,7 +14,7 @@ title: Anthony Toolkits
                 <span class="sr-only">Search components</span>
                 <input class="w-full rounded-full border border-gray-300 px-5 py-3 text-sm placeholder:text-gray-500 focus:border-gray-950 focus:outline-none" type="search" placeholder="Search components or utils…" autocomplete="off" data-filter-input />
             </label>
-            <a class="rounded-full border border-gray-300 px-5 py-3 text-sm font-medium text-gray-950 transition-colors hover:border-gray-950" href="{{ site.github }}" target="_blank" rel="noopener">View on GitHub</a>
+            <a class="group inline-flex items-center gap-1.5 rounded-full border border-gray-300 px-5 py-3 text-sm font-medium text-gray-950 transition-colors hover:border-gray-950" href="{{ site.github }}" target="_blank" rel="noopener">View on GitHub{{ external('group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}</a>
         </div>
     </div>
 </section>

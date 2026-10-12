@@ -1,8 +1,9 @@
+{%- from "components/atoms/icon.njk" import external -%}
 {% macro footer(props) %}
 <footer class="footer-content border-t border-gray-200 px-4">
     <div class="mx-auto flex max-w-295 flex-wrap items-center justify-between gap-2 py-6 text-xs text-gray-500">
         <p>&copy; {{ props.site.year }} {{ props.site.name }}</p>
-        <a class="transition-colors hover:text-gray-950" href="{{ props.site.github }}" target="_blank" rel="noopener">GitHub</a>
+        <a class="group inline-flex items-center gap-1 transition-colors hover:text-gray-950" href="{{ props.site.github }}" target="_blank" rel="noopener">GitHub{{ external('group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}</a>
     </div>
 </footer>
 {% endmacro %}
