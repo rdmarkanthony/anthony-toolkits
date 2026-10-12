@@ -1,18 +1,22 @@
+// calls back when the target scrolls into view
+// usage: new _inview({ target, callback: (instance) => instance.visible })
 export class _inview {
     constructor(props) {
         this.target = props.target ?? null;
         this.observeOnce = props.observeOnce !== false;
         this.observeRatio = props.observeRatio ?? 0;
-        this.threshold = props.threshold ?? 0;
+        // the observer only reports at its thresholds, so it has to include the ratio
+        this.threshold = props.threshold ?? this.observeRatio;
         this.delay = props.delay ?? 0;
 
         this.visible = false;
+        this.observer = null;
 
         if (props.target) this.init(props.callback);
     }
 
     init(callback) {
-        const _observer = new IntersectionObserver(
+        this.observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting && entry.intersectionRatio >= this.observeRatio) {
@@ -21,10 +25,13 @@ export class _inview {
 
                         if (callback) setTimeout(() => callback(this), this.delay);
 
-                        if (this.observeOnce) _observer.disconnect();
+                        if (this.observeOnce) this.destroy();
                     } else {
+                        // only when it was in view, not on the first report
+                        if (!this.visible) return;
                         this.visible = false;
-                        if (!this.observeOnce && callback) setTimeout(() => callback(this), this.delay);
+
+                        if (callback) setTimeout(() => callback(this), this.delay);
                     }
                 });
             },
@@ -35,6 +42,12 @@ export class _inview {
             }
         );
 
-        _observer.observe(this.target);
+        this.observer.observe(this.target);
+    }
+
+    // stop watching
+    destroy() {
+        this.observer?.disconnect();
+        this.observer = null;
     }
 }

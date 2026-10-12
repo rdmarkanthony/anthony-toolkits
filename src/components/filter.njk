@@ -1,0 +1,71 @@
+---
+title: Filter | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_filter', title: 'Filter', description: 'Live search for a list, set up with data attributes. Items hide when their text doesn\'t match, groups hide when they\'re empty. The search on the home page uses it.' }) }}
+
+{% set groups = [
+    { name: 'Fruits', items: ['Apple', 'Banana', 'Mango', 'Pineapple', 'Strawberry'] },
+    { name: 'Vegetables', items: ['Carrot', 'Eggplant', 'Pumpkin', 'Spinach', 'Tomato'] },
+    { name: 'Herbs', items: ['Basil', 'Lemongrass', 'Mint', 'Parsley', 'Rosemary'] }
+] %}
+
+{# demo #}
+<section class="px-4 py-16">
+    <div class="js-filter mx-auto flex max-w-295 flex-col gap-8">
+        <label class="max-w-md">
+            <span class="sr-only">Search</span>
+            <input class="h-12 w-full rounded-md border border-gray-300 px-3 focus:border-gray-950 focus:outline-none" type="search" placeholder="Try &quot;an&quot; or &quot;herbs&quot;" autocomplete="off" data-filter-input />
+        </label>
+        <div class="grid gap-8 md:grid-cols-3">
+            {% for group in groups %}
+            <div data-filter-group>
+                <p class="mb-3 text-xl font-bold tracking-tight">{{ group.name }}</p>
+                <ul class="flex flex-col gap-2">
+                    {% for item in group.items %}
+                    <li class="rounded-md border border-gray-200 px-3 py-2" data-filter-item="{{ item }} {{ group.name }}">{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+        <p class="hidden text-gray-600" data-filter-empty>Nothing matches your search.</p>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<div class="js-filter">
+    <input type="search" data-filter-input />
+
+    <!-- optional, hides when none of its items match -->
+    <div data-filter-group>
+        <!-- the text to search, can hold more than what's shown -->
+        <div data-filter-item="Apple Fruits">Apple</div>
+    </div>
+
+    <!-- optional, shows when nothing matches -->
+    <p class="hidden" data-filter-empty>Nothing matches your search.</p>
+</div>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_filter.js
+
+// pass the wrapper, so each list on the page gets its own search
+_filter.init(document.querySelector('.js-filter'));
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Items are hidden with the <code class="font-mono text-sm">hidden</code> attribute. Groups are optional, items can be a flat list.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">_filter.init(scope)</code>, the scope defaults to <code class="font-mono text-sm">document</code>. The match is case-insensitive and anywhere in the text.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

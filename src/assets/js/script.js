@@ -5,6 +5,7 @@ import flatpickr from "flatpickr";
 
 // utils, each one also works on its own: copy it with the files it imports
 import { _event } from "./utils/_event";
+import { _emitter } from "./utils/_emitter";
 import { _filter } from "./utils/_filter";
 import { _inview } from "./utils/_inview";
 import { _splitText } from "./utils/_splitText";
@@ -29,6 +30,7 @@ Object.assign(window, {
     DateTime,
     flatpickr,
     _event,
+    _emitter,
     _filter,
     _inview,
     _splitText,
@@ -60,6 +62,3 @@ _event.resize(() => {
     document.body.style.setProperty("--header-height", `${header?.offsetHeight ?? 0}px`);
     document.body.style.setProperty("--footer-height", `${footer?.offsetHeight ?? 0}px`);
 });
-
-// component search
-_filter.init();

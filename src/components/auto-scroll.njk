@@ -1,0 +1,73 @@
+---
+title: Auto scroll | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_autoScroll', title: 'Auto scroll', description: 'Smooth scrolls the page to an element with gsap, stopping below a fixed or sticky <code class="font-mono text-base">.header-content</code>. Jumps straight there when the visitor prefers reduced motion.' }) }}
+
+{% set button = 'rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700' %}
+{% set sections = [
+    { id: 'auto-scroll-1', title: 'Section 1', note: 'Default: 500ms, power2.out, stops below the header.', attrs: '' },
+    { id: 'auto-scroll-2', title: 'Section 2', note: 'speed: 1500, ease: "power4.inOut".', attrs: 'data-speed="1500" data-ease="power4.inOut"' },
+    { id: 'auto-scroll-3', title: 'Section 3', note: 'offset: 0, so it scrolls under the sticky header.', attrs: 'data-offset="0"' }
+] %}
+
+{# demo: links scroll to the sections, each section scrolls back to the links #}
+<section class="px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <div id="auto-scroll-nav" class="flex flex-col gap-4 rounded-2xl border border-gray-200 p-6">
+            <div class="flex flex-wrap gap-3">
+                {% for item in sections %}
+                <a class="js-auto-scroll {{ button }}" href="#{{ item.id }}" {{ item.attrs | safe }}>Go to {{ item.title }}</a>
+                {% endfor %}
+            </div>
+            <p class="js-auto-scroll-status font-mono text-sm text-gray-500">Click a link.</p>
+        </div>
+
+        <div class="mt-[60vh] flex flex-col gap-[60vh] pb-[30vh]">
+            {% for item in sections %}
+            <div id="{{ item.id }}" class="flex min-h-64 flex-col justify-center gap-3 rounded-2xl bg-gray-950 p-6 text-white md:p-10">
+                <p class="text-3xl font-bold tracking-tight">{{ item.title }}</p>
+                <p class="opacity-70">{{ item.note }}</p>
+                <a class="js-auto-scroll self-start font-medium underline underline-offset-4" href="#auto-scroll-nav">Back to the links</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // gsap, with gsap/ScrollToPlugin
+        // src/assets/js/utils/_autoScroll.js
+
+const _status = document.querySelector('.js-auto-scroll-status');
+
+// the links still work without js, this only makes them smooth
+document.querySelectorAll('.js-auto-scroll').forEach((link) => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        _autoScroll({
+            target: document.querySelector(link.getAttribute('href')),
+            speed: link.dataset.speed ? Number(link.dataset.speed) : undefined,
+            ease: link.dataset.ease,
+            offset: link.dataset.offset ? Number(link.dataset.offset) : undefined,
+            callback: ({ target, direction, y }) => {
+                _status.textContent = `Scrolled ${direction} to #${target.id}, at ${y}px.`;
+            },
+        });
+    });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: '<code class="font-mono text-sm">_autoScroll({ target, offset, speed, ease, callback })</code>, the speed in ms. <code class="font-mono text-sm">offset</code> defaults to the header height. Add <code class="font-mono text-sm">data-scroll-parent=".selector"</code> on the target to scroll to its closest matching parent instead.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

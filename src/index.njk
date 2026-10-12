@@ -64,3 +64,10 @@ title: Anthony Toolkits
         <p class="hidden text-kit-muted" data-filter-empty>No components match your search.</p>
     </div>
 </section>
+
+{% footerscript %}
+<script type="module">
+    // component search, the input is in the hero, so the scope is the whole page
+    _filter.init();
+</script>
+{% endfooterscript %}
