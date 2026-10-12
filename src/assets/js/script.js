@@ -81,6 +81,21 @@ _event.resize(() => {
 // a url hash scrolls to its section on load, here so it runs before the page scripts (e.g. a lightbox opening with it)
 _autoScrollHash();
 
+// the starter kit popup from the header, also from the url, e.g. /#starter-kit
+document.addEventListener("click", (e) => {
+    if (!e.target.closest("[data-starter-open]")) return;
+    e.preventDefault();
+    new _lightbox({ target: "#starter-kit" });
+});
+if (location.hash === "#starter-kit") new _lightbox({ target: "#starter-kit" });
+
+document.querySelector("[data-starter-copy]")?.addEventListener("click", async (e) => {
+    const button = e.currentTarget;
+    await navigator.clipboard.writeText(document.querySelector("[data-starter-files] code").textContent);
+    button.textContent = "Copied";
+    setTimeout(() => (button.textContent = "Copy file list"), 2000);
+});
+
 // smooth scroll for links with data-auto-scroll to a section of the same page, "#" goes to the top
 document.addEventListener("click", (e) => {
     const link = e.target.closest("a[data-auto-scroll]");
