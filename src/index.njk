@@ -67,7 +67,7 @@ title: Anthony Toolkits
     // component search, the input is in the hero, so the scope is the whole page
     _filter.init();
 
-    // ?q= comes from the header search on the other pages, the url keeps the search for sharing and the back button
+    // ?q= comes from the header search, and stays in the url for sharing and the back button
     const form = document.querySelector("[data-home-search]");
     const input = form.querySelector("[data-filter-input]");
     const query = new URLSearchParams(location.search).get("q");

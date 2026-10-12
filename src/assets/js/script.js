@@ -78,10 +78,10 @@ _event.resize(() => {
     document.body.style.setProperty("--footer-height", `${footer?.offsetHeight ?? 0}px`);
 });
 
-// a url hash scrolls to its section on load, here so it runs before the page scripts (e.g. a lightbox opening with it)
+// before the page scripts read the hash
 _autoScrollHash();
 
-// the starter kit popup from the header, also from the url, e.g. /#starter-kit
+// starter kit popup, from the header links or /#starter-kit
 document.addEventListener("click", (e) => {
     if (!e.target.closest("[data-starter-open]")) return;
     e.preventDefault();
@@ -111,13 +111,13 @@ document.addEventListener("click", (e) => {
     _autoScroll({ target });
 });
 
-// header and home search, a suggestion opens its component, Enter with none picked submits to the home page (?q=) for the results
-// same match as the home page filter, so the suggestions and the results agree
+// header and home search: a suggestion opens its component, Enter without one goes to /?q=
+// same match as the home filter, so suggestions and results agree
 const searchItems = JSON.parse(document.getElementById("search-items")?.textContent ?? "[]");
 const escapeHTML = (text) => String(text).replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 
 document.querySelectorAll("[data-search]").forEach((form) => {
-    // the home page shows the results under its search, so no "See all" or empty message there
+    // the home results are right below, so no "See all" or empty message
     const onHome = form.hasAttribute("data-home-search");
 
     new _autocomplete({

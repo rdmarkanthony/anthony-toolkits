@@ -7,9 +7,8 @@ const _scrollTop = () => window.scrollY;
 const _offsetTop = (target) => target.getBoundingClientRect().top + _scrollTop();
 const _isVisible = (target) => (target.checkVisibility ? target.checkVisibility() : target.getClientRects().length > 0);
 
-// on page load, scrolls to the element of the url hash, e.g. /page/#section or /page/#section?tab=2
-// only if it's visible, a hidden one (a lightbox's content, a closed accordion) is left to the script that shows it
-// call it before the other scripts read the hash, e.g. a lightbox that opens with it would make its content visible
+// usage: _autoScrollHash(options), before the other scripts read the hash, scrolls on load to #id or #id?query
+// only to a visible element, a hidden one (a lightbox's content, a closed accordion) is left to its own script
 export const _autoScrollHash = (props = {}) => {
     const _id = decodeURIComponent(location.hash.slice(1).split("?")[0]);
     const _target = _id && document.getElementById(_id);
@@ -26,15 +25,14 @@ export const _autoScrollHash = (props = {}) => {
 export const _autoScroll = ({ target, offset, speed = 500, ease = "power2.out", callback } = {}) => {
     if (!target) return;
 
-    // if need to scroll to parent of the target
+    // data-scroll-parent: scroll to that parent instead
     const _parent = target.dataset.scrollParent && target.closest(target.dataset.scrollParent);
     if (_parent) target = _parent;
 
-    // for direction
     const _targetTop = _offsetTop(target);
     const _direction = _scrollTop() > _targetTop ? "up" : "down";
 
-    // for offset, only a fixed or sticky header covers the target
+    // only a fixed or sticky header covers the target
     const _header = document.querySelector(".header-content");
     const _headerHeight = _header && ["fixed", "sticky"].includes(getComputedStyle(_header).position) ? _header.offsetHeight : 0;
     const _offset = offset ?? _headerHeight;
@@ -43,7 +41,6 @@ export const _autoScroll = ({ target, offset, speed = 500, ease = "power2.out", 
     if (_headerHeight > _y) _y = 0;
     _y = Math.max(0, Math.round(_y));
 
-    // for speed
     const _reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     gsap.to(window, {

@@ -1,8 +1,7 @@
 import fs from "node:fs";
 import components from "./components.js";
 
-// the components marked `starter: true` in components.js, and every file they need,
-// merged from the "// Requirements" comment of each demo page, so there's no second list to keep in sync
+// components.js items with starter: true, and their files merged from each demo page's "// Requirements"
 export default () => {
     const items = components.flatMap((group) => group.items.filter((item) => item.starter));
     const sections = new Map();

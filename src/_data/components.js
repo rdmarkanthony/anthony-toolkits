@@ -1,7 +1,7 @@
 // component registry: drives the home page, header and footer
 // set `ready: true` once the component is migrated to src/components/
 // a category `url` links its heading to an overview page, `utils` labels the card
-// `starter: true` puts it in the home page's starter kit, the ones copied into every new project
+// `starter: true` adds it to the starter kit popup
 export default [
     {
         category: "Scrolling animation",

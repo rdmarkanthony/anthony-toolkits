@@ -34,7 +34,7 @@ export class _autocomplete {
         this.list.setAttribute("role", "listbox");
         this.list.hidden = true;
 
-        // only while typing, a value set by a script (e.g. from the url) shouldn't open the list
+        // only while typing, not when a script sets the value
         this.onInput = () => document.activeElement === this.input && this.update();
         this.onFocus = () => this.input.value.trim() && this.update();
         this.onKeydown = (e) => this.keydown(e);
