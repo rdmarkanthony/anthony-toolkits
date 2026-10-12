@@ -1,0 +1,204 @@
+---
+title: Select box | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_selectBox', title: 'Select box', description: 'A styled dropdown for a native <code class="font-mono text-base">&lt;select&gt;</code>. The select stays in the form and keeps the value, so forms, validation and change events work as usual.' }) }}
+
+{% set button = 'rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700' %}
+{% set outline = 'rounded-md border border-gray-300 px-4 py-2 font-medium transition-colors hover:border-gray-950' %}
+{% set fieldLabel = 'mb-2 block font-semibold' %}
+{% set countries = [
+    ['+61', 'Australia'], ['+55', 'Brazil'], ['+1', 'Canada'], ['+86', 'China'], ['+33', 'France'],
+    ['+49', 'Germany'], ['+852', 'Hong Kong'], ['+91', 'India'], ['+62', 'Indonesia'], ['+81', 'Japan'],
+    ['+60', 'Malaysia'], ['+31', 'Netherlands'], ['+64', 'New Zealand'], ['+63', 'Philippines'], ['+65', 'Singapore'],
+    ['+82', 'South Korea'], ['+34', 'Spain'], ['+66', 'Thailand'], ['+44', 'United Kingdom'], ['+1', 'United States'], ['+84', 'Vietnam']
+] %}
+
+{# demo: groups, a disabled option, and a long list with search #}
+<section class="px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-2 text-3xl font-bold tracking-tight">Default and search</h2>
+        <p class="mb-8 max-w-2xl text-gray-600">Click, or Tab to it and use the arrow keys, Home and End, or type a letter to jump. The value below comes from the select's own change event.</p>
+        <div class="grid gap-8 md:grid-cols-2">
+            <div>
+                <label class="{{ fieldLabel }}" for="sample-fruit">Fruit</label>
+                <select id="sample-fruit" name="fruit" data-select-box>
+                    <option value="" disabled selected hidden>Choose a fruit</option>
+                    <optgroup label="Citrus">
+                        <option value="lemon">Lemon</option>
+                        <option value="lime">Lime</option>
+                        <option value="orange">Orange</option>
+                    </optgroup>
+                    <optgroup label="Berries">
+                        <option value="blueberry">Blueberry</option>
+                        <option value="raspberry" disabled>Raspberry (sold out)</option>
+                        <option value="strawberry">Strawberry</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div>
+                <label class="{{ fieldLabel }}" for="sample-country">Country</label>
+                <select id="sample-country" name="country" data-select-box="search">
+                    {% for item in countries %}
+                    <option value="{{ item[1] | lower | replace(' ', '-') }}"{{ ' selected' if item[1] == 'Singapore' }}>{{ item[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <p class="mt-6 font-mono text-sm text-gray-500">Values: <span class="js-select-values text-gray-950">fruit=, country=singapore</span></p>
+    </div>
+</section>
+
+{# demo: a custom look per option, and the button shows only the code #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-2 text-3xl font-bold tracking-tight">Custom options</h2>
+        <p class="mb-8 max-w-2xl text-gray-600"><code class="font-mono text-sm">render</code> sets the html of each option and <code class="font-mono text-sm">label</code> the button's, here the button shows only the dialling code. <code class="font-mono text-sm">classes</code> changes the look of this one.</p>
+        <div class="flex max-w-md gap-2">
+            <div class="w-32 shrink-0">
+                <select id="sample-phone-code" name="phone-code" aria-label="Country code">
+                    {% for item in countries %}
+                    <option value="{{ item[0] }}" data-country="{{ item[1] }}"{{ ' selected' if item[1] == 'Singapore' }}>{{ item[0] }} {{ item[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input class="w-full min-w-0 rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none focus:border-gray-950" type="tel" placeholder="Phone number" aria-label="Phone number" />
+        </div>
+    </div>
+</section>
+
+{# demo: a form, required, reset, disabled and set from a script #}
+<section class="px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-2 text-3xl font-bold tracking-tight">In a form</h2>
+        <p class="mb-8 max-w-2xl text-gray-600">Submit with no size picked to see the browser's own required message. Reset puts the selects back. The size opens the phone's own picker on touch screens.</p>
+        <form class="js-select-form grid max-w-2xl gap-6 md:grid-cols-2">
+            <div>
+                <label class="{{ fieldLabel }}" for="sample-size">Size</label>
+                <select id="sample-size" name="size" required data-select-box="native">
+                    <option value="" disabled selected hidden>Choose a size</option>
+                    <option value="s">Small</option>
+                    <option value="m">Medium</option>
+                    <option value="l">Large</option>
+                </select>
+            </div>
+            <div>
+                <label class="{{ fieldLabel }}" for="sample-delivery">Delivery</label>
+                <select id="sample-delivery" name="delivery" disabled data-select-box>
+                    <option value="standard">Standard, 3 to 5 days</option>
+                    <option value="express">Express, next day</option>
+                </select>
+            </div>
+            <div class="flex flex-wrap gap-3 md:col-span-2">
+                <button class="{{ button }}" type="submit">Submit</button>
+                <button class="{{ outline }}" type="reset">Reset</button>
+                <button class="js-select-set {{ outline }}" type="button">Set size to Large</button>
+                <button class="js-select-toggle {{ outline }}" type="button">Enable delivery</button>
+            </div>
+            <p class="js-select-result font-mono text-sm text-gray-500 md:col-span-2">Not submitted yet.</p>
+        </form>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<label for="fruit">Fruit</label>
+<!-- data-select-box="search" adds a search, "native" uses the phone's picker on touch screens -->
+<select id="fruit" name="fruit" data-select-box>
+    <!-- value="" is the placeholder, hidden keeps it out of the list -->
+    <option value="" disabled selected hidden>Choose a fruit</option>
+    <optgroup label="Citrus">
+        <option value="lemon">Lemon</option>
+        <option value="lime" disabled>Lime</option>
+    </optgroup>
+</select>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_filter.js
+        // src/assets/js/utils/_selectBox.js
+
+// the look for every select box of the project, set once, each key replaces its default
+// Object.assign(_selectBox.classes, { button: '...', option: '...' });
+
+document.querySelectorAll('select[data-select-box]').forEach((target) => {
+    new _selectBox({
+        target,
+        search: target.dataset.selectBox === 'search', // or the placeholder text, e.g. 'Find a country'
+        nativeOnTouch: target.dataset.selectBox === 'native',
+        events: {
+            init: (box) => {},
+            show: (box) => {},
+            hide: (box) => {},
+            change: (box) => {}, // box.value
+        },
+    });
+});
+
+// custom options, the button shows the code only, and a look for this one
+new _selectBox({
+    target: '#sample-phone-code',
+    search: 'Find a country',
+    render: (option) => `<span class="inline-block w-12 text-gray-500">${option.value}</span>${option.dataset.country}`,
+    label: (option) => option.value,
+    classes: {
+        box: 'h-full',
+        button: 'flex h-full w-full cursor-pointer items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 py-3 hover:border-gray-950 focus-visible:outline-2 focus-visible:outline-gray-950',
+        dropdown: 'w-80 rounded-xl bg-gray-950 p-2 text-white shadow-xl',
+        search: 'mb-2 w-full rounded-lg bg-white/10 px-3 py-2 text-white outline-none placeholder:text-white/50',
+        option: 'cursor-pointer rounded-lg px-3 py-2 data-active:bg-white/10 aria-selected:text-sky-300',
+        empty: 'px-3 py-2 text-white/50',
+    },
+});
+
+// the select is the source of truth, read it like any form field
+const _values = document.querySelector('.js-select-values');
+const _fruit = document.querySelector('#sample-fruit');
+const _country = document.querySelector('#sample-country');
+
+[_fruit, _country].forEach((select) => {
+    select.addEventListener('change', () => {
+        _values.textContent = `fruit=${_fruit.value}, country=${_country.value}`;
+    });
+});
+
+// a form: required, reset, set from a script, disabled
+const _form = document.querySelector('.js-select-form');
+const _result = document.querySelector('.js-select-result');
+const _delivery = document.querySelector('#sample-delivery');
+
+_form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    _result.textContent = `Submitted: ${new URLSearchParams(new FormData(_form))}`;
+});
+
+_form.addEventListener('reset', () => {
+    _result.textContent = 'Reset.';
+});
+
+document.querySelector('.js-select-set').addEventListener('click', () => {
+    // or set select.value and dispatch a change event
+    _selectBox.get('#sample-size').value = 'l';
+});
+
+document.querySelector('.js-select-toggle').addEventListener('click', (e) => {
+    // the box follows the select's disabled and options by itself
+    _delivery.disabled = !_delivery.disabled;
+    e.target.textContent = _delivery.disabled ? 'Enable delivery' : 'Disable delivery';
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'A plain <code class="font-mono text-sm">&lt;select&gt;</code>. Its <code class="font-mono text-sm">&lt;label&gt;</code> names the box, optgroups and disabled options carry over, and options added or changed by a script show up by themselves.',
+    code: pageScript,
+    note: 'The look is in <code class="font-mono text-sm">classes</code>, state comes from attributes: <code class="font-mono text-sm">aria-expanded</code>, <code class="font-mono text-sm">aria-selected</code>, <code class="font-mono text-sm">aria-disabled</code>, <code class="font-mono text-sm">aria-invalid</code>, <code class="font-mono text-sm">data-active</code> (keyboard or mouse) and <code class="font-mono text-sm">data-placeholder</code>, so Tailwind\'s <code class="font-mono text-sm">aria-selected:</code> and <code class="font-mono text-sm">data-active:</code> style them. <code class="font-mono text-sm">box.destroy()</code> puts the plain select back. Single selects only: for multiple, tags or options from a server, use a plugin like Tom Select. Because your code only talks to the select, swapping in a plugin later leaves the markup and form code as they are.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

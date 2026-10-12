@@ -39,6 +39,12 @@ export default [
         ],
     },
     {
+        category: "Forms",
+        items: [
+            { label: "Select box", url: "/components/select-box/", description: "A styled dropdown for a native select, with search and keyboard support.", utils: "_selectBox", ready: true },
+        ],
+    },
+    {
         category: "Utilities",
         items: [
             { label: "Countdown timer", url: "/components/countdown-timer/", description: "Countdown to a date and time.", utils: "_countdownTimer · _rollingNumber", ready: true },
