@@ -2,28 +2,11 @@
 title: Scrolling Animation | Anthony Toolkits
 ---
 
-{% from "components/atoms/icon.njk" import angle, external %}
+{% from "components/atoms/icon.njk" import angle %}
 {% from "components/atoms/code-block.njk" import codeBlock %}
+{% from "components/atoms/component-page.njk" import pageIntro %}
 
-{# hero: the headphone turns as the page scrolls, pinned below the sticky site header #}
-<section class="js-hero relative h-[250vh]">
-    <div class="sticky top-(--header-height) h-[calc(100vh-var(--header-height,0px))] overflow-hidden px-4">
-        <div class="mx-auto grid h-full max-w-295 grid-rows-[auto_1fr] gap-6 pt-10 pb-6 md:grid-cols-2 md:grid-rows-1 md:items-center md:gap-10 md:py-0">
-            <div>
-                <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">Scrolling Animation</h1>
-                <p class="mb-10 max-w-2xl text-lg text-gray-600 md:text-xl">Animations that follow the scroll: video intros, image sequences and parallax backgrounds. Each demo shows its markup and script, ready to use on any website.</p>
-                <div class="flex flex-wrap gap-3">
-                    <a class="rounded-full bg-gray-950 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-gray-700" href="#demos" data-auto-scroll>See the demos</a>
-                    <a class="group inline-flex items-center gap-1.5 rounded-full border border-gray-300 px-5 py-3 text-sm font-medium text-gray-950 transition-colors hover:border-gray-950" href="{{ site.github }}" target="_blank" rel="noopener">View on GitHub{{ external('group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}</a>
-                </div>
-            </div>
-            <div class="flex min-h-0 items-center justify-center md:h-full md:py-16">
-                <canvas class="js-hero-canvas"></canvas>
-            </div>
-        </div>
-        <p class="js-hero-hint absolute bottom-6 left-1/2 hidden -translate-x-1/2 animate-bounce items-center gap-1 text-sm font-medium md:flex">Scroll {{ angle('down') }}</p>
-    </div>
-</section>
+{{ pageIntro({ title: 'Scrolling Animation', description: 'Animations that follow the scroll: video intros, image sequences and parallax backgrounds. Each demo shows its markup and script, ready to use on any website.' }) }}
 
 <section id="demos" class="px-4 py-16">
     <div class="mx-auto max-w-295">
@@ -204,22 +187,6 @@ _event.dispatch(el, 'visible', { index: 1 }); // listeners read e.detail
                 {% endraw %}{% endset %}
                 {{ codeBlock(code, 'js') }}
             </div>
-            <div class="grid gap-6 md:grid-cols-2">
-                <a class="group flex items-center justify-between gap-4 rounded-2xl border border-gray-200 p-6 transition-colors hover:border-gray-950" href="/components/scrolling-animation/canvas/">
-                    <span>
-                        <span class="mb-1 block font-mono font-semibold">_canvasBanner</span>
-                        <span class="block text-gray-600">Options and usage on the canvas demo</span>
-                    </span>
-                    {{ angle('right', 'group-hover:translate-x-0.5') }}
-                </a>
-                <a class="group flex items-center justify-between gap-4 rounded-2xl border border-gray-200 p-6 transition-colors hover:border-gray-950" href="/components/scrolling-animation/background/">
-                    <span>
-                        <span class="mb-1 block font-mono font-semibold">_parallaxBackground · _parallaxFloating</span>
-                        <span class="block text-gray-600">Options and usage on the background demo</span>
-                    </span>
-                    {{ angle('right', 'group-hover:translate-x-0.5') }}
-                </a>
-            </div>
         </div>
     </div>
 </div>
@@ -232,51 +199,10 @@ _event.dispatch(el, 'visible', { index: 1 }); // listeners read e.detail
             // gsap
             // src/assets/js/utils/_event.js
             // src/assets/js/utils/_parallax.js
-            // src/assets/js/utils/_canvasBanner.js
             // hls.js, src/assets/js/utils/_hlsVideo.js (for the video preview)
 
     // hls videos
     document.querySelectorAll('.js-hls-video').forEach((target) => new _hlsVideo({ target }));
-
-    // hero, the headphone turns while the section is pinned
-    const canvas = new _canvasBanner({
-        target: document.querySelector('.js-hero-canvas'),
-        assets: {
-            count: 50,
-            path: '/assets/img/headphone/large_',
-            digits: 4,
-            size: [1004, 1214],
-            resizeMode: 'contain',
-            // below 768px wide
-            mobile: {
-                path: '/assets/img/headphone/small_',
-                type: 'webp',
-                size: [502, 607],
-                step: 2,
-            },
-        },
-    });
-
-    new _parallaxScroller({
-        target: document.querySelector('.js-hero'),
-        events: {
-            init(scroller) {
-                scroller.el.hint = scroller.target.querySelector('.js-hero-hint');
-            },
-            resize(scroller) {
-                const _offset = _parallax.getOffset(scroller.target);
-
-                scroller.offset.top = _offset.top;
-                scroller.offset.bottom = _offset.bottom - _parallax.height();
-            },
-            update(scroller) {
-                canvas.update(scroller.offset.current);
-
-                // hide the hint once scrolling starts
-                gsap.set(scroller.el.hint, { opacity: 1 - _parallax.clamp(scroller.portion('0%', '10%')) });
-            },
-        },
-    });
 
     // video intro preview, the cover fades as the card scrolls in
     new _parallaxScroller({
