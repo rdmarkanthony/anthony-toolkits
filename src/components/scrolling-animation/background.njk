@@ -19,7 +19,7 @@ title: Background | Scrolling Animation | Anthony Toolkits
 {# demo: full width background #}
 <section class="relative min-h-screen">
     <div class="pointer-events-none absolute inset-0 overflow-hidden">
-        <div class="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat" data-parallax-background style="background-image: url('/assets/img/banner1.jpg')"></div>
+        <div class="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat" data-parallax-background style="background-image: url('/assets/img/sample-image.webp')"></div>
     </div>
     <p class="absolute bottom-6 left-6 rounded-full bg-white px-4 py-2 font-mono text-sm shadow-md">data-parallax-background</p>
 </section>
@@ -31,8 +31,8 @@ title: Background | Scrolling Animation | Anthony Toolkits
         <p class="mb-10 max-w-2xl text-gray-600">The range is how far the background moves, in pixels. Easing makes it trail behind the scroll a little instead of following it exactly.</p>
         <div class="grid gap-10 md:grid-cols-2">
             <figure>
-                <div class="relative aspect-1006/1584 overflow-hidden rounded-2xl bg-black">
-                    <div class="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat" data-parallax-background style="background-image: url('/assets/img/banner1.jpg')"></div>
+                <div class="relative aspect-4/5 overflow-hidden rounded-2xl bg-black">
+                    <div class="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat" data-parallax-background style="background-image: url('/assets/img/sample-image.webp')"></div>
                 </div>
                 <figcaption class="mt-4">
                     <code class="font-mono text-sm font-semibold">data-parallax-background</code>
@@ -40,8 +40,8 @@ title: Background | Scrolling Animation | Anthony Toolkits
                 </figcaption>
             </figure>
             <figure>
-                <div class="relative aspect-1006/1584 overflow-hidden rounded-2xl bg-black">
-                    <div class="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat" data-parallax-background="100,easing" style="background-image: url('/assets/img/banner1.jpg')"></div>
+                <div class="relative aspect-4/5 overflow-hidden rounded-2xl bg-black">
+                    <div class="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat" data-parallax-background="100,easing" style="background-image: url('/assets/img/sample-image.webp')"></div>
                 </div>
                 <figcaption class="mt-4">
                     <code class="font-mono text-sm font-semibold">data-parallax-background="100,easing"</code>
@@ -56,7 +56,7 @@ title: Background | Scrolling Animation | Anthony Toolkits
 <section class="px-4 py-24">
     <div class="mx-auto grid max-w-295 items-center gap-10 md:grid-cols-2">
         <div class="relative overflow-hidden rounded-2xl bg-gray-100">
-            <img data-parallax-floating src="/assets/img/banner1.jpg" alt="" />
+            <img class="block w-full" data-parallax-floating src="/assets/img/sample-image.webp" width="2400" height="1600" alt="" />
         </div>
         <div>
             <h2 class="mb-2 text-3xl font-bold tracking-tight">Floating</h2>
@@ -78,7 +78,7 @@ title: Background | Scrolling Animation | Anthony Toolkits
                 {% set code %}{% raw %}
 <section class="relative min-h-screen">
     <div class="absolute inset-0 overflow-hidden">
-        <div class="absolute inset-0 bg-cover bg-center" data-parallax-background="100,easing" style="background-image: url('/assets/img/banner1.jpg')"></div>
+        <div class="absolute inset-0 bg-cover bg-center" data-parallax-background="100,easing" style="background-image: url('/assets/img/sample-image.webp')"></div>
     </div>
 </section>
                 {% endraw %}{% endset %}
@@ -91,7 +91,7 @@ title: Background | Scrolling Animation | Anthony Toolkits
                 </div>
                 {% set code %}{% raw %}
 <div class="relative overflow-hidden">
-    <img data-parallax-floating="80" src="/assets/img/banner1.jpg" alt="" />
+    <img data-parallax-floating="80" src="/assets/img/sample-image.webp" alt="" />
 </div>
                 {% endraw %}{% endset %}
                 {{ codeBlock(code, 'html') }}
