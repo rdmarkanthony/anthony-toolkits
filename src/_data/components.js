@@ -35,6 +35,7 @@ export default [
             { label: "Lightbox", url: "/components/lightbox/", description: "Opens any element on the page in a popup, modals stack.", utils: "_lightbox", ready: true },
             { label: "YouTube player", url: "/components/youtube-player/", description: "YouTube embeds, with muted autoplay backgrounds.", utils: "_youtubePlayer", ready: true },
             { label: "Video player", url: "/components/video-player/", description: "MP4 and HLS videos, with muted autoplay backgrounds.", utils: "_videoPlayer", ready: true },
+            { label: "Lazy load", url: "/components/lazy-load/", description: "Images, backgrounds and videos that load as they near the screen.", utils: "_lazyLoad", ready: true },
         ],
     },
     {

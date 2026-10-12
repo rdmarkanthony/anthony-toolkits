@@ -1,0 +1,145 @@
+---
+title: Lazy load | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_lazyLoad', title: 'Lazy load', description: 'Images, backgrounds, videos and iframes load only when they near the screen, or all at once before you show them. Each one gets <code class="font-mono text-base">.is-loaded</code> when it\'s ready, so it can fade in.' }) }}
+
+{% set fade = 'opacity-0 transition-opacity duration-700 [&.is-loaded]:opacity-100' %}
+{% set button = 'rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700 disabled:opacity-50' %}
+
+{# demo: images, the counter stays on screen #}
+<section class="px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-2 text-3xl font-bold tracking-tight">Images</h2>
+        <p class="max-w-2xl text-gray-600">Scroll down, each frame starts loading 300px before it shows. The last one is a missing file, so it gets <code class="font-mono text-sm">.is-error</code>.</p>
+        <div class="sticky top-(--header-height) z-10 -mx-4 bg-white/90 px-4 py-4 backdrop-blur">
+            <span class="js-lazy-counter rounded-full border border-gray-950 bg-gray-950 px-3 py-1 font-mono text-sm text-white">0 loaded</span>
+        </div>
+        <div class="js-lazy-gallery mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
+            {% for i in range(0, 46, 2) %}
+            {% set frame = ('000' ~ i).slice(-4) %}
+            <div class="relative aspect-502/607 overflow-hidden rounded-2xl bg-gray-100">
+                <img class="js-lazy peer size-full object-cover {{ fade }}" data-src="/assets/img/headphone/small_{{ frame }}.webp" width="502" height="607" alt="Headphone, frame {{ i + 1 }}" />
+                <span class="absolute bottom-3 left-3 rounded-full bg-white px-3 py-1 font-mono text-xs text-gray-500 peer-[.is-loaded]:hidden">waiting</span>
+                <span class="absolute bottom-3 left-3 hidden rounded-full bg-gray-950 px-3 py-1 font-mono text-xs text-white peer-[.is-loaded]:block">loaded</span>
+            </div>
+            {% endfor %}
+            <div class="relative aspect-502/607 overflow-hidden rounded-2xl bg-gray-100">
+                <img class="js-lazy peer size-full object-cover {{ fade }}" data-src="/assets/img/headphone/missing.webp" width="502" height="607" alt="" />
+                <span class="absolute bottom-3 left-3 rounded-full bg-white px-3 py-1 font-mono text-xs text-gray-500 peer-[.is-error]:hidden">waiting</span>
+                <span class="absolute bottom-3 left-3 hidden rounded-full bg-red-600 px-3 py-1 font-mono text-xs text-white peer-[.is-error]:block">failed</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# demo: a background and a video #}
+<section class="px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-8 text-3xl font-bold tracking-tight">Background and video</h2>
+        <div class="grid gap-10 md:grid-cols-2">
+            <div class="flex flex-col gap-3">
+                <p class="font-semibold">Background <code class="ml-2 font-mono text-xs font-normal text-gray-500">data-bg</code></p>
+                <div class="relative aspect-3/2 overflow-hidden rounded-2xl bg-gray-100">
+                    <div class="js-lazy absolute inset-0 bg-cover bg-center {{ fade }}" data-bg="/assets/img/sample-image.webp"></div>
+                </div>
+            </div>
+            <div class="flex flex-col gap-3">
+                <p class="font-semibold">Autoplay video <code class="ml-2 font-mono text-xs font-normal text-gray-500">data-src</code></p>
+                <div class="relative aspect-3/2 overflow-hidden rounded-2xl bg-gray-100">
+                    <video class="js-lazy absolute inset-0 size-full object-cover {{ fade }}" data-src="/assets/video/sample-video.mp4" autoplay muted loop playsinline></video>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# demo: hidden frames, loaded first, then shown #}
+<section class="px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-2 text-3xl font-bold tracking-tight">Load before showing</h2>
+        <p class="mb-8 max-w-2xl text-gray-600">These frames are hidden, so they never load on scroll. The button loads them all, then shows them, with no blank boxes. Use it for tabs, popups and slides.</p>
+        <div class="flex flex-wrap items-center gap-4">
+            <button class="js-lazy-reveal {{ button }}" type="button">Show the large frames</button>
+            <p class="js-lazy-reveal-status font-mono text-sm text-gray-500">Not loaded yet.</p>
+        </div>
+        <div class="js-lazy-frames mt-8 hidden grid-cols-2 gap-4 md:grid-cols-4 [&.is-shown]:grid">
+            {% for frame in ['0000', '0012', '0024', '0036'] %}
+            <img class="js-lazy aspect-1004/1214 w-full rounded-2xl bg-gray-100 object-cover" data-src="/assets/img/headphone/large_{{ frame }}.jpg" width="1004" height="1214" alt="Headphone, large frame {{ (frame | int) + 1 }}" />
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- image, srcset and sizes are optional -->
+<img class="js-lazy" data-src="image.jpg" data-srcset="image.jpg 1x, image@2x.jpg 2x" alt="" />
+
+<!-- picture, the img has the class -->
+<picture>
+    <source media="(min-width: 768px)" data-srcset="desktop.jpg" />
+    <img class="js-lazy" data-src="mobile.jpg" alt="" />
+</picture>
+
+<!-- background -->
+<div class="js-lazy bg-cover bg-center" data-bg="image.jpg"></div>
+
+<!-- video, plays once loaded if it has autoplay -->
+<video class="js-lazy" data-src="video.mp4" data-poster="poster.jpg" autoplay muted loop playsinline></video>
+
+<!-- iframe, and an image in an svg -->
+<iframe class="js-lazy" data-src="https://..."></iframe>
+<svg><image class="js-lazy" data-href="image.jpg" /></svg>
+
+<!-- fade in once ready -->
+<img class="js-lazy opacity-0 transition-opacity [&.is-loaded]:opacity-100" data-src="image.jpg" alt="" />
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_lazyLoad.js
+
+// watch the page, call it again after adding new .js-lazy elements
+_lazyLoad();
+
+// each one fires "lazyload" when it's done, e.detail.error is true if it failed
+const _gallery = document.querySelector('.js-lazy-gallery');
+const _counter = document.querySelector('.js-lazy-counter');
+
+_gallery.addEventListener('lazyload', () => {
+    const _loaded = _gallery.querySelectorAll('.is-loaded').length;
+    const _failed = _gallery.querySelectorAll('.is-error').length;
+
+    _counter.textContent = `${_loaded} loaded${_failed ? `, ${_failed} failed` : ''}`;
+});
+
+// load everything inside target first, then show it
+const _reveal = document.querySelector('.js-lazy-reveal');
+const _status = document.querySelector('.js-lazy-reveal-status');
+const _frames = document.querySelector('.js-lazy-frames');
+
+_reveal.addEventListener('click', async () => {
+    _reveal.disabled = true;
+    _status.textContent = 'Loading...';
+
+    const _started = performance.now();
+    const _elements = await _lazyLoad({ target: _frames });
+
+    _frames.classList.add('is-shown');
+    _status.textContent = `${_elements.length} frames loaded in ${Math.round(performance.now() - _started)}ms, then shown.`;
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Put the real url in <code class="font-mono text-sm">data-src</code>, <code class="font-mono text-sm">data-srcset</code>, <code class="font-mono text-sm">data-sizes</code>, <code class="font-mono text-sm">data-bg</code>, <code class="font-mono text-sm">data-poster</code> or <code class="font-mono text-sm">data-href</code>, it moves in when the element loads. Elements with <code class="font-mono text-sm">display: none</code>, like the desktop copy of a mobile image, wait until they show. <code class="font-mono text-sm">.js-lazy-bg</code> works too, for older markup.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">_lazyLoad({ selector, rootMargin, ahead })</code> watches the page, the options of the first call stay. <code class="font-mono text-sm">rootMargin</code> is how far from the screen it starts, <code class="font-mono text-sm">"300px"</code> by default. When an <code class="font-mono text-sm">ahead</code> element shows (<code class="font-mono text-sm">.section</code> by default, <code class="font-mono text-sm">false</code> to turn it off), everything in it and the next section loads, so slides off to the side are ready. <code class="font-mono text-sm">_lazyLoad({ target, callback })</code> loads now and returns a promise. For a plain image that needs none of this, <code class="font-mono text-sm">loading="lazy"</code> is enough.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
