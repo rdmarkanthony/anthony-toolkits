@@ -26,7 +26,7 @@ import { _videoPlayer } from "./utils/_videoPlayer";
 import { _plyr } from "./utils/_plyr";
 import { _youtubePlayer } from "./utils/_youtubePlayer";
 import { _hlsVideo } from "./utils/_hlsVideo";
-import { _autoScroll } from "./utils/_autoScroll";
+import { _autoScroll, _autoScrollHash } from "./utils/_autoScroll";
 import { _parallax, _parallaxScroller, _parallaxBackground, _parallaxFloating } from "./utils/_parallax";
 import { _canvasBanner } from "./utils/_canvasBanner";
 import { _themeScroller } from "./utils/_themeScroller";
@@ -59,6 +59,7 @@ Object.assign(window, {
     _youtubePlayer,
     _hlsVideo,
     _autoScroll,
+    _autoScrollHash,
     _parallax,
     _parallaxScroller,
     _parallaxBackground,
@@ -76,6 +77,9 @@ _event.resize(() => {
     document.body.style.setProperty("--header-height", `${header?.offsetHeight ?? 0}px`);
     document.body.style.setProperty("--footer-height", `${footer?.offsetHeight ?? 0}px`);
 });
+
+// a url hash scrolls to its section on load, here so it runs before the page scripts (e.g. a lightbox opening with it)
+_autoScrollHash();
 
 // smooth scroll for links with data-auto-scroll to a section of the same page, "#" goes to the top
 document.addEventListener("click", (e) => {

@@ -5,6 +5,22 @@ gsap.registerPlugin(ScrollToPlugin);
 
 const _scrollTop = () => window.scrollY;
 const _offsetTop = (target) => target.getBoundingClientRect().top + _scrollTop();
+const _isVisible = (target) => (target.checkVisibility ? target.checkVisibility() : target.getClientRects().length > 0);
+
+// on page load, scrolls to the element of the url hash, e.g. /page/#section or /page/#section?tab=2
+// only if it's visible, a hidden one (a lightbox's content, a closed accordion) is left to the script that shows it
+// call it before the other scripts read the hash, e.g. a lightbox that opens with it would make its content visible
+export const _autoScrollHash = (props = {}) => {
+    const _id = decodeURIComponent(location.hash.slice(1).split("?")[0]);
+    const _target = _id && document.getElementById(_id);
+    if (!_target || !_isVisible(_target)) return;
+
+    const _scroll = () => _isVisible(_target) && _autoScroll({ ...props, target: _target });
+
+    // after images and fonts, so the position is final
+    if (document.readyState === "complete") _scroll();
+    else window.addEventListener("load", _scroll, { once: true });
+};
 
 // usage: _autoScroll({ target, offset, speed, ease, callback })
 export const _autoScroll = ({ target, offset, speed = 500, ease = "power2.out", callback } = {}) => {
