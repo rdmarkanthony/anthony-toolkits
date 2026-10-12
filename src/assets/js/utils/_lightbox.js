@@ -1,11 +1,14 @@
 import { _event } from "./_event";
 import { _emitter } from "./_emitter";
 
+// usage: new _lightbox({ target, modal, animation, events }), target is the element or selector to show
+// the content moves into the lightbox and back on close, a lightbox replaces the others, a modal opens on top
+// close: lightbox.hide(), _lightbox.close() for the latest, _lightbox.close("all")
 export class _lightbox extends _emitter {
     constructor(props) {
         super(props.events);
 
-        if (!window._lightboxList) window._lightboxList = []; // storage for all opened lightbox
+        if (!window._lightboxList) window._lightboxList = []; // the open lightboxes
 
         this.modal = props.modal || false;
 
@@ -25,12 +28,11 @@ export class _lightbox extends _emitter {
         this.animation = props.animation || "zoom";
         this.animating = false;
 
-        if (this.isInLightbox(props.target)) return; // prevent duplicate lightbox instances
+        if (this.isInLightbox(props.target)) return; // already open
 
         this.init(props);
     }
 
-    // check if target element is already in a lightbox
     isInLightbox(target) {
         const _target = typeof target === "string" ? document.querySelector(target) : target;
         if (!_target) return false;
@@ -41,14 +43,12 @@ export class _lightbox extends _emitter {
     init(props) {
         this.style();
 
-        // if this instance is not a modal lightbox, close prev lightboxes
         if (!this.modal && window._lightboxList) {
             window._lightboxList.forEach((item) => {
                 item.hide();
             });
         }
 
-        // create main lightbox elements
         this.target = document.createElement("div");
         this.target.classList.add("js-lightbox", "z-[500]", "fixed", "top-0", "left-0", "w-full", "h-full");
         document.body.appendChild(this.target);
@@ -62,7 +62,6 @@ export class _lightbox extends _emitter {
         this.el.main.classList.add("js-lightbox-main", "z-[2]", "fixed", "top-0", "left-0", "w-full", "h-full", "p-4", "pt-16", "xl:p-10", "xl:pt-16", "overflow-auto", "scrolling-touch", "[.lightbox-short_&]:flex", "[.lightbox-short_&]:items-center", "[.lightbox-short_&]:justify-center");
         this.target.appendChild(this.el.main);
 
-        // set target content
         if (props.target) {
             const _target = typeof props.target === "string" ? document.querySelector(props.target) : props.target;
 
@@ -72,7 +71,7 @@ export class _lightbox extends _emitter {
             }
         }
 
-        // default content if none is provided
+        // no content found
         if (!this.content.original) {
             this.content.original = document.createElement("div");
             this.content.original.classList.add("lightbox-content", "relative", "container", "max-w-[30rem]", "mx-auto", "px-8", "py-12", "rounded-2xl", "bg-white", "shadow-[0_26px_30px_rgba(0,0,0,0.05)]");
@@ -82,26 +81,23 @@ export class _lightbox extends _emitter {
         this.el.main.appendChild(this.content.original);
         this.content.original.classList.add("js-lightbox-center", "relative");
 
-        // if non-modal
         if (!this.modal) {
-            this.createCloseButton(); // create close btn
+            this.createCloseButton();
             this.onKeydown = this.handleEscapeKey.bind(this);
-            document.addEventListener("keydown", this.onKeydown); // can use esc key
+            document.addEventListener("keydown", this.onKeydown);
         }
 
-        // need to recalculate spaces every resize
         this.offResize = _event.resize(() => this.resize());
 
-        this.emit("beforeShow"); // call custom callback event
+        this.emit("beforeShow");
 
-        this.show(); // show the popup
-        window._lightboxList.push(this); // store this lightbox
+        this.show();
+        window._lightboxList.push(this);
 
         // for scripts that didn't open it, e.detail is this lightbox
         _event.dispatch(window, "lightboxReady", this);
     }
 
-    // create close btn
     createCloseButton() {
         this.el.btn.close = document.createElement("a");
         this.el.btn.close.classList.add("js-lightbox-btn", "btn-close", "z-[3]", "block", "fixed", "top-0", "right-0", "p-4", "text-white", "hover:text-red-500", "transition-colors", "duration-200");
@@ -115,7 +111,6 @@ export class _lightbox extends _emitter {
         });
     }
 
-    // for esc key
     handleEscapeKey(event) {
         if (!this.target) return;
         if (event.key === "Escape" || event.keyCode === 27) {
@@ -123,6 +118,7 @@ export class _lightbox extends _emitter {
         }
     }
 
+    // short content is centered, long content scrolls
     resize() {
         const _mainStyle = getComputedStyle(this.el.main);
         const _mainHeight = this.el.main.offsetHeight - (parseFloat(_mainStyle.paddingTop) + parseFloat(_mainStyle.paddingBottom));
@@ -132,7 +128,6 @@ export class _lightbox extends _emitter {
         this.emit("resize");
     }
 
-    // show the lightbox
     show(status, callback, delay = null) {
         if (this.animating) return;
         this.animating = true;
@@ -141,20 +136,16 @@ export class _lightbox extends _emitter {
         this.target.classList.add("lightbox-visible");
 
         if (this.animation !== "none") {
-            // animate the cover
             this.el.cover.classList.add("lightbox-animate", "lightbox-fadeIn");
 
-            // animate the main content
             this.content.original.classList.add("lightbox-animate");
             if (this.animation === "fade") this.content.original.classList.add("lightbox-fadeIn");
             if (this.animation === "fadeUp") this.content.original.classList.add("lightbox-fadeInUp");
             if (this.animation === "zoom") this.content.original.classList.add("lightbox-zoomIn");
 
-            // animate the close btn
             if (this.el.btn.close) this.el.btn.close.classList.add("lightbox-animate", "lightbox-fadeIn");
         }
 
-        // get animation duration for timeout
         const _style = getComputedStyle(this.content.original);
         const _animationDuration = parseFloat(_style.animationDuration) + parseFloat(_style.animationDelay);
 
@@ -162,7 +153,6 @@ export class _lightbox extends _emitter {
             () => {
                 if (!this.target) return; // destroyed meanwhile
 
-                // remove the animate classes
                 this.el.cover.classList.remove("lightbox-animate", "lightbox-fadeIn");
                 this.content.original.classList.remove("lightbox-animate", "lightbox-fadeIn", "lightbox-fadeInUp", "lightbox-zoomIn");
                 if (this.el.btn.close) this.el.btn.close.classList.remove("lightbox-animate", "lightbox-fadeIn");
@@ -175,9 +165,8 @@ export class _lightbox extends _emitter {
         );
     }
 
-    // hide the lightbox
     hide(status, callback, delay = null) {
-        // if want to hide all existing lightbox, before this one counts as animating
+        // before the animating check, so a closing lightbox still closes the others
         if (status === "all") {
             _lightbox.close("all");
             return;
@@ -186,30 +175,25 @@ export class _lightbox extends _emitter {
         if (!this.target || this.animating) return;
         this.animating = true;
 
-        this.emit("beforeClose"); // call custom callback event
+        this.emit("beforeClose");
 
         this.target.classList.remove("lightbox-visible");
         this.target.classList.add("lightbox-hiding");
 
-        // animate the cover
         if (this.animation !== "none") {
             this.el.cover.classList.add("lightbox-animate", "lightbox-fadeOut");
 
-            // animate the main content
             this.content.original.classList.add("lightbox-animate");
             if (this.animation === "fade") this.content.original.classList.add("lightbox-fadeOut");
             if (this.animation === "fadeUp") this.content.original.classList.add("lightbox-fadeOutDown");
             if (this.animation === "zoom") this.content.original.classList.add("lightbox-zoomOut");
 
-            // animate the close btn
             if (this.el.btn.close) this.el.btn.close.classList.add("lightbox-animate", "lightbox-fadeOut");
         }
 
-        // get animation duration for timeout
         const _style = getComputedStyle(this.content.original);
         const _animationDuration = parseFloat(_style.animationDuration) + parseFloat(_style.animationDelay);
 
-        // clean any traces of this instance
         setTimeout(
             () => {
                 if (!this.target) return; // destroyed meanwhile
@@ -237,16 +221,14 @@ export class _lightbox extends _emitter {
         this.target.remove();
         this.target = null;
 
-        // remove the listeners of this instance
         this.offResize?.();
         if (this.onKeydown) document.removeEventListener("keydown", this.onKeydown);
 
         if (window._lightboxList.length === 0) document.body.classList.remove("lightbox-active");
     }
 
-    // static method
+    // the latest lightbox, or "all"
     static close(status) {
-        // to hide the latest or all active lightboxes
         [...window._lightboxList].forEach((item, index, arr) => {
             if (status === "all" || index === arr.length - 1) item.hide();
         });

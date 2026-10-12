@@ -2,6 +2,9 @@ import { _event } from "./_event";
 import { _emitter } from "./_emitter";
 import { _players, _pauseAll, _cover } from "./_media";
 
+// usage: new _videoPlayer({ target, src, poster, autoplay, stretch, controls, events }), src is an .mp4 or .m3u8
+// autoplay videos are muted loops, stretch covers the target at any ratio, playing one with sound pauses the others
+// the target gets state classes: video-loading, video-canplay, video-playing, video-paused, video-ended, sound-on, sound-off
 export class _videoPlayer extends _emitter {
     constructor(props) {
         super(props.events);
@@ -45,17 +48,17 @@ export class _videoPlayer extends _emitter {
 
         this.el.video.preload = "metadata";
         this.el.video.controls = this.controls;
-        this.el.video.muted = this.autoplay; // if muted & autoplay
+        this.el.video.muted = this.autoplay;
         this.el.video.defaultMuted = this.autoplay;
         this.el.video.loop = this.autoplay;
         this.el.video.autoplay = this.autoplay;
         if (this.poster) this.el.video.poster = this.poster;
 
-        this.el.video.playsInline = true; // enable inline playback
+        this.el.video.playsInline = true;
         this.el.video.setAttribute("playsinline", "");
         this.el.video.setAttribute("webkit-playsinline", "");
 
-        // m3u8: hls.js where MSE is supported, loaded only when needed (the same chunk as _hlsVideo)
+        // m3u8: hls.js where MSE is supported, loaded only when needed
         if (this.src.endsWith(".m3u8") && ("MediaSource" in window || "ManagedMediaSource" in window)) {
             import("hls.js/light").then(({ default: Hls }) => {
                 if (!this.el) return; // destroyed while loading
@@ -79,7 +82,6 @@ export class _videoPlayer extends _emitter {
 
         const _on = (name, callback) => this.el.video.addEventListener(name, callback, { signal: this.abort.signal });
 
-        // states on the target: video-loading, video-canplay, video-playing, video-paused, video-ended, sound-on, sound-off
         _on("loadstart", () => {
             this.isLoading = true;
             this.target.classList.add("video-loading");
@@ -148,7 +150,7 @@ export class _videoPlayer extends _emitter {
     }
 
     play() {
-        // a rejected play() (autoplay blocked) is not an error here
+        // autoplay blocked is not an error
         return this.el.video.play()?.catch(() => {}) ?? Promise.resolve();
     }
 

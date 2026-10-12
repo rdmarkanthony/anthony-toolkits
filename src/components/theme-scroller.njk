@@ -24,8 +24,7 @@ bodyClass: dark
 .light { --page-bg: #fff; --page-text: #111; }
 .dark { --page-bg: #0c0c0e; --page-text: #f2f1ec; }
 
-/* ease colors only while switching
-   never ease color on every element (*): on iOS each nested level lags behind its parent */
+/* ease colors only while switching, never color on every element: on iOS nested text lags */
 @layer base {
     .theme-transition { transition-property: --page-bg, --page-text, color, background-color, border-color; }
     :where(.theme-transition *) { transition-property: background-color, border-color; }
