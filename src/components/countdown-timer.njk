@@ -12,7 +12,7 @@ title: Countdown timer | Anthony Toolkits
     <div class="flex justify-center gap-6 text-center md:gap-11 md:text-xl">
         {% for unit in ['days', 'hours', 'minutes', 'seconds'] %}
         <div class="flex flex-col gap-1">
-            <div class="js-countdown-timer-{{ unit }} flex justify-center text-5xl font-bold tabular-nums md:text-8xl">00</div>
+            <div class="js-countdown-timer-{{ unit }} flex justify-center font-[Arial,Helvetica,sans-serif] text-5xl font-bold tabular-nums md:text-8xl">00</div>
             <div class="text-gray-500">{{ unit }}</div>
         </div>
         {% endfor %}
