@@ -13,7 +13,7 @@ title: Scrolling Animation | Anthony Toolkits
                 <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">Scrolling Animation</h1>
                 <p class="mb-10 max-w-2xl text-lg text-gray-600 md:text-xl">Animations that follow the scroll: video intros, image sequences and parallax backgrounds. Each demo shows its markup and script, ready to use on any website.</p>
                 <div class="flex flex-wrap gap-3">
-                    <a class="js-auto-scroll rounded-full bg-gray-950 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-gray-700" href="#demos">See the demos</a>
+                    <a class="rounded-full bg-gray-950 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-gray-700" href="#demos" data-auto-scroll>See the demos</a>
                     <a class="group inline-flex items-center gap-1.5 rounded-full border border-gray-300 px-5 py-3 text-sm font-medium text-gray-950 transition-colors hover:border-gray-950" href="{{ site.github }}" target="_blank" rel="noopener">View on GitHub{{ external('group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}</a>
                 </div>
             </div>
@@ -233,19 +233,7 @@ _event.dispatch(el, 'visible', { index: 1 }); // listeners read e.detail
             // src/assets/js/utils/_event.js
             // src/assets/js/utils/_parallax.js
             // src/assets/js/utils/_canvasBanner.js
-            // src/assets/js/utils/_autoScroll.js
             // hls.js, src/assets/js/utils/_hlsVideo.js (for the video preview)
-
-    // smooth scroll for the "See the demos" link
-    document.querySelectorAll('.js-auto-scroll').forEach((item) => {
-        item.addEventListener('click', (e) => {
-            const _target = document.getElementById((item.getAttribute('href') ?? '').split('#')[1]);
-            if (!_target) return;
-
-            e.preventDefault();
-            _autoScroll({ target: _target });
-        });
-    });
 
     // hls videos
     document.querySelectorAll('.js-hls-video').forEach((target) => new _hlsVideo({ target }));

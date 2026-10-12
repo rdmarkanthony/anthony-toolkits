@@ -46,7 +46,7 @@ export default [
     {
         category: "Helpers",
         items: [
-            { label: "In view", url: "/components/inview/", description: "Run a callback when an element scrolls into or out of view.", utils: "_inview", ready: true },
+            { label: "Inview", url: "/components/inview/", description: "Run a callback when an element scrolls into or out of view.", utils: "_inview", ready: true },
             { label: "Events", url: "/components/event/", description: "Shared resize, scroll and element-size listeners, plus custom events.", utils: "_event", ready: true },
             { label: "Emitter", url: "/components/emitter/", description: "Base class that gives your own utils events, on() and off().", utils: "_emitter", ready: true },
             { label: "Auto scroll", url: "/components/auto-scroll/", description: "Smooth scroll to an element, below the sticky header.", utils: "_autoScroll", ready: true },

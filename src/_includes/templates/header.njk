@@ -12,7 +12,7 @@
         <nav aria-label="Main">
             <ul class="flex items-center gap-3 md:gap-8">
                 <li>
-                    <a class="flex items-center gap-2 transition-colors duration-300 hover:text-kit-text {{ 'text-kit-text' if onComponents else 'text-kit-muted' }}" href="/#components"{% if onComponents %} aria-current="true"{% endif %}>
+                    <a class="flex items-center gap-2 transition-colors duration-300 hover:text-kit-text {{ 'text-kit-text' if onComponents else 'text-kit-muted' }}" href="/#components" data-auto-scroll{% if onComponents %} aria-current="true"{% endif %}>
                         <span class="size-1.5 rounded-full bg-kit-accent transition-transform duration-300 {{ 'scale-100' if onComponents else 'scale-0' }}" aria-hidden="true"></span>Components
                     </a>
                 </li>

@@ -41,7 +41,8 @@ Reusable components and utilities for site development, built on Eleventy + Nunj
 3. Put the demo page in `src/components/<name>.njk` (or a folder for several pages). Its layout comes from `src/components/components.11tydata.json`.
 4. Set the component up in the page's inline script, in `{% footerscript %}` as `type="module"` so it runs after `script.js`. Start it with a `// Requirements` comment listing every library, util and CSS file it needs, so it can be copied as is. To show the script on the page too, set it once with `{% set pageScript %}`, pass it to `scriptUsage({ code })` from `components/atoms/component-page.njk`, and run it with `<script type="module">{{ pageScript | safe }}</script>`.
 5. Utils with `events` / `on()` / `off()` extend `_emitter` instead of copying them.
-6. List the page in `src/_data/components.js` with `ready: true` and its `utils`. A category `url` links its heading to an overview page.
+6. For links to a section of the same page, add `data-auto-scroll` (`href="#"` goes to the top). `script.js` smooth scrolls them with `_autoScroll`, below the sticky header.
+7. List the page in `src/_data/components.js` with `ready: true` and its `utils`. A category `url` links its heading to an overview page.
 
 ### Using a component in another project
 

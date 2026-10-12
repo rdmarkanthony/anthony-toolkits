@@ -62,3 +62,18 @@ _event.resize(() => {
     document.body.style.setProperty("--header-height", `${header?.offsetHeight ?? 0}px`);
     document.body.style.setProperty("--footer-height", `${footer?.offsetHeight ?? 0}px`);
 });
+
+// smooth scroll for links with data-auto-scroll to a section of the same page, "#" goes to the top
+document.addEventListener("click", (e) => {
+    const link = e.target.closest("a[data-auto-scroll]");
+    if (!link) return;
+
+    const url = new URL(link.href);
+    if (url.pathname !== location.pathname) return;
+
+    const target = url.hash.length > 1 ? document.getElementById(url.hash.slice(1)) : document.body;
+    if (!target) return;
+
+    e.preventDefault();
+    _autoScroll({ target });
+});
