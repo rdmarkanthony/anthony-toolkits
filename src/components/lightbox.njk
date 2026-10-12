@@ -134,7 +134,8 @@ if (location.hash.length > 1) {
 {{ scriptUsage({
     markup: markup,
     markupNote: 'The content is moved into the lightbox while it\'s open, and back to its place on close. Visiting the page with a lightbox\'s hash in the url (e.g. <code class="font-mono text-sm">/page/#my-lightbox</code>) opens it on load.',
-    code: pageScript
+    code: pageScript,
+    note: '<code class="font-mono text-sm">lightbox.hide()</code> closes it with the animation, <code class="font-mono text-sm">lightbox.destroy()</code> removes it at once. Every lightbox fires <code class="font-mono text-sm">lightboxReady</code> on <code class="font-mono text-sm">window</code> when it opens, with the lightbox as <code class="font-mono text-sm">e.detail</code>, for scripts that didn\'t open it.'
 }) }}
 
 {% footerscript %}

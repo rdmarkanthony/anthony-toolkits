@@ -1,0 +1,30 @@
+/* themes: redefine the kit-* colors for everything inside, e.g. <body class="dark"> */
+.light {
+    --color-kit-bg: #ffffff;
+    --color-kit-surface: #f5f4ef;
+    --color-kit-line: #dddbd2;
+    --color-kit-text: #111113;
+    --color-kit-muted: #65656d;
+    color-scheme: light;
+}
+
+.dark {
+    --color-kit-bg: #0c0c0e;
+    --color-kit-surface: #151518;
+    --color-kit-line: #2a2a30;
+    --color-kit-text: #f2f1ec;
+    --color-kit-muted: #8d8d96;
+    color-scheme: dark;
+}
+
+/* dark: follows .dark, not the system setting */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* colors ease while _themeScroller switches */
+@layer base {
+    :where(.theme-transition, .theme-transition *) {
+        transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke;
+        transition-duration: 0.5s;
+        transition-timing-function: ease;
+    }
+}

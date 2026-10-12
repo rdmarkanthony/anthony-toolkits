@@ -18,12 +18,15 @@ import { _countdownTimer } from "./utils/_countdownTimer";
 import { _tabs } from "./utils/_tabs";
 import { _groupHeight } from "./utils/_groupHeight";
 import { _lightbox } from "./utils/_lightbox";
+import { _lazyLoad } from "./utils/_lazyLoad";
+import { _selectBox } from "./utils/_selectBox";
 import { _videoPlayer } from "./utils/_videoPlayer";
 import { _youtubePlayer } from "./utils/_youtubePlayer";
 import { _hlsVideo } from "./utils/_hlsVideo";
 import { _autoScroll } from "./utils/_autoScroll";
 import { _parallax, _parallaxScroller, _parallaxBackground, _parallaxFloating } from "./utils/_parallax";
 import { _canvasBanner } from "./utils/_canvasBanner";
+import { _themeScroller } from "./utils/_themeScroller";
 
 // expose for inline scripts, each page sets up its own components
 Object.assign(window, {
@@ -44,6 +47,8 @@ Object.assign(window, {
     _tabs,
     _groupHeight,
     _lightbox,
+    _lazyLoad,
+    _selectBox,
     _videoPlayer,
     _youtubePlayer,
     _hlsVideo,
@@ -53,6 +58,7 @@ Object.assign(window, {
     _parallaxBackground,
     _parallaxFloating,
     _canvasBanner,
+    _themeScroller,
 });
 
 // modules run after the html is parsed, and before the inline page scripts,
