@@ -96,6 +96,9 @@ export class _lightbox extends _emitter {
 
         this.show(); // show the popup
         window._lightboxList.push(this); // store this lightbox
+
+        // for scripts that didn't open it, e.detail is this lightbox
+        _event.dispatch(window, "lightboxReady", this);
     }
 
     // create close btn
@@ -157,6 +160,8 @@ export class _lightbox extends _emitter {
 
         setTimeout(
             () => {
+                if (!this.target) return; // destroyed meanwhile
+
                 // remove the animate classes
                 this.el.cover.classList.remove("lightbox-animate", "lightbox-fadeIn");
                 this.content.original.classList.remove("lightbox-animate", "lightbox-fadeIn", "lightbox-fadeInUp", "lightbox-zoomIn");
@@ -172,17 +177,14 @@ export class _lightbox extends _emitter {
 
     // hide the lightbox
     hide(status, callback, delay = null) {
-        if (this.animating) return;
-        this.animating = true;
-
-        // if want to hide all existing lightbox
+        // if want to hide all existing lightbox, before this one counts as animating
         if (status === "all") {
-            [...window._lightboxList].forEach((item, index, arr) => {
-                item.hide();
-            });
-
+            _lightbox.close("all");
             return;
         }
+
+        if (!this.target || this.animating) return;
+        this.animating = true;
 
         this.emit("beforeClose"); // call custom callback event
 
@@ -210,27 +212,9 @@ export class _lightbox extends _emitter {
         // clean any traces of this instance
         setTimeout(
             () => {
-                // remove the animate classes
-                this.el.cover.classList.remove("lightbox-animate", "lightbox-fadeOut");
-                this.content.original.classList.remove("lightbox-animate", "lightbox-fadeOut", "lightbox-fadeOutDown", "lightbox-zoomOut");
-                if (this.el.btn.close) {
-                    this.el.btn.close.classList.add("lightbox-animate", "lightbox-fadeOut");
+                if (!this.target) return; // destroyed meanwhile
 
-                    // remove the close btn
-                    this.el.btn.close.remove();
-                }
-
-                if (this.content.parent) this.content.parent.appendChild(this.content.original);
-                this.content.original.classList.remove("js-lightbox-center");
-
-                window._lightboxList = window._lightboxList.filter((lightbox) => lightbox !== this);
-                this.target.remove();
-
-                // remove the listeners of this instance
-                this.offResize?.();
-                if (this.onKeydown) document.removeEventListener("keydown", this.onKeydown);
-
-                if (window._lightboxList.length === 0) document.body.classList.remove("lightbox-active");
+                this.destroy();
 
                 this.animating = false;
 
@@ -240,6 +224,24 @@ export class _lightbox extends _emitter {
         );
 
         if (callback) callback(this);
+    }
+
+    // remove it now, without the animation, and put the content back
+    destroy() {
+        if (!this.target) return; // already gone
+
+        this.content.original.classList.remove("js-lightbox-center", "lightbox-animate", "lightbox-fadeIn", "lightbox-fadeInUp", "lightbox-zoomIn", "lightbox-fadeOut", "lightbox-fadeOutDown", "lightbox-zoomOut");
+        if (this.content.parent) this.content.parent.appendChild(this.content.original);
+
+        window._lightboxList = window._lightboxList.filter((lightbox) => lightbox !== this);
+        this.target.remove();
+        this.target = null;
+
+        // remove the listeners of this instance
+        this.offResize?.();
+        if (this.onKeydown) document.removeEventListener("keydown", this.onKeydown);
+
+        if (window._lightboxList.length === 0) document.body.classList.remove("lightbox-active");
     }
 
     // static method
