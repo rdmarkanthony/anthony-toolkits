@@ -3,6 +3,7 @@
 /* libraries */
 @import "animate.css";
 @import "flatpickr/dist/flatpickr.min.css";
+@import "plyr/dist/plyr.css";
 
 @import "./components/variables.css";
 @import "./components/data-animate.css";

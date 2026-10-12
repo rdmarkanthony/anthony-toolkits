@@ -261,6 +261,8 @@ export class _lightbox extends _emitter {
 
             _style.innerHTML =
                 `.lightbox-active { overflow: hidden; }` +
+                // Chrome can draw a page video through a video in the lightbox
+                `.lightbox-active video:not(.js-lightbox video) { visibility: hidden; }` +
                 `.scrolling-touch { overflow-scrolling: touch; -webkit-overflow-scrolling: touch; }` +
                 `.lightbox-animate { animation-duration: 0.5s; animation-timing-function: cubic-bezier(0.5, 0, 0, 1.25); animation-fill-mode: forwards; }` +
                 `.lightbox-fadeIn { animation-name: lightBoxFadeIn; animation-timing-function: ease; }` +

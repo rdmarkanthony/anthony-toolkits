@@ -23,6 +23,7 @@ import { _lightbox } from "./utils/_lightbox";
 import { _lazyLoad } from "./utils/_lazyLoad";
 import { _selectBox } from "./utils/_selectBox";
 import { _videoPlayer } from "./utils/_videoPlayer";
+import { _plyr } from "./utils/_plyr";
 import { _youtubePlayer } from "./utils/_youtubePlayer";
 import { _hlsVideo } from "./utils/_hlsVideo";
 import { _autoScroll } from "./utils/_autoScroll";
@@ -54,6 +55,7 @@ Object.assign(window, {
     _lazyLoad,
     _selectBox,
     _videoPlayer,
+    _plyr,
     _youtubePlayer,
     _hlsVideo,
     _autoScroll,
