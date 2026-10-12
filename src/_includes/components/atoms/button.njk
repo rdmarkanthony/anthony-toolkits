@@ -1,6 +1,13 @@
 {%- from "utils/combine-classes.njk" import combineClasses -%}
 {%- from "utils/dynamic-element.njk" import dynamicElement -%}
+{%- from "components/atoms/icon.njk" import external -%}
 
+{#
+    pill button, a link when it has a url
+    usage: {{ renderButton({ label: 'See the demos', url: '#demos' }) }}
+    type: primary (default), outline
+    target: _blank adds the external icon
+#}
 {% macro renderButton(props) -%}
     {%- set type = props.type | default('primary') -%}
     {%- set label = props.label | default('Button') -%}
@@ -11,17 +18,18 @@
 
     {%- set className = combineClasses([
         class,
-        'block',
-        (type == 'primary') and 'p-4 text-base bg-green-600 hover:bg-green-700',
-        (type == 'secondary') and 'p-3 text-sm bg-blue-600 hover:bg-blue-700',
-        'text-white transition-colors duration-300'
+        'group inline-flex h-13 items-center justify-center gap-1.5 rounded-full px-7 font-medium transition-colors duration-300',
+        (type == 'primary') and 'bg-kit-accent text-kit-accent-ink hover:bg-kit-accent-hover',
+        (type == 'outline') and 'border border-kit-line hover:border-kit-accent hover:text-kit-accent'
     ]) -%}
 
     {%- set buttonTag = "a" if props.url else "button" -%}
     {%- set buttonAttrs = {
+        "type": "" if url else "button",
         "class": className,
         "href": url if url else "",
-        "target": target if url else ""
+        "target": target if url else "",
+        "rel": "noopener" if target == "_blank" else ""
     } %}
     
     {%- set extraAttrs = '' %}
@@ -32,6 +40,6 @@
     {% endfor %}
 
     {%- call dynamicElement(buttonTag, buttonAttrs, extraAttrs) -%}
-        <span>{{ label }}</span>
+        <span>{{ label }}</span>{% if target == '_blank' %}{{ external('duration-500 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}{% endif %}
     {%- endcall -%}
 {%- endmacro %}

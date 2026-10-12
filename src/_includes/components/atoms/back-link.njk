@@ -5,5 +5,5 @@
 {%- from "components/atoms/icon.njk" import angle -%}
 
 {% macro backLink(props) -%}
-<a class="group mb-6 inline-flex items-center gap-1 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900" href="{{ props.url }}">{{ angle('left', 'group-hover:-translate-x-0.5') }} {{ props.label }}</a>
+<a class="group mb-6 inline-flex items-center gap-1 text-sm font-medium text-kit-muted transition-colors duration-300 hover:text-kit-text" href="{{ props.url }}">{{ angle('left', 'group-hover:-translate-x-0.5') }} {{ props.label }}</a>
 {%- endmacro %}

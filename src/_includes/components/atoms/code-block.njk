@@ -4,10 +4,10 @@
     {{ codeBlock(code, 'html') }}
 #}
 {% macro codeBlock(code, label) -%}
-<div class="overflow-hidden rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-800">
+<div class="min-w-0 overflow-hidden rounded-2xl border border-kit-line bg-kit-surface text-sm">
     {% if label -%}
-    <div class="border-b border-gray-200 px-4 py-2 font-mono text-xs text-gray-500">{{ label }}</div>
+    <div class="border-b border-kit-line px-5 py-2.5 font-mono text-xs text-kit-muted">{{ label }}</div>
     {%- endif %}
-    <pre class="overflow-x-auto p-4 leading-relaxed"><code>{{ code | trim | forceescape }}</code></pre>
+    <pre class="overflow-x-auto p-5 leading-relaxed"><code>{{ code | trim | forceescape }}</code></pre>
 </div>
 {%- endmacro %}

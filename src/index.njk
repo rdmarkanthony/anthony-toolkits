@@ -3,51 +3,57 @@ layout: base.njk
 title: Anthony Toolkits
 ---
 
-{% from "components/atoms/icon.njk" import angle, external %}
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/tag.njk" import tags %}
+{% from "components/atoms/button.njk" import renderButton %}
 
-<section class="px-4 pt-24 pb-16 md:pt-32">
+{%- set readyCount = 0 -%}
+{%- for group in components -%}{%- for item in group.items -%}{%- if item.ready %}{% set readyCount = readyCount + 1 %}{% endif -%}{%- endfor -%}{%- endfor -%}
+
+<section class="px-4 pt-20 pb-16 md:pt-32">
     <div class="mx-auto max-w-295">
-        <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">{{ site.name }}</h1>
-        <p class="mb-10 max-w-2xl text-lg text-gray-600 md:text-xl">{{ site.description }} Each component shows its markup and script, ready to copy into any website.</p>
+        <p class="mb-6 flex items-center gap-2 text-sm font-medium tracking-widest text-kit-muted uppercase"><span class="size-1.5 rounded-full bg-kit-accent" aria-hidden="true"></span>{{ readyCount }} components, ready to copy</p>
+        <h1 class="mb-6 font-display text-[3.25rem] leading-[0.95] font-semibold tracking-tight md:text-[6.5rem]">{{ site.name }}<span class="text-kit-accent">.</span></h1>
+        <p class="mb-10 max-w-2xl text-lg text-kit-muted md:text-xl">{{ site.description }} Each component shows its markup and script, ready to copy into any website.</p>
         <div class="flex flex-wrap gap-3">
             <label class="w-full max-w-md">
                 <span class="sr-only">Search components</span>
-                <input class="w-full rounded-full border border-gray-300 px-5 py-3 text-sm placeholder:text-gray-500 focus:border-gray-950 focus:outline-none" type="search" placeholder="Search components or utils…" autocomplete="off" data-filter-input />
+                <input class="h-13 w-full rounded-full border border-kit-line bg-kit-bg px-6 transition-colors duration-300 placeholder:text-kit-muted focus:border-kit-accent focus:outline-none" type="search" placeholder="Search components or utils…" autocomplete="off" data-filter-input />
             </label>
-            <a class="group inline-flex items-center gap-1.5 rounded-full border border-gray-300 px-5 py-3 text-sm font-medium text-gray-950 transition-colors hover:border-gray-950" href="{{ site.github }}" target="_blank" rel="noopener">View on GitHub{{ external('group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}</a>
+            {{ renderButton({ type: 'outline', label: 'View on GitHub', url: site.github, target: '_blank' }) }}
         </div>
     </div>
 </section>
 
-<section id="components" class="scroll-mt-20 px-4 pt-8 pb-24">
-    <div class="mx-auto max-w-295 space-y-16">
+<section id="components" class="scroll-mt-20 px-4 pt-8 pb-24 md:pb-32">
+    <div class="mx-auto max-w-295 space-y-16 md:space-y-24">
         {% for group in components %}
         <div data-filter-group>
-            <div class="mb-8 flex flex-wrap items-baseline justify-between gap-4">
-                <h2 class="text-3xl font-bold tracking-tight">{{ group.category }}</h2>
+            <div class="mb-8 flex flex-wrap items-baseline justify-between gap-4 border-b border-kit-line pb-4">
+                <h2 class="font-display text-3xl font-semibold tracking-tight md:text-4xl">{{ group.category }}</h2>
                 {% if group.url %}
-                <a class="group inline-flex items-center gap-1 text-sm font-medium" href="{{ group.url }}">Overview {{ angle('right', 'group-hover:translate-x-0.5') }}</a>
+                <a class="group inline-flex items-center gap-1 font-medium transition-colors duration-300 hover:text-kit-accent" href="{{ group.url }}">Overview {{ angle('right', 'duration-500 ease-out-expo group-hover:translate-x-0.5') }}</a>
                 {% endif %}
             </div>
-            <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <ul class="grid gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
                 {% for item in group.items %}
                 <li class="flex" data-filter-item="{{ item.label }} {{ item.description }} {{ item.utils }} {{ group.category }}">
                     {% if item.ready %}
-                    <a class="group flex w-full flex-col rounded-2xl border border-gray-200 p-6 transition-colors hover:border-gray-950" href="{{ item.url }}">
-                        <h3 class="mb-2 text-xl font-semibold">{{ item.label }}</h3>
-                        <p class="mb-6 flex-1 text-gray-600">{{ item.description }}</p>
+                    <a class="group flex w-full flex-col rounded-3xl border border-kit-line p-6 transition-colors duration-500 hover:border-kit-accent md:p-8" href="{{ item.url }}">
+                        <h3 class="mb-2 font-display text-2xl font-medium tracking-tight">{{ item.label }}</h3>
+                        <p class="mb-6 flex-1 text-kit-muted">{{ item.description }}</p>
                         {% if item.utils %}
-                        <p class="mb-4 font-mono text-xs text-gray-500">{{ item.utils }}</p>
+                        {{ tags(item.utils, 'mb-6') }}
                         {% endif %}
-                        <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                        <span class="inline-flex items-center gap-1 font-medium transition-colors duration-300 group-hover:text-kit-accent">Open demo {{ angle('right', 'duration-500 ease-out-expo group-hover:translate-x-0.5') }}</span>
                     </a>
                     {% else %}
-                    <div class="flex w-full flex-col rounded-2xl border border-dashed border-gray-200 p-6">
+                    <div class="flex w-full flex-col rounded-3xl border border-dashed border-kit-line p-6 md:p-8">
                         <div class="mb-2 flex items-start justify-between gap-2">
-                            <h3 class="text-xl font-semibold text-gray-400">{{ item.label }}</h3>
-                            <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-500">Soon</span>
+                            <h3 class="font-display text-2xl font-medium tracking-tight text-kit-muted">{{ item.label }}</h3>
+                            <span class="rounded-full bg-kit-surface px-3 py-1 text-xs font-medium text-kit-muted">Soon</span>
                         </div>
-                        <p class="text-gray-400">{{ item.description }}</p>
+                        <p class="text-kit-muted">{{ item.description }}</p>
                     </div>
                     {% endif %}
                 </li>
@@ -55,6 +61,6 @@ title: Anthony Toolkits
             </ul>
         </div>
         {% endfor %}
-        <p class="hidden text-gray-500" data-filter-empty>No components match your search.</p>
+        <p class="hidden text-kit-muted" data-filter-empty>No components match your search.</p>
     </div>
 </section>

@@ -1,0 +1,13 @@
+{#
+    pill tags, e.g. the utils a component uses
+    usage: {{ tags('_animate · _inview') }}, {{ tags(['_tabs'], 'mb-6') }}
+    items: a list, or a string split on " · "
+#}
+{% macro tags(items, class) -%}
+{%- set list = items.split(' · ') if items is string else items -%}
+<ul class="flex flex-wrap gap-2 {{ class }}">
+    {% for item in list %}
+    <li class="rounded-full border border-kit-line px-3 py-1 font-mono text-xs text-kit-muted">{{ item }}</li>
+    {% endfor %}
+</ul>
+{%- endmacro %}

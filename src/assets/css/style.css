@@ -8,6 +8,39 @@
 @import "./components/data-animate.css";
 @import "./components/link-underline.css";
 
+/*
+    toolkit look, from the portfolio (light theme)
+    kit-* colors are for this site's own frame only: header, footer, home and the page atoms
+    demos and code samples use plain Tailwind colors, so they still work when copied out
+*/
+@theme {
+    --color-kit-bg: #ffffff;
+    --color-kit-surface: #f5f4ef;
+    --color-kit-line: #dddbd2;
+    --color-kit-text: #111113;
+    --color-kit-muted: #65656d;
+    --color-kit-accent: #5b8fe0;
+    --color-kit-accent-hover: #80aaee;
+    /* text on top of the accent */
+    --color-kit-accent-ink: #0c0c0e;
+
+    --font-sans: "DM Sans", Arial, Helvetica, sans-serif;
+    --font-display: "Bricolage Grotesque", Arial, Helvetica, sans-serif;
+
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+    body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::selection {
+        @apply bg-kit-accent text-kit-accent-ink;
+    }
+}
+
 @theme {
     --breakpoint-xxs: 0px;
     --breakpoint-xs: 320px;

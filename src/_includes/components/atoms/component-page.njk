@@ -1,21 +1,23 @@
 {%- from "components/atoms/back-link.njk" import backLink -%}
 {%- from "components/atoms/code-block.njk" import codeBlock -%}
+{%- from "components/atoms/tag.njk" import tags -%}
 
 {#
     page title, for component pages
     usage: {{ pageIntro({ label: '_tabs', title: 'Tabs', description: '...' }) }}
+    label: the utils it uses, "_a · _b", shown as tags
     back: { label, url } for a parent page, optional
 #}
 {% macro pageIntro(props) -%}
-<section class="px-4 pt-24 pb-16 md:pt-32">
+<section class="px-4 pt-20 pb-16 md:pt-28">
     <div class="mx-auto max-w-295">
         {% if props.back %}{{ backLink(props.back) }}{% endif %}
         {% if props.label -%}
-        <p class="mb-4 font-mono text-sm text-gray-500">{{ props.label }}</p>
+        {{ tags(props.label, 'mb-6') }}
         {%- endif %}
-        <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">{{ props.title }}</h1>
+        <h1 class="mb-6 max-w-4xl font-display text-[2.75rem] leading-[1.02] font-semibold tracking-tight text-balance md:text-[4.5rem]">{{ props.title }}</h1>
         {% if props.description -%}
-        <p class="max-w-2xl text-lg text-gray-600 md:text-xl">{{ props.description | safe }}</p>
+        <p class="max-w-2xl text-lg text-kit-muted md:text-xl">{{ props.description | safe }}</p>
         {%- endif %}
     </div>
 </section>
@@ -29,16 +31,16 @@
     then run the same script: {% footerscript %}<script type="module">{{ pageScript | safe }}</script>{% endfooterscript %}
 #}
 {% macro scriptUsage(props) -%}
-<section class="px-4 py-24">
+<section class="mt-8 border-t border-kit-line px-4 py-16 md:py-28">
     <div class="mx-auto max-w-295">
-        <h2 class="mb-8 text-3xl font-bold tracking-tight">How to use</h2>
+        <h2 class="mb-10 font-display text-[2.5rem] leading-[1.02] font-semibold tracking-tight md:mb-16 md:text-[3.5rem]">How to use</h2>
         <div class="grid gap-10">
             {% if props.markup -%}
             <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
                 <div>
-                    <h3 class="mb-2 text-xl font-semibold">Markup</h3>
+                    <h3 class="mb-2 font-display text-2xl font-medium tracking-tight">Markup</h3>
                     {% if props.markupNote -%}
-                    <p class="text-gray-600">{{ props.markupNote | safe }}</p>
+                    <p class="text-kit-muted">{{ props.markupNote | safe }}</p>
                     {%- endif %}
                 </div>
                 {{ codeBlock(props.markup, 'html') }}
@@ -46,9 +48,9 @@
             {%- endif %}
             <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
                 <div>
-                    <h3 class="mb-2 text-xl font-semibold">Script</h3>
+                    <h3 class="mb-2 font-display text-2xl font-medium tracking-tight">Script</h3>
                     {% if props.note -%}
-                    <p class="text-gray-600">{{ props.note | safe }}</p>
+                    <p class="text-kit-muted">{{ props.note | safe }}</p>
                     {%- endif %}
                 </div>
                 {{ codeBlock(props.code, 'js') }}
