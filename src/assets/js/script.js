@@ -78,6 +78,37 @@ _event.resize(() => {
     document.body.style.setProperty("--footer-height", `${footer?.offsetHeight ?? 0}px`);
 });
 
+// dark mode toggle, saved once picked, else it follows the system
+const root = document.documentElement;
+const themeToggle = document.querySelector("[data-theme-toggle]");
+const savedTheme = () => {
+    try {
+        return localStorage.getItem("theme");
+    } catch {
+        return null;
+    }
+};
+const setTheme = (theme, save) => {
+    const apply = () => {
+        root.dataset.theme = theme;
+        themeToggle?.setAttribute("aria-pressed", String(theme === "dark"));
+    };
+
+    // one crossfade, so every color changes at the same pace
+    if (document.startViewTransition && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) document.startViewTransition(apply);
+    else apply();
+
+    if (save) {
+        try {
+            localStorage.setItem("theme", theme);
+        } catch {}
+    }
+};
+
+themeToggle?.setAttribute("aria-pressed", String(root.dataset.theme === "dark"));
+themeToggle?.addEventListener("click", () => setTheme(root.dataset.theme === "dark" ? "light" : "dark", true));
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => !savedTheme() && setTheme(e.matches ? "dark" : "light"));
+
 // before the page scripts read the hash
 _autoScrollHash();
 

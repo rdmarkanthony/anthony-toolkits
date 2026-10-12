@@ -8,7 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>{{ title | default('Home') | safe }}</title>
-    <script>document.documentElement.classList.add("js-animate");</script>
+    <script>
+        document.documentElement.classList.add("js-animate");
+        // the saved theme, else the system's, set before the page paints
+        try { document.documentElement.dataset.theme = localStorage.getItem("theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); } catch (e) {}
+    </script>
     {% if pageKeywords or pageDescription or pageURL -%}
     <meta name="keywords" content="{{ pageKeywords }}" />
     <meta name="description" content="{{ pageDescription }}" />
@@ -48,7 +52,8 @@
 </head>
 <body class="bg-kit-bg font-sans text-kit-text{% if bodyClass %} {{ bodyClass }}{% endif %}">
     {{ header({ site: site, url: page.url, components: components, starterKit: starterKit }) }}
-    <div class="main-content min-h-[calc(100vh-var(--header-height,0rem)-var(--footer-height,0rem))]">
+    {# component pages keep their demos on a light stage in dark mode, see themes.css #}
+    <div class="main-content min-h-[calc(100vh-var(--header-height,0rem)-var(--footer-height,0rem))]{% if page.url.startsWith('/components/') %} demo-stage bg-kit-bg text-kit-text{% endif %}">
         {{ content | safe }}
     </div>
     {% getBundle "popup" %}
