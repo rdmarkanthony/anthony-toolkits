@@ -51,44 +51,15 @@ Object.assign(window, {
     _canvasBanner,
 });
 
-class _projName {
-    constructor(props) {
-        if (window._projName) return;
-        window._projName = this;
-
-        this.debug = props.debug || false;
-
-        this.el = {
-            header: document.querySelector(".header-content"),
-            footer: document.querySelector(".footer-content"),
-            main: document.querySelector(".main-content"),
-        };
-
-        this.headerHeight = 0;
-        this.footerHeight = 0;
-
-        this.init();
-    }
-
-    init() {
-        // for resize
-        _event.resize(() => this.resize());
-
-        // component search
-        _filter.init();
-
-        if (this.debug) console.log("_projName", this);
-    }
-
-    resize() {
-        this.headerHeight = this.el.header?.offsetHeight ?? 0;
-        document.body.style.setProperty("--header-height", `${this.headerHeight}px`);
-
-        this.footerHeight = this.el.footer?.offsetHeight ?? 0;
-        document.body.style.setProperty("--footer-height", `${this.footerHeight}px`);
-    }
-}
-
 // modules run after the html is parsed, and before the inline page scripts,
 // so --header-height is set before the components measure
-new _projName({ debug: true });
+const header = document.querySelector(".header-content");
+const footer = document.querySelector(".footer-content");
+
+_event.resize(() => {
+    document.body.style.setProperty("--header-height", `${header?.offsetHeight ?? 0}px`);
+    document.body.style.setProperty("--footer-height", `${footer?.offsetHeight ?? 0}px`);
+});
+
+// component search
+_filter.init();
