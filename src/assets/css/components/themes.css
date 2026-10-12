@@ -20,10 +20,28 @@
 /* dark: follows .dark, not the system setting */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* colors ease while _themeScroller switches */
+/* registered so the theme colors can ease on the target alone */
+@property --color-kit-bg { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
+@property --color-kit-surface { syntax: "<color>"; inherits: true; initial-value: #f5f4ef; }
+@property --color-kit-line { syntax: "<color>"; inherits: true; initial-value: #dddbd2; }
+@property --color-kit-text { syntax: "<color>"; inherits: true; initial-value: #111113; }
+@property --color-kit-muted { syntax: "<color>"; inherits: true; initial-value: #65656d; }
+
+/* colors ease while _themeScroller switches, color/fill/stroke only where dark: sets them (inherited, they lag on iOS) */
 @layer base {
-    :where(.theme-transition, .theme-transition *) {
+    .theme-transition {
+        transition-property: --color-kit-bg, --color-kit-surface, --color-kit-line, --color-kit-text, --color-kit-muted, color, background-color, border-color, fill, stroke;
+    }
+
+    :where(.theme-transition *) {
+        transition-property: background-color, border-color, outline-color, text-decoration-color;
+    }
+
+    :where(.theme-transition :is([class*="dark:text-"], [class*="dark:fill-"], [class*="dark:stroke-"])) {
         transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke;
+    }
+
+    :where(.theme-transition, .theme-transition *) {
         transition-duration: 0.5s;
         transition-timing-function: ease;
     }

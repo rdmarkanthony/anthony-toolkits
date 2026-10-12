@@ -23,6 +23,7 @@ title: Auto scroll | Anthony Toolkits
                 {% endfor %}
             </div>
             <p class="js-auto-scroll-status font-mono text-sm text-gray-500">Click a link.</p>
+            <p class="text-sm text-gray-600">On load: open this page with <a class="font-medium underline underline-offset-4" href="/components/auto-scroll/#auto-scroll-2" target="_blank">#auto-scroll-2</a> and it scrolls there, or with <a class="font-medium underline underline-offset-4" href="/components/auto-scroll/#auto-scroll-hidden" target="_blank">#auto-scroll-hidden</a>, a hidden element, and it stays at the top.</p>
         </div>
 
         <div class="mt-[60vh] flex flex-col gap-[60vh] pb-[30vh]">
@@ -34,6 +35,7 @@ title: Auto scroll | Anthony Toolkits
             </div>
             {% endfor %}
         </div>
+        <div id="auto-scroll-hidden" class="hidden">Hidden, e.g. a lightbox's content.</div>
     </div>
 </section>
 
@@ -65,7 +67,7 @@ document.querySelectorAll('.js-auto-scroll').forEach((link) => {
 
 {{ scriptUsage({
     code: pageScript,
-    note: '<code class="font-mono text-sm">_autoScroll({ target, offset, speed, ease, callback })</code>, the speed in ms. <code class="font-mono text-sm">offset</code> defaults to the header height. Add <code class="font-mono text-sm">data-scroll-parent=".selector"</code> on the target to scroll to its closest matching parent instead.'
+    note: '<code class="font-mono text-sm">_autoScroll({ target, offset, speed, ease, callback })</code>, the speed in ms. <code class="font-mono text-sm">offset</code> defaults to the header height. Add <code class="font-mono text-sm">data-scroll-parent=".selector"</code> on the target to scroll to its closest matching parent instead.<br><br><code class="font-mono text-sm">_autoScrollHash(options)</code> scrolls to the element of the url hash once the page loads (<code class="font-mono text-sm">#id</code> or <code class="font-mono text-sm">#id?query</code>), only if it\'s visible, so a hash meant for a lightbox or a closed accordion is left to that script. Call it in your main script before the page scripts read the hash, as <code class="font-mono text-sm">script.js</code> does for this site.'
 }) }}
 
 {% footerscript %}

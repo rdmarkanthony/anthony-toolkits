@@ -34,7 +34,8 @@ export class _autocomplete {
         this.list.setAttribute("role", "listbox");
         this.list.hidden = true;
 
-        this.onInput = () => this.update();
+        // only while typing, not when a script sets the value
+        this.onInput = () => document.activeElement === this.input && this.update();
         this.onFocus = () => this.input.value.trim() && this.update();
         this.onKeydown = (e) => this.keydown(e);
         this.onFocusout = (e) => !this.list.contains(e.relatedTarget) && e.relatedTarget !== this.input && this.close();
@@ -54,6 +55,8 @@ export class _autocomplete {
         if (!query) return this.close();
 
         const matches = this.items.filter((item) => this.match(item, query));
+        if (!matches.length && !this.empty) return this.close();
+
         const links = matches.slice(0, this.limit).map((item) => ({ url: item.url, html: this.render(item) }));
         if (this.more && matches.length > this.limit) links.push(this.more(value, matches.length));
 

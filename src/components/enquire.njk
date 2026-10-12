@@ -1,0 +1,79 @@
+---
+title: Enquire | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_enquire', title: 'Enquire', description: 'Runs code once each time the window enters a breakpoint, e.g. to set up a slider on mobile and close an open panel on desktop. It uses matchMedia, so it switches at the exact width the CSS does.' }) }}
+
+{% set card = 'flex flex-col gap-2 rounded-2xl border border-gray-200 p-6 transition-colors data-active:border-gray-950 data-active:bg-gray-950 data-active:text-white' %}
+{% set label = 'font-mono text-sm text-gray-500' %}
+{% set value = 'font-mono text-2xl font-semibold tabular-nums' %}
+
+{# demo: resize the window, the card of the current breakpoint lights up #}
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-4">
+        <div class="grid gap-4 md:grid-cols-3">
+            <div class="js-enquire-card {{ card }}" data-breakpoint="0">
+                <p class="font-mono text-sm opacity-60">0</p>
+                <p class="text-3xl font-bold tracking-tight">Mobile</p>
+            </div>
+            <div class="js-enquire-card {{ card }}" data-breakpoint="768">
+                <p class="font-mono text-sm opacity-60">768</p>
+                <p class="text-3xl font-bold tracking-tight">Tablet</p>
+            </div>
+            <div class="js-enquire-card {{ card }}" data-breakpoint="1240">
+                <p class="font-mono text-sm opacity-60">1240</p>
+                <p class="text-3xl font-bold tracking-tight">Desktop</p>
+            </div>
+        </div>
+        <div class="grid gap-4 md:grid-cols-2">
+            <div class="flex flex-col gap-2 rounded-2xl border border-gray-200 p-6">
+                <p class="{{ label }}">resize events / enquire calls</p>
+                <p class="{{ value }}"><span class="js-enquire-resizes">0</span> / <span class="js-enquire-calls">0</span></p>
+                <p class="text-gray-600">Resize the window: the callbacks only run when the breakpoint changes.</p>
+            </div>
+            <div class="flex flex-col gap-2 rounded-2xl border border-gray-200 p-6">
+                <p class="{{ label }}">last calls</p>
+                <ol class="js-enquire-log flex flex-col gap-1 font-mono text-sm text-gray-600"></ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_enquire.js
+
+const _cards = document.querySelectorAll('.js-enquire-card');
+const _calls = document.querySelector('.js-enquire-calls');
+const _log = document.querySelector('.js-enquire-log');
+
+const _show = (enquire, name) => {
+    _cards.forEach((card) => card.toggleAttribute('data-active', card.dataset.breakpoint === `${enquire.breakpoint}`));
+    _calls.textContent = Number(_calls.textContent) + 1;
+    _log.insertAdjacentHTML('afterbegin', `<li>${name}: ${enquire.prevBreakpoint ?? 'start'} → ${enquire.breakpoint}</li>`);
+    _log.querySelectorAll('li:nth-child(n+5)').forEach((item) => item.remove());
+};
+
+// each one runs once when the window enters it, and on load for the current one
+new _enquire({
+    0: (enquire) => _show(enquire, 'mobile'),
+    768: (enquire) => _show(enquire, 'tablet'),
+    1240: (enquire) => _show(enquire, 'desktop'),
+});
+
+// only to compare, how often the window fires resize
+const _resizes = document.querySelector('.js-enquire-resizes');
+window.addEventListener('resize', () => (_resizes.textContent = Number(_resizes.textContent) + 1));
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _enquire({ [minWidth]: (enquire) => {} })</code>. <code class="font-mono text-sm">enquire.breakpoint</code> is the width it entered, <code class="font-mono text-sm">enquire.prevBreakpoint</code> the one it left (<code class="font-mono text-sm">null</code> on load). Below the smallest key nothing runs. Call <code class="font-mono text-sm">destroy()</code> to stop listening. To run on every resize instead, use <code class="font-mono text-sm">_event.resize</code>.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

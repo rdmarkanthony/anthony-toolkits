@@ -5,22 +5,20 @@ title: Anthony Toolkits
 
 {% from "components/atoms/icon.njk" import angle, search %}
 {% from "components/atoms/tag.njk" import tags %}
-{% from "components/atoms/button.njk" import renderButton %}
 
 <section class="px-4 pt-20 pb-16 md:pt-32">
     <div class="mx-auto max-w-295">
         <h1 class="mb-6 font-display text-[3.25rem] leading-[0.95] font-semibold tracking-tight md:text-[6.5rem]">{{ site.name }}<span class="text-kit-accent">.</span></h1>
         <p class="mb-10 max-w-2xl text-lg text-kit-muted md:text-xl">{{ site.description }} Each component shows its markup and script, ready to copy into any website.</p>
-        <div class="flex flex-wrap gap-3">
-            <form class="w-full max-w-md" action="/" method="get" role="search" data-home-search>
-                <label class="relative block">
-                    <span class="sr-only">Search components</span>
-                    <span class="pointer-events-none absolute top-1/2 left-5 -translate-y-1/2 text-kit-muted">{{ search() }}</span>
-                    <input class="h-13 w-full rounded-full border border-kit-line bg-kit-bg pr-6 pl-12 transition-colors duration-300 placeholder:text-kit-muted focus:border-kit-accent focus:outline-none" type="search" name="q" placeholder="Search components or utils…" autocomplete="off" data-filter-input />
-                </label>
-            </form>
-            {{ renderButton({ type: 'outline', label: 'View on GitHub', url: site.github, target: '_blank' }) }}
-        </div>
+        <form class="relative z-10 w-full" action="/" method="get" role="search" data-search data-home-search>
+            <label class="group relative block">
+                <span class="sr-only">Search components</span>
+                <span class="pointer-events-none absolute top-1/2 left-5 -translate-y-1/2 text-kit-text md:left-6 md:text-xl">{{ search() }}</span>
+                <input id="search-home" class="h-14 w-full rounded-full border border-kit-text/25 bg-kit-bg pr-6 pl-12 shadow-[0_12px_32px_-16px_rgb(0_0_0/0.25)] transition-[border-color,box-shadow] duration-300 placeholder:text-kit-muted hover:border-kit-text/50 focus:border-kit-accent focus:ring-4 focus:ring-kit-accent/20 focus:outline-none md:h-16 md:pr-16 md:pl-15 md:text-lg" type="search" name="q" placeholder="Search components or utils…" autocomplete="off" data-filter-input data-search-input />
+                <kbd class="pointer-events-none absolute top-1/2 right-5 hidden size-7 -translate-y-1/2 items-center justify-center rounded-lg border border-kit-text/20 bg-kit-bg font-mono text-sm text-kit-muted transition-opacity duration-300 group-focus-within:opacity-0 group-has-[input:not(:placeholder-shown)]:opacity-0 md:flex" aria-hidden="true">/</kbd>
+            </label>
+            <div id="search-home-list" class="absolute top-full left-0 mt-2 max-h-[70vh] w-full overflow-y-auto rounded-3xl border border-kit-line bg-kit-bg p-2 shadow-xl" hidden data-search-list></div>
+        </form>
     </div>
 </section>
 
@@ -69,7 +67,7 @@ title: Anthony Toolkits
     // component search, the input is in the hero, so the scope is the whole page
     _filter.init();
 
-    // ?q= comes from the header search on the other pages, the url keeps the search for sharing and the back button
+    // ?q= comes from the header search, and stays in the url for sharing and the back button
     const form = document.querySelector("[data-home-search]");
     const input = form.querySelector("[data-filter-input]");
     const query = new URLSearchParams(location.search).get("q");
@@ -84,6 +82,13 @@ title: Anthony Toolkits
         const value = input.value.trim();
         value ? url.searchParams.set("q", value) : url.searchParams.delete("q");
         history.replaceState(history.state, "", url);
+    });
+
+    // "/" jumps to the search, unless typing somewhere else
+    document.addEventListener("keydown", (e) => {
+        if (e.key !== "/" || e.metaKey || e.ctrlKey || e.target.closest("input, textarea, select, [contenteditable]")) return;
+        e.preventDefault();
+        input.focus();
     });
 
     // the results are already on the page, Enter only closes the phone keyboard

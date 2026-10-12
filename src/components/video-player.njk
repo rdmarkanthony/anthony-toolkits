@@ -20,7 +20,7 @@ title: Video player | Anthony Toolkits
     </div>
 </section>
 
-{# demo #}
+{# demo: MP4, HLS and Plyr players #}
 {% set groups = [
     {
         title: 'MP4',
@@ -39,18 +39,29 @@ title: Video player | Anthony Toolkits
             { label: 'Standard', options: '', ratio: 'aspect-video' },
             { label: 'Autoplay', options: ',autoplay', ratio: 'aspect-video' }
         ]
+    },
+    {
+        title: 'With Plyr',
+        description: 'Plyr controls instead of the browser\'s, the same look in every browser. Plyr only loads on pages that use it.',
+        src: video,
+        srcLabel: video + ' · ' + videoHls,
+        players: [
+            { label: 'MP4, with a poster', options: ',plyr', ratio: 'aspect-video', poster: '/assets/img/sample-image.webp' },
+            { label: 'HLS', src: videoHls, options: ',plyr', ratio: 'aspect-video' }
+        ]
     }
 ] %}
 {% for group in groups %}
 <section class="px-4 py-16 {{ 'pt-0' if not loop.first }}">
     <div class="mx-auto max-w-295">
         <h2 class="mb-2 text-3xl font-bold tracking-tight">{{ group.title }}</h2>
-        <p class="mb-8 font-mono text-sm text-gray-500">{{ group.src }}</p>
+        {% if group.description %}<p class="mb-2 max-w-2xl text-gray-600">{{ group.description }}</p>{% endif %}
+        <p class="mb-8 font-mono text-sm text-gray-500">{{ group.srcLabel or group.src }}</p>
         <div class="grid gap-10 md:grid-cols-2">
             {% for player in group.players %}
             <div class="flex flex-col gap-3">
                 <p class="font-semibold">{{ player.label }} <code class="ml-2 font-mono text-xs font-normal text-gray-500">src{{ player.options }}</code></p>
-                <div class="relative {{ player.ratio }} bg-black" data-video-player="{{ group.src }}{{ player.options }}">
+                <div class="relative {{ player.ratio }} bg-black" data-video-player="{{ player.src or group.src }}{{ player.options }}"{% if player.poster %} data-poster="{{ player.poster }}"{% endif %}>
                     {% if 'autoplay' in player.options %}<div class="absolute inset-0 z-10"></div>{% endif %}
                 </div>
             </div>
@@ -60,9 +71,24 @@ title: Video player | Anthony Toolkits
 </section>
 {% endfor %}
 
+{# demo: a Plyr video in a lightbox, made on open and destroyed on close #}
+<section class="px-4 pb-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-2 text-3xl font-bold tracking-tight">In a lightbox</h2>
+        <p class="mb-8 max-w-2xl text-gray-600">The player is made when the lightbox opens and destroyed when it closes, so nothing keeps loading in the background.</p>
+        <a class="js-video-lightbox inline-flex rounded-full bg-gray-950 px-6 py-3 font-medium text-white transition-colors hover:bg-gray-700" href="#video-lightbox" data-src="{{ video }}">Play in a lightbox</a>
+        <div class="hidden">
+            <div id="video-lightbox" class="relative mx-auto aspect-video w-full max-w-5xl overflow-hidden rounded-2xl bg-black"></div>
+        </div>
+    </div>
+</section>
+
 {% set markup %}{% raw %}
-<!-- data-video-player="src,autoplay,stretch" -->
+<!-- data-video-player="src,autoplay,stretch,plyr", any options in any order -->
 <div class="relative aspect-video bg-black" data-video-player="/assets/video/name/name.m3u8"></div>
+
+<!-- with Plyr controls and a poster -->
+<div class="relative aspect-video bg-black" data-video-player="/assets/video/name.mp4,plyr" data-poster="/assets/img/name.webp"></div>
 
 <!-- a muted loop that covers its box -->
 <div class="relative aspect-square bg-black" data-video-player="/assets/video/name.mp4,autoplay,stretch"></div>
@@ -76,16 +102,21 @@ title: Video player | Anthony Toolkits
         // src/assets/js/utils/_emitter.js
         // src/assets/js/utils/_media.js
         // src/assets/js/utils/_videoPlayer.js
+        // plyr + src/assets/js/utils/_plyr.js (optional, for Plyr controls)
+        // src/assets/js/utils/_lightbox.js (only for the lightbox sample)
+    // CSS
+        // plyr/dist/plyr.css (with Plyr)
 
 document.querySelectorAll('[data-video-player]').forEach((target) => {
-    const [_src, _autoplay, _stretch] = target.dataset.videoPlayer.split(',');
+    const [_src, ..._options] = target.dataset.videoPlayer.split(',');
     if (!_src) return;
 
     const _player = new _videoPlayer({
         target,
         src: _src,
-        autoplay: _autoplay === 'autoplay',
-        stretch: _stretch === 'stretch',
+        poster: target.dataset.poster,
+        autoplay: _options.includes('autoplay'),
+        stretch: _options.includes('stretch'),
         events: {
             // fade autoplay videos in when they start
             beforeInit: (instance) => {
@@ -94,10 +125,35 @@ document.querySelectorAll('[data-video-player]').forEach((target) => {
                 instance.el.video.style.transition = 'opacity 0.8s';
                 instance.el.video.style.opacity = 0;
             },
+            // Plyr controls instead of the browser's
+            afterInit: (instance) => {
+                if (_options.includes('plyr')) _plyr(instance);
+            },
         },
     });
 
     _player.on('play', (instance) => (instance.el.video.style.opacity = ''));
+});
+
+// a Plyr video in a lightbox
+document.querySelectorAll('.js-video-lightbox').forEach((trigger) => {
+    let _player = null;
+
+    trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        new _lightbox({
+            target: trigger.getAttribute('href'),
+            events: {
+                afterShow: async (lightbox) => {
+                    _player = new _videoPlayer({ target: lightbox.content.original, src: trigger.dataset.src });
+                    await _plyr(_player);
+                    _player.play();
+                },
+                afterClose: () => _player?.destroy(),
+            },
+        });
+    });
 });
 {% endraw %}{% endset %}
 
@@ -105,7 +161,7 @@ document.querySelectorAll('[data-video-player]').forEach((target) => {
     markup: markup,
     markupNote: 'The video fills its box, so give the box a size, e.g. <code class="font-mono text-sm">aspect-video</code>.',
     code: pageScript,
-    note: 'hls.js loads only for <code class="font-mono text-sm">.m3u8</code> videos where the browser has Media Source Extensions, others (e.g. iOS Safari) play them natively. Events: <code class="font-mono text-sm">beforeInit</code>, <code class="font-mono text-sm">afterInit</code>, <code class="font-mono text-sm">play</code>, <code class="font-mono text-sm">pause</code>, <code class="font-mono text-sm">ended</code>.'
+    note: 'hls.js loads only for <code class="font-mono text-sm">.m3u8</code> videos where the browser has Media Source Extensions, others (e.g. iOS Safari) play them natively. Events: <code class="font-mono text-sm">beforeInit</code>, <code class="font-mono text-sm">afterInit</code>, <code class="font-mono text-sm">loadstart</code>, <code class="font-mono text-sm">loading</code>, <code class="font-mono text-sm">canplay</code>, <code class="font-mono text-sm">playing</code>, <code class="font-mono text-sm">play</code>, <code class="font-mono text-sm">pause</code>, <code class="font-mono text-sm">ended</code>, <code class="font-mono text-sm">destroy</code>. The box gets state classes to style with: <code class="font-mono text-sm">video-loading</code>, <code class="font-mono text-sm">video-canplay</code>, <code class="font-mono text-sm">video-playing</code>, <code class="font-mono text-sm">video-paused</code>, <code class="font-mono text-sm">video-ended</code>, <code class="font-mono text-sm">sound-on</code>/<code class="font-mono text-sm">sound-off</code>. Playing a video with sound pauses the others, muted background videos keep playing. <code class="font-mono text-sm">play()</code>, <code class="font-mono text-sm">pause()</code>, <code class="font-mono text-sm">destroy()</code> (Plyr and hls.js included).'
 }) }}
 
 {% footerscript %}

@@ -1,8 +1,9 @@
-{%- from "components/atoms/icon.njk" import external, search, menu, close -%}
+{%- from "components/atoms/icon.njk" import angle, external, search, menu, close -%}
+{%- from "components/atoms/code-block.njk" import codeBlock -%}
 {#
     site header, sticky with a frosted background
     url: the current page.url, marks Components as active on component pages
-    inner pages get the search here, the home page has its own in the hero
+    inner pages get the search here, the home page has its own in the hero (both use #search-items)
     below lg the links and the search move into the sliding menu
 #}
 {% macro header(props) %}
@@ -18,6 +19,7 @@
             <nav class="hidden lg:block" aria-label="Main">
                 <ul class="flex items-center gap-8">
                     <li>{{ componentsLink(onComponents) }}</li>
+                    {% if props.starterKit.items.length %}<li><a class="text-kit-muted transition-colors duration-300 hover:text-kit-text" href="#starter-kit" data-starter-open>Starter kit</a></li>{% endif %}
                     <li><a class="group inline-flex h-11 items-center gap-1.5 rounded-full border border-kit-line px-5 text-sm font-medium transition-colors duration-300 hover:border-kit-accent hover:text-kit-accent" href="{{ props.site.github }}" target="_blank" rel="noopener">GitHub{{ external('duration-500 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}</a></li>
                 </ul>
             </nav>
@@ -40,13 +42,44 @@
         <nav aria-label="Main">
             <ul class="flex flex-col gap-4">
                 <li><a class="font-display text-3xl font-semibold tracking-tight transition-colors duration-300 hover:text-kit-accent {{ 'text-kit-accent' if onComponents }}" href="/#components" data-auto-scroll{% if onComponents %} aria-current="true"{% endif %}>Components</a></li>
+                {% if props.starterKit.items.length %}<li><a class="font-display text-3xl font-semibold tracking-tight transition-colors duration-300 hover:text-kit-accent" href="#starter-kit" data-starter-open>Starter kit</a></li>{% endif %}
                 <li><a class="group inline-flex items-center gap-1.5 font-display text-3xl font-semibold tracking-tight transition-colors duration-300 hover:text-kit-accent" href="{{ props.site.github }}" target="_blank" rel="noopener">GitHub{{ external('duration-500 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}</a></li>
             </ul>
         </nav>
     </div>
 </div>
 
-{% if not onHome %}
+{# starter kit popup, opened by the Starter kit links #}
+{% if props.starterKit.items.length %}
+<div class="hidden">
+    <div id="starter-kit" class="mx-auto w-full max-w-5xl rounded-3xl bg-kit-bg p-6 md:p-10">
+        <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <h2 class="font-display text-3xl font-semibold tracking-tight md:text-4xl">Starter kit</h2>
+                <p class="mt-2 text-kit-muted">The ones that go into every new project, and the files to copy.</p>
+            </div>
+            <button class="inline-flex h-11 cursor-pointer items-center rounded-full border border-kit-line px-5 text-sm font-medium transition-colors duration-300 hover:border-kit-accent hover:text-kit-accent" type="button" data-starter-copy>Copy file list</button>
+        </div>
+        <div class="grid gap-8 lg:grid-cols-[1fr_1.4fr] lg:gap-10">
+            <ul class="border-t border-kit-line">
+                {% for item in props.starterKit.items %}
+                <li>
+                    <a class="group flex items-center justify-between gap-4 border-b border-kit-line py-4" href="{{ item.url }}">
+                        <span>
+                            <span class="block font-display text-xl font-medium tracking-tight transition-colors duration-300 group-hover:text-kit-accent">{{ item.label }}</span>
+                            <span class="block text-sm text-kit-muted">{{ item.utils }}</span>
+                        </span>
+                        {{ angle('right', 'duration-500 ease-out-expo group-hover:translate-x-0.5 group-hover:text-kit-accent') }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            <div data-starter-files>{{ codeBlock(props.starterKit.files, 'files to copy') }}</div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {# the suggestions, text is what the home page filters on, so both agree #}
 {%- set searchItems = [] -%}
 {%- for group in props.components -%}
@@ -57,7 +90,6 @@
     {%- endfor -%}
 {%- endfor %}
 <script type="application/json" id="search-items">{{ searchItems | dump | safe }}</script>
-{% endif %}
 {% endmacro %}
 
 {# Components link with the active dot #}

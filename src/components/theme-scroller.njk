@@ -18,16 +18,18 @@ bodyClass: dark
 /* Tailwind v4: dark: follows .dark */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* or variables, e.g. bg-(--page-bg) */
+/* or variables, e.g. bg-(--page-bg), registered so they can ease */
+@property --page-bg { syntax: "<color>"; inherits: true; initial-value: #fff; }
+@property --page-text { syntax: "<color>"; inherits: true; initial-value: #111; }
 .light { --page-bg: #fff; --page-text: #111; }
 .dark { --page-bg: #0c0c0e; --page-text: #f2f1ec; }
 
-/* ease colors only while switching */
+/* ease colors only while switching, never color on every element: on iOS nested text lags */
 @layer base {
-    :where(.theme-transition, .theme-transition *) {
-        transition-property: color, background-color, border-color, fill, stroke;
-        transition-duration: 0.5s;
-    }
+    .theme-transition { transition-property: --page-bg, --page-text, color, background-color, border-color; }
+    :where(.theme-transition *) { transition-property: background-color, border-color; }
+    :where(.theme-transition [class*="dark:text-"]) { transition-property: color, background-color, border-color; }
+    :where(.theme-transition, .theme-transition *) { transition-duration: 0.5s; }
 }
 {% endraw %}{% endset %}
 

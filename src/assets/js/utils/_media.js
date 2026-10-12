@@ -3,16 +3,16 @@
 // every player on the page, so playing one can pause the others
 export const _players = [];
 
-// pause the other non-autoplay players
+// pause the other players with sound, muted background videos keep playing
 export const _pauseAll = (currentPlayer) => {
     _players.forEach((item) => {
-        if (item === currentPlayer || item.autoplay) return;
+        if (item === currentPlayer || (item.isSilent ?? item.autoplay)) return;
 
         // for youtube
         if (item.player?.getPlayerState?.() === 1) item.player.pauseVideo();
 
         // for video
-        item.el.video?.pause();
+        item.el?.video?.pause();
     });
 };
 

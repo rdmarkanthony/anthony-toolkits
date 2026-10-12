@@ -5,6 +5,7 @@ import flatpickr from "flatpickr";
 
 // utils, each one also works on its own: copy it with the files it imports
 import { _event } from "./utils/_event";
+import { _enquire } from "./utils/_enquire";
 import { _emitter } from "./utils/_emitter";
 import { _filter } from "./utils/_filter";
 import { _autocomplete } from "./utils/_autocomplete";
@@ -16,14 +17,16 @@ import { _rollingNumber } from "./utils/_rollingNumber";
 import { _typing } from "./utils/_typing";
 import { _countdownTimer } from "./utils/_countdownTimer";
 import { _tabs } from "./utils/_tabs";
+import { _accordion } from "./utils/_accordion";
 import { _groupHeight } from "./utils/_groupHeight";
 import { _lightbox } from "./utils/_lightbox";
 import { _lazyLoad } from "./utils/_lazyLoad";
 import { _selectBox } from "./utils/_selectBox";
 import { _videoPlayer } from "./utils/_videoPlayer";
+import { _plyr } from "./utils/_plyr";
 import { _youtubePlayer } from "./utils/_youtubePlayer";
 import { _hlsVideo } from "./utils/_hlsVideo";
-import { _autoScroll } from "./utils/_autoScroll";
+import { _autoScroll, _autoScrollHash } from "./utils/_autoScroll";
 import { _parallax, _parallaxScroller, _parallaxBackground, _parallaxFloating } from "./utils/_parallax";
 import { _canvasBanner } from "./utils/_canvasBanner";
 import { _themeScroller } from "./utils/_themeScroller";
@@ -34,6 +37,7 @@ Object.assign(window, {
     DateTime,
     flatpickr,
     _event,
+    _enquire,
     _emitter,
     _filter,
     _autocomplete,
@@ -45,14 +49,17 @@ Object.assign(window, {
     _typing,
     _countdownTimer,
     _tabs,
+    _accordion,
     _groupHeight,
     _lightbox,
     _lazyLoad,
     _selectBox,
     _videoPlayer,
+    _plyr,
     _youtubePlayer,
     _hlsVideo,
     _autoScroll,
+    _autoScrollHash,
     _parallax,
     _parallaxScroller,
     _parallaxBackground,
@@ -71,6 +78,24 @@ _event.resize(() => {
     document.body.style.setProperty("--footer-height", `${footer?.offsetHeight ?? 0}px`);
 });
 
+// before the page scripts read the hash
+_autoScrollHash();
+
+// starter kit popup, from the header links or /#starter-kit
+document.addEventListener("click", (e) => {
+    if (!e.target.closest("[data-starter-open]")) return;
+    e.preventDefault();
+    new _lightbox({ target: "#starter-kit" });
+});
+if (location.hash === "#starter-kit") new _lightbox({ target: "#starter-kit" });
+
+document.querySelector("[data-starter-copy]")?.addEventListener("click", async (e) => {
+    const button = e.currentTarget;
+    await navigator.clipboard.writeText(document.querySelector("[data-starter-files] code").textContent);
+    button.textContent = "Copied";
+    setTimeout(() => (button.textContent = "Copy file list"), 2000);
+});
+
 // smooth scroll for links with data-auto-scroll to a section of the same page, "#" goes to the top
 document.addEventListener("click", (e) => {
     const link = e.target.closest("a[data-auto-scroll]");
@@ -86,20 +111,23 @@ document.addEventListener("click", (e) => {
     _autoScroll({ target });
 });
 
-// header search, a suggestion opens its component, Enter with none picked submits to the home page (?q=) for the results
-// same match as the home page filter, so the suggestions and the results agree
+// header and home search: a suggestion opens its component, Enter without one goes to /?q=
+// same match as the home filter, so suggestions and results agree
 const searchItems = JSON.parse(document.getElementById("search-items")?.textContent ?? "[]");
 const escapeHTML = (text) => String(text).replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 
 document.querySelectorAll("[data-search]").forEach((form) => {
+    // the home results are right below, so no "See all" or empty message
+    const onHome = form.hasAttribute("data-home-search");
+
     new _autocomplete({
         input: form.querySelector("[data-search-input]"),
         list: form.querySelector("[data-search-list]"),
         items: searchItems,
         match: (item, query) => _filter.match(item.text, query),
         render: (item) => `<span class="font-medium">${escapeHTML(item.label)}</span><span class="shrink-0 text-sm whitespace-nowrap text-kit-muted">${escapeHTML(item.category)}</span>`,
-        more: (value, total) => ({ url: `/?q=${encodeURIComponent(value)}`, html: `<span class="font-medium text-kit-accent">See all ${total} results</span>` }),
-        empty: (value) => `<p class="px-4 py-3 text-kit-muted">No components match “${escapeHTML(value)}”.</p>`,
+        more: onHome ? null : (value, total) => ({ url: `/?q=${encodeURIComponent(value)}`, html: `<span class="font-medium text-kit-accent">See all ${total} results</span>` }),
+        empty: onHome ? null : (value) => `<p class="px-4 py-3 text-kit-muted">No components match “${escapeHTML(value)}”.</p>`,
         optionClass: "flex items-baseline justify-between gap-4 rounded-2xl px-4 py-3 transition-colors duration-200 aria-selected:bg-kit-surface",
     });
 });

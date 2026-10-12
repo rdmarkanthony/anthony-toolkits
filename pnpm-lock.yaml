@@ -26,6 +26,9 @@ importers:
       luxon:
         specifier: ^3.7.2
         version: 3.7.2
+      plyr:
+        specifier: ^3.8.5
+        version: 3.8.5
       split-type:
         specifier: ^0.3.4
         version: 0.3.4
@@ -653,6 +656,9 @@ packages:
     resolution: {integrity: sha512-0LrrStPOdJj+SPCCrGhzryycLjwcgUSHBtxNA8aIDxf0GLsRh1cKYhB00Gd1lDOS4yGH69+SNn13+TWbVHETFQ==}
     engines: {node: ^10 || ^12.20.0 || ^14.13.0 || >=15.0.0, npm: '>=7.0.0'}
 
+  custom-event-polyfill@1.0.7:
+    resolution: {integrity: sha512-TDDkd5DkaZxZFM8p+1I3yAlvM3rSr1wbrOliG4yJiwinMZN8z/iGL7BTlDkrJcYTmgUSb4ywVCc3ZaUtOtC76w==}
+
   data-view-buffer@1.0.2:
     resolution: {integrity: sha512-EmKO5V3OLXh1rtK2wgXRansaK1/mtVdTUEiEI0W8RkvgT05kfxaH29PliLnpLP73yYO6142Q72QNa8Wx/A5CqQ==}
     engines: {node: '>= 0.4'}
@@ -1238,6 +1244,9 @@ packages:
     resolution: {integrity: sha512-Kx8hMakjX03tiGTLAIdJ+lL0htKnXjEZN6hk/tozf/WOuYGdZBJrZ+rCJRbVCugsjB3jMLn9746NsQIf5VjBMw==}
     engines: {node: '>=4'}
 
+  loadjs@4.3.0:
+    resolution: {integrity: sha512-vNX4ZZLJBeDEOBvdr2v/F+0aN5oMuPu7JTqrMwp+DtgK+AryOlpy6Xtm2/HpNr+azEa828oQjOtWsB6iDtSfSQ==}
+
   lodash.memoize@4.1.2:
     resolution: {integrity: sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==}
 
@@ -1422,6 +1431,11 @@ packages:
 
   please-upgrade-node@3.2.0:
     resolution: {integrity: sha512-gQR3WpIgNIKwBMVLkpMUeR3e1/E1y42bqDQZfql+kDeXd8COYfM8PQA4X6y7a8u9Ua9FHmsrrmirW2vHs45hWg==}
+
+  plyr@3.8.5:
+    resolution: {integrity: sha512-SqGU1s76fq4lI8ABYhi1uxwrcLGYqmyiMazFAUIOQKKwt6S7FfflEMljLaM3SV8HUUb1KdZ04FY/SNFRpPZHUw==}
+    engines: {node: ^22.18.0 || >=24.11.0}
+    deprecated: 'Plyr is deprecated and receives security updates only. Use Video.js 10 for new projects. Migration guide: https://videojs.org/docs/framework/html/guides/migrate-from-plyr'
 
   possible-typed-array-names@1.1.0:
     resolution: {integrity: sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==}
@@ -1638,6 +1652,9 @@ packages:
   range-parser@1.3.0:
     resolution: {integrity: sha512-hek2mFQpPuI4E1BBKrSto+BU3e3x4xuarsbiwr3+lf7p44juvFMV0XFWQAP3xUyqXA4RrXLIoaSUGbSt056ZMw==}
     engines: {node: '>= 0.6'}
+
+  rangetouch@2.0.1:
+    resolution: {integrity: sha512-sln+pNSc8NGaHoLzwNBssFSf/rSYkqeBXzX1AtJlkJiUaVSJSbRAWJk+4omsXkN+EJalzkZhWQ3th1m0FpR5xA==}
 
   read-pkg@3.0.0:
     resolution: {integrity: sha512-BLq/cCO9two+lBgiTYNqD6GdtK8s4NpaWrl6/rCO9w0TUS8oJl7cmToOZfRYllKTISY6nt1U7jQ53brmKqY6BA==}
@@ -1875,6 +1892,9 @@ packages:
     hasBin: true
     peerDependencies:
       browserslist: '>= 4.21.0'
+
+  url-polyfill@1.1.14:
+    resolution: {integrity: sha512-p4f3TTAG6ADVF3mwbXw7hGw+QJyw5CnNGvYh5fCuQQZIiuKUswqcznyV3pGDP9j0TSmC4UvRKm8kl1QsX1diiQ==}
 
   urlpattern-polyfill@10.1.0:
     resolution: {integrity: sha512-IGjKp/o0NL3Bso1PymYURCJxMPNAf/ILOpendP9f5B6e1rTJgdgiOvgfoT8VxCAdY+Wisb9uhGaJJf3yZ2V9nw==}
@@ -2489,6 +2509,8 @@ snapshots:
   csso@5.0.5:
     dependencies:
       css-tree: 2.2.1
+
+  custom-event-polyfill@1.0.7: {}
 
   data-view-buffer@1.0.2:
     dependencies:
@@ -3118,6 +3140,8 @@ snapshots:
       pify: 3.0.0
       strip-bom: 3.0.0
 
+  loadjs@4.3.0: {}
+
   lodash.memoize@4.1.2: {}
 
   lodash.uniq@4.5.0: {}
@@ -3279,6 +3303,13 @@ snapshots:
   please-upgrade-node@3.2.0:
     dependencies:
       semver-compare: 1.0.0
+
+  plyr@3.8.5:
+    dependencies:
+      custom-event-polyfill: 1.0.7
+      loadjs: 4.3.0
+      rangetouch: 2.0.1
+      url-polyfill: 1.1.14
 
   possible-typed-array-names@1.1.0: {}
 
@@ -3474,6 +3505,8 @@ snapshots:
   punycode.js@2.3.1: {}
 
   range-parser@1.3.0: {}
+
+  rangetouch@2.0.1: {}
 
   read-pkg@3.0.0:
     dependencies:
@@ -3775,6 +3808,8 @@ snapshots:
       browserslist: 4.29.3
       escalade: 3.2.0
       picocolors: 1.1.1
+
+  url-polyfill@1.1.14: {}
 
   urlpattern-polyfill@10.1.0: {}
 

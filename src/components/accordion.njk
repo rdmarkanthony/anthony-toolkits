@@ -1,0 +1,119 @@
+---
+title: Accordion | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_accordion', title: 'Accordion', description: 'Stacked titles that open and close their content in place, for FAQs and long lists. One open at a time by default, keyboard friendly, and find in page opens the set holding the match.' }) }}
+
+{% set faq = [
+    { q: 'Can more than one set be open?', a: 'Yes, pass closeOthers: false. By default opening one closes the others, like the list you are reading.' },
+    { q: 'What if I click again while it animates?', a: 'It turns around from where it is. There is no lock, so fast clicks never leave a set half open.' },
+    { q: 'Does find in page work on closed sets?', a: 'Closed contents get hidden="until-found", so in Chrome and Edge searching with Ctrl/Cmd + F opens the set with the match. Other browsers keep them hidden as before.' },
+    { q: 'Do I need a button for the title?', a: 'A button is best. Any other element still gets role="button", focus and Enter/Space, so older markup with a div keeps working.' }
+] %}
+
+{% set set = 'js-accordion-set border-b border-gray-200' %}
+{% set title = 'js-accordion-set-title group flex w-full cursor-pointer items-center justify-between gap-6 py-5 text-left text-lg font-semibold transition-colors hover:text-gray-600' %}
+{% set chevron = '<svg class="size-5 shrink-0 transition-transform duration-300 group-aria-expanded:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>' %}
+
+{% set markup %}{% raw %}
+<div class="js-accordion">
+    <div class="js-accordion-set">
+        <button class="js-accordion-set-title group" type="button">
+            Question
+            <svg class="group-aria-expanded:rotate-180">...</svg>
+        </button>
+        <!-- hidden in the html avoids a flash before the script runs, padding goes inside -->
+        <div class="js-accordion-set-content" hidden="until-found">
+            <div class="pb-5">Answer</div>
+        </div>
+    </div>
+</div>
+{% endraw %}{% endset %}
+
+{# demo: an FAQ, one set at a time, the first open #}
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <h2 class="text-3xl font-bold tracking-tight">FAQ</h2>
+            <p class="font-mono text-sm text-gray-500">last event: <span class="js-accordion-event">-</span></p>
+        </div>
+        <div class="js-accordion max-w-3xl border-t border-gray-200">
+            {% for item in faq %}
+            <div class="{{ set }}">
+                <button class="{{ title }}" type="button">{{ item.q }}{{ chevron | safe }}</button>
+                <div class="js-accordion-set-content" hidden="until-found">
+                    <p class="max-w-2xl pb-5 text-gray-600">{{ item.a }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# demo: any number open, all closed to start, with an accordion inside #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <h2 class="text-3xl font-bold tracking-tight">Many open and nested</h2>
+        <div class="js-accordion js-accordion-many max-w-3xl border-t border-gray-200">
+            {% for i in range(1, 4) %}
+            <div class="{{ set }}">
+                <button class="{{ title }}" type="button">Section {{ i }}{{ chevron | safe }}</button>
+                <div class="js-accordion-set-content" hidden="until-found">
+                    <div class="pb-5">
+                        <p class="max-w-2xl text-gray-600">Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero est illo eius laudantium laborum earum culpa corporis vel deleniti.</p>
+                        {% if i == 2 %}
+                        <div class="js-accordion mt-4 rounded-2xl border border-gray-200 bg-white px-6">
+                            {% for j in range(1, 4) %}
+                            <div class="js-accordion-set border-b border-gray-200 last:border-b-0">
+                                <button class="{{ title | replace('text-lg', 'text-base') }}" type="button">Nested {{ i }}.{{ j }}{{ chevron | safe }}</button>
+                                <div class="js-accordion-set-content" hidden="until-found">
+                                    <p class="pb-5 text-gray-600">Its own accordion: opening this one closes its siblings, not the sections outside.</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_accordion.js
+
+const _event = document.querySelector('.js-accordion-event');
+
+document.querySelectorAll('.js-accordion').forEach((target) => {
+    const _many = target.classList.contains('js-accordion-many');
+
+    new _accordion({
+        target,
+        // defaults: closeOthers: true, openFirst: true, duration: 300
+        closeOthers: !_many,
+        openFirst: !_many && !target.closest('.js-accordion-set'),
+        events: {
+            // after the animation, instance.item is the set
+            open: (instance) => (_event.textContent = `open, ${instance.item.querySelector('button').textContent.trim()}`),
+            close: (instance) => (_event.textContent = `close, ${instance.item.querySelector('button').textContent.trim()}`),
+        },
+    });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _accordion({ target, closeOthers, openFirst, duration, events })</code>. Methods: <code class="font-mono text-sm">open(set)</code>, <code class="font-mono text-sm">close(set)</code>, <code class="font-mono text-sm">toggle(set)</code>, <code class="font-mono text-sm">isOpen(set)</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">open</code>, <code class="font-mono text-sm">close</code>. Style the open state with <code class="font-mono text-sm">.active</code> on the set or <code class="font-mono text-sm">aria-expanded</code> on the title. Reduced motion skips the animation.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
