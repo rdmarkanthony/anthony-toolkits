@@ -22,10 +22,10 @@ title: Video Intro | Scrolling Animation | Anthony Toolkits
 {# demo #}
 <div class="js-title-intro relative z-1 min-h-[150vh] bg-black text-white">
     <div class="sticky top-0 mt-[-100vh] h-screen w-full overflow-hidden">
-        <div class="absolute inset-0 after:absolute after:inset-0 after:z-2 after:bg-black/20">
-            <video class="js-hls-video absolute inset-0 size-full object-cover" data-src="/assets/video/sample-video/sample-video.m3u8" muted playsinline loop autoplay disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
-        </div>
-        <div class="js-title-intro-cover absolute inset-0 z-1 bg-black"></div>
+        <video class="js-hls-video absolute inset-0 size-full object-cover" data-src="/assets/video/sample-video/sample-video.m3u8" muted playsinline loop autoplay disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
+        {# default dim, stays after the cover fades so the titles are readable #}
+        <div class="absolute inset-0 bg-black/50"></div>
+        <div class="js-title-intro-cover absolute inset-0 bg-black"></div>
     </div>
     <div class="js-title-intro-content relative z-2 pt-[50vh] pb-[35vh]">
         <div class="px-4">
@@ -49,12 +49,15 @@ title: Video Intro | Scrolling Animation | Anthony Toolkits
             <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
                 <div>
                     <h3 class="mb-2 text-xl font-semibold">Markup</h3>
-                    <p class="text-gray-600">A tall section with a sticky, screen-high video. The negative top margin pulls the video up a screen so it's already pinned when the section scrolls in, so the content above needs a higher <code class="font-mono text-sm">z-index</code> and a background. Each title is styled by its <code class="font-mono text-sm">data-state</code>: <code class="font-mono text-sm">active</code> or <code class="font-mono text-sm">past</code>.</p>
+                    <p class="text-gray-600">A tall section with a sticky, screen-high video. The negative top margin pulls the video up a screen so it's already pinned when the section scrolls in, so the content above needs a higher <code class="font-mono text-sm">z-index</code> and a background. A fixed dim keeps the titles readable over bright footage, and the black cover on top of it fades out. Each title is styled by its <code class="font-mono text-sm">data-state</code>: <code class="font-mono text-sm">active</code> or <code class="font-mono text-sm">past</code>.</p>
                 </div>
                 {% set code %}{% raw %}
 <section class="js-title-intro relative min-h-[150vh] bg-black text-white">
     <div class="sticky top-0 mt-[-100vh] h-screen overflow-hidden">
         <video class="js-hls-video absolute inset-0 size-full object-cover" data-src="/assets/video/sample-video/sample-video.m3u8" muted playsinline loop autoplay></video>
+        <!-- default dim, keeps the titles readable -->
+        <div class="absolute inset-0 bg-black/50"></div>
+        <!-- fades out as the section scrolls in -->
         <div class="js-title-intro-cover absolute inset-0 bg-black"></div>
     </div>
     <div class="js-title-intro-content relative pt-[50vh] pb-[35vh] text-center">
