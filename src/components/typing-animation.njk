@@ -2,13 +2,11 @@
 title: Typing animation | Anthony Toolkits
 ---
 
-{% from "components/atoms/back-link.njk" import backLink %}
 {% from "components/atoms/component-page.njk" import scriptUsage %}
 
 {# demo: the title types itself #}
 <section class="px-4 pt-24 pb-16 md:pt-32">
     <div class="mx-auto max-w-295">
-        {{ backLink() }}
         <p class="mb-4 font-mono text-sm text-gray-500">_typing</p>
         <h1 class="js-typing mb-6 min-h-[1.2em] text-5xl font-bold tracking-tight md:text-7xl"></h1>
         <p class="max-w-2xl text-lg text-gray-600 md:text-xl">Types and erases text letter by letter, with a blinking cursor. Try the methods below in your browser's console, <code class="font-mono text-base">typing</code> is the title above.</p>

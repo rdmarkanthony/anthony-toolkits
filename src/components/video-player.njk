@@ -2,7 +2,6 @@
 title: Video player | Anthony Toolkits
 ---
 
-{% from "components/atoms/back-link.njk" import backLink %}
 {% from "components/atoms/component-page.njk" import scriptUsage %}
 
 {% set video = '/assets/video/sample-video.mp4' %}
@@ -15,7 +14,6 @@ title: Video player | Anthony Toolkits
         <div class="absolute inset-0 bg-black/50"></div>
     </div>
     <div class="relative mx-auto max-w-295">
-        <div class="text-gray-300 [&>a]:text-gray-300 [&>a:hover]:text-white">{{ backLink() }}</div>
         <p class="mb-4 font-mono text-sm text-gray-300">_videoPlayer</p>
         <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">Video player</h1>
         <p class="max-w-2xl text-lg text-gray-300 md:text-xl">MP4 and HLS (<code class="font-mono text-base">.m3u8</code>) videos from a data attribute. Autoplay videos are muted loops, and stretch covers the box at any ratio. Playing one video pauses the others, YouTube players too.</p>
