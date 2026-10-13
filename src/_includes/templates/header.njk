@@ -108,7 +108,7 @@
     <label class="relative block">
         <span class="sr-only">Search components</span>
         <span class="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-kit-muted">{{ search() }}</span>
-        <input id="{{ props.id }}" class="h-11 w-full rounded-full border border-kit-line bg-kit-bg pr-4 pl-10 transition-colors duration-300 placeholder:text-kit-muted focus:border-kit-accent focus:outline-none" type="search" name="q" placeholder="Search components…" autocomplete="off" data-search-input />
+        <input id="{{ props.id }}" class="h-11 w-full rounded-full border border-kit-line bg-transparent pr-4 pl-10 transition-colors duration-300 placeholder:text-kit-muted focus:border-kit-accent focus:outline-none" type="search" name="q" placeholder="Search components…" autocomplete="off" data-search-input />
     </label>
     <div id="{{ props.id }}-list" class="{{ props.listClass }}" hidden data-search-list></div>
 </form>
