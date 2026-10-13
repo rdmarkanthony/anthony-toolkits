@@ -1,0 +1,262 @@
+---
+title: Google Map | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_googleMap · _accordion', title: 'Google Map', description: 'A Google map with html markers, popups and a custom theme set in code. The api loads once, only when a map nears the screen, and picking a place zooms in on it level by level.' }) }}
+
+{% set countries = [
+    { name: 'Singapore', places: [
+        { id: 'marina-bay-sands', title: 'Marina Bay Sands', lat: 1.2834, lng: 103.8607, about: 'Three towers joined by a rooftop SkyPark over the bay.' },
+        { id: 'gardens-by-the-bay', title: 'Gardens by the Bay', lat: 1.2816, lng: 103.8636, about: 'Supertrees, the Flower Dome and the Cloud Forest.' },
+        { id: 'merlion-park', title: 'Merlion Park', lat: 1.2868, lng: 103.8545, about: 'The half lion, half fish statue facing Marina Bay.' },
+        { id: 'sentosa', title: 'Sentosa', lat: 1.254, lng: 103.8238, about: 'Island resort with beaches and Universal Studios.' }
+    ] },
+    { name: 'Japan', places: [
+        { id: 'tokyo-tower', title: 'Tokyo Tower', lat: 35.6586, lng: 139.7454, about: 'The red and white lattice tower in Minato.' },
+        { id: 'fushimi-inari', title: 'Fushimi Inari Taisha', lat: 34.9671, lng: 135.7727, about: 'Thousands of vermilion torii gates up Mount Inari, Kyoto.' },
+        { id: 'mount-fuji', title: 'Mount Fuji', lat: 35.3606, lng: 138.7274, about: "Japan's highest peak, climbed in July and August." },
+        { id: 'osaka-castle', title: 'Osaka Castle', lat: 34.6873, lng: 135.5262, about: 'A five-storey keep ringed by moats and plum groves.' }
+    ] },
+    { name: 'Thailand', places: [
+        { id: 'grand-palace', title: 'Grand Palace', lat: 13.75, lng: 100.4913, about: 'Bangkok royal palace and the Temple of the Emerald Buddha.' },
+        { id: 'phi-phi', title: 'Phi Phi Islands', lat: 7.7407, lng: 98.7784, about: 'Limestone cliffs and Maya Bay in the Andaman Sea.' },
+        { id: 'white-temple', title: 'White Temple', lat: 19.8242, lng: 99.7631, about: 'Wat Rong Khun, an all-white temple in Chiang Rai.' }
+    ] },
+    { name: 'Philippines', places: [
+        { id: 'boracay', title: 'Boracay White Beach', lat: 11.9674, lng: 121.9248, about: 'Four kilometres of powdery white sand.' },
+        { id: 'chocolate-hills', title: 'Chocolate Hills', lat: 9.8297, lng: 124.1398, about: 'Over a thousand grass hills that turn brown in summer, Bohol.' },
+        { id: 'intramuros', title: 'Intramuros', lat: 14.5896, lng: 120.9747, about: 'The walled city of Manila, with Fort Santiago.' }
+    ] },
+    { name: 'Indonesia', places: [
+        { id: 'borobudur', title: 'Borobudur', lat: -7.6079, lng: 110.2038, about: 'The largest Buddhist temple in the world, Central Java.' },
+        { id: 'tanah-lot', title: 'Tanah Lot', lat: -8.6212, lng: 115.0868, about: 'A sea temple on a rock off the coast of Bali.' },
+        { id: 'mount-bromo', title: 'Mount Bromo', lat: -7.9425, lng: 112.953, about: 'An active volcano in a sea of sand, best at sunrise.' }
+    ] },
+    { name: 'Malaysia', places: [
+        { id: 'petronas-towers', title: 'Petronas Twin Towers', lat: 3.1579, lng: 101.7116, about: 'Twin towers with a skybridge, Kuala Lumpur.' },
+        { id: 'batu-caves', title: 'Batu Caves', lat: 3.2379, lng: 101.684, about: 'Limestone cave temples up 272 rainbow steps.' },
+        { id: 'george-town', title: 'George Town', lat: 5.4141, lng: 100.3288, about: 'Street art and shophouses in Penang.' }
+    ] },
+    { name: 'Vietnam', places: [
+        { id: 'ha-long-bay', title: 'Ha Long Bay', lat: 20.9101, lng: 107.1839, about: 'Thousands of limestone islands in emerald water.' },
+        { id: 'hoi-an', title: 'Hoi An Ancient Town', lat: 15.8801, lng: 108.338, about: 'A lantern-lit trading port on the Thu Bon river.' }
+    ] },
+    { name: 'Cambodia', places: [
+        { id: 'angkor-wat', title: 'Angkor Wat', lat: 13.4125, lng: 103.867, about: 'The largest religious monument in the world, Siem Reap.' }
+    ] },
+    { name: 'Australia', places: [
+        { id: 'sydney-opera-house', title: 'Sydney Opera House', lat: -33.8568, lng: 151.2153, about: 'The sail-shaped roofs on Bennelong Point.' },
+        { id: 'uluru', title: 'Uluru', lat: -25.3444, lng: 131.0369, about: 'A sandstone monolith in the Red Centre.' }
+    ] }
+] %}
+
+{% set noKey %}
+{% if not site.googleMapsKey %}
+<p class="max-w-xs p-6 text-center text-sm text-gray-500">Add a Maps JavaScript API key as <code class="font-mono">googleMapsKey</code> in src/_data/site.js to see the map.</p>
+{% endif %}
+{% endset %}
+
+{% set markup %}{% raw %}
+<!-- a map on its own, give it a size -->
+<div class="js-google-map aspect-video" data-api-key="YOUR_API_KEY"></div>
+
+<!-- places: a sticky map, and an accordion of countries holding the places -->
+<div class="js-places grid lg:grid-cols-2">
+    <div class="js-google-map sticky top-0 h-[45svh] lg:h-svh" data-api-key="YOUR_API_KEY"></div>
+    <div class="js-accordion">
+        <div class="js-accordion-set">
+            <button class="js-accordion-set-title" type="button">Singapore</button>
+            <div class="js-accordion-set-content" hidden="until-found">
+                <!-- each place is a button with its marker data, aria-pressed when picked -->
+                <button class="js-place" type="button" aria-pressed="false" data-id="merlion-park" data-title="Merlion Park" data-lat="1.2868" data-lng="103.8545">Merlion Park</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endraw %}{% endset %}
+
+{% set title = 'js-accordion-set-title group flex w-full cursor-pointer items-center justify-between gap-6 px-5 py-4 text-left text-lg font-semibold transition-colors hover:text-gray-600' %}
+{% set chevron = '<svg class="size-5 shrink-0 transition-transform duration-300 group-aria-expanded:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>' %}
+
+{# demo: tourist spots by country, the map and the accordion follow the same pick #}
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <h2 class="text-3xl font-bold tracking-tight">Places to visit</h2>
+                <p class="mt-2 font-mono text-sm text-gray-500">last event: <span class="js-map-event">-</span></p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                {% for theme in ['light', 'dark', 'default'] %}
+                <button class="cursor-pointer rounded-full border border-gray-300 px-4 py-1.5 text-sm font-medium capitalize transition-colors hover:border-gray-950 aria-pressed:border-gray-950 aria-pressed:bg-gray-950 aria-pressed:text-white" type="button" data-map-theme="{{ theme }}" aria-pressed="{{ 'true' if theme == 'light' else 'false' }}">{{ theme }}</button>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="js-places grid items-start gap-6 lg:grid-cols-[1fr_20rem]">
+            <div class="sticky top-[var(--header-height,0px)] z-10 -mx-4 h-[45svh] bg-white lg:top-[calc(var(--header-height,0px)+1.5rem)] lg:mx-0 lg:h-[calc(100svh-var(--header-height,0px)-3rem)]">
+                <div class="js-google-map grid size-full place-items-center overflow-hidden bg-gray-100 lg:rounded-2xl" data-api-key="{{ site.googleMapsKey }}">{{ noKey | safe }}</div>
+            </div>
+            <div class="js-accordion border-t border-gray-200">
+                {% for country in countries %}
+                <div class="js-accordion-set border-b border-gray-200">
+                    <button class="{{ title }}" type="button">
+                        <span>{{ country.name }} <span class="ml-1 font-mono text-sm font-normal text-gray-500">{{ country.places | length }}</span></span>
+                        {{ chevron | safe }}
+                    </button>
+                    <div class="js-accordion-set-content" hidden="until-found">
+                        <ul class="grid gap-1 pb-4">
+                            {% for place in country.places %}
+                            <li>
+                                <button class="js-place w-full scroll-mt-[calc(45svh+var(--header-height,0px)+1rem)] cursor-pointer rounded-xl px-5 py-3 text-left transition-colors hover:bg-gray-50 aria-pressed:bg-gray-950 aria-pressed:text-white lg:scroll-mt-[calc(var(--header-height,0px)+1.5rem)]" type="button" aria-pressed="false" data-id="{{ place.id }}" data-title="{{ place.title }}" data-lat="{{ place.lat }}" data-lng="{{ place.lng }}">
+                                    <span class="block font-medium">{{ place.title }}</span>
+                                    <span class="block text-sm opacity-60">{{ place.about }}</span>
+                                </button>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{# demo: one pin with its popup open, like a contact page #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <h2 class="text-3xl font-bold tracking-tight">One pin, dark theme</h2>
+        <div class="js-contact-map grid aspect-square place-items-center overflow-hidden rounded-2xl bg-gray-100 sm:aspect-[21/9]" data-api-key="{{ site.googleMapsKey }}">{{ noKey | safe }}</div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_accordion.js
+        // src/assets/js/utils/_googleMap.js
+
+// JSON themes from mapstyle.withgoogle.com or snazzymaps.com, null is Google's own look
+const themes = {
+    light: [
+        { elementType: 'geometry', stylers: [{ color: '#f3f4f6' }] },
+        { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
+        { elementType: 'labels.text.fill', stylers: [{ color: '#6b7280' }] },
+        { elementType: 'labels.text.stroke', stylers: [{ color: '#f3f4f6' }] },
+        { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ color: '#d1d5db' }] },
+        { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+        { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
+        { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#e5e7eb' }] },
+        { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+        { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#cbd5e1' }] },
+    ],
+    dark: [
+        { elementType: 'geometry', stylers: [{ color: '#1f2937' }] },
+        { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
+        { elementType: 'labels.text.fill', stylers: [{ color: '#9ca3af' }] },
+        { elementType: 'labels.text.stroke', stylers: [{ color: '#111827' }] },
+        { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ color: '#4b5563' }] },
+        { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+        { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#374151' }] },
+        { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#4b5563' }] },
+        { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+        { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0f172a' }] },
+    ],
+    default: null,
+};
+
+const lastEvent = document.querySelector('.js-map-event');
+
+// places: the map and the accordion follow the same pick
+const places = document.querySelector('.js-places');
+const placeButtons = [...places.querySelectorAll('.js-place')];
+const accordion = new _accordion({ target: places.querySelector('.js-accordion'), openFirst: false });
+const mapTarget = places.querySelector('.js-google-map');
+
+const mark = (id) => placeButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.id === id)));
+const reveal = (button) => button?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+const placeMap = new _googleMap({
+    target: mapTarget,
+    apiKey: mapTarget.dataset.apiKey,
+    styles: themes.light,
+    selectZoom: 15,
+    markers: placeButtons.map(({ dataset }) => ({ id: dataset.id, title: dataset.title, lat: Number(dataset.lat), lng: Number(dataset.lng) })),
+    // a star badge, warm and pulsing when picked
+    render: () => `
+        <span class="relative flex flex-col items-center drop-shadow-md">
+            <span class="absolute top-0 size-9 rounded-full bg-rose-400/60 opacity-0 in-aria-pressed:animate-ping in-aria-pressed:opacity-100"></span>
+            <span class="relative grid size-9 place-items-center rounded-full border-[3px] border-white bg-linear-to-br from-sky-400 to-indigo-600 text-white in-aria-pressed:from-amber-400 in-aria-pressed:to-rose-500">
+                <svg class="size-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+            </span>
+            <span class="-mt-2 mb-[2.5px] size-3 rotate-45 border-r-[3px] border-b-[3px] border-white bg-indigo-600 in-aria-pressed:bg-rose-500"></span>
+        </span>`,
+    events: {
+        select: (instance) => {
+            const button = placeButtons.find((item) => item.dataset.id === instance.item.id);
+            const set = button.closest('.js-accordion-set');
+            mark(instance.item.id);
+
+            // a closed country scrolls to it once open, see accordion.on('open')
+            if (accordion.isOpen(set)) reveal(button);
+            else accordion.open(set);
+            lastEvent.textContent = `select, ${instance.item.title}`;
+        },
+        deselect: (instance) => {
+            mark(null);
+            instance.reset();
+            lastEvent.textContent = 'deselect';
+        },
+    },
+});
+
+accordion.on('open', (instance) => reveal(instance.item.querySelector('.js-place[aria-pressed="true"]')));
+placeButtons.forEach((button) => button.addEventListener('click', () => placeMap.select(button.dataset.id)));
+
+// opening a country picks its first place, closing it lets go
+places.querySelectorAll('.js-accordion-set-title').forEach((title) => {
+    title.addEventListener('click', () => {
+        const set = title.closest('.js-accordion-set');
+        const picked = set.querySelector('.js-place[aria-pressed="true"]');
+
+        if (!accordion.isOpen(set)) return picked && placeMap.deselect();
+        if (!picked) placeMap.select(set.querySelector('.js-place').dataset.id);
+    });
+});
+
+const themeButtons = [...document.querySelectorAll('[data-map-theme]')];
+themeButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        placeMap.setStyles(themes[button.dataset.mapTheme]);
+        themeButtons.forEach((each) => each.setAttribute('aria-pressed', String(each === button)));
+    });
+});
+
+// contact: one pin, its popup open
+const contactTarget = document.querySelector('.js-contact-map');
+
+new _googleMap({
+    target: contactTarget,
+    apiKey: contactTarget.dataset.apiKey,
+    styles: themes.dark,
+    zoom: 15,
+    markers: [{ id: 'times-square', title: 'Times Square', lat: 40.758, lng: -73.9855, popup: '<p class="font-semibold">Times Square</p><p class="text-gray-600">Broadway and 7th Avenue, New York, NY 10036</p>' }],
+    events: {
+        ready: (instance) => instance.select('times-square'),
+    },
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Give the map element a size. The key goes on the markup here so the script stays the same in every project.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _googleMap({ target, apiKey, markers, center, zoom, selectZoom, styles, render, anchor, classes, options, lazy, events })</code>. Markers are <code class="font-mono text-sm">{ id, lat, lng, title, popup }</code> plus any data for <code class="font-mono text-sm">render</code>; <code class="font-mono text-sm">popup</code> is html. Without <code class="font-mono text-sm">center</code> the map fits every marker. Methods: <code class="font-mono text-sm">select(id)</code> (the selected one again zooms back in on it), <code class="font-mono text-sm">focus()</code>, <code class="font-mono text-sm">deselect()</code>, <code class="font-mono text-sm">reset()</code>, <code class="font-mono text-sm">fit()</code>, <code class="font-mono text-sm">zoomTo(zoom, position)</code>, <code class="font-mono text-sm">setMarkers(list)</code>, <code class="font-mono text-sm">setStyles(styles)</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">ready</code>, <code class="font-mono text-sm">select</code>, <code class="font-mono text-sm">deselect</code>, <code class="font-mono text-sm">error</code>; <code class="font-mono text-sm">instance.map</code> is the google.maps.Map. Restrict the key to your site in Google Cloud, it is public in the page.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

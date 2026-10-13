@@ -9,7 +9,7 @@
     back: { label, url } for a parent page, optional
 #}
 {% macro pageIntro(props) -%}
-<section class="px-4 pt-20 pb-16 md:pt-28">
+<section class="site-themed bg-kit-bg px-4 pt-20 pb-16 text-kit-text md:pt-28">
     <div class="mx-auto max-w-295">
         {% if props.back %}{{ backLink(props.back) }}{% endif %}
         {% if props.label -%}
@@ -32,7 +32,7 @@
     then run the same script: {% footerscript %}<script type="module">{{ pageScript | safe }}</script>{% endfooterscript %}
 #}
 {% macro scriptUsage(props) -%}
-<section class="mt-8 border-t border-kit-line px-4 py-16 md:py-28">
+<section class="site-themed mt-8 border-t border-kit-line bg-kit-bg px-4 py-16 text-kit-text md:py-28">
     <div class="mx-auto max-w-295">
         <h2 class="mb-10 font-display text-[2.5rem] leading-[1.02] font-semibold tracking-tight md:mb-16 md:text-[3.5rem]">How to use</h2>
         <div class="grid gap-10">

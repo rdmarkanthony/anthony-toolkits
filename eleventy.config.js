@@ -1,3 +1,4 @@
+import "dotenv/config";
 import prettier from "prettier";
 
 export default function (eleventyConfig) {

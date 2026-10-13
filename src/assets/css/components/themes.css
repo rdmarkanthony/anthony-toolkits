@@ -1,5 +1,8 @@
-/* themes: redefine the kit-* colors for everything inside, e.g. <body class="dark"> */
-.light {
+/* themes: redefine the kit-* colors for everything inside, e.g. <body class="dark">
+   site dark mode is <html data-theme="dark">, demos and their lightboxes stay light, .site-themed follows the site */
+.light,
+:root[data-theme="dark"] body:not(.light, .dark) .demo-stage,
+:root[data-theme="dark"] body:not(.light, .dark):has(.demo-stage) .js-lightbox {
     --color-kit-bg: #ffffff;
     --color-kit-surface: #f5f4ef;
     --color-kit-line: #dddbd2;
@@ -8,13 +11,20 @@
     color-scheme: light;
 }
 
-.dark {
+.dark,
+:root[data-theme="dark"],
+:root[data-theme="dark"] body:not(.light, .dark) :is(.demo-stage, .js-lightbox) .site-themed {
     --color-kit-bg: #0c0c0e;
     --color-kit-surface: #151518;
     --color-kit-line: #2a2a30;
     --color-kit-text: #f2f1ec;
     --color-kit-muted: #8d8d96;
     color-scheme: dark;
+}
+
+/* lightboxes don't set a text color */
+:root[data-theme="dark"] body:not(.light, .dark):has(.demo-stage) .js-lightbox {
+    color: var(--color-kit-text);
 }
 
 /* dark: follows .dark, not the system setting */
@@ -27,22 +37,34 @@
 @property --color-kit-text { syntax: "<color>"; inherits: true; initial-value: #111113; }
 @property --color-kit-muted { syntax: "<color>"; inherits: true; initial-value: #65656d; }
 
-/* colors ease while _themeScroller switches, color/fill/stroke only where dark: sets them (inherited, they lag on iOS) */
-@layer base {
-    .theme-transition {
-        transition-property: --color-kit-bg, --color-kit-surface, --color-kit-line, --color-kit-text, --color-kit-muted, color, background-color, border-color, fill, stroke;
-    }
+/* while _themeScroller switches: one ease on the target's kit colors, elements' own color transitions pause,
+   dark: classes get the same ease, color only where dark:text- sets it (inherited, it lags on iOS) */
+.theme-transition {
+    transition-property: --color-kit-bg, --color-kit-surface, --color-kit-line, --color-kit-text, --color-kit-muted !important;
+    transition-duration: 0.5s !important;
+    transition-timing-function: ease !important;
+}
 
-    :where(.theme-transition *) {
-        transition-property: background-color, border-color, outline-color, text-decoration-color;
-    }
+.theme-transition * {
+    transition-property: opacity, transform, translate, scale, rotate, filter, backdrop-filter, visibility !important;
+}
 
-    :where(.theme-transition :is([class*="dark:text-"], [class*="dark:fill-"], [class*="dark:stroke-"])) {
-        transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke;
-    }
+.theme-transition [class*="dark:"] {
+    transition-property: background-color, border-color, outline-color, text-decoration-color, opacity, transform, translate, scale, rotate !important;
+}
 
-    :where(.theme-transition, .theme-transition *) {
-        transition-duration: 0.5s;
-        transition-timing-function: ease;
-    }
+.theme-transition :is([class*="dark:text-"], [class*="dark:fill-"], [class*="dark:stroke-"]) {
+    transition-property: color, fill, stroke, background-color, border-color, outline-color, text-decoration-color, opacity, transform, translate, scale, rotate !important;
+}
+
+.theme-transition [class*="dark:"] {
+    transition-duration: 0.5s !important;
+    transition-timing-function: ease !important;
+    transition-delay: 0s !important;
+}
+
+/* the dark mode toggle crossfades the page instead, see script.js */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 0.4s;
 }

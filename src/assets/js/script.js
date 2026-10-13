@@ -30,6 +30,7 @@ import { _autoScroll, _autoScrollHash } from "./utils/_autoScroll";
 import { _parallax, _parallaxScroller, _parallaxBackground, _parallaxFloating } from "./utils/_parallax";
 import { _canvasBanner } from "./utils/_canvasBanner";
 import { _themeScroller } from "./utils/_themeScroller";
+import { _googleMap } from "./utils/_googleMap";
 
 // expose for inline scripts, each page sets up its own components
 Object.assign(window, {
@@ -66,6 +67,7 @@ Object.assign(window, {
     _parallaxFloating,
     _canvasBanner,
     _themeScroller,
+    _googleMap,
 });
 
 // modules run after the html is parsed, and before the inline page scripts,
@@ -77,6 +79,37 @@ _event.resize(() => {
     document.body.style.setProperty("--header-height", `${header?.offsetHeight ?? 0}px`);
     document.body.style.setProperty("--footer-height", `${footer?.offsetHeight ?? 0}px`);
 });
+
+// dark mode toggle, saved once picked, else it follows the system
+const root = document.documentElement;
+const themeToggle = document.querySelector("[data-theme-toggle]");
+const savedTheme = () => {
+    try {
+        return localStorage.getItem("theme");
+    } catch {
+        return null;
+    }
+};
+const setTheme = (theme, save) => {
+    const apply = () => {
+        root.dataset.theme = theme;
+        themeToggle?.setAttribute("aria-pressed", String(theme === "dark"));
+    };
+
+    // one crossfade, so every color changes at the same pace
+    if (document.startViewTransition && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) document.startViewTransition(apply);
+    else apply();
+
+    if (save) {
+        try {
+            localStorage.setItem("theme", theme);
+        } catch {}
+    }
+};
+
+themeToggle?.setAttribute("aria-pressed", String(root.dataset.theme === "dark"));
+themeToggle?.addEventListener("click", () => setTheme(root.dataset.theme === "dark" ? "light" : "dark", true));
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => !savedTheme() && setTheme(e.matches ? "dark" : "light"));
 
 // before the page scripts read the hash
 _autoScrollHash();
