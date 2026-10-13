@@ -1,17 +1,9 @@
 import { _emitter } from "./_emitter";
 import { _filter } from "./_filter";
 
-// a styled dropdown for a native <select>, which stays in the form and keeps the value
-// usage: new _selectBox({ target, search, render, label, classes, nativeOnTouch, events })
-// target: the <select> or a selector, single selects only (for multiple or tags, use a plugin like Tom Select)
-// search: true adds a filter input on top of the list, for long lists
-// render(option): the html of an option in the list, plain text by default
-// label(option): the html of the button, render by default
-// classes: { box, button, label, icon, dropdown, search, list, group, option, empty }, each one replaces the default
-//   set them for the whole project once with Object.assign(_selectBox.classes, { button: "..." })
-// nativeOnTouch: true opens the phone's own picker on touch screens
-// events: init, show, hide, change
-// read and set the value with box.value, or listen to the select's change event like any form field
+// usage: new _selectBox({ target, search, render, label, classes, nativeOnTouch, events }), target is a single <select>
+// the native select stays in the form and keeps the value: use box.value or its change event like any field
+// classes: each key replaces its default, project-wide with Object.assign(_selectBox.classes, { button: "..." })
 // a placeholder is an option with value="", e.g. <option value="" disabled selected hidden>Choose</option>
 const _instances = new WeakMap();
 let _count = 0;

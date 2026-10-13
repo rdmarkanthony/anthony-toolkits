@@ -26,9 +26,7 @@ export class _typing extends _emitter {
         this.el.main.classList.add("js-typing-main");
         this.target.appendChild(this.el.main);
 
-        this.createCursor(); // create cursor
-
-        // console.log("_typing", this);
+        this.createCursor();
     }
 
     createCursor() {

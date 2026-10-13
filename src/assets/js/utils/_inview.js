@@ -45,7 +45,6 @@ export class _inview {
         this.observer.observe(this.target);
     }
 
-    // stop watching
     destroy() {
         this.observer?.disconnect();
         this.observer = null;

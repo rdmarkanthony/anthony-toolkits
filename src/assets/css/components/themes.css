@@ -1,8 +1,5 @@
-/* themes: redefine the kit-* colors for everything inside, e.g. <body class="dark">
-   site dark mode is <html data-theme="dark">, demos and their lightboxes stay light, .site-themed follows the site */
-.light,
-:root[data-theme="dark"] body:not(.light, .dark) .demo-stage,
-:root[data-theme="dark"] body:not(.light, .dark):has(.demo-stage) .js-lightbox {
+/* themes: redefine the kit-* colors for everything inside, e.g. <body class="dark"> */
+.light {
     --color-kit-bg: #ffffff;
     --color-kit-surface: #f5f4ef;
     --color-kit-line: #dddbd2;
@@ -11,20 +8,13 @@
     color-scheme: light;
 }
 
-.dark,
-:root[data-theme="dark"],
-:root[data-theme="dark"] body:not(.light, .dark) :is(.demo-stage, .js-lightbox) .site-themed {
+.dark {
     --color-kit-bg: #0c0c0e;
     --color-kit-surface: #151518;
     --color-kit-line: #2a2a30;
     --color-kit-text: #f2f1ec;
     --color-kit-muted: #8d8d96;
     color-scheme: dark;
-}
-
-/* lightboxes don't set a text color */
-:root[data-theme="dark"] body:not(.light, .dark):has(.demo-stage) .js-lightbox {
-    color: var(--color-kit-text);
 }
 
 /* dark: follows .dark, not the system setting */
@@ -61,10 +51,4 @@
     transition-duration: 0.5s !important;
     transition-timing-function: ease !important;
     transition-delay: 0s !important;
-}
-
-/* the dark mode toggle crossfades the page instead, see script.js */
-::view-transition-old(root),
-::view-transition-new(root) {
-    animation-duration: 0.4s;
 }

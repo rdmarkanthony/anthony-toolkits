@@ -1,13 +1,6 @@
-// loads images, backgrounds, videos and iframes when they near the screen, by moving their data-* attributes in
-// markup:
-//   <img class="js-lazy" data-src="a.jpg" data-srcset="a.jpg 1x, a@2x.jpg 2x" data-sizes="...">, <source data-srcset> in a <picture> too
-//   <div class="js-lazy" data-bg="a.jpg">
-//   <video class="js-lazy" data-src="a.mp4" data-poster="a.jpg" autoplay muted loop playsinline>, or <source data-src> inside
-//   <iframe class="js-lazy" data-src="...">, <image class="js-lazy" data-href="a.jpg"> in an svg
-// usage:
-//   _lazyLoad(); watches the page, call it again after adding new .js-lazy elements
-//   await _lazyLoad({ target }); loads everything inside target now, e.g. before showing it
-// when each one is done it gets .is-loaded or .is-error, and fires a bubbling "lazyload" event, e.detail.error
+// usage: _lazyLoad() watches the page (call again for new content), await _lazyLoad({ target }) loads target's now
+// .js-lazy with data-src/data-srcset/data-sizes (img, source, video, iframe), data-bg, data-poster or data-href (svg image)
+// done ones get .is-loaded or .is-error and fire a bubbling "lazyload" event, e.detail.error
 const _defaults = {
     selector: ".js-lazy, .js-lazy-bg",
     // how far from the screen it starts loading

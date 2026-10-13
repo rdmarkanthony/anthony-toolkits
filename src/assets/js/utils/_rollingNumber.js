@@ -38,7 +38,6 @@ export class _rollingNumber {
         this.el.main.style.pointerEvents = "none";
         this.el.main.style.willChange = "transform";
 
-        // create numbers
         for (let i = 0; i < this.maxNumber; i++) {
             this.createNumber(i);
         }
@@ -80,7 +79,6 @@ export class _rollingNumber {
             if (_from === 0) _from = this.maxNumber;
         }
 
-        // if (_to >= this.maxNumber) _to = this.maxNumber - 1;
         if (this.numeric && this.currentNumber === 0 && _from === 0 && parseFloat(_to) === this.maxNumber - 1) _from = this.el.numbers.length - 1; // for countdowns
         if (_from === _to) return;
 
@@ -90,7 +88,6 @@ export class _rollingNumber {
             if (props.callback) props.callback(this);
         });
 
-        // animate the width
         if (!this.numeric)
             gsap.fromTo(
                 this.width,
@@ -122,7 +119,6 @@ export class _rollingNumber {
         this.height = _height;
         this.target.style.height = `${_height}px`;
 
-        // need to reposition
         this.tween(status === "init" ? this.startNumber * this.height : this.currentOffset, (status === "init" ? this.startNumber : this.currentNumber) * this.height, this.duration);
     }
 

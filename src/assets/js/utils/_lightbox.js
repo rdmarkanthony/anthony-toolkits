@@ -71,7 +71,6 @@ export class _lightbox extends _emitter {
             }
         }
 
-        // no content found
         if (!this.content.original) {
             this.content.original = document.createElement("div");
             this.content.original.classList.add("lightbox-content", "relative", "container", "max-w-[30rem]", "mx-auto", "px-8", "py-12", "rounded-2xl", "bg-white", "shadow-[0_26px_30px_rgba(0,0,0,0.05)]");

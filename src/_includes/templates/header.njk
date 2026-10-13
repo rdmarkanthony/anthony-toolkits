@@ -1,4 +1,4 @@
-{%- from "components/atoms/icon.njk" import angle, external, search, menu, close, sun, moon -%}
+{%- from "components/atoms/icon.njk" import angle, external, search, menu, close -%}
 {%- from "components/atoms/code-block.njk" import codeBlock -%}
 {#
     site header, sticky with a frosted background
@@ -12,7 +12,7 @@
 <header class="header-content sticky top-0 z-40 border-b border-kit-line bg-kit-bg/75 px-4 backdrop-blur-lg">
     <div class="mx-auto flex h-16 max-w-295 items-center justify-between gap-4 md:h-20">
         <a class="font-display text-xl font-semibold tracking-tight whitespace-nowrap md:text-2xl" href="/">{{ props.site.name }}<span class="text-kit-accent">.</span></a>
-        <div class="flex items-center gap-4 lg:gap-8">
+        <div class="flex items-center gap-8">
             {% if not onHome %}
             {{ searchForm({ id: 'search-header', class: 'hidden w-72 lg:block', listClass: 'absolute top-full right-0 mt-2 max-h-[70vh] w-96 overflow-y-auto rounded-3xl border border-kit-line bg-kit-bg p-2 shadow-xl' }) }}
             {% endif %}
@@ -23,7 +23,6 @@
                     <li><a class="group inline-flex h-11 items-center gap-1.5 rounded-full border border-kit-line px-5 text-sm font-medium transition-colors duration-300 hover:border-kit-accent hover:text-kit-accent" href="{{ props.site.github }}" target="_blank" rel="noopener">GitHub{{ external('duration-500 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}</a></li>
                 </ul>
             </nav>
-            <button class="-mx-2.5 flex size-11 cursor-pointer items-center justify-center rounded-full text-xl transition-colors duration-300 hover:text-kit-accent lg:mx-0 lg:border lg:border-kit-line lg:text-lg lg:hover:border-kit-accent" type="button" aria-label="Dark mode" aria-pressed="false" data-theme-toggle><span class="in-data-[theme=dark]:hidden">{{ moon() }}</span><span class="hidden in-data-[theme=dark]:block">{{ sun() }}</span></button>
             <button class="-mr-2.5 flex size-11 items-center justify-center rounded-full text-2xl transition-colors duration-300 hover:text-kit-accent lg:hidden" type="button" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false" data-mobile-menu-open>{{ menu() }}</button>
         </div>
     </div>
@@ -53,7 +52,7 @@
 {# starter kit popup, opened by the Starter kit links #}
 {% if props.starterKit.items.length %}
 <div class="hidden">
-    <div id="starter-kit" class="site-themed mx-auto w-full max-w-5xl rounded-3xl bg-kit-bg p-6 text-kit-text md:p-10">
+    <div id="starter-kit" class="mx-auto w-full max-w-5xl rounded-3xl bg-kit-bg p-6 md:p-10">
         <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
                 <h2 class="font-display text-3xl font-semibold tracking-tight md:text-4xl">Starter kit</h2>

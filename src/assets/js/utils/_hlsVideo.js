@@ -20,14 +20,12 @@ export class _hlsVideo {
         this.autoplay = this.target.autoplay && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         this.target.autoplay = false;
 
-        // for lazy load
         if (this.lazy) {
             this.observe((visible) => visible && this.load(), "100% 0px", true);
         } else {
             this.load();
         }
 
-        // for autoplay
         if (this.autoplay) {
             this.observe((visible) => {
                 this.visible = visible;
@@ -69,7 +67,6 @@ export class _hlsVideo {
 
             this.hls = new Hls();
 
-            // for fatal errors
             this.hls.on(Hls.Events.ERROR, (event, data) => {
                 if (!data.fatal) return;
 
