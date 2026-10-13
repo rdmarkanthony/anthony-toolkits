@@ -131,7 +131,6 @@ export class _googleMap extends _emitter {
 
         // where reset() goes back to
         event.addListenerOnce(this.map, "idle", () => (this.home = { center: this.map.getCenter(), zoom: this.map.getZoom() }));
-        this.map.addListener("click", () => this.deselect());
         this.target.addEventListener("keydown", (e) => e.key === "Escape" && this.item && this.deselect(true), { signal: this.abort.signal });
 
         const _pending = this.pending;
