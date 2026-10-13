@@ -1,0 +1,31 @@
+---
+title: Sliders | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/component-page.njk" import pageIntro %}
+
+{{ pageIntro({ title: 'Sliders', description: 'Slider samples, each with its own script. Each demo shows its markup and script, ready to copy.' }) }}
+
+<section id="demos" class="px-4 pb-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-8 text-3xl font-bold tracking-tight">Demos</h2>
+        <div class="grid gap-6 md:grid-cols-3">
+            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/sliders/peek/">
+                {# preview: three cards and the next one cut off #}
+                <div class="flex aspect-4/3 items-center gap-2 overflow-hidden bg-gray-50 pl-6">
+                    <div class="aspect-4/5 w-1/4 shrink-0 overflow-hidden rounded-lg bg-gray-950"><img class="size-full object-cover" src="/assets/img/sample-image.webp" alt="" loading="lazy" /></div>
+                    <div class="aspect-4/5 w-1/4 shrink-0 rounded-lg bg-sky-200"></div>
+                    <div class="aspect-4/5 w-1/4 shrink-0 rounded-lg bg-amber-100"></div>
+                    <div class="aspect-4/5 w-1/4 shrink-0 rounded-lg bg-rose-200"></div>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">Peek slider</h3>
+                    <p class="mb-6 flex-1 text-gray-600">A carousel of 1 to 3 cards, the next one peeks at the edge.</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">_peekSlider · Swiper</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>

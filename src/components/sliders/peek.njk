@@ -1,0 +1,83 @@
+---
+title: Peek slider | Sliders | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Sliders', url: '/components/sliders/' }, label: '_peekSlider · Swiper', title: 'Peek slider', description: 'A carousel that shows 1 to 3 cards, the next one peeks at the edge. Drag or swipe to move it.' }) }}
+
+{% set slides = [
+    { image: true },
+    { class: 'bg-gray-950 text-white' },
+    { class: 'bg-sky-200' },
+    { class: 'bg-amber-100' },
+    { image: true },
+    { class: 'bg-rose-200' },
+    { class: 'bg-gray-950 text-white' },
+    { class: 'bg-emerald-100' }
+] %}
+
+{# demo: 1.2 cards on mobile, 2.2 from 768px, 3.2 from 1024px, the util's defaults #}
+<section class="overflow-hidden px-4 pb-16">
+    <div class="js-slider-peek mx-auto max-w-295">
+        <div class="swiper overflow-visible">
+            <div class="swiper-wrapper">
+                {% for slide in slides %}
+                <div class="swiper-slide">
+                    <div class="relative flex aspect-4/5 flex-col justify-end overflow-hidden rounded-2xl p-6 select-none {{ slide.class or 'bg-gray-950 text-white' }}">
+                        {% if slide.image %}
+                        <img class="pointer-events-none absolute inset-0 size-full object-cover" src="/assets/img/sample-image.webp" alt="" loading="lazy" />
+                        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/60 to-transparent"></div>
+                        {% endif %}
+                        <h2 class="relative text-3xl font-bold tracking-tight">Card {{ loop.index }}</h2>
+                        <p class="relative mt-2 opacity-80">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- the section hides the cards that peek past the screen -->
+<section class="overflow-hidden">
+    <div class="js-slider-peek mx-auto max-w-295">
+        <!-- overflow-visible, so the next card shows past the column -->
+        <div class="swiper overflow-visible">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">...</div>
+                <div class="swiper-slide">...</div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_peekSlider.js
+    // CSS
+        // swiper/css
+    // Package
+        // pnpm add swiper
+
+document.querySelectorAll('.js-slider-peek').forEach((target) => {
+    const _slider = new _peekSlider({ target });
+
+    // Swiper options and ease replace the defaults, e.g. { target, speed: 600, ease: 'ease-out' }
+    // _slider.ready.then((swiper) => swiper.on('slideChange', () => swiper.activeIndex))
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: '<code class="font-mono text-sm">overflow-visible</code> on the <code class="font-mono text-sm">.swiper</code> lets the cards show past the column. Swiper\'s CSS is in a layer, so Tailwind classes win.',
+    code: pageScript,
+    note: 'The card counts, gaps and easing are the util\'s defaults. Any <a class="underline" href="https://swiperjs.com/swiper-api" target="_blank" rel="noopener">Swiper option</a> replaces one.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
