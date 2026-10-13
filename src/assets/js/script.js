@@ -30,6 +30,7 @@ import { _autoScroll, _autoScrollHash } from "./utils/_autoScroll";
 import { _parallax, _parallaxScroller, _parallaxBackground, _parallaxFloating } from "./utils/_parallax";
 import { _canvasBanner } from "./utils/_canvasBanner";
 import { _themeScroller } from "./utils/_themeScroller";
+import { _googleMap } from "./utils/_googleMap";
 
 // expose for inline scripts, each page sets up its own components
 Object.assign(window, {
@@ -66,6 +67,7 @@ Object.assign(window, {
     _parallaxFloating,
     _canvasBanner,
     _themeScroller,
+    _googleMap,
 });
 
 // modules run after the html is parsed, and before the inline page scripts,
