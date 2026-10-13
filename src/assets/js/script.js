@@ -31,6 +31,7 @@ import { _parallax, _parallaxScroller, _parallaxBackground, _parallaxFloating } 
 import { _canvasBanner } from "./utils/_canvasBanner";
 import { _themeScroller } from "./utils/_themeScroller";
 import { _googleMap } from "./utils/_googleMap";
+import { _qrCode } from "./utils/_qrCode";
 
 // expose for inline scripts, each page sets up its own components
 Object.assign(window, {
@@ -68,6 +69,7 @@ Object.assign(window, {
     _canvasBanner,
     _themeScroller,
     _googleMap,
+    _qrCode,
 });
 
 // modules run after the html is parsed, and before the inline page scripts,

@@ -1,0 +1,198 @@
+---
+title: QR code | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_qrCode', title: 'QR code', description: 'Type a link and press Enter to get its QR code, then save it as a PNG or SVG. The same util makes Wi-Fi QR codes that phones can scan to join a network.' }) }}
+
+{% set fieldLabel = 'mb-2 block font-semibold' %}
+{% set input = 'h-12 w-full rounded-md border border-gray-300 bg-white px-3 focus:border-gray-950 focus:outline-none disabled:opacity-40' %}
+{% set button = 'cursor-pointer rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700' %}
+{% set outline = 'cursor-pointer rounded-md border border-gray-300 bg-white px-4 py-2 font-medium transition-colors hover:border-gray-950 disabled:pointer-events-none disabled:opacity-40' %}
+
+{% set zoomIcon = '<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" /></svg>' %}
+
+{% set result %}
+<div class="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-6" aria-live="polite">
+    <button class="js-qr-zoom group relative block cursor-zoom-in rounded-xl disabled:cursor-default" type="button" disabled>
+        <span class="js-qr-code flex aspect-square items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-6 text-center text-gray-500 has-[svg]:border-transparent has-[svg]:p-0">Your QR code shows here</span>
+        <span class="absolute right-2 bottom-2 rounded-full bg-gray-950 p-2 text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 group-disabled:hidden">{{ zoomIcon | safe }}</span>
+    </button>
+    <p class="js-qr-text font-mono text-sm break-all text-gray-500 empty:hidden"></p>
+    <div class="grid grid-cols-2 gap-2">
+        <button class="{{ outline }}" type="button" data-qr-download="png" disabled>PNG</button>
+        <button class="{{ outline }}" type="button" data-qr-download="svg" disabled>SVG</button>
+    </div>
+</div>
+{% endset %}
+
+{# demo: a link, "example.com" gets https:// added #}
+<section class="px-4 py-16">
+    <form class="js-qr-link mx-auto grid max-w-295 gap-8 md:grid-cols-2 md:items-start lg:grid-cols-[1fr_28rem]" novalidate>
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Link</h2>
+            <p class="mb-8 max-w-2xl text-gray-600">Press Enter or Generate. Without <code class="font-mono text-sm">https://</code> it's added for you, so the phone opens it as a link.</p>
+            <label class="{{ fieldLabel }}" for="qr-url">Link</label>
+            <div class="flex gap-2">
+                <input class="{{ input }}" id="qr-url" type="url" inputmode="url" autocomplete="url" placeholder="example.com" required />
+                <button class="{{ button }} shrink-0" type="submit">Generate</button>
+            </div>
+            <p class="js-qr-error mt-2 text-sm text-red-600 empty:hidden"></p>
+        </div>
+        {{ result | safe }}
+    </form>
+</section>
+
+{# demo: wifi, the text is built with _qrCode.wifi #}
+<section class="bg-gray-50 px-4 py-16">
+    <form class="js-qr-wifi mx-auto grid max-w-295 gap-8 md:grid-cols-2 md:items-start lg:grid-cols-[1fr_28rem]">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Wi-Fi</h2>
+            <p class="mb-8 max-w-2xl text-gray-600">Scan it with the phone's camera to join the network, no typing. Handy on a printed sign for guests or an event.</p>
+            <div class="grid max-w-xl gap-6 sm:grid-cols-2">
+                <div class="sm:col-span-2">
+                    <label class="{{ fieldLabel }}" for="qr-ssid">Network name</label>
+                    <input class="{{ input }}" id="qr-ssid" name="ssid" autocomplete="off" required />
+                </div>
+                <div>
+                    <label class="{{ fieldLabel }}" for="qr-security">Security</label>
+                    <select class="{{ input }}" id="qr-security" name="security">
+                        <option value="WPA">WPA, WPA2, WPA3</option>
+                        <option value="WEP">WEP</option>
+                        <option value="nopass">None</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="{{ fieldLabel }}" for="qr-password">Password</label>
+                    <input class="{{ input }}" id="qr-password" name="password" autocomplete="off" required />
+                </div>
+                <label class="flex items-center gap-2 sm:col-span-2">
+                    <input class="size-4 accent-gray-950" type="checkbox" name="hidden" />
+                    Hidden network
+                </label>
+                <div class="sm:col-span-2">
+                    <button class="{{ button }}" type="submit">Generate</button>
+                </div>
+            </div>
+        </div>
+        {{ result | safe }}
+    </form>
+</section>
+
+{# the popup, filled with the clicked QR code #}
+<div class="hidden">
+    <figure id="qr-popup" class="mx-auto w-[min(100%,48rem,calc(100svh-10rem))] rounded-2xl bg-white p-4 md:p-6">
+        <div class="js-qr-popup-code"></div>
+        <figcaption class="js-qr-popup-text mt-4 text-center font-mono text-sm break-all text-gray-500"></figcaption>
+    </figure>
+</div>
+
+{% set markup %}{% raw %}
+<form class="js-qr-link" novalidate>
+    <input type="url" inputmode="url" placeholder="example.com" required />
+    <button type="submit">Generate</button>
+    <p class="js-qr-error"></p>
+
+    <button class="js-qr-zoom" type="button" disabled>
+        <span class="js-qr-code">Your QR code shows here</span>
+    </button>
+    <button type="button" data-qr-download="png" disabled>PNG</button>
+    <button type="button" data-qr-download="svg" disabled>SVG</button>
+</form>
+
+<div class="hidden">
+    <figure id="qr-popup">
+        <div class="js-qr-popup-code"></div>
+        <figcaption class="js-qr-popup-text"></figcaption>
+    </figure>
+</div>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_qrCode.js
+        // src/assets/js/utils/_event.js, _emitter.js, _lightbox.js (for the popup)
+    // Package
+        // pnpm add qrcode
+
+const _popup = document.querySelector('#qr-popup');
+
+// draws the QR code on submit (Enter or the button), getText returns null when the form isn't valid
+const _setup = (form, getText, name) => {
+    const _code = form.querySelector('.js-qr-code');
+    const _zoom = form.querySelector('.js-qr-zoom');
+    const _text = form.querySelector('.js-qr-text');
+    const _downloads = form.querySelectorAll('[data-qr-download]');
+    let _qr = null;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const _value = getText();
+        if (!_value) return;
+
+        _qr = await _qrCode({ target: _code, text: _value });
+        if (_text) _text.textContent = _value;
+        _downloads.forEach((button) => (button.disabled = false));
+        _zoom.disabled = false;
+        _zoom.setAttribute('aria-label', 'Show the QR code bigger');
+    });
+
+    _downloads.forEach((button) => button.addEventListener('click', () => _qr?.download(button.dataset.qrDownload, name)));
+
+    // a copy of the QR code, bigger in a popup
+    _zoom.addEventListener('click', async () => {
+        await _qrCode({ target: _popup.querySelector('.js-qr-popup-code'), text: _qr.text });
+        _popup.querySelector('.js-qr-popup-text').textContent = _qr.text;
+        new _lightbox({ target: _popup });
+    });
+};
+
+// link: adds https:// when it's missing, and needs a domain like example.com
+const _linkForm = document.querySelector('.js-qr-link');
+const _linkInput = _linkForm.querySelector('input');
+const _linkError = _linkForm.querySelector('.js-qr-error');
+
+const _toLink = (value) => {
+    try {
+        const _url = new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`);
+        return _url.hostname.includes('.') ? _url.href : null;
+    } catch {
+        return null;
+    }
+};
+
+_setup(_linkForm, () => {
+    const _link = _toLink(_linkInput.value.trim());
+    _linkInput.setAttribute('aria-invalid', String(!_link));
+    _linkError.textContent = _link ? '' : 'Enter a link, like example.com';
+    if (!_link) _linkInput.focus();
+    return _link;
+}, 'qr-code');
+
+_linkInput.addEventListener('input', () => {
+    _linkInput.removeAttribute('aria-invalid');
+    _linkError.textContent = '';
+});
+
+// wifi: no password field when the network is open
+const _wifiForm = document.querySelector('.js-qr-wifi');
+const { ssid, password, security, hidden } = _wifiForm.elements;
+
+security.addEventListener('change', () => (password.disabled = security.value === 'nopass'));
+
+_setup(_wifiForm, () => _qrCode.wifi({ ssid: ssid.value, password: password.value, security: security.value, hidden: hidden.checked }), 'qr-wifi');
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Any markup works, the util only needs an element to draw in. Clicking the QR code opens a copy in a <code class="font-mono text-sm">_lightbox</code> popup. <code class="font-mono text-sm">novalidate</code> lets the script check the link itself, so <code class="font-mono text-sm">example.com</code> passes.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">await _qrCode({ target, text })</code> draws an svg that fills <code class="font-mono text-sm">target</code>\'s width. Options: <code class="font-mono text-sm">margin</code>, <code class="font-mono text-sm">color: { dark, light }</code> (hex), <code class="font-mono text-sm">errorCorrectionLevel</code> (L, M, Q, H) and <code class="font-mono text-sm">size</code> (png width, 1024). It returns <code class="font-mono text-sm">text</code>, <code class="font-mono text-sm">svg</code> and <code class="font-mono text-sm">download(\'png\' | \'svg\', name)</code>. <code class="font-mono text-sm">_qrCode.wifi({ ssid, password, security, hidden })</code> makes the text for a Wi-Fi QR code. The qrcode package loads only when the first QR code is drawn.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
