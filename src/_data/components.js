@@ -38,7 +38,7 @@ export default [
             { label: "Lightbox", url: "/components/lightbox/", description: "Opens any element on the page in a popup, modals stack.", utils: "_lightbox", ready: true },
             { label: "YouTube player", url: "/components/youtube-player/", description: "YouTube embeds, with muted autoplay backgrounds.", utils: "_youtubePlayer", ready: true },
             { label: "Video player", url: "/components/video-player/", description: "MP4 and HLS videos, with muted autoplay backgrounds.", utils: "_videoPlayer", ready: true },
-            { label: "Lazy load", url: "/components/lazy-load/", description: "Images, backgrounds and videos that load as they near the screen.", utils: "_lazyLoad", ready: true, starter: true },
+            { label: "Lazyload", url: "/components/lazyload/", description: "Images, backgrounds and videos that load as they near the screen.", utils: "_lazyLoad", ready: true, starter: true },
         ],
     },
     {
@@ -51,6 +51,7 @@ export default [
         category: "Utilities",
         items: [
             { label: "Google Map", url: "/components/google-map/", description: "Markers, popups and a custom theme, with a location list that flies to each place.", utils: "_googleMap", ready: true },
+            { label: "QR code", url: "/components/qr-code/", description: "QR codes for links or Wi-Fi, saved as PNG or SVG.", utils: "_qrCode", ready: true },
             { label: "Countdown timer", url: "/components/countdown-timer/", description: "Countdown to a date and time.", utils: "_countdownTimer · _rollingNumber", ready: true },
         ],
     },

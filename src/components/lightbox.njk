@@ -99,7 +99,7 @@ title: Lightbox | Anthony Toolkits
         // src/assets/js/utils/_emitter.js
         // src/assets/js/utils/_lightbox.js
 
-const openLightbox = (trigger) => {
+const _openLightbox = (trigger) => {
     const _href = trigger.getAttribute('href');
 
     new _lightbox({
@@ -120,14 +120,14 @@ document.querySelectorAll('[data-lightbox]').forEach((item) => {
 
     item.addEventListener('click', (e) => {
         e.preventDefault();
-        openLightbox(item);
+        _openLightbox(item);
     });
 });
 
 // auto open on page load if the url hash belongs to a lightbox, e.g. /page/#my-lightbox
 if (location.hash.length > 1) {
     const _trigger = [...document.querySelectorAll('[data-lightbox]')].find((item) => item.getAttribute('href') === location.hash);
-    if (_trigger) openLightbox(_trigger);
+    if (_trigger) _openLightbox(_trigger);
 }
 {% endraw %}{% endset %}
 

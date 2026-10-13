@@ -27,11 +27,9 @@ export class _animatedNumber {
         window._animatedNumberList.forEach((instance) => {
             if (instance.target === this.target) instance.stop(); // stop other instances with the same target
         });
-        window._animatedNumberList.push(this); // add instance to storage
+        window._animatedNumberList.push(this);
 
         this.animate(callback);
-
-        // console.log("_animatedNumber", this);
     }
 
     animate(callback) {

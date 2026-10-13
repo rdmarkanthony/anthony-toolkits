@@ -122,7 +122,6 @@ export const _event = {
         _observeState.initial.delete(element);
     },
 
-    // emit certain event
     dispatch(elem, eventName, detail) {
         elem.dispatchEvent(new CustomEvent(eventName, { detail }));
     },

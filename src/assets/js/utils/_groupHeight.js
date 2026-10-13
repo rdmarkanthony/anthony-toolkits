@@ -4,12 +4,10 @@ import { _event } from "./_event";
 const _equalHeight = (list) => {
     if (list.length <= 0) return;
 
-    // clear current height
     list.forEach((item) => (item.target.style.minHeight = ""));
 
     if (list.length <= 1) return;
 
-    // set the highest height
     const _height = Math.max(...list.map((item) => item.target.offsetHeight));
     list.forEach((item) => {
         if (window.innerWidth >= item.within) item.target.style.minHeight = `${_height}px`;
@@ -41,12 +39,10 @@ export const _groupHeight = {
     },
 
     update() {
-        // for group-height
         document.querySelectorAll("[data-gh-parent]").forEach((parent) => {
             _groups(parent.querySelectorAll("[data-gh]"), "gh").forEach(_equalHeight);
         });
 
-        // for row group-height
         document.querySelectorAll("[data-rgh-parent]").forEach((parent) => {
             const _rows = {};
 

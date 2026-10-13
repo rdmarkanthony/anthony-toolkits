@@ -1,13 +1,7 @@
-// suggestion list for a search input, follows the ARIA combobox pattern
-// usage: new _autocomplete({ input, list, items, match, render, limit, more, empty, optionClass })
-// input: the search input, inside a <form> so Enter with no suggestion picked submits it
-// list: an empty element for the suggestions, it needs an id
-// items: [{ url, ...anything render and match use }]
-// match(item, query): true to suggest the item, query is trimmed and lowercase
-// render(item): the html inside a suggestion link
-// more(value, total): optional { url, html } for a last link, only when more than `limit` match, value is the trimmed input
-// empty(value): optional html when nothing matches
-// arrow keys move, Enter opens the picked suggestion, Esc closes (or clears when closed)
+// usage: new _autocomplete({ input, list, items, match, render, limit, more, empty, optionClass }), an ARIA combobox
+// input sits in a <form> so Enter with nothing picked submits it, list is an empty element with an id
+// items: [{ url, ... }], match(item, query) with query trimmed and lowercase, render(item) is the link's html
+// more(value, total) => { url, html } adds a last link past `limit`, empty(value) is the html when nothing matches
 export class _autocomplete {
     constructor(props) {
         this.input = props.input ?? null;

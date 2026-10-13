@@ -60,7 +60,7 @@ title: Canvas | Scrolling Animation | Anthony Toolkits
                     <p class="text-gray-600"><code class="font-mono text-sm">_parallaxScroller</code> measures the section on resize. Its range is set to while the section is pinned: from its top until its end reaches the bottom of the screen. On scroll, <code class="font-mono text-sm">update(progress)</code> draws the frame for <code class="font-mono text-sm">offset.current</code>, from the first frame at 0 to the last at 1.</p>
                 </div>
                 {% set code %}{% raw %}
-const canvas = new _canvasBanner({
+const _canvas = new _canvasBanner({
     target: document.querySelector('.js-canvas'),
     assets: {
         count: 50,
@@ -88,7 +88,7 @@ new _parallaxScroller({
             scroller.offset.bottom = _offset.bottom - _parallax.height();
         },
         update(scroller) {
-            canvas.update(scroller.offset.current);
+            _canvas.update(scroller.offset.current);
         },
     },
 });

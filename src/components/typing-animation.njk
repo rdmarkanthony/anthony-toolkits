@@ -9,22 +9,22 @@ title: Typing animation | Anthony Toolkits
     <div class="mx-auto max-w-295">
         <p class="mb-4 font-mono text-sm text-gray-500">_typing</p>
         <h1 class="js-typing mb-6 min-h-[1.2em] text-5xl font-bold tracking-tight md:text-7xl"></h1>
-        <p class="max-w-2xl text-lg text-gray-600 md:text-xl">Types and erases text letter by letter, with a blinking cursor. Try the methods below in your browser's console, <code class="font-mono text-base">typing</code> is the title above.</p>
+        <p class="max-w-2xl text-lg text-gray-600 md:text-xl">Types and erases text letter by letter, with a blinking cursor. Try the methods below in your browser's console, <code class="font-mono text-base">_title</code> is the title above.</p>
     </div>
 </section>
 
 <section class="px-4 py-16">
     <div class="mx-auto max-w-295">
         <dl class="grid gap-x-6 gap-y-1 rounded-2xl border border-gray-200 p-6 text-sm md:grid-cols-[auto_1fr] md:gap-y-3">
-            <dt class="font-mono font-semibold">typing.text = 'New message'</dt>
+            <dt class="font-mono font-semibold">_title.text = 'New message'</dt>
             <dd class="mb-3 text-gray-600 md:mb-0">Sets the text to type</dd>
-            <dt class="font-mono font-semibold">typing.start(callback)</dt>
+            <dt class="font-mono font-semibold">_title.start(callback)</dt>
             <dd class="mb-3 text-gray-600 md:mb-0">Types the text</dd>
-            <dt class="font-mono font-semibold">typing.erase(callback)</dt>
+            <dt class="font-mono font-semibold">_title.erase(callback)</dt>
             <dd class="mb-3 text-gray-600 md:mb-0">Erases it letter by letter</dd>
-            <dt class="font-mono font-semibold">typing.clear()</dt>
+            <dt class="font-mono font-semibold">_title.clear()</dt>
             <dd class="mb-3 text-gray-600 md:mb-0">Clears it at once</dd>
-            <dt class="font-mono font-semibold">typing.showCursor() / hideCursor()</dt>
+            <dt class="font-mono font-semibold">_title.showCursor() / hideCursor()</dt>
             <dd class="text-gray-600">Shows or hides the blinking cursor</dd>
         </dl>
     </div>
@@ -36,19 +36,19 @@ title: Typing animation | Anthony Toolkits
         // src/assets/js/utils/_emitter.js
         // src/assets/js/utils/_typing.js
 
-const typing = new _typing({
+const _title = new _typing({
     target: document.querySelector('.js-typing'),
     speed: 50, // ms per letter
 });
-window.typing = typing; // for trying it in the console
+window._title = _title; // for trying it in the console
 
 setTimeout(() => {
-    typing.text = 'Hello world!';
-    typing.start(() => {
+    _title.text = 'Hello world!';
+    _title.start(() => {
         setTimeout(() => {
-            typing.erase(() => {
-                typing.text = 'Typing animation';
-                typing.start((instance) => {
+            _title.erase(() => {
+                _title.text = 'Typing animation';
+                _title.start((instance) => {
                     setTimeout(() => instance.hideCursor(), 5000);
                 });
             });

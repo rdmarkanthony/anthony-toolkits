@@ -10,10 +10,10 @@ export class _countdownTimer extends _emitter {
         // a luxon DateTime or an ISO string
         const _parsedDateTime = DateTime.isDateTime(props.dateTime) ? props.dateTime : props.dateTime ? DateTime.fromISO(props.dateTime) : null;
         this.dateTime = {
-            target: _parsedDateTime && _parsedDateTime.isValid ? _parsedDateTime.setZone(this.timeZone) : null, // target date & time
-            now: null, // current date
-            diff: null, // difference
-            ended: false, // if countdown has ended
+            target: _parsedDateTime && _parsedDateTime.isValid ? _parsedDateTime.setZone(this.timeZone) : null,
+            now: null,
+            diff: null,
+            ended: false,
         };
 
         this.interval = null;
@@ -44,7 +44,6 @@ export class _countdownTimer extends _emitter {
             seconds: Math.max(0, Math.floor(this.dateTime.diff.seconds)),
         }; // avoid returning negative diff values
 
-        // once countdown has ended
         if (this.dateTime.diff.days <= 0 && this.dateTime.diff.hours <= 0 && this.dateTime.diff.minutes <= 0 && parseInt(this.dateTime.diff.seconds) <= 0) {
             this.dateTime.ended = true;
             this.destroy();

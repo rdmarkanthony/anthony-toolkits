@@ -8,10 +8,8 @@ export const _pauseAll = (currentPlayer) => {
     _players.forEach((item) => {
         if (item === currentPlayer || (item.isSilent ?? item.autoplay)) return;
 
-        // for youtube
         if (item.player?.getPlayerState?.() === 1) item.player.pauseVideo();
 
-        // for video
         item.el?.video?.pause();
     });
 };

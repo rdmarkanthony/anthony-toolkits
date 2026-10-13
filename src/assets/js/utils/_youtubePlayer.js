@@ -2,7 +2,6 @@ import { _event } from "./_event";
 import { _emitter } from "./_emitter";
 import { _players, _pauseAll, _cover } from "./_media";
 
-// call youtube api
 const _youtubeAPI = () => {
     if (typeof window.onYouTubeIframeAPIReady !== "undefined") return;
 
@@ -16,7 +15,6 @@ const _youtubeAPI = () => {
     };
 };
 
-// for youtube players
 export class _youtubePlayer extends _emitter {
     constructor(props) {
         super(props.events);
@@ -50,9 +48,8 @@ export class _youtubePlayer extends _emitter {
         this.emit("beforeInit");
 
         _players.push(this);
-        _youtubeAPI(); // call yt api
+        _youtubeAPI();
 
-        // for player/iframe
         if (!this.target.contains(this.el.player)) {
             this.target.appendChild(this.el.player);
             this.el.player.classList.add("js-yt-player");

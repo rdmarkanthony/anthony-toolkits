@@ -22,14 +22,12 @@ export class _splitText {
     init() {
         this.split = new SplitType(this.target, this.params);
 
-        // on resize
         this._onResize = (status) => {
             if (status === "resize") return;
             this.update();
         };
         _event.resize(this._onResize);
 
-        // on inview
         new _inview({ target: this.target, callback: () => this.update() });
     }
 

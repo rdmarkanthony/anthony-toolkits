@@ -76,7 +76,7 @@ const _write = (text) => {
 };
 
 // events in the props, one callback each, they get the instance
-const counter = new _counter({
+const _myCounter = new _counter({
     max: 5,
     events: {
         change: (instance) => (_value.textContent = instance.count),
@@ -86,14 +86,14 @@ const counter = new _counter({
 
 // more listeners with on(), removed with off()
 const _onChange = (instance) => _write(`change: ${instance.count}, from on()`);
-counter.on('change', _onChange);
-counter.on('reset', () => _write('reset, from on()'));
+_myCounter.on('change', _onChange);
+_myCounter.on('reset', () => _write('reset, from on()'));
 
-_wrap.querySelector('.js-emitter-add').addEventListener('click', () => counter.add());
-_wrap.querySelector('.js-emitter-reset').addEventListener('click', () => counter.reset());
+_wrap.querySelector('.js-emitter-add').addEventListener('click', () => _myCounter.add());
+_wrap.querySelector('.js-emitter-reset').addEventListener('click', () => _myCounter.reset());
 _wrap.querySelector('.js-emitter-listen').addEventListener('change', (e) => {
-    if (e.target.checked) counter.on('change', _onChange);
-    else counter.off('change', _onChange);
+    if (e.target.checked) _myCounter.on('change', _onChange);
+    else _myCounter.off('change', _onChange);
 });
 {% endraw %}{% endset %}
 

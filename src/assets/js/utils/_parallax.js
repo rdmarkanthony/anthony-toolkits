@@ -60,7 +60,6 @@ export class _parallaxScroller extends _emitter {
     init() {
         this.emit("init");
 
-        // for resize
         this.unsubscribe.push(_event.observeResize(() => this.refresh()));
         this.unsubscribe.push(
             _event.resize((state) => {
@@ -68,7 +67,6 @@ export class _parallaxScroller extends _emitter {
             })
         );
 
-        // for scroll
         this.unsubscribe.push(_event.scroll(() => this.update()));
     }
 

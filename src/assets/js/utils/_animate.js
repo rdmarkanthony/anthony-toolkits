@@ -33,7 +33,6 @@ export class _animate {
     refresh(root = document) {
         const _find = (selector) => [...(root.matches?.(selector) ? [root] : []), ...root.querySelectorAll(selector)].filter((item) => !this.items.has(item));
 
-        // find all the animate containers
         _find("[data-animate]").forEach((item) => {
             const _item = item;
             const _dataset = _item.dataset.animate.split(",");
@@ -43,7 +42,6 @@ export class _animate {
             let _duration = _dataset[2] && !isNaN(parseFloat(_dataset[2])) ? parseFloat(_dataset[2]) : this.duration; // default animation duration
 
             if (_relation === "parent") {
-                // for parent
                 const _startDelay = _delay;
                 let _index = 0;
 
@@ -56,7 +54,6 @@ export class _animate {
                 _item.querySelectorAll('[data-animate="children"]').forEach((item) => {
                     const _item = item;
 
-                    // find again the sub-children
                     Array.from(_item.children).forEach((item) => {
                         const _item = item;
 
@@ -65,7 +62,7 @@ export class _animate {
                             Array.from(_item.children).forEach((item) => {
                                 const _item = item;
 
-                                _item.dataset.animate = "child"; // mark as child
+                                _item.dataset.animate = "child";
 
                                 this.set(_item, _delay, _duration);
 
@@ -74,7 +71,7 @@ export class _animate {
                         } else {
                             if (_item.dataset.animate) return;
 
-                            _item.dataset.animate = "child"; // mark as child
+                            _item.dataset.animate = "child";
 
                             this.set(_item, _delay, _duration);
 
@@ -90,7 +87,6 @@ export class _animate {
                     });
                 });
             } else {
-                // for single item
                 if (!["children", "child"].includes(_relation)) this.set(_item, _delay, _duration);
             }
         });
@@ -112,7 +108,6 @@ export class _animate {
                 target: _item,
                 callback: () => {
                     if (_relation === "parent") {
-                        // for parent
                         _item.classList.remove("opacity-0");
                         _item.removeAttribute("data-animate");
 
@@ -131,7 +126,6 @@ export class _animate {
                         _item.classList.remove("opacity-0");
                         _item.removeAttribute("data-animate");
                     } else {
-                        // for single item
                         this.show(_item, (target) => {
                             this.clean(target);
                         });
@@ -198,7 +192,6 @@ export class _animate {
 
         const _className = this.keyframeOf(target);
 
-        // show and animate the element
         target.classList.remove("opacity-0");
         target.classList.add("animate__animated", `animate__${_className}`);
 

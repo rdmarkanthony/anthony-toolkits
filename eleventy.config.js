@@ -2,7 +2,6 @@ import "dotenv/config";
 import prettier from "prettier";
 
 export default function (eleventyConfig) {
-    // update Nunjucks environment options
     eleventyConfig.setNunjucksEnvironmentOptions({
         trimBlocks: true,
         lstripBlocks: true,
@@ -21,13 +20,11 @@ export default function (eleventyConfig) {
     eleventyConfig.addBundle("popup");
     eleventyConfig.addBundle("footerscript");
 
-    // watch css change
     eleventyConfig.addWatchTarget("src/assets/css/");
 
     // port the assets
     eleventyConfig.addPassthroughCopy("src/assets/img");
     eleventyConfig.addPassthroughCopy("src/assets/video");
-    // eleventyConfig.addPassthroughCopy("src/assets/data");
 
     // zero-pad numbers
     eleventyConfig.addFilter("pad", (value, length = 2) => String(value).padStart(length, "0"));

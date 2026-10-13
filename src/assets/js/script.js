@@ -31,6 +31,7 @@ import { _parallax, _parallaxScroller, _parallaxBackground, _parallaxFloating } 
 import { _canvasBanner } from "./utils/_canvasBanner";
 import { _themeScroller } from "./utils/_themeScroller";
 import { _googleMap } from "./utils/_googleMap";
+import { _qrCode } from "./utils/_qrCode";
 
 // expose for inline scripts, each page sets up its own components
 Object.assign(window, {
@@ -68,48 +69,18 @@ Object.assign(window, {
     _canvasBanner,
     _themeScroller,
     _googleMap,
+    _qrCode,
 });
 
 // modules run after the html is parsed, and before the inline page scripts,
 // so --header-height is set before the components measure
-const header = document.querySelector(".header-content");
-const footer = document.querySelector(".footer-content");
+const _header = document.querySelector(".header-content");
+const _footer = document.querySelector(".footer-content");
 
 _event.resize(() => {
-    document.body.style.setProperty("--header-height", `${header?.offsetHeight ?? 0}px`);
-    document.body.style.setProperty("--footer-height", `${footer?.offsetHeight ?? 0}px`);
+    document.body.style.setProperty("--header-height", `${_header?.offsetHeight ?? 0}px`);
+    document.body.style.setProperty("--footer-height", `${_footer?.offsetHeight ?? 0}px`);
 });
-
-// dark mode toggle, saved once picked, else it follows the system
-const root = document.documentElement;
-const themeToggle = document.querySelector("[data-theme-toggle]");
-const savedTheme = () => {
-    try {
-        return localStorage.getItem("theme");
-    } catch {
-        return null;
-    }
-};
-const setTheme = (theme, save) => {
-    const apply = () => {
-        root.dataset.theme = theme;
-        themeToggle?.setAttribute("aria-pressed", String(theme === "dark"));
-    };
-
-    // one crossfade, so every color changes at the same pace
-    if (document.startViewTransition && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) document.startViewTransition(apply);
-    else apply();
-
-    if (save) {
-        try {
-            localStorage.setItem("theme", theme);
-        } catch {}
-    }
-};
-
-themeToggle?.setAttribute("aria-pressed", String(root.dataset.theme === "dark"));
-themeToggle?.addEventListener("click", () => setTheme(root.dataset.theme === "dark" ? "light" : "dark", true));
-window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => !savedTheme() && setTheme(e.matches ? "dark" : "light"));
 
 // before the page scripts read the hash
 _autoScrollHash();
@@ -123,68 +94,68 @@ document.addEventListener("click", (e) => {
 if (location.hash === "#starter-kit") new _lightbox({ target: "#starter-kit" });
 
 document.querySelector("[data-starter-copy]")?.addEventListener("click", async (e) => {
-    const button = e.currentTarget;
+    const _button = e.currentTarget;
     await navigator.clipboard.writeText(document.querySelector("[data-starter-files] code").textContent);
-    button.textContent = "Copied";
-    setTimeout(() => (button.textContent = "Copy file list"), 2000);
+    _button.textContent = "Copied";
+    setTimeout(() => (_button.textContent = "Copy file list"), 2000);
 });
 
 // smooth scroll for links with data-auto-scroll to a section of the same page, "#" goes to the top
 document.addEventListener("click", (e) => {
-    const link = e.target.closest("a[data-auto-scroll]");
-    if (!link) return;
+    const _link = e.target.closest("a[data-auto-scroll]");
+    if (!_link) return;
 
-    const url = new URL(link.href);
-    if (url.pathname !== location.pathname) return;
+    const _url = new URL(_link.href);
+    if (_url.pathname !== location.pathname) return;
 
-    const target = url.hash.length > 1 ? document.getElementById(url.hash.slice(1)) : document.body;
-    if (!target) return;
+    const _target = _url.hash.length > 1 ? document.getElementById(_url.hash.slice(1)) : document.body;
+    if (!_target) return;
 
     e.preventDefault();
-    _autoScroll({ target });
+    _autoScroll({ target: _target });
 });
 
 // header and home search: a suggestion opens its component, Enter without one goes to /?q=
 // same match as the home filter, so suggestions and results agree
-const searchItems = JSON.parse(document.getElementById("search-items")?.textContent ?? "[]");
-const escapeHTML = (text) => String(text).replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
+const _searchItems = JSON.parse(document.getElementById("search-items")?.textContent ?? "[]");
+const _escapeHTML = (text) => String(text).replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 
 document.querySelectorAll("[data-search]").forEach((form) => {
     // the home results are right below, so no "See all" or empty message
-    const onHome = form.hasAttribute("data-home-search");
+    const _onHome = form.hasAttribute("data-home-search");
 
     new _autocomplete({
         input: form.querySelector("[data-search-input]"),
         list: form.querySelector("[data-search-list]"),
-        items: searchItems,
+        items: _searchItems,
         match: (item, query) => _filter.match(item.text, query),
-        render: (item) => `<span class="font-medium">${escapeHTML(item.label)}</span><span class="shrink-0 text-sm whitespace-nowrap text-kit-muted">${escapeHTML(item.category)}</span>`,
-        more: onHome ? null : (value, total) => ({ url: `/?q=${encodeURIComponent(value)}`, html: `<span class="font-medium text-kit-accent">See all ${total} results</span>` }),
-        empty: onHome ? null : (value) => `<p class="px-4 py-3 text-kit-muted">No components match “${escapeHTML(value)}”.</p>`,
+        render: (item) => `<span class="font-medium">${_escapeHTML(item.label)}</span><span class="shrink-0 text-sm whitespace-nowrap text-kit-muted">${_escapeHTML(item.category)}</span>`,
+        more: _onHome ? null : (value, total) => ({ url: `/?q=${encodeURIComponent(value)}`, html: `<span class="font-medium text-kit-accent">See all ${total} results</span>` }),
+        empty: _onHome ? null : (value) => `<p class="px-4 py-3 text-kit-muted">No components match “${_escapeHTML(value)}”.</p>`,
         optionClass: "flex items-baseline justify-between gap-4 rounded-2xl px-4 py-3 transition-colors duration-200 aria-selected:bg-kit-surface",
     });
 });
 
 // sliding menu below lg, the rest of the page is inert while it's open
-const menu = document.querySelector("[data-mobile-menu]");
-const menuButton = document.querySelector("[data-mobile-menu-open]");
-const pageParts = [header, document.querySelector(".main-content"), footer].filter(Boolean);
+const _menu = document.querySelector("[data-mobile-menu]");
+const _menuButton = document.querySelector("[data-mobile-menu-open]");
+const _pageParts = [_header, document.querySelector(".main-content"), _footer].filter(Boolean);
 
-const toggleMenu = (open) => {
-    if (!menu || open === menu.hasAttribute("data-open")) return;
+const _toggleMenu = (open) => {
+    if (!_menu || open === _menu.hasAttribute("data-open")) return;
 
-    menu.toggleAttribute("data-open", open);
-    menuButton.setAttribute("aria-expanded", String(open));
+    _menu.toggleAttribute("data-open", open);
+    _menuButton.setAttribute("aria-expanded", String(open));
     document.documentElement.classList.toggle("overflow-hidden", open);
-    pageParts.forEach((part) => (part.inert = open));
+    _pageParts.forEach((part) => (part.inert = open));
 
     // the close button, not the search, so the phone keyboard doesn't cover the menu
-    (open ? menu.querySelector("button[data-mobile-menu-close]") : menuButton).focus({ preventScroll: true });
+    (open ? _menu.querySelector("button[data-mobile-menu-close]") : _menuButton).focus({ preventScroll: true });
 };
 
-if (menu) {
-    menuButton.addEventListener("click", () => toggleMenu(true));
-    menu.addEventListener("click", (e) => e.target.closest("[data-mobile-menu-close], a") && toggleMenu(false));
-    document.addEventListener("keydown", (e) => e.key === "Escape" && !e.defaultPrevented && toggleMenu(false));
-    window.matchMedia("(min-width: 992px)").addEventListener("change", (e) => e.matches && toggleMenu(false));
+if (_menu) {
+    _menuButton.addEventListener("click", () => _toggleMenu(true));
+    _menu.addEventListener("click", (e) => e.target.closest("[data-mobile-menu-close], a") && _toggleMenu(false));
+    document.addEventListener("keydown", (e) => e.key === "Escape" && !e.defaultPrevented && _toggleMenu(false));
+    window.matchMedia("(min-width: 992px)").addEventListener("change", (e) => e.matches && _toggleMenu(false));
 }

@@ -60,7 +60,6 @@ export class _canvasBanner extends _emitter {
 
         this.load();
 
-        // for resize
         this.unsubscribe.push(_event.observeResize(() => this.resize(), this.target.parentElement));
 
         this.emit("init");
