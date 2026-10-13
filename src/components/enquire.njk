@@ -4,39 +4,57 @@ title: Enquire | Anthony Toolkits
 
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
 
-{{ pageIntro({ label: '_enquire', title: 'Enquire', description: 'Runs code once each time the window enters a breakpoint, e.g. to set up a slider on mobile and close an open panel on desktop. It uses matchMedia, so it switches at the exact width the CSS does.' }) }}
+{{ pageIntro({ label: '_enquire', title: 'Enquire', description: 'Runs code once each time the window enters a breakpoint. For example, move an element on mobile, or open the first accordion item on desktop. It switches at the same width as your CSS.' }) }}
 
-{% set card = 'flex flex-col gap-2 rounded-2xl border border-gray-200 p-6 transition-colors data-active:border-gray-950 data-active:bg-gray-950 data-active:text-white' %}
-{% set label = 'font-mono text-sm text-gray-500' %}
-{% set value = 'font-mono text-2xl font-semibold tabular-nums' %}
+{% set faq = [
+    { q: 'Question one', a: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.' },
+    { q: 'Question two', a: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.' },
+    { q: 'Question three', a: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.' }
+] %}
 
-{# demo: resize the window, the card of the current breakpoint lights up #}
+{% set title = 'js-accordion-set-title group flex w-full cursor-pointer items-center justify-between gap-6 py-5 text-left text-lg font-semibold transition-colors hover:text-gray-600' %}
+{% set chevron = '<svg class="size-5 shrink-0 transition-transform duration-300 group-aria-expanded:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>' %}
+
+{# demo: the card moves from the sidebar into the article on mobile #}
 <section class="px-4 py-16">
-    <div class="mx-auto flex max-w-295 flex-col gap-4">
-        <div class="grid gap-4 md:grid-cols-3">
-            <div class="js-enquire-card {{ card }}" data-breakpoint="0">
-                <p class="font-mono text-sm opacity-60">0</p>
-                <p class="text-3xl font-bold tracking-tight">Mobile</p>
-            </div>
-            <div class="js-enquire-card {{ card }}" data-breakpoint="768">
-                <p class="font-mono text-sm opacity-60">768</p>
-                <p class="text-3xl font-bold tracking-tight">Tablet</p>
-            </div>
-            <div class="js-enquire-card {{ card }}" data-breakpoint="1240">
-                <p class="font-mono text-sm opacity-60">1240</p>
-                <p class="text-3xl font-bold tracking-tight">Desktop</p>
-            </div>
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <h2 class="text-3xl font-bold tracking-tight">Move an element</h2>
+            <p class="font-mono text-sm text-gray-500">now: <span class="js-enquire-now">-</span></p>
         </div>
-        <div class="grid gap-4 md:grid-cols-2">
-            <div class="flex flex-col gap-2 rounded-2xl border border-gray-200 p-6">
-                <p class="{{ label }}">resize events / enquire calls</p>
-                <p class="{{ value }}"><span class="js-enquire-resizes">0</span> / <span class="js-enquire-calls">0</span></p>
-                <p class="text-gray-600">Resize the window: the callbacks only run when the breakpoint changes.</p>
+        <p class="max-w-2xl text-gray-600">Desktop: card in the sidebar. Mobile: card between the paragraphs.</p>
+        <div class="grid gap-8 md:grid-cols-[1fr_20rem]">
+            <article class="flex max-w-2xl flex-col gap-4 text-gray-600">
+                <h3 class="text-xl font-semibold text-gray-950">Visiting the garden</h3>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero est illo eius laudantium.</p>
+                <div class="js-enquire-mobile empty:hidden"></div>
+                <p>Officiis voluptatibus natus quae perferendis, explicabo magnam doloribus sequi.</p>
+            </article>
+            <aside class="js-enquire-desktop">
+                <div class="js-enquire-cta flex flex-col items-start gap-4 rounded-2xl bg-gray-950 p-6 text-white">
+                    <p class="font-mono text-sm opacity-60">Open daily</p>
+                    <p class="text-2xl font-bold tracking-tight">Book a visit</p>
+                    <a class="rounded-full bg-white px-5 py-2.5 font-semibold text-gray-950 transition-colors hover:bg-gray-200" href="#">Book now</a>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>
+
+{# demo: first set open on desktop, all closed on mobile #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <h2 class="text-3xl font-bold tracking-tight">Accordion</h2>
+        <p class="max-w-2xl text-gray-600">Desktop: first item open. Mobile: all closed.</p>
+        <div class="js-enquire-accordion max-w-3xl border-t border-gray-200">
+            {% for item in faq %}
+            <div class="js-accordion-set border-b border-gray-200">
+                <button class="{{ title }}" type="button">{{ item.q }}{{ chevron | safe }}</button>
+                <div class="js-accordion-set-content" hidden="until-found">
+                    <p class="max-w-2xl pb-5 text-gray-600">{{ item.a }}</p>
+                </div>
             </div>
-            <div class="flex flex-col gap-2 rounded-2xl border border-gray-200 p-6">
-                <p class="{{ label }}">last calls</p>
-                <ol class="js-enquire-log flex flex-col gap-1 font-mono text-sm text-gray-600"></ol>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
@@ -45,33 +63,39 @@ title: Enquire | Anthony Toolkits
 // Requirements
     // JS
         // src/assets/js/utils/_enquire.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_accordion.js
 
-const _cards = document.querySelectorAll('.js-enquire-card');
-const _calls = document.querySelector('.js-enquire-calls');
-const _log = document.querySelector('.js-enquire-log');
+// move the card
+const _cta = document.querySelector('.js-enquire-cta');
 
-const _show = (enquire, name) => {
-    _cards.forEach((card) => card.toggleAttribute('data-active', card.dataset.breakpoint === `${enquire.breakpoint}`));
-    _calls.textContent = Number(_calls.textContent) + 1;
-    _log.insertAdjacentHTML('afterbegin', `<li>${name}: ${enquire.prevBreakpoint ?? 'start'} → ${enquire.breakpoint}</li>`);
-    _log.querySelectorAll('li:nth-child(n+5)').forEach((item) => item.remove());
-};
-
-// each one runs once when the window enters it, and on load for the current one
 new _enquire({
-    0: (enquire) => _show(enquire, 'mobile'),
-    768: (enquire) => _show(enquire, 'tablet'),
-    1240: (enquire) => _show(enquire, 'desktop'),
+    0: () => document.querySelector('.js-enquire-mobile').append(_cta),
+    768: () => document.querySelector('.js-enquire-desktop').append(_cta),
 });
 
-// only to compare, how often the window fires resize
-const _resizes = document.querySelector('.js-enquire-resizes');
-window.addEventListener('resize', () => (_resizes.textContent = Number(_resizes.textContent) + 1));
+// accordion
+const _faq = new _accordion({ target: document.querySelector('.js-enquire-accordion'), openFirst: false });
+
+new _enquire({
+    // no animation on load
+    0: (enquire) => _faq.sets.forEach((set) => _faq.isOpen(set) && _faq.close(set, enquire.prevBreakpoint !== null)),
+    768: (enquire) => _faq.open(_faq.sets[0], enquire.prevBreakpoint !== null),
+});
+
+// "now" label
+const _now = document.querySelector('.js-enquire-now');
+
+new _enquire({
+    0: () => (_now.textContent = 'mobile'),
+    768: () => (_now.textContent = 'tablet'),
+    1240: () => (_now.textContent = 'desktop'),
+});
 {% endraw %}{% endset %}
 
 {{ scriptUsage({
     code: pageScript,
-    note: '<code class="font-mono text-sm">new _enquire({ [minWidth]: (enquire) => {} })</code>. <code class="font-mono text-sm">enquire.breakpoint</code> is the width it entered, <code class="font-mono text-sm">enquire.prevBreakpoint</code> the one it left (<code class="font-mono text-sm">null</code> on load). Below the smallest key nothing runs. Call <code class="font-mono text-sm">destroy()</code> to stop listening. To run on every resize instead, use <code class="font-mono text-sm">_event.resize</code>.'
+    note: 'Keys are min-widths. <code class="font-mono text-sm">enquire.prevBreakpoint</code> is <code class="font-mono text-sm">null</code> on load. <code class="font-mono text-sm">destroy()</code> stops it.'
 }) }}
 
 {% footerscript %}

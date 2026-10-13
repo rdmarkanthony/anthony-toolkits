@@ -111,7 +111,7 @@ document.querySelectorAll('.js-accordion').forEach((target) => {
 {{ scriptUsage({
     markup: markup,
     code: pageScript,
-    note: '<code class="font-mono text-sm">new _accordion({ target, closeOthers, openFirst, duration, events })</code>. Methods: <code class="font-mono text-sm">open(set)</code>, <code class="font-mono text-sm">close(set)</code>, <code class="font-mono text-sm">toggle(set)</code>, <code class="font-mono text-sm">isOpen(set)</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">open</code>, <code class="font-mono text-sm">close</code>. Style the open state with <code class="font-mono text-sm">.active</code> on the set or <code class="font-mono text-sm">aria-expanded</code> on the title. Reduced motion skips the animation.'
+    note: '<code class="font-mono text-sm">new _accordion({ target, closeOthers, openFirst, duration, events })</code>. Methods: <code class="font-mono text-sm">open(set, animate)</code>, <code class="font-mono text-sm">close(set, animate)</code> (animate defaults to true), <code class="font-mono text-sm">toggle(set)</code>, <code class="font-mono text-sm">isOpen(set)</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">open</code>, <code class="font-mono text-sm">close</code>. Style the open state with <code class="font-mono text-sm">.active</code> on the set or <code class="font-mono text-sm">aria-expanded</code> on the title. Reduced motion skips the animation.'
 }) }}
 
 {% footerscript %}

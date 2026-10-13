@@ -80,13 +80,13 @@ export class _accordion extends _emitter {
         this.isOpen(set) ? this.close(set) : this.open(set);
     }
 
-    open(set) {
-        if (this.closeOthers) this.sets.forEach((item) => item !== set && this.isOpen(item) && this.close(item));
-        this.update(set, true);
+    open(set, animate = true) {
+        if (this.closeOthers) this.sets.forEach((item) => item !== set && this.isOpen(item) && this.close(item, animate));
+        this.update(set, true, animate);
     }
 
-    close(set) {
-        this.update(set, false);
+    close(set, animate = true) {
+        this.update(set, false, animate);
     }
 
     update(set, open, animate = true) {
