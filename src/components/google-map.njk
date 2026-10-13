@@ -64,7 +64,7 @@ title: Google Map | Anthony Toolkits
 
 <!-- places: a sticky map, and an accordion of countries holding the places -->
 <div class="js-places grid lg:grid-cols-2">
-    <div class="js-google-map sticky top-0 h-[45svh] lg:h-svh" data-api-key="YOUR_API_KEY"></div>
+    <div class="js-google-map sticky top-0 h-[35svh] lg:h-svh" data-api-key="YOUR_API_KEY"></div>
     <div class="js-accordion">
         <div class="js-accordion-set">
             <button class="js-accordion-set-title" type="button">Singapore</button>
@@ -95,7 +95,7 @@ title: Google Map | Anthony Toolkits
             </div>
         </div>
         <div class="js-places grid items-start gap-6 lg:grid-cols-[1fr_20rem]">
-            <div class="sticky top-[var(--header-height,0px)] z-10 -mx-4 h-[45svh] bg-white lg:top-[calc(var(--header-height,0px)+1.5rem)] lg:mx-0 lg:h-[calc(100svh-var(--header-height,0px)-3rem)]">
+            <div class="sticky top-[var(--header-height,0px)] z-10 -mx-4 h-[35svh] bg-white lg:top-[calc(var(--header-height,0px)+1.5rem)] lg:mx-0 lg:h-[calc(100svh-var(--header-height,0px)-3rem)]">
                 <div class="js-google-map grid size-full place-items-center overflow-hidden bg-gray-100 lg:rounded-2xl" data-api-key="{{ site.googleMapsKey }}">{{ noKey | safe }}</div>
             </div>
             <div class="js-accordion border-t border-gray-200">
@@ -109,7 +109,7 @@ title: Google Map | Anthony Toolkits
                         <ul class="grid gap-1 pb-4">
                             {% for place in country.places %}
                             <li>
-                                <button class="js-place w-full scroll-mt-[calc(45svh+var(--header-height,0px)+1rem)] cursor-pointer rounded-xl px-5 py-3 text-left transition-colors hover:bg-gray-50 aria-pressed:bg-gray-950 aria-pressed:text-white lg:scroll-mt-[calc(var(--header-height,0px)+1.5rem)]" type="button" aria-pressed="false" data-id="{{ place.id }}" data-title="{{ place.title }}" data-lat="{{ place.lat }}" data-lng="{{ place.lng }}">
+                                <button class="js-place w-full scroll-mt-[calc(35svh+var(--header-height,0px)+1rem)] cursor-pointer rounded-xl px-5 py-3 text-left transition-colors hover:bg-gray-50 aria-pressed:bg-gray-950 aria-pressed:text-white lg:scroll-mt-[calc(var(--header-height,0px)+1.5rem)]" type="button" aria-pressed="false" data-id="{{ place.id }}" data-title="{{ place.title }}" data-lat="{{ place.lat }}" data-lng="{{ place.lng }}">
                                     <span class="block font-medium">{{ place.title }}</span>
                                     <span class="block text-sm opacity-60">{{ place.about }}</span>
                                 </button>
