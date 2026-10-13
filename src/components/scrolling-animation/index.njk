@@ -32,15 +32,15 @@ title: Scrolling Animation | Anthony Toolkits
                 <div class="flex aspect-4/3 items-center gap-4 bg-white px-8">
                     <figure class="flex-1">
                         <img class="w-full" src="/assets/img/headphone/small_{{ 0 | pad(4) }}.webp" alt="" loading="lazy" />
-                        <figcaption class="mt-2 text-center font-mono text-xs text-gray-400">01</figcaption>
+                        <figcaption class="mt-2 text-center text-xs text-gray-400">01</figcaption>
                     </figure>
                     <figure class="flex-1">
                         <img class="w-full" src="/assets/img/headphone/small_{{ 24 | pad(4) }}.webp" alt="" loading="lazy" />
-                        <figcaption class="mt-2 text-center font-mono text-xs text-gray-400">25</figcaption>
+                        <figcaption class="mt-2 text-center text-xs text-gray-400">25</figcaption>
                     </figure>
                     <figure class="flex-1">
                         <img class="w-full" src="/assets/img/headphone/small_{{ 49 | pad(4) }}.webp" alt="" loading="lazy" />
-                        <figcaption class="mt-2 text-center font-mono text-xs text-gray-400">50</figcaption>
+                        <figcaption class="mt-2 text-center text-xs text-gray-400">50</figcaption>
                     </figure>
                 </div>
                 <div class="flex flex-1 flex-col p-6">
@@ -72,7 +72,7 @@ title: Scrolling Animation | Anthony Toolkits
         <ol class="grid gap-10">
             <li class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
                 <div>
-                    <p class="mb-2 font-mono text-sm text-gray-500">01</p>
+                    <p class="mb-2 text-sm text-gray-500">01</p>
                     <h3 class="mb-2 text-xl font-semibold">script.js loads the utils</h3>
                     <p class="text-gray-600">It imports gsap and the utils from <code class="font-mono text-sm">src/assets/js/utils/</code>, and puts every util on <code class="font-mono text-sm">window</code> for page scripts. In your project, import only the utils you use. Bundle it with any bundler, this site uses esbuild.</p>
                 </div>
@@ -94,7 +94,7 @@ Object.assign(window, {
             </li>
             <li class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
                 <div>
-                    <p class="mb-2 font-mono text-sm text-gray-500">02</p>
+                    <p class="mb-2 text-sm text-gray-500">02</p>
                     <h3 class="mb-2 text-xl font-semibold">Mark up the section</h3>
                     <p class="text-gray-600">Style it however you like, the demos use Tailwind. Add <code class="font-mono text-sm">js-</code> classes for elements the script looks up, and <code class="font-mono text-sm">data-</code> attributes for options.</p>
                 </div>
@@ -107,7 +107,7 @@ Object.assign(window, {
             </li>
             <li class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
                 <div>
-                    <p class="mb-2 font-mono text-sm text-gray-500">03</p>
+                    <p class="mb-2 text-sm text-gray-500">03</p>
                     <h3 class="mb-2 text-xl font-semibold">Add the page script</h3>
                     <p class="text-gray-600">Add it below <code class="font-mono text-sm">script.js</code>, both as <code class="font-mono text-sm">type="module"</code> so it runs after the utils are loaded. On this site, pages put it in <code class="font-mono text-sm">{% raw %}{% footerscript %}{% endraw %}</code>, which renders below <code class="font-mono text-sm">script.js</code>.</p>
                 </div>

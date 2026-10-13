@@ -20,10 +20,10 @@
                 <ul class="flex items-center gap-8">
                     <li>{{ componentsLink(onComponents) }}</li>
                     {% if props.starterKit.items.length %}<li><a class="text-kit-muted transition-colors duration-300 hover:text-kit-text" href="#starter-kit" data-starter-open>Starter kit</a></li>{% endif %}
-                    <li><a class="group inline-flex h-11 items-center gap-1.5 rounded-full border border-kit-line px-5 text-sm font-medium transition-colors duration-300 hover:border-kit-accent hover:text-kit-accent" href="{{ props.site.github }}" target="_blank" rel="noopener">GitHub{{ external('duration-500 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}</a></li>
+                    <li><a class="group inline-flex h-11 items-center gap-2.5 rounded-full border border-kit-line pr-4 pl-5 text-sm font-medium transition-colors duration-300 hover:border-kit-accent hover:text-kit-accent" href="{{ props.site.github }}" target="_blank" rel="noopener">GitHub{{ external('size-[1.4em] duration-500 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}</a></li>
                 </ul>
             </nav>
-            <button class="-mr-2.5 flex size-11 items-center justify-center rounded-full text-2xl transition-colors duration-300 hover:text-kit-accent lg:hidden" type="button" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false" data-mobile-menu-open>{{ menu() }}</button>
+            <button class="-mr-2.5 flex size-11 items-center justify-center rounded-full text-[2rem] transition-colors duration-300 hover:text-kit-accent lg:hidden" type="button" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false" data-mobile-menu-open>{{ menu() }}</button>
         </div>
     </div>
 </header>
@@ -33,7 +33,7 @@
     <div class="absolute inset-0 bg-kit-text/30 opacity-0 transition-opacity duration-500 group-data-open:opacity-100" data-mobile-menu-close></div>
     <div class="absolute inset-y-0 right-0 flex w-full max-w-sm translate-x-full flex-col overflow-y-auto bg-kit-bg px-4 pb-8 shadow-2xl transition-transform duration-500 ease-out-expo group-data-open:translate-x-0 sm:px-6" role="dialog" aria-modal="true" aria-label="Menu" data-mobile-menu-panel>
         <div class="mb-6 flex h-16 shrink-0 items-center justify-between md:h-20">
-            <p class="font-mono text-xs tracking-wide text-kit-muted uppercase">Menu</p>
+            <p class="text-xs tracking-wide text-kit-muted uppercase">Menu</p>
             <button class="-mr-2.5 flex size-11 items-center justify-center rounded-full text-2xl transition-colors duration-300 hover:text-kit-accent" type="button" aria-label="Close menu" data-mobile-menu-close>{{ close() }}</button>
         </div>
         {% if not onHome %}
