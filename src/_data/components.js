@@ -13,6 +13,15 @@ export default [
         ],
     },
     {
+        category: "Sliders",
+        url: "/components/sliders/",
+        items: [
+            { label: "Peek slider", url: "/components/sliders/peek/", description: "A carousel of 1 to 3 cards, with the next one peeking at the edge.", utils: "_peekSlider · Swiper", ready: true },
+            { label: "Snap slider", url: "/components/sliders/snap/", description: "A card row on native scroll snap, no library.", utils: "_snapSlider", ready: true },
+            { label: "Loop slider", url: "/components/sliders/loop/", description: "An endless row that moves on scroll, drag or as a marquee.", utils: "_horizontalLoop · GSAP", ready: true },
+        ],
+    },
+    {
         category: "Layout",
         items: [
             { label: "Breakpoints", url: "/components/breakpoints/", description: "The responsive breakpoints, shown live as you resize.", utils: "Tailwind @theme", ready: true },
@@ -20,7 +29,6 @@ export default [
             { label: "Tabs", url: "/components/tabs/", description: "Links that switch between content panels, nestable.", utils: "_tabs", ready: true },
             { label: "Accordion", url: "/components/accordion/", description: "Titles that open and close their content in place, for FAQs.", utils: "_accordion", ready: true },
             { label: "Hover indicator", url: "/components/hover-indicator/", description: "A background or line that slides to the hovered or selected item.", utils: "_hoverIndicator", ready: true },
-            { label: "Sliders", url: "/components/sliders/", description: "Carousels, including the pixel slider." },
         ],
     },
     {

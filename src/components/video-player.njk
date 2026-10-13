@@ -105,7 +105,7 @@ title: Video player | Anthony Toolkits
         // plyr + src/assets/js/utils/_plyr.js (optional, for Plyr controls)
         // src/assets/js/utils/_lightbox.js (only for the lightbox sample)
     // CSS
-        // plyr/dist/plyr.css (with Plyr)
+        // @import "plyr/dist/plyr.css"; (with Plyr)
 
 document.querySelectorAll('[data-video-player]').forEach((target) => {
     const [_src, ..._options] = target.dataset.videoPlayer.split(',');

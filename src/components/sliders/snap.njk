@@ -1,0 +1,175 @@
+---
+title: Snap slider | Sliders | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Sliders', url: '/components/sliders/' }, label: '_snapSlider', title: 'Snap slider', description: 'Card sliders built on native scroll snap. Swipe or scroll them, drag with a mouse, or use the buttons. No library.' }) }}
+
+{% set cards = [
+    { eyebrow: 'Design', title: 'Lorem ipsum dolor sit amet.', image: true },
+    { eyebrow: 'Camera', title: 'Consectetur adipisicing elit.', class: 'bg-gray-950 text-white' },
+    { eyebrow: 'Battery', title: 'Libero est illo eius laudantium.', class: 'bg-gray-100' },
+    { eyebrow: 'Display', title: 'Laborum earum culpa corporis.', class: 'bg-sky-100' },
+    { eyebrow: 'Colors', title: 'Vel deleniti ipsam mollitia.', image: true },
+    { eyebrow: 'Sound', title: 'Quo unde architecto velit.', class: 'bg-amber-50' },
+    { eyebrow: 'Privacy', title: 'Lorem ipsum dolor sit amet.', class: 'bg-gray-100' },
+    { eyebrow: 'Support', title: 'Consectetur adipisicing elit.', class: 'bg-gray-950 text-white' }
+] %}
+{% set button = 'grid size-9 cursor-pointer place-items-center rounded-full bg-gray-200 text-lg text-gray-700 transition-colors duration-300 hover:bg-gray-300 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-gray-200' %}
+
+{# demo: the first card lines up with the column, the rest runs to the screen edge #}
+<section class="pb-16">
+    <h2 class="mx-auto mb-8 max-w-295 px-4 text-3xl font-bold tracking-tight [box-sizing:content-box]">Card row</h2>
+    <div class="js-snap-slider">
+        <ul class="js-snap-track flex cursor-grab snap-x snap-mandatory scroll-px-[max(1rem,calc((100%_-_73.75rem)/2))] gap-4 overflow-x-auto px-[max(1rem,calc((100%_-_73.75rem)/2))] py-2 [scrollbar-width:none] data-dragging:cursor-grabbing md:gap-5 [&::-webkit-scrollbar]:hidden">
+            {% for card in cards %}
+            <li class="relative flex aspect-3/5 w-[80%] shrink-0 snap-start snap-always flex-col overflow-hidden rounded-3xl p-8 select-none sm:w-[22rem] {{ card.class or 'bg-gray-950 text-white' }}">
+                {% if card.image %}
+                <img class="absolute inset-0 size-full object-cover" src="/assets/img/sample-image.webp" alt="" loading="lazy" />
+                <div class="absolute inset-x-0 top-0 h-1/2 bg-linear-to-b from-black/60 to-transparent"></div>
+                {% endif %}
+                <p class="relative mb-2 text-sm font-semibold opacity-70">{{ card.eyebrow }}</p>
+                <h2 class="relative text-2xl leading-tight font-semibold tracking-tight md:text-[1.75rem]">{{ card.title }}</h2>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="mt-6 px-4">
+            <div class="mx-auto flex max-w-295 justify-end gap-3">
+                <button class="js-snap-prev {{ button }}" type="button" aria-label="Previous cards">{{ angle('left') }}</button>
+                <button class="js-snap-next {{ button }}" type="button" aria-label="Next cards">{{ angle('right') }}</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% set slides = [
+    { title: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.', image: true },
+    { title: 'Libero est illo eius laudantium laborum.', class: 'bg-gray-100' },
+    { title: 'Earum culpa corporis vel deleniti.', class: 'bg-gray-950 text-white' },
+    { title: 'Ipsam mollitia quo unde architecto velit.', image: true },
+    { title: 'Lorem ipsum dolor sit amet.', class: 'bg-sky-100' }
+] %}
+{% set parallax = 'translate-x-[calc(var(--offset,0)*-10rem)] opacity-[calc(var(--near,1)*var(--near,1)*var(--near,1))] will-change-transform' %}
+
+{# demo: one card in the middle, its text slides and fades with the scroll #}
+<section class="bg-gray-50 py-16">
+    <h2 class="mx-auto mb-8 max-w-295 px-4 text-3xl font-bold tracking-tight [box-sizing:content-box]">One card, parallax text</h2>
+    <div class="js-snap-slider @container">
+        <ul class="js-snap-track flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto px-[calc((100cqw_-_min(87.5cqw,73.75rem))/2)] py-2 [scrollbar-width:none] data-dragging:cursor-grabbing md:gap-5 [&::-webkit-scrollbar]:hidden">
+            {% for slide in slides %}
+            <li class="relative flex h-[30rem] w-[min(87.5cqw,73.75rem)] shrink-0 snap-center snap-always flex-col overflow-hidden rounded-[1.75rem] select-none md:h-auto md:aspect-14/8 {{ slide.class or 'bg-gray-950 text-white' }}">
+                {% if slide.image %}
+                <img class="absolute inset-0 size-full object-cover" src="/assets/img/sample-image.webp" alt="" loading="lazy" />
+                <div class="absolute inset-x-0 top-0 h-1/2 bg-linear-to-b from-black/60 to-transparent"></div>
+                {% endif %}
+                <h3 class="relative max-w-xl p-8 text-2xl leading-tight font-semibold tracking-tight md:p-11 md:text-4xl {{ parallax }}">{{ slide.title }}</h3>
+                {% if not slide.image %}
+                <img class="relative mx-auto mt-auto mb-8 aspect-video w-3/4 rounded-2xl object-cover md:mb-11 md:w-1/2" src="/assets/img/sample-image.webp" alt="" loading="lazy" />
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="mt-6 px-4">
+            <div class="mx-auto flex max-w-295 justify-end gap-3">
+                <button class="js-snap-prev {{ button }}" type="button" aria-label="Previous card">{{ angle('left') }}</button>
+                <button class="js-snap-next {{ button }}" type="button" aria-label="Next card">{{ angle('right') }}</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# text spot: the slide's flex alignment, plus a shade on that side so the text reads #}
+{% set spots = {
+    'bottom-left': { place: 'justify-end items-start', shade: 'bg-linear-to-t from-black/70 via-black/20 to-transparent' },
+    'top-left': { place: 'justify-start items-start', shade: 'bg-linear-to-b from-black/70 via-black/20 to-transparent' },
+    'center': { place: 'justify-center items-center text-center', shade: 'bg-black/40' },
+    'bottom-right': { place: 'justify-end items-end text-right', shade: 'bg-linear-to-t from-black/70 via-black/20 to-transparent' },
+    'top-right': { place: 'justify-start items-end text-right', shade: 'bg-linear-to-b from-black/70 via-black/20 to-transparent' }
+} %}
+{% set photos = [
+    { spot: 'bottom-left', crop: '', title: 'Lorem ipsum dolor sit amet.' },
+    { spot: 'top-left', crop: 'scale-150 object-[30%_20%]', title: 'Consectetur adipisicing elit.' },
+    { spot: 'center', crop: 'scale-125 object-[70%_60%]', title: 'Libero est illo eius.' },
+    { spot: 'bottom-right', crop: 'scale-175 object-[50%_80%]', title: 'Laborum earum culpa corporis.' },
+    { spot: 'top-right', crop: 'scale-110 object-[20%_50%]', title: 'Vel deleniti ipsam mollitia.' }
+] %}
+
+{# demo: full images, the text sits in a different spot on each slide #}
+<section class="py-16">
+    <h2 class="mx-auto mb-8 max-w-295 px-4 text-3xl font-bold tracking-tight [box-sizing:content-box]">Full images, text in place</h2>
+    <div class="js-snap-slider @container">
+        <ul class="js-snap-track flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto px-[calc((100cqw_-_min(87.5cqw,73.75rem))/2)] py-2 [scrollbar-width:none] data-dragging:cursor-grabbing md:gap-5 [&::-webkit-scrollbar]:hidden">
+            {% for photo in photos %}
+            {% set spot = spots[photo.spot] %}
+            <li class="relative flex h-[30rem] w-[min(87.5cqw,73.75rem)] shrink-0 snap-center snap-always flex-col overflow-hidden rounded-[1.75rem] bg-gray-950 p-8 text-white select-none md:h-auto md:aspect-14/8 md:p-11 {{ spot.place }}">
+                <img class="absolute inset-0 size-full object-cover {{ photo.crop }}" src="/assets/img/sample-image.webp" alt="" loading="lazy" />
+                <div class="absolute inset-0 {{ spot.shade }}"></div>
+                <div class="relative max-w-md {{ parallax }}">
+                    <p class="mb-2 text-sm font-semibold opacity-70">0{{ loop.index }}</p>
+                    <h3 class="text-2xl leading-tight font-semibold tracking-tight md:text-4xl">{{ photo.title }}</h3>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="mt-6 px-4">
+            <div class="mx-auto flex max-w-295 justify-end gap-3">
+                <button class="js-snap-prev {{ button }}" type="button" aria-label="Previous slide">{{ angle('left') }}</button>
+                <button class="js-snap-next {{ button }}" type="button" aria-label="Next slide">{{ angle('right') }}</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<div class="js-snap-slider">
+    <!-- the padding lines the first card up with a max-w-295 column, scroll-px keeps the snap there -->
+    <ul class="js-snap-track flex cursor-grab snap-x snap-mandatory scroll-px-[max(1rem,calc((100%_-_73.75rem)/2))] gap-4 overflow-x-auto px-[max(1rem,calc((100%_-_73.75rem)/2))] [scrollbar-width:none] data-dragging:cursor-grabbing [&::-webkit-scrollbar]:hidden">
+        <!-- snap-always stops at each card, even on a fast swipe -->
+        <li class="w-[80%] shrink-0 snap-start snap-always sm:w-[22rem]">...</li>
+        <li class="w-[80%] shrink-0 snap-start snap-always sm:w-[22rem]">...</li>
+    </ul>
+    <!-- optional, disabled at the ends -->
+    <button class="js-snap-prev disabled:opacity-40" type="button" aria-label="Previous cards">...</button>
+    <button class="js-snap-next disabled:opacity-40" type="button" aria-label="Next cards">...</button>
+</div>
+
+<!-- one card: 87.5% wide and centered, @container for the cqw sizes -->
+<div class="js-snap-slider @container">
+    <ul class="js-snap-track flex snap-x snap-mandatory gap-4 overflow-x-auto px-[calc((100cqw_-_min(87.5cqw,73.75rem))/2)] ...">
+        <li class="w-[min(87.5cqw,73.75rem)] shrink-0 snap-center snap-always overflow-hidden">
+            <!-- --offset and --near come from the script: slides 10rem and fades per card away -->
+            <h3 class="translate-x-[calc(var(--offset,0)*-10rem)] opacity-[calc(var(--near,1)*var(--near,1)*var(--near,1))]">...</h3>
+        </li>
+        <!-- full image: the slide's flex alignment places the text, e.g. bottom right -->
+        <li class="relative flex flex-col items-end justify-end text-right ...">
+            <img class="absolute inset-0 size-full object-cover" src="..." alt="" />
+            <div class="relative translate-x-[calc(var(--offset,0)*-10rem)] ...">...</div>
+        </li>
+    </ul>
+</div>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_snapSlider.js
+
+document.querySelectorAll('.js-snap-slider').forEach((target) => {
+    const _slider = new _snapSlider({ target });
+
+    // _slider.show(2), _slider.index; glide options: { target, duration: 600, ease: (t) => t }
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The track is a normal scroller with Tailwind scroll snap, so touch and trackpad scrolling are the browser\'s own. The card width is set by its class. Each card gets <code class="font-mono text-sm">--offset</code> (-1 to 1, 0 in place) and <code class="font-mono text-sm">--near</code> (1 in place, 0 a card away) for parallax.',
+    code: pageScript,
+    note: 'Adds mouse dragging and the buttons, both glide to a card with a slow ease out. No library.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

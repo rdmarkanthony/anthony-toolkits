@@ -1,0 +1,135 @@
+---
+title: Loop slider | Sliders | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Sliders', url: '/components/sliders/' }, label: '_horizontalLoop · GSAP', title: 'Loop slider', description: 'An endless row that never runs out. Move it with the page scroll, drag and throw it, or play it as a marquee.' }) }}
+
+{% set tiles = [
+    { image: true, crop: '' },
+    { class: 'bg-sky-200' },
+    { image: true, crop: 'scale-150 object-[30%_20%]' },
+    { class: 'bg-amber-100' },
+    { image: true, crop: 'scale-125 object-[70%_60%]' },
+    { class: 'bg-rose-200' }
+] %}
+
+{# demo: the page scroll moves the rows, the first one left and the second one right #}
+<section class="overflow-clip pb-16">
+    <h2 class="mx-auto mb-8 max-w-295 px-4 text-3xl font-bold tracking-tight [box-sizing:content-box]">On scroll</h2>
+    <div class="flex flex-col gap-4 md:gap-5">
+        {% for row in [0, 1] %}
+        <ul class="js-loop-scroll flex gap-4 select-none md:gap-5">
+            {% for item in tiles %}
+            {% set tile = tiles[(loop.index0 + row * 3) % (tiles | length)] %}
+            <li class="relative aspect-16/10 w-[70%] shrink-0 overflow-hidden rounded-2xl sm:w-[24rem] md:w-[30rem] {{ tile.class or 'bg-gray-950' }}">
+                {% if tile.image %}
+                <img class="pointer-events-none absolute inset-0 size-full object-cover {{ tile.crop }}" src="/assets/img/sample-image.webp" alt="" loading="lazy" />
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endfor %}
+    </div>
+</section>
+
+{% set cards = [
+    { eyebrow: 'Design', title: 'Lorem ipsum dolor sit amet.', image: true },
+    { eyebrow: 'Camera', title: 'Consectetur adipisicing elit.', class: 'bg-sky-200' },
+    { eyebrow: 'Battery', title: 'Libero est illo eius laudantium.', class: 'bg-gray-950 text-white' },
+    { eyebrow: 'Display', title: 'Laborum earum culpa corporis.', class: 'bg-amber-100' },
+    { eyebrow: 'Colors', title: 'Vel deleniti ipsam mollitia.', image: true },
+    { eyebrow: 'Sound', title: 'Quo unde architecto velit.', class: 'bg-rose-200' }
+] %}
+
+{# demo: still until dragged, a throw stops with a card in the middle #}
+<section class="overflow-clip bg-gray-50 py-16">
+    <h2 class="mx-auto mb-8 max-w-295 px-4 text-3xl font-bold tracking-tight [box-sizing:content-box]">Drag and throw</h2>
+    <ul class="js-loop-cards flex gap-4 select-none md:gap-5">
+        {% for card in cards %}
+        <li class="w-[70%] shrink-0 sm:w-[22rem]">
+            <a class="relative flex aspect-3/4 flex-col overflow-hidden rounded-3xl p-8 {{ card.class or 'bg-gray-950 text-white' }}" href="#card-{{ loop.index }}" draggable="false">
+                {% if card.image %}
+                <img class="pointer-events-none absolute inset-0 size-full object-cover" src="/assets/img/sample-image.webp" alt="" loading="lazy" />
+                <div class="absolute inset-x-0 top-0 h-1/2 bg-linear-to-b from-black/60 to-transparent"></div>
+                {% endif %}
+                <p class="relative mb-2 text-sm font-semibold opacity-70">{{ card.eyebrow }}</p>
+                <h3 class="relative text-2xl leading-tight font-semibold tracking-tight">{{ card.title }}</h3>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+
+{% set words = ['Design', 'Build', 'Launch', 'Repeat'] %}
+
+{# demo: plays on its own, turns when the page scrolls up #}
+<section class="overflow-clip py-16">
+    <h2 class="mx-auto mb-8 max-w-295 px-4 text-3xl font-bold tracking-tight [box-sizing:content-box]">Marquee</h2>
+    <ul class="js-loop-marquee flex select-none">
+        {% for word in words %}
+        <li class="flex shrink-0 items-center gap-8 pr-8 text-6xl font-bold tracking-tight whitespace-nowrap md:text-8xl">{{ word }}<span class="size-4 rounded-full bg-sky-300 md:size-6"></span></li>
+        {% endfor %}
+    </ul>
+</section>
+
+{% set markup %}{% raw %}
+<!-- overflow-clip hides the row's ends, and focus can't scroll it sideways -->
+<section class="overflow-clip">
+    <!-- the row: its children are the items, gap is fine -->
+    <ul class="js-loop-scroll flex gap-4 select-none">
+        <li class="w-[70%] shrink-0 sm:w-[24rem]">...</li>
+        <li class="w-[70%] shrink-0 sm:w-[24rem]">...</li>
+    </ul>
+</section>
+
+<!-- cards: links and buttons inside still click, a drag doesn't -->
+<ul class="js-loop-cards flex gap-4 select-none">
+    <li class="w-[70%] shrink-0 sm:w-[22rem]"><a href="..." draggable="false">...</a></li>
+</ul>
+
+<!-- marquee: whitespace-nowrap keeps each word on one line -->
+<ul class="js-loop-marquee flex select-none">
+    <li class="shrink-0 whitespace-nowrap">...</li>
+</ul>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_horizontalLoop.js
+    // Package
+        // pnpm add gsap
+
+// on scroll: still, the page scroll moves them, the first row left and the second right
+const _scrollRows = [...document.querySelectorAll('.js-loop-scroll')].map((target) => new _horizontalLoop({ target, paused: true, snap: false }));
+
+// cards: still until dragged, a throw stops with a card centered
+document.querySelectorAll('.js-loop-cards').forEach((target) => new _horizontalLoop({ target, paused: true, center: true }));
+
+// marquee: plays on its own, stops while the mouse is over it
+const _marquees = [...document.querySelectorAll('.js-loop-marquee')].map((target) => new _horizontalLoop({ target, speed: 0.8, pauseOnHover: true }));
+
+let _lastScroll = window.scrollY;
+_event.scroll(() => {
+    const _distance = window.scrollY - _lastScroll;
+    _lastScroll = window.scrollY;
+    if (!_distance) return;
+
+    _scrollRows.forEach((row, i) => row.move(i % 2 === 0 ? _distance : -_distance));
+    // the marquee turns when the page scrolls up
+    _marquees.forEach((marquee) => marquee.setDirection(_distance > 0 ? 'left' : 'right'));
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The items keep their own width, the script only moves them. Too few to fill the row get cloned, the clones are hidden from screen readers.',
+    code: pageScript,
+    note: 'Built on <a class="underline" href="https://gsap.com/docs/v3/HelperFunctions/helpers/seamlessLoop/" target="_blank" rel="noopener">GSAP\'s horizontal loop helper</a>. <code class="font-mono text-sm">move(px)</code> shifts a row, plus is left. Draggable and Inertia load only on pages that drag. Off screen, it pauses itself.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

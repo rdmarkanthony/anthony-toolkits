@@ -34,13 +34,15 @@ export class _autocomplete {
         this.onKeydown = (e) => this.keydown(e);
         this.onFocusout = (e) => !this.list.contains(e.relatedTarget) && e.relatedTarget !== this.input && this.close();
         // keep the focus on the input, so a click on a suggestion isn't lost to the blur
-        this.onPointerdown = (e) => e.preventDefault();
+        // mousedown too, iOS Safari still moves the focus after a prevented pointerdown
+        this.onPress = (e) => e.preventDefault();
 
         this.input.addEventListener("input", this.onInput);
         this.input.addEventListener("focus", this.onFocus);
         this.input.addEventListener("keydown", this.onKeydown);
         this.input.addEventListener("focusout", this.onFocusout);
-        this.list.addEventListener("pointerdown", this.onPointerdown);
+        this.list.addEventListener("pointerdown", this.onPress);
+        this.list.addEventListener("mousedown", this.onPress);
     }
 
     update() {
@@ -138,6 +140,7 @@ export class _autocomplete {
         this.input.removeEventListener("focus", this.onFocus);
         this.input.removeEventListener("keydown", this.onKeydown);
         this.input.removeEventListener("focusout", this.onFocusout);
-        this.list.removeEventListener("pointerdown", this.onPointerdown);
+        this.list.removeEventListener("pointerdown", this.onPress);
+        this.list.removeEventListener("mousedown", this.onPress);
     }
 }
