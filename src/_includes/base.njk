@@ -52,7 +52,7 @@
         {{ content | safe }}
     </div>
     {% getBundle "popup" %}
-    {{ footer({ site: site }) }}
+    {{ footer({ site: site, starterKit: starterKit }) }}
 
     <script src="/assets/js/script.js" type="module"></script>
     {% getBundle "footerscript" %}
