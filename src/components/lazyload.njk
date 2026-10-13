@@ -1,10 +1,10 @@
 ---
-title: Lazy load | Anthony Toolkits
+title: Lazyload | Anthony Toolkits
 ---
 
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
 
-{{ pageIntro({ label: '_lazyLoad', title: 'Lazy load', description: 'Images, backgrounds, videos and iframes load only when they near the screen, or all at once before you show them. Each one gets <code class="font-mono text-base">.is-loaded</code> when it\'s ready, so it can fade in.' }) }}
+{{ pageIntro({ label: '_lazyLoad', title: 'Lazyload', description: 'Images, backgrounds, videos and iframes load only when they near the screen, or all at once before you show them. Each one gets <code class="font-mono text-base">.is-loaded</code> when it\'s ready, so it can fade in.' }) }}
 
 {% set fade = 'opacity-0 transition-opacity duration-700 [&.is-loaded]:opacity-100' %}
 {% set button = 'rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700 disabled:opacity-50' %}

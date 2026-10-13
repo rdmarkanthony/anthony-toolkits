@@ -2,6 +2,7 @@
     "hosting": {
         "public": "public",
         "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-        "cleanUrls": true
+        "cleanUrls": true,
+        "redirects": [{ "source": "/components/lazy-load{,/**}", "destination": "/components/lazyload/", "type": 301 }]
     }
 }
