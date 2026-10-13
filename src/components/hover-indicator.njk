@@ -30,7 +30,7 @@ title: Hover indicator | Anthony Toolkits
             </div>
             <div class="mt-4">
                 {% for tab in group.tabs %}
-                <p id="hover-{{ group.id }}{{ loop.index }}" class="hidden max-w-2xl text-gray-600">{{ tab }}. Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero est illo eius laudantium laborum.</p>
+                <p id="hover-{{ group.id }}{{ loop.index }}" class="hidden max-w-2xl text-gray-600" data-scroll-parent="section">{{ tab }}. Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero est illo eius laudantium laborum.</p>
                 {% endfor %}
             </div>
         </div>

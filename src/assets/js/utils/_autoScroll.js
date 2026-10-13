@@ -6,15 +6,20 @@ gsap.registerPlugin(ScrollToPlugin);
 const _scrollTop = () => window.scrollY;
 const _offsetTop = (target) => target.getBoundingClientRect().top + _scrollTop();
 const _isVisible = (target) => (target.checkVisibility ? target.checkVisibility() : target.getClientRects().length > 0);
+// in a fixed popup, scrolling the page can't reach it
+const _inFixed = (target) => {
+    for (let _element = target; _element; _element = _element.parentElement) if (getComputedStyle(_element).position === "fixed") return true;
+    return false;
+};
 
 // usage: _autoScrollHash(options), before the other scripts read the hash, scrolls on load to #id or #id?query
-// only to a visible element, a hidden one (a lightbox's content, a closed accordion) is left to its own script
+// checked on load, so a tab opened by the hash counts; still hidden or in a popup is skipped
 export const _autoScrollHash = (props = {}) => {
     const _id = decodeURIComponent(location.hash.slice(1).split("?")[0]);
     const _target = _id && document.getElementById(_id);
-    if (!_target || !_isVisible(_target)) return;
+    if (!_target) return;
 
-    const _scroll = () => _isVisible(_target) && _autoScroll({ ...props, target: _target });
+    const _scroll = () => _isVisible(_target) && !_inFixed(_target) && _autoScroll({ ...props, target: _target });
 
     // after images and fonts, so the position is final
     if (document.readyState === "complete") _scroll();
