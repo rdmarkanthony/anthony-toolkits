@@ -34,6 +34,7 @@ import { _themeScroller } from "./utils/_themeScroller";
 import { _googleMap } from "./utils/_googleMap";
 import { _qrCode } from "./utils/_qrCode";
 import { _peekSlider } from "./utils/_peekSlider";
+import { _snapSlider } from "./utils/_snapSlider";
 
 // expose for inline scripts, each page sets up its own components
 Object.assign(window, {
@@ -74,6 +75,7 @@ Object.assign(window, {
     _googleMap,
     _qrCode,
     _peekSlider,
+    _snapSlider,
 });
 
 // modules run after the html is parsed, and before the inline page scripts,
