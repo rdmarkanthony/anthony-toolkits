@@ -140,7 +140,7 @@ title: Google Map | Anthony Toolkits
         // src/assets/js/utils/_googleMap.js
 
 // JSON themes from mapstyle.withgoogle.com or snazzymaps.com, null is Google's own look
-const themes = {
+const _themes = {
     light: [
         { elementType: 'geometry', stylers: [{ color: '#f3f4f6' }] },
         { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
@@ -168,23 +168,23 @@ const themes = {
     default: null,
 };
 
-const lastEvent = document.querySelector('.js-map-event');
+const _lastEvent = document.querySelector('.js-map-event');
 
 // places: the map and the accordion follow the same pick
-const places = document.querySelector('.js-places');
-const placeButtons = [...places.querySelectorAll('.js-place')];
-const accordion = new _accordion({ target: places.querySelector('.js-accordion'), openFirst: false });
-const mapTarget = places.querySelector('.js-google-map');
+const _places = document.querySelector('.js-places');
+const _placeButtons = [..._places.querySelectorAll('.js-place')];
+const _countries = new _accordion({ target: _places.querySelector('.js-accordion'), openFirst: false });
+const _mapTarget = _places.querySelector('.js-google-map');
 
-const mark = (id) => placeButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.id === id)));
-const reveal = (button) => button?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+const _mark = (id) => _placeButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.id === id)));
+const _reveal = (button) => button?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-const placeMap = new _googleMap({
-    target: mapTarget,
-    apiKey: mapTarget.dataset.apiKey,
-    styles: themes.light,
+const _placeMap = new _googleMap({
+    target: _mapTarget,
+    apiKey: _mapTarget.dataset.apiKey,
+    styles: _themes.light,
     selectZoom: 15,
-    markers: placeButtons.map(({ dataset }) => ({ id: dataset.id, title: dataset.title, lat: Number(dataset.lat), lng: Number(dataset.lng) })),
+    markers: _placeButtons.map(({ dataset }) => ({ id: dataset.id, title: dataset.title, lat: Number(dataset.lat), lng: Number(dataset.lng) })),
     // a star badge, warm and pulsing when picked
     render: () => `
         <span class="relative flex flex-col items-center drop-shadow-md">
@@ -196,52 +196,52 @@ const placeMap = new _googleMap({
         </span>`,
     events: {
         select: (instance) => {
-            const button = placeButtons.find((item) => item.dataset.id === instance.item.id);
-            const set = button.closest('.js-accordion-set');
-            mark(instance.item.id);
+            const _button = _placeButtons.find((item) => item.dataset.id === instance.item.id);
+            const _set = _button.closest('.js-accordion-set');
+            _mark(instance.item.id);
 
-            // a closed country scrolls to it once open, see accordion.on('open')
-            if (accordion.isOpen(set)) reveal(button);
-            else accordion.open(set);
-            lastEvent.textContent = `select, ${instance.item.title}`;
+            // a closed country scrolls to it once open, see _countries.on('open')
+            if (_countries.isOpen(_set)) _reveal(_button);
+            else _countries.open(_set);
+            _lastEvent.textContent = `select, ${instance.item.title}`;
         },
         deselect: (instance) => {
-            mark(null);
+            _mark(null);
             instance.reset();
-            lastEvent.textContent = 'deselect';
+            _lastEvent.textContent = 'deselect';
         },
     },
 });
 
-accordion.on('open', (instance) => reveal(instance.item.querySelector('.js-place[aria-pressed="true"]')));
-placeButtons.forEach((button) => button.addEventListener('click', () => placeMap.select(button.dataset.id)));
+_countries.on('open', (instance) => _reveal(instance.item.querySelector('.js-place[aria-pressed="true"]')));
+_placeButtons.forEach((button) => button.addEventListener('click', () => _placeMap.select(button.dataset.id)));
 
 // opening a country picks its first place, closing it lets go
-places.querySelectorAll('.js-accordion-set-title').forEach((title) => {
+_places.querySelectorAll('.js-accordion-set-title').forEach((title) => {
     title.addEventListener('click', () => {
-        const set = title.closest('.js-accordion-set');
-        const picked = set.querySelector('.js-place[aria-pressed="true"]');
+        const _set = title.closest('.js-accordion-set');
+        const _picked = _set.querySelector('.js-place[aria-pressed="true"]');
 
-        if (!accordion.isOpen(set)) return picked && placeMap.deselect();
-        if (!picked) placeMap.select(set.querySelector('.js-place').dataset.id);
+        if (!_countries.isOpen(_set)) return _picked && _placeMap.deselect();
+        if (!_picked) _placeMap.select(_set.querySelector('.js-place').dataset.id);
     });
 });
 
-const themeButtons = [...document.querySelectorAll('[data-map-theme]')];
-themeButtons.forEach((button) => {
+const _themeButtons = [...document.querySelectorAll('[data-map-theme]')];
+_themeButtons.forEach((button) => {
     button.addEventListener('click', () => {
-        placeMap.setStyles(themes[button.dataset.mapTheme]);
-        themeButtons.forEach((each) => each.setAttribute('aria-pressed', String(each === button)));
+        _placeMap.setStyles(_themes[button.dataset.mapTheme]);
+        _themeButtons.forEach((each) => each.setAttribute('aria-pressed', String(each === button)));
     });
 });
 
 // contact: one pin, its popup open
-const contactTarget = document.querySelector('.js-contact-map');
+const _contactTarget = document.querySelector('.js-contact-map');
 
 new _googleMap({
-    target: contactTarget,
-    apiKey: contactTarget.dataset.apiKey,
-    styles: themes.dark,
+    target: _contactTarget,
+    apiKey: _contactTarget.dataset.apiKey,
+    styles: _themes.dark,
     zoom: 15,
     markers: [{ id: 'times-square', title: 'Times Square', lat: 40.758, lng: -73.9855, popup: '<p class="font-semibold">Times Square</p><p class="text-gray-600">Broadway and 7th Avenue, New York, NY 10036</p>' }],
     events: {

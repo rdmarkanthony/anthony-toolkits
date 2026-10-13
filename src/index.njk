@@ -68,33 +68,33 @@ title: Anthony Toolkits
     _filter.init();
 
     // ?q= comes from the header search, and stays in the url for sharing and the back button
-    const form = document.querySelector("[data-home-search]");
-    const input = form.querySelector("[data-filter-input]");
-    const query = new URLSearchParams(location.search).get("q");
+    const _form = document.querySelector("[data-home-search]");
+    const _input = _form.querySelector("[data-filter-input]");
+    const _query = new URLSearchParams(location.search).get("q");
 
-    if (query) {
-        input.value = query;
-        input.dispatchEvent(new Event("input"));
+    if (_query) {
+        _input.value = _query;
+        _input.dispatchEvent(new Event("input"));
     }
 
-    input.addEventListener("input", () => {
-        const url = new URL(location.href);
-        const value = input.value.trim();
-        value ? url.searchParams.set("q", value) : url.searchParams.delete("q");
-        history.replaceState(history.state, "", url);
+    _input.addEventListener("input", () => {
+        const _url = new URL(location.href);
+        const _value = _input.value.trim();
+        _value ? _url.searchParams.set("q", _value) : _url.searchParams.delete("q");
+        history.replaceState(history.state, "", _url);
     });
 
     // "/" jumps to the search, unless typing somewhere else
     document.addEventListener("keydown", (e) => {
         if (e.key !== "/" || e.metaKey || e.ctrlKey || e.target.closest("input, textarea, select, [contenteditable]")) return;
         e.preventDefault();
-        input.focus();
+        _input.focus();
     });
 
     // the results are already on the page, Enter only closes the phone keyboard
-    form.addEventListener("submit", (e) => {
+    _form.addEventListener("submit", (e) => {
         e.preventDefault();
-        input.blur();
+        _input.blur();
     });
 </script>
 {% endfooterscript %}

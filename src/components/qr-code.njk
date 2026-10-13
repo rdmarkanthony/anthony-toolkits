@@ -179,11 +179,11 @@ _linkInput.addEventListener('input', () => {
 
 // wifi: no password field when the network is open
 const _wifiForm = document.querySelector('.js-qr-wifi');
-const { ssid, password, security, hidden } = _wifiForm.elements;
+const { ssid: _ssid, password: _password, security: _security, hidden: _hidden } = _wifiForm.elements;
 
-security.addEventListener('change', () => (password.disabled = security.value === 'nopass'));
+_security.addEventListener('change', () => (_password.disabled = _security.value === 'nopass'));
 
-_setup(_wifiForm, () => _qrCode.wifi({ ssid: ssid.value, password: password.value, security: security.value, hidden: hidden.checked }), 'qr-wifi');
+_setup(_wifiForm, () => _qrCode.wifi({ ssid: _ssid.value, password: _password.value, security: _security.value, hidden: _hidden.checked }), 'qr-wifi');
 {% endraw %}{% endset %}
 
 {{ scriptUsage({
