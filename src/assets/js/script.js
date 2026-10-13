@@ -17,6 +17,7 @@ import { _rollingNumber } from "./utils/_rollingNumber";
 import { _typing } from "./utils/_typing";
 import { _countdownTimer } from "./utils/_countdownTimer";
 import { _tabs } from "./utils/_tabs";
+import { _hoverIndicator } from "./utils/_hoverIndicator";
 import { _accordion } from "./utils/_accordion";
 import { _groupHeight } from "./utils/_groupHeight";
 import { _lightbox } from "./utils/_lightbox";
@@ -51,6 +52,7 @@ Object.assign(window, {
     _typing,
     _countdownTimer,
     _tabs,
+    _hoverIndicator,
     _accordion,
     _groupHeight,
     _lightbox,

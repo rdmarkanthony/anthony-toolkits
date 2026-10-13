@@ -1,0 +1,253 @@
+---
+title: Hover indicator | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_hoverIndicator', title: 'Hover indicator', description: 'A background, line or knob that slides to the hovered or selected item. For tabs, menus, tiles, radios and switches.' }) }}
+
+{# place from --x --y --w --h, each demo adds its look #}
+{% set box = 'js-hover-indicator absolute top-0 left-0 -z-10 h-(--h) w-(--w) translate-x-(--x) translate-y-(--y)' %}
+{% set line = 'js-hover-indicator absolute -bottom-px left-0 h-0.5 w-(--w) translate-x-(--x) bg-gray-950 duration-300 ease-out' %}
+{% set menu = ['Home', 'About', 'Services', 'Work', 'Contact'] %}
+
+{# demo: tabs #}
+{% set tabGroups = [
+    { id: 'two', text: '2 tabs, a pill', tabs: ['Sign in', 'Sign up'], class: 'grid w-full max-w-xs grid-cols-2 text-center' },
+    { id: 'three', text: '3 tabs', tabs: ['Tab 1', 'Tab 2', 'Tab 3'], class: 'flex w-fit flex-wrap gap-1' }
+] %}
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-10">
+        <h2 class="text-3xl font-bold tracking-tight">Tabs</h2>
+        {% for group in tabGroups %}
+        <div>
+            <p class="mb-3 text-gray-600">{{ group.text }}</p>
+            <div class="js-hover-tabs relative isolate {{ group.class }} rounded-full bg-gray-100 p-1">
+                <span class="{{ box }} rounded-full bg-gray-950 duration-300 ease-out"></span>
+                {% for tab in group.tabs %}
+                <a class="{{ 'js-tabs-active ' if loop.first }}rounded-full px-4 py-2 transition-colors duration-300 data-indicator:text-white" href="#hover-{{ group.id }}{{ loop.index }}">{{ tab }}</a>
+                {% endfor %}
+            </div>
+            <div class="mt-4">
+                {% for tab in group.tabs %}
+                <p id="hover-{{ group.id }}{{ loop.index }}" class="hidden max-w-2xl text-gray-600" data-scroll-parent="section">{{ tab }}. Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero est illo eius laudantium laborum.</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{# demo: menus #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-10">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <h2 class="text-3xl font-bold tracking-tight">Menu</h2>
+            <p class="font-mono text-sm text-gray-500">last event: <span class="js-hover-event">-</span></p>
+        </div>
+        <div>
+            <p class="mb-3 text-gray-600">Background, About is selected. Click a link to select it.</p>
+            <nav class="js-hover-menu relative isolate w-fit" aria-label="Background menu">
+                <span class="{{ box }} rounded-lg bg-white shadow-sm duration-300 ease-out"></span>
+                <ul class="flex flex-wrap">
+                    {% for item in menu %}
+                    <li><a class="block px-4 py-2 aria-[current=page]:font-semibold" href="#"{% if item == 'About' %} aria-current="page"{% endif %}>{{ item }}</a></li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+        <div>
+            <p class="mb-3 text-gray-600">Line, nothing selected, so it fades out.</p>
+            <nav class="js-hover-menu relative w-fit border-b border-gray-200" aria-label="Line menu">
+                <span class="{{ line }}"></span>
+                <ul class="flex flex-wrap gap-6">
+                    {% for item in menu %}
+                    <li><a class="block py-3 aria-[current=page]:font-semibold" href="#">{{ item }}</a></li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+{# demo: tiles #}
+{% set tiles = [
+    { title: 'Strategy', text: 'Research and planning, so every page has a goal.' },
+    { title: 'Design', text: 'Layouts, type and motion that fit the brand.' },
+    { title: 'Development', text: 'Fast, accessible builds that are easy to update.' },
+    { title: 'Support', text: 'Fixes, updates and new pages after launch.' }
+] %}
+{% set reveal = 'grid-rows-[1fr] opacity-80 [@media(hover:hover)]:grid-rows-[0fr] [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-data-indicator:grid-rows-[1fr] [@media(hover:hover)]:group-data-indicator:opacity-80' %}
+<section id="tiles" class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-10">
+        <h2 class="text-3xl font-bold tracking-tight">Tiles</h2>
+        <div class="js-hover-tiles relative isolate grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <span class="{{ box }} rounded-3xl bg-gray-950 duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"></span>
+            {% for tile in tiles %}
+            <a class="group flex min-h-56 flex-col justify-between gap-10 rounded-3xl border border-gray-200 p-6 transition-colors duration-300 data-indicator:border-transparent data-indicator:text-white sm:aspect-4/5" href="#tiles">
+                <span class="flex items-center justify-between font-mono text-sm opacity-60">
+                    0{{ loop.index }}
+                    <svg class="size-5 -rotate-45 transition-transform duration-500 group-data-indicator:rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                </span>
+                <span>
+                    <span class="block text-2xl font-semibold tracking-tight">{{ tile.title }}</span>
+                    <span class="grid transition-[grid-template-rows,opacity] duration-500 ease-out {{ reveal }}">
+                        <span class="overflow-hidden"><span class="block pt-2">{{ tile.text }}</span></span>
+                    </span>
+                </span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# demo: radio #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-10">
+        <h2 class="text-3xl font-bold tracking-tight">Radio</h2>
+        <div>
+            <p class="mb-3 text-gray-600">Pick one, each choice is a real radio with the same name</p>
+            <div class="js-hover-radio relative isolate grid w-full max-w-sm grid-cols-3 rounded-full bg-gray-100 p-1 text-center has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-gray-950" role="radiogroup" aria-label="Size">
+                <span class="{{ box }} rounded-full bg-gray-950 duration-300 ease-out"></span>
+                {% for item in ['Small', 'Medium', 'Large'] %}
+                <label class="cursor-pointer rounded-full py-2 transition-colors duration-300 data-indicator:text-white">
+                    <input class="sr-only" type="radio" name="size" value="{{ item | lower }}"{% if loop.index == 2 %} checked{% endif %} />{{ item }}
+                </label>
+                {% endfor %}
+            </div>
+            <p class="mt-4 font-mono text-sm text-gray-500">the radio: <span class="js-radio-value">-</span></p>
+        </div>
+    </div>
+</section>
+
+{# demo: checkbox switches #}
+{% set rows = [
+    { name: 'email', title: 'Email', text: 'News and product updates.', checked: true },
+    { name: 'sms', title: 'SMS', text: 'Reminders before your booking.' },
+    { name: 'push', title: 'Push', text: 'Replies and mentions.' }
+] %}
+{% set check = '<svg class="size-3.5 text-emerald-500 opacity-0 transition-opacity duration-300 [grid-area:1/1] group-has-checked:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7" /></svg>' %}
+{% set cross = '<svg class="size-3 text-gray-400 transition-opacity duration-300 [grid-area:1/1] group-has-checked:opacity-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>' %}
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-10">
+        <h2 class="text-3xl font-bold tracking-tight">Checkbox</h2>
+        <div>
+            <div class="flex max-w-md flex-col divide-y divide-gray-200 rounded-2xl border border-gray-200 bg-white">
+                {% for row in rows %}
+                <label class="group flex cursor-pointer items-center justify-between gap-6 px-5 py-4">
+                    <span>
+                        <span class="block font-medium">{{ row.title }}</span>
+                        <span class="block text-sm text-gray-500">{{ row.text }}</span>
+                    </span>
+                    <span class="js-hover-switch relative isolate flex h-8 w-14 shrink-0 justify-between rounded-full bg-gray-200 p-1 transition-colors duration-300 group-hover:bg-gray-300 group-has-checked:bg-emerald-500 group-has-focus-visible:outline-2 group-has-focus-visible:outline-offset-2 group-has-focus-visible:outline-gray-950">
+                        <input class="sr-only" type="checkbox" role="switch" name="{{ row.name }}"{% if row.checked %} checked{% endif %} />
+                        <span class="{{ box }} grid place-items-center rounded-full bg-white shadow-md duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]">{{ check | safe }}{{ cross | safe }}</span>
+                        <span class="js-switch-off size-6"></span>
+                        <span class="js-switch-on size-6"></span>
+                    </span>
+                </label>
+                {% endfor %}
+            </div>
+            <p class="mt-4 font-mono text-sm text-gray-500">the checkboxes: <span class="js-switch-values">-</span></p>
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- isolate keeps the -z-10 indicator inside -->
+<nav class="js-hover-menu relative isolate">
+    <span class="js-hover-indicator absolute top-0 left-0 -z-10 h-(--h) w-(--w) translate-x-(--x) translate-y-(--y) bg-gray-100 duration-300"></span>
+    <a href="/" aria-current="page">Home</a>
+    <!-- the item it's on gets [data-indicator] -->
+    <a class="data-indicator:text-gray-950" href="/about">About</a>
+</nav>
+
+<!-- a switch: one checkbox, the knob goes to off or on -->
+<label class="group">
+    Email
+    <span class="js-hover-switch relative isolate flex w-14 justify-between rounded-full bg-gray-200 p-1 group-has-checked:bg-emerald-500">
+        <input class="sr-only" type="checkbox" role="switch" name="email" />
+        <span class="js-hover-indicator absolute top-0 left-0 -z-10 h-(--h) w-(--w) translate-x-(--x) translate-y-(--y) rounded-full bg-white duration-300"></span>
+        <span class="js-switch-off size-6"></span>
+        <span class="js-switch-on size-6"></span>
+    </span>
+</label>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_hoverIndicator.js
+        // src/assets/js/utils/_tabs.js, for the tabs
+
+const _log = document.querySelector('.js-hover-event');
+
+// tabs: the selected tab only
+document.querySelectorAll('.js-hover-tabs').forEach((target) => {
+    new _tabs({ target });
+    new _hoverIndicator({ target, active: '.js-tabs-active', hover: false });
+});
+
+// menus: hover, then back to the selected link
+document.querySelectorAll('.js-hover-menu').forEach((target) => {
+    new _hoverIndicator({
+        target,
+        // defaults: items: 'a', active: null, hover: true
+        active: '[aria-current="page"]',
+        events: {
+            // instance.item is the item it's on, or null
+            change: (instance) => (_log.textContent = `change, ${instance.item?.textContent.trim() ?? 'none'}`),
+        },
+    });
+
+    // demo only: a click selects the link
+    target.addEventListener('click', (e) => {
+        const _link = e.target.closest('a');
+        if (!_link) return;
+
+        e.preventDefault();
+        target.querySelector('[aria-current]')?.removeAttribute('aria-current');
+        _link.setAttribute('aria-current', 'page');
+    });
+});
+
+// tiles: hover only
+new _hoverIndicator({ target: document.querySelector('.js-hover-tiles') });
+
+// radio: follows the checked one
+const _radio = document.querySelector('.js-hover-radio');
+const _radioValue = document.querySelector('.js-radio-value');
+const _showRadio = () => (_radioValue.textContent = `size: ${_radio.querySelector(':checked').value}`);
+
+new _hoverIndicator({ target: _radio, items: 'label', active: ':has(:checked)', hover: false });
+_radio.addEventListener('change', _showRadio);
+_showRadio();
+
+// switches: the knob follows the checkbox
+const _values = document.querySelector('.js-switch-values');
+const _showValues = () => (_values.textContent = [...document.querySelectorAll('.js-hover-switch input')].map((input) => `${input.name}: ${input.checked}`).join(', '));
+
+document.querySelectorAll('.js-hover-switch').forEach((target) => {
+    new _hoverIndicator({
+        target,
+        items: '.js-switch-off, .js-switch-on',
+        active: 'input:not(:checked) ~ .js-switch-off, input:checked ~ .js-switch-on',
+        hover: false,
+    });
+
+    target.querySelector('input').addEventListener('change', _showValues);
+});
+_showValues();
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _hoverIndicator({ target, items, active, hover, events })</code>, items defaults to <code class="font-mono text-sm">a</code>. It goes to the hovered or keyboard-focused item, else the <code class="font-mono text-sm">active</code> one, else fades out. The active item can change from a class, <code class="font-mono text-sm">aria-current</code>, <code class="font-mono text-sm">aria-selected</code> or a checked input. Methods: <code class="font-mono text-sm">update()</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">change</code>. Touch has no hover, reduced motion fades instead of sliding.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

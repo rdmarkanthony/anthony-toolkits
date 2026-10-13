@@ -19,6 +19,7 @@ export default [
             { label: "Group height", url: "/components/group-height/", description: "Equalize heights across grouped elements.", utils: "_groupHeight", ready: true },
             { label: "Tabs", url: "/components/tabs/", description: "Links that switch between content panels, nestable.", utils: "_tabs", ready: true },
             { label: "Accordion", url: "/components/accordion/", description: "Titles that open and close their content in place, for FAQs.", utils: "_accordion", ready: true },
+            { label: "Hover indicator", url: "/components/hover-indicator/", description: "A background or line that slides to the hovered or selected item.", utils: "_hoverIndicator", ready: true },
             { label: "Sliders", url: "/components/sliders/", description: "Carousels, including the pixel slider." },
         ],
     },

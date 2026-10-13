@@ -3,13 +3,14 @@ title: Tabs | Anthony Toolkits
 ---
 
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+{% from "components/atoms/icon.njk" import external %}
 
 {{ pageIntro({ label: '_tabs', title: 'Tabs', description: 'Links that switch between content panels. Each link points to its panel by id, and tab groups can be nested.' }) }}
 
-{% set tabLink = 'block rounded border border-gray-300 px-3 py-2 transition-colors duration-200 hover:bg-gray-100 [&.js-tabs-active]:border-gray-950 [&.js-tabs-active]:bg-gray-950 [&.js-tabs-active]:text-white' %}
+{% set tabLink = 'flex items-center gap-1.5 rounded border border-gray-300 px-3 py-2 transition-colors duration-200 hover:bg-gray-100 [&.js-tabs-active]:border-gray-950 [&.js-tabs-active]:bg-gray-950 [&.js-tabs-active]:text-white' %}
 {% set lorem = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero est illo eius laudantium laborum earum culpa corporis vel deleniti, ipsam mollitia quo unde architecto velit.' %}
 
-{# demo: the first tab is active #}
+{# demo: the first tab is active, the last one is a normal link #}
 <section class="px-4 py-16">
     <div class="mx-auto flex max-w-295 flex-col gap-6">
         <h2 class="text-3xl font-bold tracking-tight">Default</h2>
@@ -17,10 +18,11 @@ title: Tabs | Anthony Toolkits
             {% for i in range(1, 5) %}
             <li><a class="{{ tabLink }}" href="#tab{{ i }}">Tab {{ i }}</a></li>
             {% endfor %}
+            <li><a class="{{ tabLink }}" href="{{ site.github }}" target="_blank" rel="noopener">Link{{ external() }}</a></li>
         </ul>
         <div>
             {% for i in range(1, 5) %}
-            <div id="tab{{ i }}" class="hidden">
+            <div id="tab{{ i }}" class="hidden" data-scroll-parent="section">
                 <h3 class="mb-2 text-2xl font-semibold">Tab {{ i }}</h3>
                 <p class="max-w-2xl text-gray-600">{{ lorem }}</p>
             </div>
@@ -40,7 +42,7 @@ title: Tabs | Anthony Toolkits
         </ul>
         <div>
             {% for i in range(5, 9) %}
-            <div id="tab{{ i }}" class="hidden">
+            <div id="tab{{ i }}" class="hidden" data-scroll-parent="section">
                 <h3 class="mb-2 text-2xl font-semibold">Tab {{ i }}</h3>
                 <p class="max-w-2xl text-gray-600">{{ lorem }}</p>
                 {% if i == 7 %}
@@ -52,7 +54,7 @@ title: Tabs | Anthony Toolkits
                     </ul>
                     <div>
                         {% for j in range(9, 13) %}
-                        <div id="tab{{ j }}" class="hidden">
+                        <div id="tab{{ j }}" class="hidden" data-scroll-parent="section">
                             <h4 class="mb-2 text-xl font-semibold">Tab {{ j }}</h4>
                             <p class="max-w-2xl text-gray-600">{{ lorem }}</p>
                         </div>
@@ -71,9 +73,12 @@ title: Tabs | Anthony Toolkits
     <li><a class="[&.js-tabs-active]:bg-gray-950 [&.js-tabs-active]:text-white" href="#tab1">Tab 1</a></li>
     <!-- add .js-tabs-active to start on another tab -->
     <li><a class="js-tabs-active [&.js-tabs-active]:bg-gray-950 [&.js-tabs-active]:text-white" href="#tab2">Tab 2</a></li>
+    <!-- not a #id, so it stays a normal link -->
+    <li><a href="/contact">Contact</a></li>
 </ul>
-<div id="tab1" class="hidden">...</div>
-<div id="tab2" class="hidden">...</div>
+<!-- /page/#tab2 opens Tab 2, data-scroll-parent scrolls to the whole block -->
+<div id="tab1" class="hidden" data-scroll-parent="section">...</div>
+<div id="tab2" class="hidden" data-scroll-parent="section">...</div>
 {% endraw %}{% endset %}
 
 {% set pageScript %}{% raw %}
@@ -90,7 +95,7 @@ document.querySelectorAll('.js-tabs').forEach((target) => {
 
 {{ scriptUsage({
     markup: markup,
-    markupNote: 'Each link\'s <code class="font-mono text-sm">href</code> is the id of its panel. The active link gets <code class="font-mono text-sm">.js-tabs-active</code>, the other panels get <code class="font-mono text-sm">.hidden</code>.',
+    markupNote: 'Each link\'s <code class="font-mono text-sm">href</code> is the id of its panel. The active link gets <code class="font-mono text-sm">.js-tabs-active</code>, the other panels get <code class="font-mono text-sm">.hidden</code>. Links without a <code class="font-mono text-sm">#id</code>, e.g. <code class="font-mono text-sm">/contact</code>, stay normal links. A url hash to a panel, e.g. <code class="font-mono text-sm">/page/#tab2</code>, opens that tab.',
     code: pageScript
 }) }}
 

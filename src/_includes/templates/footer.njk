@@ -1,15 +1,23 @@
 {%- from "components/atoms/icon.njk" import angle, external -%}
 {#
-    site footer, with the big wordmark
+    site footer, the header links in a row, then the big wordmark with the copyright on its right
 #}
 {% macro footer(props) %}
-<footer class="footer-content overflow-hidden border-t border-kit-line px-4 pt-16 pb-8 lg:pb-12">
-    <div class="mx-auto flex max-w-295 flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
-        <p class="font-display text-[22vw] leading-[0.85] font-semibold tracking-[-0.05em] whitespace-nowrap lg:text-[13rem]" aria-hidden="true">{{ props.site.shortName }}<span class="text-kit-accent">.</span></p>
-        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-kit-muted lg:flex-col lg:items-end lg:gap-3">
-            <a class="group inline-flex items-center gap-1 transition-colors duration-300 hover:text-kit-text lg:order-first" href="#" data-auto-scroll>Back to top {{ angle('up', 'duration-500 ease-out-expo group-hover:-translate-y-0.5') }}</a>
-            <a class="group inline-flex items-center gap-1 transition-colors duration-300 hover:text-kit-text" href="{{ props.site.github }}" target="_blank" rel="noopener">GitHub{{ external('duration-500 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}</a>
-            <p class="w-full lg:w-auto">&copy; {{ props.site.year }} {{ props.site.name }}</p>
+<footer class="footer-content overflow-hidden border-t border-kit-line px-4 pt-8 pb-8 lg:pb-12">
+    <div class="mx-auto max-w-295">
+        <div class="mb-8 flex items-center justify-between gap-4 lg:mb-10">
+            <nav aria-label="Footer">
+                <ul class="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-medium md:gap-x-6 md:text-base">
+                    <li><a class="transition-colors duration-300 hover:text-kit-accent" href="/#components" data-auto-scroll>Components</a></li>
+                    {% if props.starterKit.items.length %}<li><a class="transition-colors duration-300 hover:text-kit-accent" href="#starter-kit" data-starter-open>Starter kit</a></li>{% endif %}
+                    <li><a class="group inline-flex items-center gap-1.5 transition-colors duration-300 hover:text-kit-accent" href="{{ props.site.github }}" target="_blank" rel="noopener">GitHub{{ external('duration-500 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}</a></li>
+                </ul>
+            </nav>
+            <a class="group flex size-11 shrink-0 items-center justify-center rounded-full border border-kit-line transition-colors duration-300 hover:border-kit-accent hover:text-kit-accent" href="#" aria-label="Back to top" data-auto-scroll>{{ angle('up', 'duration-500 ease-out-expo group-hover:-translate-y-0.5') }}</a>
+        </div>
+        <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
+            <p class="font-display text-[22vw] leading-[0.85] font-semibold tracking-[-0.05em] whitespace-nowrap lg:text-[13rem]" aria-hidden="true">{{ props.site.shortName }}<span class="text-kit-accent">.</span></p>
+            <p class="ml-auto text-sm text-kit-muted">&copy; {{ props.site.year }} {{ props.site.name }}</p>
         </div>
     </div>
 </footer>
