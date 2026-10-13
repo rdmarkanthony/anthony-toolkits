@@ -4,6 +4,8 @@
 // play(), pause(), next(), previous(), toIndex(i), move(px), setDirection("left" | "right"), destroy(); pauses itself off screen
 import { gsap } from "gsap";
 
+const _wrapProgress = gsap.utils.wrap(0, 1);
+
 // draggable and inertia, loaded on first use so other pages don't download them
 const _importDraggable = () => Promise.all([import("gsap/Draggable"), import("gsap/InertiaPlugin")]);
 
@@ -26,9 +28,12 @@ export class _horizontalLoop {
         this.widths = [];
         this.totalWidth = 0;
         this.index = 0;
+        this.changedIndex = -1;
         this.dirty = false;
         this.draggedAt = 0;
         this.draggable = null;
+        this.proxy = null;
+        this.frame = 0;
 
         if (!this.target) {
             this.ready = Promise.resolve(this);
@@ -142,9 +147,8 @@ export class _horizontalLoop {
 
         // each item's stop: left edge where the first one starts, or centered in the row
         const _inset = _items[0].getBoundingClientRect().left - this.target.getBoundingClientRect().left;
-        const _wrap = gsap.utils.wrap(0, _tl.duration());
-        this.times = _items.map((item, i) => _wrap(_tl.labels[`item${i}`] + (this.center ? (this.widths[i] / 2 - this.rowWidth / 2 + _inset) / this.speed : 0)));
-        this.timeWrap = _wrap;
+        this.timeWrap = gsap.utils.wrap(0, _tl.duration());
+        this.times = _items.map((item, i) => this.timeWrap(_tl.labels[`item${i}`] + (this.center ? (this.widths[i] / 2 - this.rowWidth / 2 + _inset) / this.speed : 0)));
 
         _tl.progress(1, true).progress(0, true); // pre-render
     }
@@ -169,13 +173,12 @@ export class _horizontalLoop {
 
     // the item whose stop is closest to the time
     closest(time = this.timeline.time()) {
-        const _time = time;
         const _duration = this.timeline.duration();
         let _index = 0;
         let _best = Infinity;
 
-        this.times.forEach((time, i) => {
-            let _distance = Math.abs(time - _time);
+        this.times.forEach((stop, i) => {
+            let _distance = Math.abs(stop - time);
             if (_distance > _duration / 2) _distance = _duration - _distance;
             if (_distance < _best) {
                 _best = _distance;
@@ -187,11 +190,13 @@ export class _horizontalLoop {
     }
 
     current() {
-        if (this.dirty) {
-            this.index = this.closest();
-            this.dirty = false;
-        }
+        if (this.dirty) this.sync();
         return this.index;
+    }
+
+    sync() {
+        this.index = this.closest();
+        this.dirty = false;
     }
 
     changed() {
@@ -279,8 +284,7 @@ export class _horizontalLoop {
     move(px) {
         if (!this.timeline || this.holds.has("drag")) return;
         gsap.killTweensOf(this.timeline);
-        this.stopThrow();
-        this.timeline.progress(gsap.utils.wrap(0, 1, this.timeline.progress() + px / this.totalWidth));
+        this.timeline.progress(_wrapProgress(this.timeline.progress() + px / this.totalWidth));
         this.dirty = true;
     }
 
@@ -291,7 +295,6 @@ export class _horizontalLoop {
         gsap.registerPlugin(Draggable, InertiaPlugin);
 
         const _tl = this.timeline;
-        const _wrap = gsap.utils.wrap(0, 1);
         let _startProgress = 0;
         let _ratio = 0;
         let _lastStop = 0;
@@ -303,11 +306,7 @@ export class _horizontalLoop {
         const _xAt = (progress) => this.draggable.startX + (_startProgress - progress) / _ratio;
 
         this.proxy = document.createElement("div");
-        const _align = () => _tl.progress(_wrap(_progressAt(this.draggable.x)));
-        const _sync = () => {
-            this.index = this.closest();
-            this.dirty = false;
-        };
+        const _align = () => _tl.progress(_wrapProgress(_progressAt(this.draggable.x)));
 
         [this.draggable] = Draggable.create(this.proxy, {
             trigger: this.target,
@@ -355,14 +354,14 @@ export class _horizontalLoop {
                   }
                 : undefined,
             onRelease: () => {
-                _sync();
+                this.sync();
                 _throwing = this.draggable.isThrowing;
                 if (_throwing) this.dirty = true;
                 else this.hold("drag", false);
             },
             onThrowComplete: () => {
                 _throwing = false;
-                _sync();
+                this.sync();
                 this.hold("drag", false);
             },
         });
@@ -381,6 +380,7 @@ export class _horizontalLoop {
 
         this.draggable?.kill();
         if (this.proxy) gsap.killTweensOf(this.proxy);
+        this.proxy = null;
         gsap.killTweensOf(this.timeline);
         this.timeline.kill();
         this.timeline = null;

@@ -64,11 +64,13 @@ export class _snapSlider {
         return [...new Set([..._track.children].map((item) => Math.min(item.offsetLeft - _first, _max)))];
     }
 
-    get index() {
-        const _left = this.el.track.scrollLeft;
-        const _positions = this.positions();
+    // the position nearest to a scroll left
+    nearest(left, positions = this.positions()) {
+        return positions.reduce((nearest, position, i) => (Math.abs(position - left) < Math.abs(positions[nearest] - left) ? i : nearest), 0);
+    }
 
-        return _positions.reduce((nearest, position, i) => (Math.abs(position - _left) < Math.abs(_positions[nearest] - _left) ? i : nearest), 0);
+    get index() {
+        return this.nearest(this.el.track.scrollLeft);
     }
 
     update() {
@@ -179,7 +181,7 @@ export class _snapSlider {
         const _speed = performance.now() - this.drag.time > 80 ? 0 : this.drag.speed;
         const _throw = _track.scrollLeft + Math.max(-_card, Math.min(_speed * 150, _card));
         const _positions = this.positions();
-        this.glide(_positions.reduce((nearest, position) => (Math.abs(position - _throw) < Math.abs(nearest - _throw) ? position : nearest), _positions[0]));
+        this.glide(_positions[this.nearest(_throw, _positions)]);
 
         this.drag = null;
     }
