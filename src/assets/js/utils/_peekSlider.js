@@ -1,6 +1,11 @@
 // carousel of 1 to 3 cards, the next one peeks at the edge, Swiper loads only on pages that use it
 // usage: new _peekSlider({ target }), target holds a .swiper, Swiper options and ease (css easing) replace the defaults
-// drag, touch and trackpad swipes move it, page scroll stays vertical; css: swiper/css
+// drag, touch and trackpad swipes move it, page scroll stays vertical
+// css, in your main css file so Tailwind classes win: @import "swiper/css" layer(components);
+
+// swiper, loaded on first use so other pages don't download it
+const _importSwiper = () => Promise.all([import("swiper"), import("swiper/modules")]);
+
 export class _peekSlider {
     constructor({ target, ease = "cubic-bezier(0.25, 1, 0.5, 1)", ...options }) {
         this.target = target ?? null;
@@ -17,7 +22,7 @@ export class _peekSlider {
     }
 
     async init() {
-        const [{ default: Swiper }, { A11y, Keyboard, Mousewheel }] = await Promise.all([import("swiper"), import("swiper/modules")]);
+        const [{ default: Swiper }, { A11y, Keyboard, Mousewheel }] = await _importSwiper();
         if (!this.target) return null; // destroyed while loading
 
         this.swiper = new Swiper(this.target.querySelector(".swiper"), {

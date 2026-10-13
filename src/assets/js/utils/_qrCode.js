@@ -2,6 +2,10 @@
 // usage: const qr = await _qrCode({ target, text: "https://example.com" }), call again with new text to redraw
 // qr.download("png" | "svg", "file-name") saves it, qr.svg is the markup, qr.text the text
 // colors are hex, "#000000" or "#00000000" for transparent; _qrCode.wifi({ ssid, password }) makes the text for a wifi QR
+
+// qrcode, loaded on first use so other pages don't download it
+const _importQRCode = () => import("qrcode");
+
 const _defaults = {
     margin: 2,
     color: { dark: "#000000", light: "#ffffff" },
@@ -18,7 +22,7 @@ const _save = (url, name) => {
 };
 
 export const _qrCode = async ({ target, text, ...props }) => {
-    const { default: QRCode } = await import("qrcode");
+    const { default: QRCode } = await _importQRCode();
     const { size, ...options } = { ..._defaults, ...props };
 
     const svg = await QRCode.toString(text, { ...options, type: "svg" });

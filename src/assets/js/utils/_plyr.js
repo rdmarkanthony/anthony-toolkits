@@ -1,8 +1,13 @@
 // Plyr controls on a _videoPlayer's video, Plyr loads only on pages that use it
 // usage: _plyr(player, { ...Plyr options }) in the player's afterInit, then player.plyr is the Plyr instance
-// css: plyr/dist/plyr.css, player.destroy() removes Plyr too
+// player.destroy() removes Plyr too
+// css, in your main css file: @import "plyr/dist/plyr.css";
+
+// plyr, loaded on first use so other pages don't download it
+const _importPlyr = () => import("plyr");
+
 export const _plyr = async (player, options = {}) => {
-    const { default: Plyr } = await import("plyr");
+    const { default: Plyr } = await _importPlyr();
     if (!player.el) return; // destroyed while loading
 
     player.plyr = new Plyr(player.el.video, {
