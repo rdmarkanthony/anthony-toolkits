@@ -3,6 +3,10 @@ import { _emitter } from "./_emitter";
 
 const _reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+// the page scroll as a timeline, for _parallaxScroller.animate()
+let _timeline = null;
+const _pageTimeline = () => (_timeline ??= new ScrollTimeline({ source: document.documentElement }));
+
 export const _parallax = {
     // limit between 0 and 1
     clamp(value) {
@@ -34,14 +38,15 @@ export const _parallax = {
     getRange(min, max) {
         return (_parallax.scrollTop() - min) / (max - min);
     },
-    // css scroll timelines, e.g. parallax.css
+    // css and js scroll timelines, e.g. parallax.css and _parallaxScroller.animate()
     scrollTimeline() {
-        return CSS.supports("animation-timeline: view()");
+        return "ScrollTimeline" in window && CSS.supports("animation-timeline: view()");
     },
 };
 
 // usage: new _parallaxScroller({ target, events: { init, resize, update } })
 // offset.current is 0 when the target enters the screen and 1 when it leaves, change offset.top/bottom on resize
+// animate() hands values like opacity or translate to the browser, update is for the rest, e.g. states
 export class _parallaxScroller extends _emitter {
     constructor(props) {
         super(props.events);
@@ -55,6 +60,8 @@ export class _parallaxScroller extends _emitter {
             current: 0,
         };
 
+        this.animations = [];
+        this.measured = false;
         this.unsubscribe = [];
 
         if (this.target) this.init();
@@ -85,27 +92,69 @@ export class _parallaxScroller extends _emitter {
         this.offset.bottom = _offset.bottom;
 
         this.emit("resize");
+
+        this.measured = true;
+        this.animations.forEach((item) => this.place(item));
     }
 
     update() {
         this.offset.current = _parallax.getRange(this.offset.top, this.offset.bottom);
 
+        this.animations.forEach((item) => this.seek(item));
+
         this.emit("update");
+    }
+
+    // a scroll position, from a percent of this range or a scroll position
+    position(value) {
+        return typeof value === "string" && value.includes("%") ? this.offset.top + (parseFloat(value) / 100) * (this.offset.bottom - this.offset.top) : value;
     }
 
     // progress within a range, by percent or scroll position
     portion(min, max) {
-        if (typeof min === "string" && min.includes("%")) {
-            const _min = parseFloat(min) / 100;
-            const _max = parseFloat(max) / 100;
+        return _parallax.getRange(this.position(min), this.position(max));
+    }
 
-            return (this.offset.current - _min) / (_max - _min);
+    // usage: animate(target, { opacity: [0, 1] }, ["0%", "50%"]), range by percent or scroll position, default the whole range
+    // the browser runs it in step with the scroll; keyframes and range can be functions of the scroller, run again on resize
+    animate(target, keyframes, range = ["0%", "100%"]) {
+        const _item = { target, keyframes, range, animation: null };
+
+        this.animations.push(_item);
+        if (this.measured) this.place(_item);
+
+        return this;
+    }
+
+    place(item) {
+        const _keyframes = typeof item.keyframes === "function" ? item.keyframes(this) : item.keyframes;
+        const _range = typeof item.range === "function" ? item.range(this) : item.range;
+        [item.min, item.max] = _range.map((value) => this.position(value));
+
+        if (!item.animation) {
+            // without scroll timelines, update() sets its time instead
+            item.manual = !_parallax.scrollTimeline();
+            item.animation = item.target.animate(_keyframes, item.manual ? { duration: 1000, fill: "both" } : { timeline: _pageTimeline(), fill: "both" });
+            if (item.manual) item.animation.pause();
+        } else if (typeof item.keyframes === "function") {
+            item.animation.effect.setKeyframes(_keyframes);
         }
 
-        return _parallax.getRange(min, max);
+        if (!item.manual) {
+            item.animation.rangeStart = `${item.min}px`;
+            item.animation.rangeEnd = `${item.max}px`;
+        }
+
+        this.seek(item);
+    }
+
+    seek(item) {
+        if (item.manual) item.animation.currentTime = (_parallax.clamp(_parallax.getRange(item.min, item.max)) || 0) * 1000;
     }
 
     destroy() {
+        this.animations.forEach((item) => item.animation?.cancel());
+        this.animations = [];
         this.unsubscribe.forEach((off) => off());
         this.unsubscribe = [];
         this.listeners = {};
