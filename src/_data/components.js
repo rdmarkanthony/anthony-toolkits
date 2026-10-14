@@ -26,6 +26,7 @@ export default [
         category: "Layout",
         items: [
             { label: "Breakpoints", url: "/components/breakpoints/", description: "The responsive breakpoints, shown live as you resize.", utils: "Tailwind @theme", ready: true },
+            { label: "Fluid sizing", url: "/components/fluid-sizing/", description: "Tailwind sizes that scale with their section width, using cqw.", utils: "fluid · cqw", ready: true },
             { label: "Group height", url: "/components/group-height/", description: "Equalize heights across grouped elements.", utils: "_groupHeight", ready: true },
             { label: "Tabs", url: "/components/tabs/", description: "Links that switch between content panels, nestable.", utils: "_tabs", ready: true },
             { label: "Accordion", url: "/components/accordion/", description: "Titles that open and close their content in place, for FAQs.", utils: "_accordion", ready: true },

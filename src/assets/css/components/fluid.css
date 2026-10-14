@@ -1,0 +1,68 @@
+/*
+    fluid: Tailwind sizes inside scale with this element's width (cqw)
+    usage: <section class="lg:fluid"> scales from lg, plain rem below
+    1rem = 16px at the design width, change it with [--fluid-design:1920]
+*/
+@utility fluid {
+    container-type: inline-size;
+    --fluid-rem: calc(100cqw * 16 / var(--fluid-design, 1440));
+
+    --spacing: calc(0.25 * var(--fluid-rem));
+
+    /* readable floor on small laptops */
+    --text-xs: max(0.75rem, calc(0.75 * var(--fluid-rem)));
+    --text-sm: max(0.75rem, calc(0.875 * var(--fluid-rem)));
+    --text-base: max(0.875rem, var(--fluid-rem));
+    --text-lg: max(0.875rem, calc(1.125 * var(--fluid-rem)));
+    --text-xl: max(0.875rem, calc(1.25 * var(--fluid-rem)));
+    --text-2xl: calc(1.5 * var(--fluid-rem));
+    --text-3xl: calc(1.875 * var(--fluid-rem));
+    --text-4xl: calc(2.25 * var(--fluid-rem));
+    --text-5xl: calc(3 * var(--fluid-rem));
+    --text-6xl: calc(3.75 * var(--fluid-rem));
+    --text-7xl: calc(4.5 * var(--fluid-rem));
+    --text-8xl: calc(6 * var(--fluid-rem));
+    --text-9xl: calc(8 * var(--fluid-rem));
+
+    --radius-xs: calc(0.125 * var(--fluid-rem));
+    --radius-sm: calc(0.25 * var(--fluid-rem));
+    --radius-md: calc(0.375 * var(--fluid-rem));
+    --radius-lg: calc(0.5 * var(--fluid-rem));
+    --radius-xl: calc(0.75 * var(--fluid-rem));
+    --radius-2xl: var(--fluid-rem);
+    --radius-3xl: calc(1.5 * var(--fluid-rem));
+    --radius-4xl: calc(2 * var(--fluid-rem));
+
+    --container-3xs: calc(16 * var(--fluid-rem));
+    --container-2xs: calc(18 * var(--fluid-rem));
+    --container-xs: calc(20 * var(--fluid-rem));
+    --container-sm: calc(24 * var(--fluid-rem));
+    --container-md: calc(28 * var(--fluid-rem));
+    --container-lg: calc(32 * var(--fluid-rem));
+    --container-xl: calc(36 * var(--fluid-rem));
+    --container-2xl: calc(42 * var(--fluid-rem));
+    --container-3xl: calc(48 * var(--fluid-rem));
+    --container-4xl: calc(56 * var(--fluid-rem));
+    --container-5xl: calc(64 * var(--fluid-rem));
+    --container-6xl: calc(72 * var(--fluid-rem));
+    --container-7xl: calc(80 * var(--fluid-rem));
+
+    /* text without a text-* class, on children so cqw is this box */
+    :where(& > *) {
+        font-size: var(--text-base);
+    }
+}
+
+/* page column, 1180px at 1440px */
+@utility container-1 {
+    width: calc(100% - 2rem);
+    max-width: 100%;
+    margin-inline: auto;
+
+    @variant md {
+        max-width: 60rem;
+    }
+    @variant lg {
+        max-width: 81.94cqw;
+    }
+}
