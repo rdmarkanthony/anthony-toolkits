@@ -164,7 +164,7 @@ export class _selectBox extends _emitter {
         };
         this.onFocusout = (e) => this.active && !this.el.box.contains(e.relatedTarget) && this.hide();
         this.onOutsideClick = (e) => this.active && !this.el.box.contains(e.target) && this.hide();
-        // every change goes through the select's change event: a pick, box.value, a script, the phone picker
+        // every change comes through the select's change event
         this.onChange = () => {
             this.update();
             this.emit("change");
@@ -507,7 +507,7 @@ export class _selectBox extends _emitter {
             `.js-select-box { position: relative; }` +
             // the select stays for forms and their validation message, under the button
             `.js-select-box > select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }` +
-            // on touch screens with nativeOnTouch, the select is on top and opens the phone's picker
+            // nativeOnTouch: the select on top opens the phone's picker
             `.js-select-box.is-native > select { z-index: 2; pointer-events: auto; }` +
             `.js-select-box-dropdown { position: absolute; z-index: 50; top: calc(100% + 0.5rem); left: 0; min-width: 100%; visibility: hidden; opacity: 0; transform: scale(0.95); transform-origin: 50% 0; transition: opacity 0.15s ease-out, transform 0.2s cubic-bezier(0.5, 0, 0, 1.25), visibility 0s 0.2s; }` +
             `.js-select-box.is-above .js-select-box-dropdown { top: auto; bottom: calc(100% + 0.5rem); transform-origin: 50% 100%; }` +

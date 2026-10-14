@@ -20,7 +20,7 @@ export const _plyr = async (player, options = {}) => {
         ...options,
     });
 
-    // fill the player's box like the video does, except in fullscreen (iOS uses a position: fixed fallback)
+    // fill the player's box, except in fullscreen
     const _fill = (fill) => Object.assign(player.plyr.elements.container.style, { position: fill ? "absolute" : "", inset: fill ? 0 : "" });
     _fill(true);
     player.plyr.on("enterfullscreen", () => _fill(false));

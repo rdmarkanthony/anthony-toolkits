@@ -98,7 +98,7 @@ export class _horizontalLoop {
         this.update();
     }
 
-    // repeat the items until they cover the row and one more, so no gap shows at the seam
+    // clone items to fill the row plus one, no gap at the seam
     fill() {
         const _originals = [...this.target.children].filter((item) => !item.classList.contains("is-clone"));
         const _covers = () => {
@@ -288,7 +288,7 @@ export class _horizontalLoop {
         this.dirty = true;
     }
 
-    // drags a stand-in, so the row can wrap forever; a throw glides on and stops on an item
+    // drags a proxy, so the row wraps forever
     async drag() {
         const [{ Draggable }, { InertiaPlugin }] = await _importDraggable();
         if (!this.timeline) return; // destroyed while loading
@@ -334,7 +334,7 @@ export class _horizontalLoop {
             onDragEnd: () => (this.draggedAt = Date.now()),
             snap: this.snap
                 ? (value) => {
-                      // caught mid-throw and let go: carry on to the stop it was heading to, the shortest way
+                      // let go mid-throw: carry on to its stop
                       if (_caught && Math.abs(this.draggable.startX - this.draggable.x) < 10) {
                           let _left = (_lastStop - _startProgress) % 1;
                           if (_left > 0.5) _left -= 1;

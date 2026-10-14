@@ -29,18 +29,16 @@ export class _tabs {
             this.nav.push(item);
             this.contents.push(_content);
 
-            // upon click, update the active nav and content
             item.addEventListener("click", (e) => {
                 e.preventDefault();
 
                 this.show(_index);
             });
 
-            // get the active nav
             if (item.classList.contains("js-tabs-active")) this.active = _index;
         });
 
-        this.show(this.active); // activate the current nav and content
+        this.show(this.active);
 
         this.showHash();
         window.addEventListener("hashchange", () => this.showHash());

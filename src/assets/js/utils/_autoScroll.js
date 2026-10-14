@@ -12,8 +12,8 @@ const _inFixed = (target) => {
     return false;
 };
 
-// usage: _autoScrollHash(options), before the other scripts read the hash, scrolls on load to #id or #id?query
-// checked on load, so a tab opened by the hash counts; still hidden or in a popup is skipped
+// usage: _autoScrollHash(options), on load scrolls to #id or #id?query
+// call it before other scripts read the hash, hidden targets are skipped
 export const _autoScrollHash = (props = {}) => {
     const _id = decodeURIComponent(location.hash.slice(1).split("?")[0]);
     const _target = _id && document.getElementById(_id);

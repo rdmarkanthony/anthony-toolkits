@@ -27,8 +27,7 @@
 @property --color-kit-text { syntax: "<color>"; inherits: true; initial-value: #111113; }
 @property --color-kit-muted { syntax: "<color>"; inherits: true; initial-value: #65656d; }
 
-/* while _themeScroller switches: one ease on the target's kit colors, elements' own color transitions pause,
-   dark: classes get the same ease, color only where dark:text- sets it (inherited, it lags on iOS) */
+/* while _themeScroller switches: kit colors ease, other color transitions pause */
 .theme-transition {
     transition-property: --color-kit-bg, --color-kit-surface, --color-kit-line, --color-kit-text, --color-kit-muted !important;
     transition-duration: 0.5s !important;

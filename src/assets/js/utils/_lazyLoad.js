@@ -5,7 +5,7 @@ const _defaults = {
     selector: ".js-lazy, .js-lazy-bg",
     // how far from the screen it starts loading
     rootMargin: "300px",
-    // when one of these shows, everything in it and the section after it loads, e.g. slides off to the side
+    // when one of these shows, it and the next section load
     ahead: ".section",
 };
 

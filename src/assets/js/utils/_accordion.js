@@ -2,7 +2,7 @@ import { _emitter } from "./_emitter";
 
 // usage: new _accordion({ target, closeOthers, openFirst, duration, events })
 // markup: target > .js-accordion-set > .js-accordion-set-title (a button) + .js-accordion-set-content
-// the open set gets .active and aria-expanded, closed contents get hidden="until-found" so find in page still opens them
+// the open set gets .active, closed contents hidden="until-found" for find in page
 let _count = 0;
 
 export class _accordion extends _emitter {
@@ -92,7 +92,7 @@ export class _accordion extends _emitter {
     update(set, open, animate = true) {
         const { title, content } = this.parts(set);
 
-        // from the current height, so a click mid-animation turns it around
+        // from the current height, so it can reverse mid-way
         const _from = content.hidden ? 0 : content.offsetHeight;
         content.getAnimations().forEach((animation) => animation.cancel());
 

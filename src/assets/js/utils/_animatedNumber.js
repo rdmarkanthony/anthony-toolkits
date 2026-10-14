@@ -1,6 +1,6 @@
 export class _animatedNumber {
     constructor(props) {
-        if (!window._animatedNumberList) window._animatedNumberList = []; // storage for all animated numbers
+        if (!window._animatedNumberList) window._animatedNumberList = [];
 
         this.target = props.target ?? null;
 
@@ -25,7 +25,7 @@ export class _animatedNumber {
 
     init(callback) {
         window._animatedNumberList.forEach((instance) => {
-            if (instance.target === this.target) instance.stop(); // stop other instances with the same target
+            if (instance.target === this.target) instance.stop();
         });
         window._animatedNumberList.push(this);
 

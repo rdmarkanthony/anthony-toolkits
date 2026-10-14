@@ -124,7 +124,7 @@ title: Snap slider | Sliders | Anthony Toolkits
 
 {% set markup %}{% raw %}
 <div class="js-snap-slider">
-    <!-- the padding lines the first card up with a max-w-295 column, scroll-px keeps the snap there -->
+    <!-- the padding lines the first card up with the column -->
     <ul class="js-snap-track flex cursor-grab snap-x snap-mandatory scroll-px-[max(1rem,calc((100%_-_73.75rem)/2))] gap-4 overflow-x-auto px-[max(1rem,calc((100%_-_73.75rem)/2))] [scrollbar-width:none] data-dragging:cursor-grabbing [&::-webkit-scrollbar]:hidden">
         <!-- snap-always stops at each card, even on a fast swipe -->
         <li class="w-[80%] shrink-0 snap-start snap-always sm:w-[22rem]">...</li>
@@ -139,7 +139,7 @@ title: Snap slider | Sliders | Anthony Toolkits
 <div class="js-snap-slider @container">
     <ul class="js-snap-track flex snap-x snap-mandatory gap-4 overflow-x-auto px-[calc((100cqw_-_min(87.5cqw,73.75rem))/2)] ...">
         <li class="w-[min(87.5cqw,73.75rem)] shrink-0 snap-center snap-always overflow-hidden">
-            <!-- --offset and --near come from the script: slides 10rem and fades per card away -->
+            <!-- --offset and --near come from the script -->
             <h3 class="translate-x-[calc(var(--offset,0)*-10rem)] opacity-[calc(var(--near,1)*var(--near,1)*var(--near,1))]">...</h3>
         </li>
         <!-- full image: the slide's flex alignment places the text, e.g. bottom right -->

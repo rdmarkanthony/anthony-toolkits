@@ -24,8 +24,7 @@ bodyClass: dark
 .light { --page-bg: #fff; --page-text: #111; }
 .dark { --page-bg: #0c0c0e; --page-text: #f2f1ec; }
 
-/* while switching: the variables ease on the target, elements' own color transitions pause,
-   dark: classes get the same ease, color only where dark:text- sets it (it lags on iOS) */
+/* while switching: the variables ease, other color transitions pause */
 .theme-transition { transition: --page-bg 0.5s, --page-text 0.5s !important; }
 .theme-transition * { transition-property: opacity, transform, translate, scale, rotate, visibility !important; }
 .theme-transition [class*="dark:"] { transition: background-color 0.5s, border-color 0.5s !important; }
