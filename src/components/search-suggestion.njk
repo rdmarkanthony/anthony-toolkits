@@ -64,11 +64,11 @@ const _search = new _autocomplete({
         show: (box) => _log('show'),
         hide: (box) => _log('hide'),
         select: (box) => _log(`select ${box.results[box.active]?.label ?? 'none'}`), // arrow keys or hover
-        pick: (box) => _log(`pick ${box.picked?.label}`), // click or Enter, then the link opens
+        pick: (box) => _log(`pick ${box.picked?.label}`), // click or Enter
     },
 });
 
-// load the items, or set them from any api
+// or from any api
 fetch('/assets/data/sites.json')
     .then((response) => response.json())
     .then((items) => (_search.items = items));
@@ -78,7 +78,7 @@ fetch('/assets/data/sites.json')
     markup: markup,
     markupNote: 'An input and an empty list with an id, inside a form.',
     code: pageScript,
-    note: 'Each item needs a <code class="font-mono text-sm">url</code>, a suggestion is a link to it. <code class="font-mono text-sm">match</code> gets the query trimmed and lowercase, <code class="font-mono text-sm">render</code> returns the html. Style the picked one with <code class="font-mono text-sm">aria-selected:</code>. More listeners with <code class="font-mono text-sm">_search.on(\'pick\', fn)</code>.'
+    note: 'Each item needs a <code class="font-mono text-sm">url</code>. Style the picked one with <code class="font-mono text-sm">aria-selected:</code>.'
 }) }}
 
 {% footerscript %}

@@ -1,10 +1,9 @@
 import { _emitter } from "./_emitter";
 
-// usage: new _autocomplete({ input, list, items, match, render, limit, more, empty, optionClass, events }), an ARIA combobox
-// input sits in a <form> so Enter with nothing picked submits it, list is an empty element with an id
-// items: [{ url, ... }], match(item, query) with query trimmed and lowercase, render(item) is the link's html
-// more(value, total) => { url, html } adds a last link past `limit`, empty(value) is the html when nothing matches
-// events: init, update (box.value, box.results), show, hide, select (box.active), pick (box.picked)
+// usage: new _autocomplete({ input, list, items, match, render, limit, more, empty, optionClass, events })
+// items: [{ url, ... }], each suggestion links to its url
+// more: a "see all" link past limit, empty: html for no matches
+// events: init, update, show, hide, select, pick
 export class _autocomplete extends _emitter {
     constructor(props) {
         super(props.events);
@@ -36,13 +35,12 @@ export class _autocomplete extends _emitter {
         this.list.setAttribute("role", "listbox");
         this.list.hidden = true;
 
-        // only while typing, not when a script sets the value
+        // typing only, not values set by a script
         this.onInput = () => document.activeElement === this.input && this.update();
         this.onFocus = () => this.input.value.trim() && this.update();
         this.onKeydown = (e) => this.keydown(e);
         this.onFocusout = (e) => !this.list.contains(e.relatedTarget) && e.relatedTarget !== this.input && this.close();
-        // keep the focus on the input, so a click on a suggestion isn't lost to the blur
-        // mousedown too, iOS Safari still moves the focus after a prevented pointerdown
+        // keep the focus on the input, mousedown for iOS
         this.onPress = (e) => e.preventDefault();
         this.onClick = (e) => this.pick(this.options.indexOf(e.target.closest("a")));
 
@@ -68,7 +66,7 @@ export class _autocomplete extends _emitter {
 
         if (!query || (!matches.length && !this.empty)) return this.close();
 
-        const links = matches.slice(0, this.limit).map((item) => ({ url: item.url, html: this.render(item) }));
+        const links = this.results.map((item) => ({ url: item.url, html: this.render(item) }));
         if (this.more && matches.length > this.limit) links.push(this.more(value, matches.length));
 
         this.list.innerHTML = "";
@@ -106,7 +104,7 @@ export class _autocomplete extends _emitter {
             e.preventDefault();
 
             const step = e.key === "ArrowDown" ? 1 : -1;
-            // -1 (nothing picked) sits between the last and the first
+            // -1 is nothing picked, between last and first
             this.select(((this.active + 1 + step + total + 1) % (total + 1)) - 1);
         } else if (e.key === "Enter" && !this.list.hidden && this.options[this.active]) {
             e.preventDefault();
@@ -140,7 +138,7 @@ export class _autocomplete extends _emitter {
         if (changed) this.emit("select");
     }
 
-    // a click or Enter, "more" picks null
+    // click or Enter
     pick(index) {
         if (index < 0) return;
         this.picked = this.results[index] ?? null;
