@@ -31,6 +31,7 @@ import { _autoScroll, _autoScrollHash } from "./utils/_autoScroll";
 import { _parallax, _parallaxScroller, _parallaxBackground, _parallaxFloating } from "./utils/_parallax";
 import { _canvasBanner } from "./utils/_canvasBanner";
 import { _themeScroller } from "./utils/_themeScroller";
+import { _cursorBubble } from "./utils/_cursorBubble";
 import { _googleMap } from "./utils/_googleMap";
 import { _qrCode } from "./utils/_qrCode";
 import { _peekSlider } from "./utils/_peekSlider";
@@ -74,6 +75,7 @@ Object.assign(window, {
     _parallaxFloating,
     _canvasBanner,
     _themeScroller,
+    _cursorBubble,
     _googleMap,
     _qrCode,
     _peekSlider,
