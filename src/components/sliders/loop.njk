@@ -64,7 +64,7 @@ title: Loop slider | Sliders | Anthony Toolkits
 
 {% set words = ['Design', 'Build', 'Launch', 'Repeat'] %}
 
-{# demo: plays on its own, turns when the page scrolls up #}
+{# demo: plays on its own, the page scroll speeds it up and turns it when scrolling up #}
 <section class="overflow-clip py-16">
     <h2 class="mx-auto mb-8 max-w-295 px-4 text-3xl font-bold tracking-tight [box-sizing:content-box]">Marquee</h2>
     <ul class="js-loop-marquee flex select-none">
@@ -108,7 +108,7 @@ const _scrollRows = [...document.querySelectorAll('.js-loop-scroll')].map((targe
 // cards: still until dragged, a throw stops with a card centered
 document.querySelectorAll('.js-loop-cards').forEach((target) => new _horizontalLoop({ target, paused: true, center: true }));
 
-// marquee: plays on its own, stops while the mouse is over it
+// marquee: plays on its own, stops while the mouse is over it, the page scroll speeds it up
 const _marquees = [...document.querySelectorAll('.js-loop-marquee')].map((target) => new _horizontalLoop({ target, speed: 0.8, pauseOnHover: true }));
 
 let _lastScroll = window.scrollY;
@@ -118,8 +118,11 @@ _event.scroll(() => {
     if (!_distance) return;
 
     _scrollRows.forEach((row, i) => row.move(i % 2 === 0 ? _distance : -_distance));
-    // the marquee turns when the page scrolls up
-    _marquees.forEach((marquee) => marquee.setDirection(_distance > 0 ? 'left' : 'right'));
+    // the marquee turns when the page scrolls up, and the scroll pushes it along faster
+    _marquees.forEach((marquee) => {
+        marquee.setDirection(_distance > 0 ? 'left' : 'right');
+        marquee.move(_distance * 0.5);
+    });
 });
 {% endraw %}{% endset %}
 

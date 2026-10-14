@@ -66,6 +66,20 @@ title: Sliders | Anthony Toolkits
                     <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
                 </div>
             </a>
+            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/sliders/comic/">
+                {# preview: a dark stage showing one panel of a comic page #}
+                <div class="flex aspect-4/3 items-center justify-center overflow-hidden bg-gray-950">
+                    <div class="relative aspect-[1.93] w-4/5 overflow-hidden">
+                        <img class="absolute top-[-10.7%] left-[-5.6%] w-[111%] max-w-none" src="/assets/img/comic/page-1.svg" alt="" loading="lazy" />
+                    </div>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">Comic slider</h3>
+                    <p class="mb-6 flex-1 text-gray-600">Goes through comic pages frame by frame, with a frame generator.</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">_comicSlider · GSAP</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
         </div>
     </div>
 </section>

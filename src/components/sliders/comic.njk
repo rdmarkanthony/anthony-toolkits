@@ -1,0 +1,86 @@
+---
+title: Comic slider | Sliders | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Sliders', url: '/components/sliders/' }, label: '_comicSlider · GSAP', title: 'Comic slider', description: 'Reads comic pages frame by frame. It pans and zooms to each panel, and fades to the next page. Make the frames with the <a class="underline" href="/components/sliders/comic-generator/">frame generator</a>.' }) }}
+
+{% set button = 'grid size-9 cursor-pointer place-items-center rounded-full bg-gray-200 text-lg text-gray-700 transition-colors duration-300 hover:bg-gray-300 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-gray-200' %}
+
+{# demo: two pages, the whole page first, then each panel; wide panels get a closer mobile frame #}
+<section class="px-4 pb-16">
+    <div class="js-comic mx-auto max-w-295">
+        <div class="js-comic-stage relative aspect-4/5 overflow-hidden rounded-3xl bg-gray-950 select-none md:aspect-16/9">
+            <img src="/assets/img/comic/page-1.svg" alt="Comic page 1" />
+            <img src="/assets/img/comic/page-2.svg" alt="Comic page 2" />
+        </div>
+        <div class="mt-6 flex items-center gap-3">
+            <div class="h-1 flex-1 overflow-hidden rounded-full bg-gray-200">
+                <div class="js-comic-progress h-full w-0 bg-gray-950 transition-[width] duration-500"></div>
+            </div>
+            <button class="js-comic-prev {{ button }}" type="button" aria-label="Previous frame">{{ angle('left') }}</button>
+            <button class="js-comic-next {{ button }}" type="button" aria-label="Next frame">{{ angle('right') }}</button>
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<div class="js-comic">
+    <!-- the stage's size sets the view, the pages fit inside it -->
+    <div class="js-comic-stage relative aspect-4/5 overflow-hidden bg-gray-950 select-none md:aspect-16/9">
+        <img src="/img/page-1.jpg" alt="Page 1" />
+        <img src="/img/page-2.jpg" alt="Page 2" />
+    </div>
+    <!-- optional, disabled at the ends -->
+    <button class="js-comic-prev disabled:opacity-40" type="button" aria-label="Previous frame">...</button>
+    <button class="js-comic-next disabled:opacity-40" type="button" aria-label="Next frame">...</button>
+</div>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_comicSlider.js
+        // src/assets/js/utils/_emitter.js
+    // Package
+        // pnpm add gsap
+
+// frames from the frame generator: page (0 is the first <img>), then top, left, right and bottom in % of that page
+const _frames = [
+    { page: 0, top: 0, left: 0, right: 100, bottom: 100 },
+    { page: 0, top: 2.5, left: 4, right: 96, bottom: 35.5, mobile: { top: 2.5, left: 38, right: 96, bottom: 35.5 } },
+    { page: 0, top: 35, left: 4, right: 50, bottom: 66 },
+    { page: 0, top: 35, left: 50, right: 96, bottom: 66 },
+    { page: 0, top: 65.5, left: 4, right: 64.5, bottom: 97.5 },
+    { page: 0, top: 65.5, left: 64.5, right: 96, bottom: 97.5 },
+    { page: 1, top: 0, left: 0, right: 100, bottom: 100 },
+    { page: 1, top: 2.5, left: 4, right: 35.5, bottom: 48.5 },
+    { page: 1, top: 2.5, left: 35.5, right: 96, bottom: 48.5 },
+    { page: 1, top: 48.5, left: 4, right: 96, bottom: 97.5, mobile: { top: 48.5, left: 48, right: 96, bottom: 97.5 } },
+];
+
+document.querySelectorAll('.js-comic').forEach((target) => {
+    const _progress = target.querySelector('.js-comic-progress');
+
+    new _comicSlider({
+        target,
+        frames: _frames,
+        events: {
+            change: (slider) => (_progress.style.width = `${((slider.index + 1) / slider.frames.length) * 100}%`),
+        },
+    });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'One <code class="font-mono text-sm">&lt;img&gt;</code> per page. Each frame fits inside the stage, the dark space around it is the stage\'s background.',
+    code: pageScript,
+    note: 'Swipe the stage, use the arrow keys, or the buttons. A frame\'s <code class="font-mono text-sm">mobile</code> area is used below 768px, e.g. a closer crop of a wide panel. Options: duration (seconds), ease, mobile (a media query).'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

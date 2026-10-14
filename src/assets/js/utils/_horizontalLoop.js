@@ -4,6 +4,8 @@
 // play(), pause(), next(), previous(), toIndex(i), move(px), setDirection("left" | "right"), destroy(); pauses itself off screen
 import { gsap } from "gsap";
 
+const _wrapProgress = gsap.utils.wrap(0, 1);
+
 // draggable and inertia, loaded on first use so other pages don't download them
 const _importDraggable = () => Promise.all([import("gsap/Draggable"), import("gsap/InertiaPlugin")]);
 
@@ -26,9 +28,12 @@ export class _horizontalLoop {
         this.widths = [];
         this.totalWidth = 0;
         this.index = 0;
+        this.changedIndex = -1;
         this.dirty = false;
         this.draggedAt = 0;
         this.draggable = null;
+        this.proxy = null;
+        this.frame = 0;
 
         if (!this.target) {
             this.ready = Promise.resolve(this);
@@ -142,9 +147,8 @@ export class _horizontalLoop {
 
         // each item's stop: left edge where the first one starts, or centered in the row
         const _inset = _items[0].getBoundingClientRect().left - this.target.getBoundingClientRect().left;
-        const _wrap = gsap.utils.wrap(0, _tl.duration());
-        this.times = _items.map((item, i) => _wrap(_tl.labels[`item${i}`] + (this.center ? (this.widths[i] / 2 - this.rowWidth / 2 + _inset) / this.speed : 0)));
-        this.timeWrap = _wrap;
+        this.timeWrap = gsap.utils.wrap(0, _tl.duration());
+        this.times = _items.map((item, i) => this.timeWrap(_tl.labels[`item${i}`] + (this.center ? (this.widths[i] / 2 - this.rowWidth / 2 + _inset) / this.speed : 0)));
 
         _tl.progress(1, true).progress(0, true); // pre-render
     }
@@ -169,13 +173,12 @@ export class _horizontalLoop {
 
     // the item whose stop is closest to the time
     closest(time = this.timeline.time()) {
-        const _time = time;
         const _duration = this.timeline.duration();
         let _index = 0;
         let _best = Infinity;
 
-        this.times.forEach((time, i) => {
-            let _distance = Math.abs(time - _time);
+        this.times.forEach((stop, i) => {
+            let _distance = Math.abs(stop - time);
             if (_distance > _duration / 2) _distance = _duration - _distance;
             if (_distance < _best) {
                 _best = _distance;
@@ -187,11 +190,13 @@ export class _horizontalLoop {
     }
 
     current() {
-        if (this.dirty) {
-            this.index = this.closest();
-            this.dirty = false;
-        }
+        if (this.dirty) this.sync();
         return this.index;
+    }
+
+    sync() {
+        this.index = this.closest();
+        this.dirty = false;
     }
 
     changed() {
@@ -279,8 +284,7 @@ export class _horizontalLoop {
     move(px) {
         if (!this.timeline || this.holds.has("drag")) return;
         gsap.killTweensOf(this.timeline);
-        this.stopThrow();
-        this.timeline.progress(gsap.utils.wrap(0, 1, this.timeline.progress() + px / this.totalWidth));
+        this.timeline.progress(_wrapProgress(this.timeline.progress() + px / this.totalWidth));
         this.dirty = true;
     }
 
@@ -291,18 +295,18 @@ export class _horizontalLoop {
         gsap.registerPlugin(Draggable, InertiaPlugin);
 
         const _tl = this.timeline;
-        const _wrap = gsap.utils.wrap(0, 1);
         let _startProgress = 0;
         let _ratio = 0;
-        let _lastSnap = 0;
-        let _pressOffset = 0;
+        let _lastStop = 0;
+        let _throwing = false;
+        let _caught = false;
+
+        // the proxy's x and the row's progress, measured from the press
+        const _progressAt = (x) => _startProgress + (this.draggable.startX - x) * _ratio;
+        const _xAt = (progress) => this.draggable.startX + (_startProgress - progress) / _ratio;
 
         this.proxy = document.createElement("div");
-        const _align = () => _tl.progress(_wrap(_startProgress + (this.draggable.startX - this.draggable.x) * _ratio));
-        const _sync = () => {
-            this.index = this.closest();
-            this.dirty = false;
-        };
+        const _align = () => _tl.progress(_wrapProgress(_progressAt(this.draggable.x)));
 
         [this.draggable] = Draggable.create(this.proxy, {
             trigger: this.target,
@@ -314,37 +318,50 @@ export class _horizontalLoop {
             activeCursor: "grabbing",
             onPressInit: () => {
                 gsap.killTweensOf(_tl);
-                this.hold("drag", true);
                 _startProgress = _tl.progress();
                 _ratio = 1 / this.totalWidth;
-                _pressOffset = _startProgress / -_ratio - this.draggable.x;
-                gsap.set(this.proxy, { x: _startProgress / -_ratio });
+                _caught = _throwing;
+                _throwing = false;
+            },
+            // only a real drag holds it, a finger scrolling the page past it doesn't
+            onDragStart: () => {
+                this.hold("drag", true);
+                // it may have moved since the press, carry on from here
+                _startProgress = _tl.progress() - (this.draggable.startX - this.draggable.x) * _ratio;
             },
             onDrag: _align,
             onThrowUpdate: _align,
             onDragEnd: () => (this.draggedAt = Date.now()),
             snap: this.snap
                 ? (value) => {
-                      // pressed and let go mid-throw: the proxy jumped in onPressInit, keep the last stop
-                      if (Math.abs(_startProgress / -_ratio - this.draggable.x) < 10) return _lastSnap + _pressOffset;
+                      // caught mid-throw and let go: carry on to the stop it was heading to, the shortest way
+                      if (_caught && Math.abs(this.draggable.startX - this.draggable.x) < 10) {
+                          let _left = (_lastStop - _startProgress) % 1;
+                          if (_left > 0.5) _left -= 1;
+                          if (_left < -0.5) _left += 1;
+                          _lastStop = _startProgress + _left;
+                          return _xAt(_lastStop);
+                      }
 
                       const _duration = _tl.duration();
-                      const _time = -(value * _ratio) * _duration;
+                      const _time = _progressAt(value) * _duration;
                       const _wrapped = this.timeWrap(_time);
                       let _diff = this.times[this.closest(_wrapped)] - _wrapped;
                       if (Math.abs(_diff) > _duration / 2) _diff += _diff < 0 ? _duration : -_duration;
 
-                      _lastSnap = (_time + _diff) / _duration / -_ratio;
-                      return _lastSnap;
+                      _lastStop = (_time + _diff) / _duration;
+                      return _xAt(_lastStop);
                   }
                 : undefined,
             onRelease: () => {
-                _sync();
-                if (this.draggable.isThrowing) this.dirty = true;
+                this.sync();
+                _throwing = this.draggable.isThrowing;
+                if (_throwing) this.dirty = true;
                 else this.hold("drag", false);
             },
             onThrowComplete: () => {
-                _sync();
+                _throwing = false;
+                this.sync();
                 this.hold("drag", false);
             },
         });
@@ -363,6 +380,7 @@ export class _horizontalLoop {
 
         this.draggable?.kill();
         if (this.proxy) gsap.killTweensOf(this.proxy);
+        this.proxy = null;
         gsap.killTweensOf(this.timeline);
         this.timeline.kill();
         this.timeline = null;

@@ -1,0 +1,416 @@
+---
+title: Frame generator | Comic slider | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/component-page.njk" import pageIntro %}
+
+{{ pageIntro({ back: { label: 'Comic slider', url: '/components/sliders/comic/' }, label: '_comicSlider', title: 'Frame generator', description: 'Set each frame\'s page and edges, check it in the preview, then copy the frames into your <code class="font-mono text-base">_comicSlider</code>. Your work is kept in this browser.' }) }}
+
+{% set button = 'grid size-9 cursor-pointer place-items-center rounded-full bg-gray-200 text-lg text-gray-700 transition-colors duration-300 hover:bg-gray-300 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-gray-200' %}
+{% set pill = 'cursor-pointer rounded-full border border-gray-300 px-4 py-2 text-sm font-medium transition-colors hover:border-gray-950' %}
+{% set field = 'h-10 w-full rounded-md border border-gray-300 px-3 focus:border-gray-950 focus:outline-none' %}
+
+{# one edge: hold − or + to keep stepping, shift + arrow keys step by 5 #}
+{% macro edgeInput(edge, attr) -%}
+{% set step = 'grid size-10 shrink-0 cursor-pointer touch-manipulation place-items-center rounded-md bg-gray-100 text-lg text-gray-700 select-none hover:bg-gray-200 active:bg-gray-300' %}
+<div class="js-gen-num">
+    <span class="mb-1 block text-xs text-gray-500">{{ edge | capitalize }}</span>
+    <div class="flex items-center gap-1">
+        <button class="{{ step }}" type="button" data-step="-1" aria-label="{{ edge | capitalize }} down" tabindex="-1">−</button>
+        <input class="h-10 w-full min-w-0 rounded-md border border-gray-300 text-center text-sm [appearance:textfield] focus:border-gray-950 focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none" type="number" inputmode="decimal" min="0" max="100" step="0.5" aria-label="{{ edge | capitalize }}" {{ attr }}="{{ edge }}" />
+        <button class="{{ step }}" type="button" data-step="1" aria-label="{{ edge | capitalize }} up" tabindex="-1">+</button>
+    </div>
+</div>
+{%- endmacro %}
+
+<section class="px-4 pb-16">
+    <div class="mx-auto grid max-w-295 items-start gap-10 lg:grid-cols-[1fr_26rem]">
+        {# preview: the real slider, plus the whole page with the frame drawn on it #}
+        <div class="lg:sticky lg:top-24">
+            <div class="mb-4 flex items-center gap-2">
+                <button class="js-gen-view {{ pill }} [&.is-active]:border-gray-950 [&.is-active]:bg-gray-950 [&.is-active]:text-white" type="button" data-view="desktop">Desktop</button>
+                <button class="js-gen-view {{ pill }} [&.is-active]:border-gray-950 [&.is-active]:bg-gray-950 [&.is-active]:text-white" type="button" data-view="mobile">Mobile</button>
+                <p class="js-gen-label ml-auto font-mono text-sm text-gray-500"></p>
+            </div>
+            <div class="js-gen-slider">
+                <div class="js-gen-wrap mx-auto">
+                    <div class="js-comic-stage relative aspect-16/9 overflow-hidden rounded-2xl bg-gray-950 select-none [.is-mobile_&]:aspect-4/5"></div>
+                </div>
+                <div class="mt-4 flex items-center justify-end gap-3">
+                    <button class="js-comic-prev {{ button }}" type="button" aria-label="Previous frame">{{ angle('left') }}</button>
+                    <button class="js-comic-next {{ button }}" type="button" aria-label="Next frame">{{ angle('right') }}</button>
+                </div>
+            </div>
+            <h2 class="mt-8 mb-3 text-sm font-semibold text-gray-500">Whole page</h2>
+            <div class="relative w-40 overflow-hidden rounded-lg bg-gray-100 md:w-56">
+                <img class="js-gen-map-img block w-full" src="" alt="" />
+                <div class="js-gen-map-rect absolute border-2 border-sky-500 bg-sky-500/15"></div>
+                <div class="js-gen-map-mobile absolute hidden border-2 border-dashed border-rose-500"></div>
+            </div>
+            <p class="mt-2 text-sm text-gray-500"><span class="text-sky-600">Blue</span>: the frame. <span class="text-rose-600">Dashed</span>: its mobile area.</p>
+        </div>
+
+        <div class="grid gap-10">
+            <div>
+                <h2 class="mb-2 text-xl font-semibold">Pages</h2>
+                <p class="mb-3 text-sm text-gray-500">One image path per line, as in your markup. Page 1 is the first line.</p>
+                <textarea class="js-gen-pages {{ field }} h-24 py-2 font-mono text-sm" spellcheck="false"></textarea>
+                <label class="mt-3 block text-sm text-gray-500">
+                    Or preview with images from your computer, in page order:
+                    <input class="js-gen-files mt-2 block w-full text-sm file:mr-3 file:cursor-pointer file:rounded-full file:border-0 file:bg-gray-200 file:px-4 file:py-2 file:text-sm file:font-medium" type="file" accept="image/*" multiple />
+                </label>
+            </div>
+
+            <div>
+                <h2 class="mb-2 text-xl font-semibold">Frames</h2>
+                <p class="mb-3 text-sm text-gray-500">Edges are in % of the page: top and bottom from the top, left and right from the left. Open a frame to edit it.</p>
+                <ol class="js-gen-frames grid gap-2"></ol>
+                <button class="js-gen-add mt-2 w-full cursor-pointer rounded-xl border border-dashed border-gray-300 py-3 text-sm font-medium text-gray-500 transition-colors hover:border-gray-950 hover:text-gray-950" type="button">Add frame</button>
+            </div>
+
+            <div>
+                <h2 class="mb-2 text-xl font-semibold">Frames code</h2>
+                <p class="mb-3 text-sm text-gray-500">Paste it as <code class="font-mono">frames</code>. To edit frames you made before, paste them here and load.</p>
+                <textarea class="js-gen-output {{ field }} h-64 py-2 font-mono text-xs" spellcheck="false"></textarea>
+                <div class="mt-3 flex flex-wrap items-center gap-2">
+                    <button class="js-gen-copy {{ pill }}" type="button">Copy</button>
+                    <button class="js-gen-load {{ pill }}" type="button">Load</button>
+                    <button class="js-gen-reset {{ pill }} ml-auto" type="button">Start over</button>
+                    <p class="js-gen-status w-full text-sm text-gray-500" aria-live="polite"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# one frame in the list: only the active frame is open #}
+<template class="js-gen-frame-template">
+    <li class="js-gen-frame group rounded-xl border border-gray-200 transition-colors [&.is-active]:border-gray-950">
+        <div class="flex items-center gap-1 py-2 pr-2">
+            <button class="js-gen-show flex min-w-0 flex-1 cursor-pointer items-baseline gap-3 py-1 pl-4 text-left" type="button" aria-expanded="false">
+                <span class="js-gen-title shrink-0 font-semibold"></span>
+                <span class="js-gen-summary truncate font-mono text-xs text-gray-500"></span>
+            </button>
+            <button class="js-gen-up rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-950" type="button" aria-label="Move up">↑</button>
+            <button class="js-gen-down rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-950" type="button" aria-label="Move down">↓</button>
+            <button class="js-gen-copy-frame rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-950" type="button">Copy</button>
+            <button class="js-gen-delete rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100 hover:text-rose-600" type="button">Delete</button>
+        </div>
+        {# grid rows 0fr to 1fr, so it opens to its own height #}
+        <div class="js-gen-body grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 group-[.is-active]:grid-rows-[1fr]">
+            <div class="overflow-hidden">
+                <div class="px-4 pt-1 pb-4">
+                    <label class="mb-3 flex items-center gap-3 text-sm">
+                        Page
+                        <select class="js-gen-page {{ field }} h-9 w-auto"></select>
+                    </label>
+                    <div class="grid grid-cols-2 gap-x-3 gap-y-2">
+                        {% for edge in ['top', 'bottom', 'left', 'right'] %}{{ edgeInput(edge, 'data-edge') }}{% endfor %}
+                    </div>
+                    <label class="mt-3 flex items-center gap-2 text-sm">
+                        <input class="js-gen-has-mobile size-4 accent-gray-950" type="checkbox" />
+                        Mobile area
+                    </label>
+                    <div class="js-gen-mobile mt-2 hidden grid-cols-2 gap-x-3 gap-y-2 [&.is-open]:grid">
+                        {% for edge in ['top', 'bottom', 'left', 'right'] %}{{ edgeInput(edge, 'data-mobile-edge') }}{% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+</template>
+
+{% footerscript %}
+<script type="module">
+    const _key = 'comic-generator';
+    const _edges = ['top', 'left', 'right', 'bottom'];
+    const _fullPage = { page: 0, top: 0, left: 0, right: 100, bottom: 100 };
+    const _sample = {
+        pages: ['/assets/img/comic/page-1.svg', '/assets/img/comic/page-2.svg'],
+        frames: [
+            _fullPage,
+            { page: 0, top: 2.5, left: 4, right: 96, bottom: 35.5, mobile: { top: 2.5, left: 38, right: 96, bottom: 35.5 } },
+            { page: 0, top: 35, left: 4, right: 50, bottom: 66 },
+            { page: 1, top: 0, left: 0, right: 100, bottom: 100 },
+        ],
+    };
+
+    const _el = {
+        slider: document.querySelector('.js-gen-slider'),
+        stage: document.querySelector('.js-gen-slider .js-comic-stage'),
+        wrap: document.querySelector('.js-gen-wrap'),
+        label: document.querySelector('.js-gen-label'),
+        views: document.querySelectorAll('.js-gen-view'),
+        mapImg: document.querySelector('.js-gen-map-img'),
+        mapRect: document.querySelector('.js-gen-map-rect'),
+        mapMobile: document.querySelector('.js-gen-map-mobile'),
+        pages: document.querySelector('.js-gen-pages'),
+        files: document.querySelector('.js-gen-files'),
+        frames: document.querySelector('.js-gen-frames'),
+        template: document.querySelector('.js-gen-frame-template'),
+        output: document.querySelector('.js-gen-output'),
+        status: document.querySelector('.js-gen-status'),
+    };
+
+    // saved work, or the sample
+    const _load = () => {
+        try {
+            const _saved = JSON.parse(localStorage.getItem(_key));
+            if (_saved?.pages && _saved?.frames) return _saved;
+        } catch {}
+        return structuredClone(_sample);
+    };
+    const _state = _load();
+    let _files = []; // object urls of local images, preview only
+    let _view = 'desktop';
+    let _slider = null;
+
+    const _save = () => {
+        try {
+            localStorage.setItem(_key, JSON.stringify({ pages: _state.pages, frames: _state.frames }));
+        } catch {}
+    };
+    const _round = (value) => Math.round(Math.min(Math.max(Number(value) || 0, 0), 100) * 100) / 100;
+    // the four edges, rounded, missing ones are the page's own
+    const _area = (rect) => Object.fromEntries(_edges.map((edge) => [edge, _round(rect[edge] ?? _fullPage[edge])]));
+    const _sources = () => _state.pages.map((src, i) => _files[i] ?? src);
+    const _status = (text) => (_el.status.textContent = text);
+
+    // one frame per line, js style
+    const _code = () => `[\n${_state.frames.map((frame) => `    ${JSON.stringify(frame).replace(/([{,])"(\w+)":/g, '$1 $2: ').replace(/}/g, ' }')},`).join('\n')}\n]`;
+
+    // the preview: a fresh slider whenever the pages change
+    const _build = () => {
+        _slider?.destroy();
+        _el.stage.replaceChildren(
+            ..._sources().map((src, i) => Object.assign(document.createElement('img'), { src, alt: `Page ${i + 1}` }))
+        );
+        _slider = new _comicSlider({
+            target: _el.slider,
+            frames: _state.frames,
+            mobile: () => _view === 'mobile',
+            events: { change: () => _select(_slider.index) },
+        });
+    };
+
+    const _select = (index) => {
+        _el.frames.querySelectorAll('.js-gen-frame').forEach((item, i) => {
+            item.classList.toggle('is-active', i === index);
+            item.querySelector('.js-gen-show').setAttribute('aria-expanded', i === index);
+            item.querySelector('.js-gen-body').inert = i !== index;
+        });
+        _el.label.textContent = _state.frames.length ? `Frame ${index + 1} / ${_state.frames.length}` : 'No frames';
+        _map(index);
+    };
+
+    // the whole page with the frame and its mobile area on it
+    const _map = (index) => {
+        const _frame = _state.frames[index];
+        if (!_frame) return;
+        const _src = _sources()[_frame.page] ?? '';
+        if (_el.mapImg.getAttribute('src') !== _src) _el.mapImg.src = _src;
+
+        const _place = (el, rect) => Object.assign(el.style, { top: `${rect.top}%`, left: `${rect.left}%`, width: `${rect.right - rect.left}%`, height: `${rect.bottom - rect.top}%` });
+        _place(_el.mapRect, _frame);
+        _el.mapMobile.classList.toggle('hidden', !_frame.mobile);
+        if (_frame.mobile) _place(_el.mapMobile, _frame.mobile);
+    };
+
+    // after any frame edit: save, show it, update the list and the code
+    const _changed = (index = _slider?.index ?? 0, { list = false } = {}) => {
+        _save();
+        if (list) _list();
+        _el.output.value = _code();
+        if (!_slider) return;
+        _slider.frames = _state.frames;
+        _slider.index = Math.max(Math.min(index, _state.frames.length - 1), 0);
+        _slider.show(_slider.index, { duration: 0 });
+    };
+
+    const _list = () => {
+        _el.frames.innerHTML = '';
+        _state.frames.forEach((frame, index) => {
+            const _item = _el.template.content.firstElementChild.cloneNode(true);
+            const _pageSelect = _item.querySelector('.js-gen-page');
+            const _mobile = _item.querySelector('.js-gen-mobile');
+            const _hasMobile = _item.querySelector('.js-gen-has-mobile');
+
+            _item.querySelector('.js-gen-title').textContent = `Frame ${index + 1}`;
+            // closed frames show their page and edges
+            const _summary = () => (_item.querySelector('.js-gen-summary').textContent = `p${frame.page + 1} · ${_edges.map((edge) => frame[edge]).join(', ')}${frame.mobile ? ' · mobile' : ''}`);
+            _summary();
+            _pageSelect.replaceChildren(..._state.pages.map((src, i) => new Option(i + 1, i)));
+            _pageSelect.value = frame.page;
+            _item.querySelectorAll('[data-edge]').forEach((input) => (input.value = frame[input.dataset.edge]));
+            _item.querySelectorAll('[data-mobile-edge]').forEach((input) => (input.value = frame.mobile?.[input.dataset.mobileEdge] ?? frame[input.dataset.mobileEdge]));
+            _hasMobile.checked = !!frame.mobile;
+            _mobile.classList.toggle('is-open', !!frame.mobile);
+
+            // editing a frame shows it right away, the mobile area in the mobile view
+            _item.querySelector('.js-gen-show').addEventListener('click', () => _slider?.show(index));
+            _pageSelect.addEventListener('change', () => {
+                frame.page = Number(_pageSelect.value);
+                _summary();
+                _changed(index);
+            });
+            _item.querySelectorAll('[data-edge]').forEach((input) =>
+                input.addEventListener('input', () => {
+                    frame[input.dataset.edge] = _round(input.value);
+                    _summary();
+                    if (_view === 'mobile' && frame.mobile) _setView('desktop');
+                    _changed(index);
+                })
+            );
+            _item.querySelectorAll('[data-mobile-edge]').forEach((input) =>
+                input.addEventListener('input', () => {
+                    frame.mobile[input.dataset.mobileEdge] = _round(input.value);
+                    _setView('mobile');
+                    _changed(index);
+                })
+            );
+            _hasMobile.addEventListener('change', () => {
+                if (_hasMobile.checked) frame.mobile = _area(frame);
+                else delete frame.mobile;
+                _setView(_hasMobile.checked ? 'mobile' : 'desktop');
+                _changed(index, { list: true });
+            });
+
+            // reorder, copy, delete
+            const _move = (to) => {
+                if (to < 0 || to >= _state.frames.length) return;
+                _state.frames.splice(to, 0, _state.frames.splice(index, 1)[0]);
+                _changed(to, { list: true });
+            };
+            _item.querySelector('.js-gen-up').addEventListener('click', () => _move(index - 1));
+            _item.querySelector('.js-gen-down').addEventListener('click', () => _move(index + 1));
+            _item.querySelector('.js-gen-copy-frame').addEventListener('click', () => {
+                _state.frames.splice(index + 1, 0, structuredClone(frame));
+                _changed(index + 1, { list: true });
+            });
+            _item.querySelector('.js-gen-delete').addEventListener('click', () => {
+                _state.frames.splice(index, 1);
+                _changed(Math.max(index - 1, 0), { list: true });
+            });
+
+            _el.frames.append(_item);
+        });
+        _select(_slider?.index ?? 0);
+    };
+
+    const _setView = (view) => {
+        if (view === _view) return;
+        _view = view;
+        _el.views.forEach((item) => item.classList.toggle('is-active', item.dataset.view === view));
+        _el.slider.classList.toggle('is-mobile', view === 'mobile');
+        // a phone-wide preview
+        _el.wrap.style.maxWidth = view === 'mobile' ? '24rem' : '';
+        _slider?.refresh();
+    };
+    _el.views.forEach((item) => item.addEventListener('click', () => _setView(item.dataset.view)));
+    _el.views[0].classList.add('is-active');
+
+    // pages: paths for the code, local files only for the preview
+    _el.pages.value = _state.pages.join('\n');
+    _el.pages.addEventListener('change', () => {
+        _state.pages = _el.pages.value.split('\n').map((line) => line.trim()).filter(Boolean);
+        _state.frames.forEach((frame) => (frame.page = Math.min(frame.page, Math.max(_state.pages.length - 1, 0))));
+        _build();
+        _changed(0, { list: true });
+    });
+    _el.files.addEventListener('change', () => {
+        _files.forEach((url) => URL.revokeObjectURL(url));
+        _files = [..._el.files.files].map((file) => URL.createObjectURL(file));
+        if (_files.length > _state.pages.length) {
+            _state.pages.push(...[..._el.files.files].slice(_state.pages.length).map((file) => file.name));
+            _el.pages.value = _state.pages.join('\n');
+        }
+        _build();
+        _changed(0, { list: true });
+    });
+
+    // − and +: a press steps 0.5, holding repeats and speeds up
+    const _step = (input, amount) => {
+        input.value = _round(Number(input.value) + amount);
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    let _hold = null;
+    const _release = () => {
+        clearTimeout(_hold?.timer);
+        _hold = null;
+    };
+    _el.frames.addEventListener('pointerdown', (e) => {
+        const _button = e.target.closest('[data-step]');
+        if (!_button || e.button !== 0) return;
+        e.preventDefault(); // keeps the focus where it is
+        const _input = _button.closest('.js-gen-num').querySelector('input');
+        const _direction = Number(_button.dataset.step);
+        _release();
+        _hold = { count: 0 };
+
+        const _repeat = (delay) => {
+            _step(_input, _direction * (_hold.count >= 20 ? 2 : 0.5));
+            _hold.count++;
+            _hold.timer = setTimeout(() => _hold && _repeat(Math.max(delay * 0.85, 40)), delay);
+        };
+        _repeat(400);
+    });
+    ['pointerup', 'pointercancel', 'blur'].forEach((type) => window.addEventListener(type, _release));
+    _el.frames.addEventListener('pointerleave', _release, true);
+
+    // shift + arrow keys step by 5
+    _el.frames.addEventListener('keydown', (e) => {
+        if (!e.shiftKey || !e.target.matches('.js-gen-num input') || !['ArrowUp', 'ArrowDown'].includes(e.key)) return;
+        e.preventDefault();
+        _step(e.target, e.key === 'ArrowUp' ? 5 : -5);
+    });
+
+    // a copy of the last frame, at the end
+    document.querySelector('.js-gen-add').addEventListener('click', () => {
+        const _last = _state.frames.at(-1);
+        _state.frames.push(structuredClone(_last ?? _fullPage));
+        _changed(_state.frames.length - 1, { list: true });
+    });
+
+    document.querySelector('.js-gen-copy').addEventListener('click', async () => {
+        try {
+            await navigator.clipboard.writeText(_el.output.value);
+            _status('Copied.');
+        } catch {
+            _el.output.select();
+            _status('Select all and copy it.');
+        }
+    });
+
+    document.querySelector('.js-gen-load').addEventListener('click', () => {
+        try {
+            // js style is fine: unquoted keys, trailing commas
+            const _json = _el.output.value.replace(/([{,]\s*)([a-z]+)\s*:/gi, '$1"$2":').replace(/,(\s*[}\]])/g, '$1');
+            const _frames = JSON.parse(_json);
+            if (!Array.isArray(_frames)) throw new Error();
+            _state.frames = _frames.map((frame) => ({
+                page: Math.max(0, Math.round(Number(frame.page) || 0)),
+                ..._area(frame),
+                ...(frame.mobile ? { mobile: _area(frame.mobile) } : {}),
+            }));
+            _changed(0, { list: true });
+            _status(`Loaded ${_state.frames.length} frames.`);
+        } catch {
+            _status('That is not a list of frames, e.g. [{ page: 0, top: 0, left: 0, right: 100, bottom: 100 }].');
+        }
+    });
+
+    document.querySelector('.js-gen-reset').addEventListener('click', () => {
+        if (!confirm('Start over with the sample? Your frames here will be replaced.')) return;
+        Object.assign(_state, structuredClone(_sample));
+        _el.pages.value = _state.pages.join('\n');
+        _build();
+        _changed(0, { list: true });
+        _status('');
+    });
+
+    _build();
+    _list();
+    _el.output.value = _code();
+</script>
+{% endfooterscript %}
