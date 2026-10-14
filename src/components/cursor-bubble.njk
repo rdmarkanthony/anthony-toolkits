@@ -3,6 +3,7 @@ title: Cursor bubble | Anthony Toolkits
 ---
 
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+{% from "components/atoms/icon.njk" import external %}
 
 {{ pageIntro({ label: '_cursorBubble', title: 'Cursor bubble', description: 'A dot that trails the mouse. It grows over big type and shows a label over cards. Mouse only, off on touch screens.' }) }}
 
@@ -26,17 +27,19 @@ title: Cursor bubble | Anthony Toolkits
 
 {# demo: labels, the last one with its own state #}
 {% set cards = [
-    { title: 'Project one', text: 'View project', bg: 'bg-sky-200' },
-    { title: 'Project two', text: 'View project', bg: 'bg-amber-200' },
-    { title: 'Project three', text: 'Open', bg: 'bg-emerald-200', state: 'blue' }
+    { title: 'Text', text: 'View project', bg: 'bg-sky-200' },
+    { title: 'Icon', text: 'Visit', icon: '#cursor-arrow', bg: 'bg-amber-200' },
+    { title: 'Emoji', text: '👀', bg: 'bg-emerald-200' },
+    { title: 'Own state', text: 'Open', bg: 'bg-rose-200', state: 'blue' }
 ] %}
+<template id="cursor-arrow">{{ external() }}</template>
 <section class="px-4 pt-12 pb-16">
     <div class="mx-auto max-w-295">
         <h2 class="mb-2 text-3xl font-bold tracking-tight">Labels</h2>
-        <p class="mb-8 max-w-2xl text-gray-600">The last card has its own state, a blue label.</p>
-        <div class="grid gap-4 md:grid-cols-3">
+        <p class="mb-8 max-w-2xl text-gray-600">Text, an icon, an emoji, and a blue label from its own state.</p>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {% for card in cards %}
-            <a class="flex aspect-4/3 items-end rounded-3xl {{ card.bg }} p-6 text-xl font-bold" href="#" data-cursor-text="{{ card.text }}"{% if card.state %} data-cursor="{{ card.state }}"{% endif %}>{{ card.title }}</a>
+            <a class="flex aspect-4/3 items-end rounded-3xl {{ card.bg }} p-6 text-xl font-bold" href="#" data-cursor-text="{{ card.text }}"{% if card.icon %} data-cursor-icon="{{ card.icon }}"{% endif %}{% if card.state %} data-cursor="{{ card.state }}"{% endif %}>{{ card.title }}</a>
             {% endfor %}
         </div>
     </div>
@@ -48,6 +51,11 @@ title: Cursor bubble | Anthony Toolkits
 
 <!-- a label next to the dot -->
 <a data-cursor-text="View project">...</a>
+
+<!-- an icon from a template, text optional, emoji are text -->
+<template id="cursor-arrow"><svg>...</svg></template>
+<a data-cursor-icon="#cursor-arrow" data-cursor-text="Visit">...</a>
+<a data-cursor-text="👀">...</a>
 
 <!-- no dot over this -->
 <button data-cursor="hidden">...</button>
