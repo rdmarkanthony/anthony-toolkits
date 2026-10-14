@@ -43,7 +43,7 @@ title: Inview | Anthony Toolkits
     // JS
         // src/assets/js/utils/_inview.js
 
-// marks the card and its pill, instance.visible is true when in view
+// marks the card and its pill while in view
 const _mark = (instance) => {
     const _card = instance.target;
     const _status = document.querySelector(`.js-inview-status[data-for="${_card.id}"]`);
@@ -56,7 +56,7 @@ const _mark = (instance) => {
 
 const _cards = document.querySelectorAll('.js-inview-card');
 
-// once (default): the first time it's in view, then it stops watching
+// once (default): the first time in view only
 new _inview({ target: _cards[0], callback: _mark });
 
 // every time it enters and leaves

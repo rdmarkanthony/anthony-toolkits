@@ -37,7 +37,7 @@ export default function (eleventyConfig) {
                 parser: "html",
                 printWidth: 300,
                 tabWidth: 4,
-                // keep inline scripts as written, e.g. the indented // Requirements
+                // keep inline scripts as written
                 embeddedLanguageFormatting: "off",
             });
         }

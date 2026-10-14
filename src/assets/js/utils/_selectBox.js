@@ -2,14 +2,14 @@ import { _emitter } from "./_emitter";
 import { _filter } from "./_filter";
 
 // usage: new _selectBox({ target, search, render, label, classes, nativeOnTouch, events }), target is a single <select>
-// the native select stays in the form and keeps the value: use box.value or its change event like any field
-// classes: each key replaces its default, project-wide with Object.assign(_selectBox.classes, { button: "..." })
-// a placeholder is an option with value="", e.g. <option value="" disabled selected hidden>Choose</option>
+// the native select keeps the value, read it like any field
+// classes: override with Object.assign(_selectBox.classes, {...})
+// placeholder: <option value="" disabled selected hidden>Choose</option>
 const _instances = new WeakMap();
 let _count = 0;
 
 export class _selectBox extends _emitter {
-    // the look, state comes from attributes: aria-expanded, aria-selected, aria-disabled, aria-invalid, data-active, data-placeholder
+    // the look, states from aria-* and data-* attributes
     static classes = {
         box: "w-full",
         button: "flex w-full cursor-pointer items-center justify-between gap-3 rounded-md border border-gray-300 bg-white px-4 py-3 text-left transition-colors duration-200 hover:border-gray-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-950 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-red-600 data-placeholder:text-gray-400",
@@ -63,7 +63,7 @@ export class _selectBox extends _emitter {
     init() {
         this.style();
 
-        // the box takes the select's place, the select stays inside for forms
+        // the box replaces the select, which stays inside
         this.el.box = this.create("div", "box");
         this.el.box.classList.add("js-select-box");
         this.el.box.classList.toggle("is-native", this.native);
@@ -78,7 +78,7 @@ export class _selectBox extends _emitter {
         this.el.button.setAttribute("aria-haspopup", "listbox");
         this.el.button.setAttribute("aria-expanded", "false");
         this.el.button.setAttribute("aria-controls", `${this.id}-list`);
-        // with the phone's picker, the select is the field for keyboards and screen readers
+        // native: the select takes focus and screen readers
         if (this.native) {
             this.el.button.tabIndex = -1;
             this.el.button.setAttribute("aria-hidden", "true");
@@ -151,7 +151,7 @@ export class _selectBox extends _emitter {
     listen() {
         this.onButtonClick = () => (this.active ? this.hide() : this.show());
         this.onKeydown = (e) => this.keydown(e);
-        // Space opens it on keydown, so the button's own click on keyup must not close it again
+        // Space opens on keydown, skip the keyup click
         this.onKeyup = (e) => e.key === " " && e.preventDefault();
         this.onSearch = () => this.filter();
         this.onListClick = (e) => {
@@ -189,7 +189,7 @@ export class _selectBox extends _emitter {
         this.observer.observe(this.target, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["disabled", "hidden", "label"] });
     }
 
-    // rebuild the list from the select's options, runs by itself when they change
+    // rebuild the list, runs when the options change
     refresh() {
         this.items = [];
         this.el.list.innerHTML = "";
@@ -351,7 +351,7 @@ export class _selectBox extends _emitter {
         }
     }
 
-    // the next option that can be picked, from index in direction, or the last one there was
+    // next pickable option in that direction, or the last
     step(from, direction, count = 1) {
         let _index = from;
         let _found = from;
@@ -434,7 +434,7 @@ export class _selectBox extends _emitter {
         }
     }
 
-    // typing jumps to the option that starts with the letters, like a native select
+    // typing jumps to a matching option, like a native select
     typeahead(key) {
         clearTimeout(this.typedTimer);
         this.typedTimer = setTimeout(() => (this.typed = ""), 500);
@@ -505,7 +505,7 @@ export class _selectBox extends _emitter {
         _style.classList.add("js-select-box-style");
         _style.innerHTML =
             `.js-select-box { position: relative; }` +
-            // the select stays for forms and their validation message, under the button
+            // the select stays under the button for validation
             `.js-select-box > select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }` +
             // nativeOnTouch: the select on top opens the phone's picker
             `.js-select-box.is-native > select { z-index: 2; pointer-events: auto; }` +

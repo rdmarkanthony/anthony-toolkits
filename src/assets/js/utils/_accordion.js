@@ -2,7 +2,7 @@ import { _emitter } from "./_emitter";
 
 // usage: new _accordion({ target, closeOthers, openFirst, duration, events })
 // markup: target > .js-accordion-set > .js-accordion-set-title (a button) + .js-accordion-set-content
-// the open set gets .active, closed contents hidden="until-found" for find in page
+// open set gets .active, closed ones hidden="until-found"
 let _count = 0;
 
 export class _accordion extends _emitter {

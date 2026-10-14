@@ -12,7 +12,7 @@ const ctx = await esbuild.context({
     sourcemap: true,
     outbase: "src/assets/js",
     outdir: "public/assets/js",
-    // dynamic imports go to chunks, e.g. hls.js loads only on pages with a video
+    // dynamic imports go to chunks, loaded only when used
     splitting: true,
     chunkNames: "chunks/[name]-[hash]",
     format: "esm",

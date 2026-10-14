@@ -12,11 +12,12 @@
 @import "./components/link-underline.css";
 @import "./components/themes.css";
 @import "./components/fluid.css";
+@import "./components/parallax.css";
 
 /*
-    toolkit look, from the portfolio (light theme)
-    kit-* colors are for this site's own frame only: header, footer, home and the page atoms
-    demos and code samples use plain Tailwind colors, so they still work when copied out
+    toolkit look, light theme
+    kit-* colors: this site's frame only
+    demos use plain Tailwind colors, so they copy out
 */
 @theme {
     --color-kit-bg: #ffffff;

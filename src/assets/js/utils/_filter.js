@@ -1,7 +1,7 @@
 // filters [data-filter-item] by the text typed in [data-filter-input]
-// optional: [data-filter-group] hides when none of its items match, [data-filter-empty] shows when nothing matches
+// optional: [data-filter-group] hides if empty, [data-filter-empty] shows on no match
 export const _filter = {
-    // the same test for anything that should agree with the list, e.g. search suggestions
+    // shared match test, e.g. for search suggestions
     match(text, query) {
         return String(text).toLowerCase().includes(query.trim().toLowerCase());
     },

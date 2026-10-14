@@ -5,7 +5,7 @@ export class _inview {
         this.target = props.target ?? null;
         this.observeOnce = props.observeOnce !== false;
         this.observeRatio = props.observeRatio ?? 0;
-        // the observer only reports at its thresholds, so it has to include the ratio
+        // thresholds must include the ratio
         this.threshold = props.threshold ?? this.observeRatio;
         this.delay = props.delay ?? 0;
 

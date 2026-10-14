@@ -9,16 +9,15 @@
 {%- endmacro %}
 
 {#
-    external (↗) icon for links that open in a new tab, sized and colored by the text around it
-    also adds screen reader text, so the link reads "GitHub (opens in a new tab)"
-    usage: {{ external() }}, {{ external('group-hover:-translate-y-0.5') }}, a size- class replaces the default size
+    external (↗) icon for new-tab links, adds screen reader text
+    usage: {{ external() }}, {{ external('group-hover:-translate-y-0.5') }}
 #}
 {% macro external(class) -%}
 <svg class="inline-block {{ 'size-[1.05em]' if 'size-' not in (class or '') }} shrink-0 transition-transform {{ class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg><span class="sr-only">(opens in a new tab)</span>
 {%- endmacro %}
 
 {#
-    search (magnifier), menu (burger) and close (×) icons, sized and colored by the text around them
+    search, menu and close icons, sized by the text around them
     usage: {{ search() }}, {{ menu('size-6') }}, {{ close('size-6') }}
 #}
 {% macro search(class) -%}

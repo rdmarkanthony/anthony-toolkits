@@ -44,7 +44,7 @@ title: Events | Anthony Toolkits
     // JS
         // src/assets/js/utils/_event.js
 
-// resize: state is init, ready (page loaded), resize, or after (300ms after the last resize)
+// resize: state is init, ready, resize, or after (300ms later)
 const _size = document.querySelector('.js-event-size');
 const _state = document.querySelector('.js-event-state');
 
@@ -64,7 +64,7 @@ _event.scroll(() => {
     _progress.style.transform = `scaleX(${_max ? window.scrollY / _max : 0})`;
 });
 
-// element size: when the element itself changes size, not only the window
+// element size: when the element itself resizes
 const _box = document.querySelector('.js-event-box');
 const _boxSize = document.querySelector('.js-event-box-size');
 

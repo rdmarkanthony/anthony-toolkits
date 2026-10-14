@@ -1,0 +1,26 @@
+/*
+    parallax background and floating, --range from _parallax.js
+    eased: the script sets --offset, a transition eases it
+*/
+@layer components {
+    @media (prefers-reduced-motion: no-preference) {
+        /* taller by the range, so it always covers */
+        [data-parallax-background] {
+            top: 0;
+            height: calc(100% + var(--range, 500px));
+        }
+
+        /* --offset: -1 as it enters the screen, 1 as it leaves */
+        [data-parallax-background][data-parallax-offset] {
+            translate: 0 calc((var(--offset, 1) - 1) * var(--range, 500px) / 2);
+            will-change: translate;
+        }
+        [data-parallax-floating][data-parallax-offset] {
+            translate: 0 calc((var(--offset, -1) + 1) * var(--range, 50px) / 2);
+            will-change: translate;
+        }
+        [data-parallax-offset="easing"] {
+            transition: translate 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+        }
+    }
+}

@@ -17,7 +17,7 @@ title: Peek slider | Sliders | Anthony Toolkits
     { class: 'bg-emerald-100' }
 ] %}
 
-{# demo: 1.2 cards on mobile, 2.2 from 768px, 3.2 from 1024px, the util's defaults #}
+{# demo: the defaults, 1.2, 2.2 and 3.2 cards #}
 <section class="overflow-hidden px-4 pb-16">
     <div class="js-slider-peek mx-auto max-w-295">
         <div class="swiper overflow-visible">
@@ -66,7 +66,7 @@ title: Peek slider | Sliders | Anthony Toolkits
 document.querySelectorAll('.js-slider-peek').forEach((target) => {
     const _slider = new _peekSlider({ target });
 
-    // Swiper options and ease replace the defaults, e.g. { target, speed: 600, ease: 'ease-out' }
+    // Swiper options and ease, e.g. { target, speed: 600, ease: 'ease-out' }
     // _slider.ready.then((swiper) => swiper.on('slideChange', () => swiper.activeIndex))
 });
 {% endraw %}{% endset %}

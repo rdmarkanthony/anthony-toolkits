@@ -2,32 +2,24 @@
 title: Video Intro | Scrolling Animation | Anthony Toolkits
 ---
 
-{% from "components/atoms/back-link.njk" import backLink %}
 {% from "components/atoms/icon.njk" import angle %}
-{% from "components/atoms/code-block.njk" import codeBlock %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
 
 {# covers the sticky video until the intro #}
-<div class="relative z-2 min-h-screen bg-white">
-    <section class="px-4 pt-24 pb-16 md:pt-32">
-        <div class="mx-auto max-w-295">
-            {{ backLink({ label: 'Scrolling animation', url: '/components/scrolling-animation/' }) }}
-            <p class="mb-4 font-mono text-sm text-gray-500">Demo · _parallaxScroller · _hlsVideo</p>
-            <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">Video intro</h1>
-            <p class="mb-16 max-w-2xl text-lg text-gray-600 md:text-xl">A sticky video whose dark cover fades as the section scrolls in, then titles step in one at a time as each reaches the middle of the screen.</p>
-            <p class="flex animate-bounce items-center gap-1 text-sm font-medium">Scroll down {{ angle('down') }}</p>
-        </div>
-    </section>
+<div class="relative z-2 min-h-screen bg-kit-bg">
+    {{ pageIntro({ back: { label: 'Scrolling animation', url: '/components/scrolling-animation/' }, label: '_parallaxScroller · _hlsVideo', title: 'Video intro', description: 'A sticky video whose dark cover fades as the section scrolls in, then titles step in one at a time as each reaches the middle of the screen.' }) }}
+    <p class="mx-auto -mt-4 flex max-w-295 animate-bounce items-center gap-1 px-4 pb-16 text-sm font-medium [box-sizing:content-box]">Scroll down {{ angle('down') }}</p>
 </div>
 
 {# demo #}
 <div class="js-title-intro relative z-1 min-h-[150vh] bg-black text-white">
     <div class="sticky top-0 mt-[-100vh] h-screen w-full overflow-hidden">
         <video class="js-hls-video absolute inset-0 size-full object-cover" data-src="/assets/video/sample-video/sample-video.m3u8" muted playsinline loop autoplay disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
-        {# default dim, stays after the cover fades so the titles are readable #}
+        {# default dim, keeps the titles readable #}
         <div class="absolute inset-0 bg-black/50"></div>
         <div class="js-title-intro-cover absolute inset-0 bg-black"></div>
     </div>
-    <div class="js-title-intro-content relative z-2 pt-[50vh]">
+    <div class="js-title-intro-content relative z-2 pt-[50vh] pb-[35vh]">
         <div class="px-4">
             <div class="mx-auto max-w-295 text-center">
                 <ul class="js-title-intro-list">
@@ -35,26 +27,15 @@ title: Video Intro | Scrolling Animation | Anthony Toolkits
                     <li class="translate-y-17.5 pb-20 opacity-0 transition duration-500 last:pb-0 data-[state=active]:translate-y-0 data-[state=active]:opacity-100 data-[state=past]:-translate-y-17.5"><h2 class="mb-2 text-5xl leading-[1.2] font-bold md:text-[80px]">The cover fades as the section enters</h2></li>
                     <li class="translate-y-17.5 pb-20 opacity-0 transition duration-500 last:pb-0 data-[state=active]:translate-y-0 data-[state=active]:opacity-100 data-[state=past]:-translate-y-17.5"><h2 class="mb-2 text-5xl leading-[1.2] font-bold md:text-[80px]">Each title steps in at mid screen</h2></li>
                     <li class="translate-y-17.5 pb-20 opacity-0 transition duration-500 last:pb-0 data-[state=active]:translate-y-0 data-[state=active]:opacity-100 data-[state=past]:-translate-y-17.5"><h2 class="mb-2 text-5xl leading-[1.2] font-bold md:text-[80px]">States are data attributes</h2></li>
-                    {# the last title holds at mid screen until the video unpins #}
-                    <li class="flow-root min-h-[80vh] translate-y-17.5 opacity-0 transition duration-500 data-[state=active]:translate-y-0 data-[state=active]:opacity-100">
-                        <div class="sticky top-0 -mt-[50vh] min-h-screen pt-[50vh]"><h2 class="mb-2 -translate-y-1/2 text-5xl leading-[1.2] font-bold md:text-[80px]">Copy the section and its script</h2></div>
-                    </li>
+                    <li class="translate-y-17.5 pb-20 opacity-0 transition duration-500 last:pb-0 data-[state=active]:translate-y-0 data-[state=active]:opacity-100 data-[state=past]:-translate-y-17.5"><h2 class="mb-2 text-5xl leading-[1.2] font-bold md:text-[80px]">Copy the section and its script</h2></li>
                 </ul>
             </div>
         </div>
     </div>
 </div>
 
-<section class="px-4 py-24">
-    <div class="mx-auto max-w-295">
-        <h2 class="mb-8 text-3xl font-bold tracking-tight">How it's built</h2>
-        <div class="grid gap-10">
-            <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
-                <div>
-                    <h3 class="mb-2 text-xl font-semibold">Markup</h3>
-                    <p class="text-gray-600">A tall section with a sticky, screen-high video. The negative top margin pulls the video up a screen so it's already pinned when the section scrolls in, so the content above needs a higher <code class="font-mono text-sm">z-index</code> and a background. A fixed dim keeps the titles readable over bright footage, and the black cover on top of it fades out. The last title sits in a screen-high sticky box, pulled up half a screen so the title starts at its middle. The box's bottom meets the section's, so the title holds at mid screen and unpins together with the video. Its <code class="font-mono text-sm">min-h</code> beyond <code class="font-mono text-sm">50vh</code> sets how long it holds. Each title is styled by its <code class="font-mono text-sm">data-state</code>: <code class="font-mono text-sm">active</code> or <code class="font-mono text-sm">past</code>.</p>
-                </div>
-                {% set code %}{% raw %}
+{% set markup %}{% raw %}
+<!-- content above needs a z-index and a background -->
 <section class="js-title-intro relative min-h-[150vh] bg-black text-white">
     <div class="sticky top-0 mt-[-100vh] h-screen overflow-hidden">
         <video class="js-hls-video absolute inset-0 size-full object-cover" data-src="/assets/video/sample-video/sample-video.m3u8" muted playsinline loop autoplay></video>
@@ -63,25 +44,27 @@ title: Video Intro | Scrolling Animation | Anthony Toolkits
         <!-- fades out as the section scrolls in -->
         <div class="js-title-intro-cover absolute inset-0 bg-black"></div>
     </div>
-    <div class="js-title-intro-content relative pt-[50vh] text-center">
+    <div class="js-title-intro-content relative pt-[50vh] pb-[35vh] text-center">
         <ul class="js-title-intro-list">
-            <li class="pb-20 opacity-0 transition data-[state=active]:opacity-100"><h2>...</h2></li>
-            <!-- the last title holds at mid screen until the video unpins -->
-            <li class="flow-root min-h-[80vh] opacity-0 transition data-[state=active]:opacity-100">
-                <div class="sticky top-0 -mt-[50vh] min-h-screen pt-[50vh]"><h2 class="-translate-y-1/2">...</h2></div>
-            </li>
+            <!-- data-state is active or past -->
+            <li class="pb-20 opacity-0 transition last:pb-0 data-[state=active]:opacity-100"><h2>...</h2></li>
         </ul>
     </div>
 </section>
-                {% endraw %}{% endset %}
-                {{ codeBlock(code, 'html') }}
-            </div>
-            <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
-                <div>
-                    <h3 class="mb-2 text-xl font-semibold">Script</h3>
-                    <p class="text-gray-600"><code class="font-mono text-sm">_parallaxScroller</code> follows the content from when it enters the screen until its top reaches the top, and fades the cover out over that range. On resize it also measures where the titles start fading in, and where each title reaches the middle of the screen. On scroll, the last title past that point is <code class="font-mono text-sm">active</code>.</p>
-                </div>
-                {% set code %}{% raw %}
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // hls.js
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_parallax.js
+        // src/assets/js/utils/_hlsVideo.js
+
+// hls videos
+document.querySelectorAll('.js-hls-video').forEach((target) => new _hlsVideo({ target }));
+
 new _parallaxScroller({
     target: document.querySelector('.js-title-intro-content'),
     events: {
@@ -89,6 +72,10 @@ new _parallaxScroller({
             scroller.el.cover = scroller.target.closest('.js-title-intro').querySelector('.js-title-intro-cover');
             scroller.el.listWrap = scroller.target.querySelector('.js-title-intro-list');
             scroller.el.list = [...scroller.el.listWrap.children];
+
+            // the browser fades these in step with the scroll
+            scroller.animate(scroller.el.cover, { opacity: [1, 0] }); // over the whole range
+            scroller.animate(scroller.target, { opacity: [0, 1] }, (scroller) => scroller.fade); // over the range measured on resize
         },
         resize(scroller) {
             const _height = _parallax.height();
@@ -102,15 +89,9 @@ new _parallaxScroller({
             scroller.fade = [_top - _height * 0.4, _parallax.getOffset(scroller.el.listWrap).top - _height * 0.55];
 
             // when each title reaches the middle of the display
-            scroller.steps = scroller.el.list.map((item) => _parallax.getOffset(item).top - _height * 0.5 - item.querySelector('h2').offsetHeight * 0.25);
+            scroller.steps = scroller.el.list.map((item) => _parallax.getOffset(item).top - _height * 0.5 - item.offsetHeight * 0.25);
         },
         update(scroller) {
-            // animate the video dim cover
-            gsap.set(scroller.el.cover, { opacity: 1 - _parallax.clamp(scroller.offset.current) });
-
-            // animate the titles parent container
-            gsap.set(scroller.target, { opacity: _parallax.clamp(scroller.portion(...scroller.fade)) });
-
             // which title is in the middle of the display
             const _scrollTop = _parallax.scrollTop();
             const _current = scroller.steps.reduce((current, step, index) => (_scrollTop >= step ? index : current), 0);
@@ -122,65 +103,15 @@ new _parallaxScroller({
         },
     },
 });
-                {% endraw %}{% endset %}
-                {{ codeBlock(code, 'js') }}
-            </div>
-        </div>
-    </div>
-</section>
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'A tall section with a sticky, screen-high video. The fixed dim keeps the titles readable, and the black cover on top of it fades out. Each title is styled by its <code class="font-mono text-sm">data-state</code>.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">animate()</code> hands the fades to the browser, so they stay smooth on phones. On resize the script measures where each title reaches the middle of the screen, and on scroll the last one past that point is <code class="font-mono text-sm">active</code>.'
+}) }}
 
 {% footerscript %}
-<script type="module">
-    // Requirements
-        // JS
-            // gsap
-            // src/assets/js/utils/_event.js
-            // src/assets/js/utils/_parallax.js
-            // hls.js, src/assets/js/utils/_hlsVideo.js
-
-    // hls videos
-    document.querySelectorAll('.js-hls-video').forEach((target) => new _hlsVideo({ target }));
-
-    // animate the intro section with video banner
-    new _parallaxScroller({
-        target: document.querySelector('.js-title-intro-content'),
-        events: {
-            init(scroller) {
-                scroller.el.cover = scroller.target.closest('.js-title-intro').querySelector('.js-title-intro-cover');
-                scroller.el.listWrap = scroller.target.querySelector('.js-title-intro-list');
-                scroller.el.list = [...scroller.el.listWrap.children];
-            },
-            resize(scroller) {
-                const _height = _parallax.height();
-                const _top = _parallax.getOffset(scroller.target).top;
-
-                // while the content enters the screen
-                scroller.offset.top = _top - _height;
-                scroller.offset.bottom = _top;
-
-                // for the titles fade in
-                scroller.fade = [_top - _height * 0.4, _parallax.getOffset(scroller.el.listWrap).top - _height * 0.55];
-
-                // when each title reaches the middle of the display
-                scroller.steps = scroller.el.list.map((item) => _parallax.getOffset(item).top - _height * 0.5 - item.querySelector('h2').offsetHeight * 0.25);
-            },
-            update(scroller) {
-                // animate the video dim cover
-                gsap.set(scroller.el.cover, { opacity: 1 - _parallax.clamp(scroller.offset.current) });
-
-                // animate the titles parent container
-                gsap.set(scroller.target, { opacity: _parallax.clamp(scroller.portion(...scroller.fade)) });
-
-                // which title is in the middle of the display
-                const _scrollTop = _parallax.scrollTop();
-                const _current = scroller.steps.reduce((current, step, index) => (_scrollTop >= step ? index : current), 0);
-
-                // show the current title
-                scroller.el.list.forEach((item, index) => {
-                    item.dataset.state = index < _current ? 'past' : index === _current ? 'active' : '';
-                });
-            },
-        },
-    });
-</script>
+<script type="module">{{ pageScript | safe }}</script>
 {% endfooterscript %}

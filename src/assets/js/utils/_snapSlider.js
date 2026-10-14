@@ -1,7 +1,7 @@
-// native scroll-snap card row: touch and trackpad scroll it, a mouse drags it, buttons glide one card
+// scroll-snap card row, a mouse drags it
 // usage: new _snapSlider({ target }), target holds .js-snap-track (the scroller, cards inside)
-// optional .js-snap-prev and .js-snap-next, disabled at the ends; duration (ms) and ease (0-1 function) for the glide
-// each card gets --offset (-1 to 1, 0 when it's at the snap spot) and --near (1 to 0), for parallax in css
+// optional .js-snap-prev/.js-snap-next; duration (ms), ease for the glide
+// cards get --offset (-1 to 1) and --near (1 to 0) for css
 const _easeOut = (t) => 1 - Math.pow(1 - t, 4);
 
 export class _snapSlider {
@@ -175,7 +175,7 @@ export class _snapSlider {
         window.removeEventListener("pointercancel", this.handlers.up);
         delete this.el.track.dataset.dragging;
 
-        // land on the card nearest to where the throw would end, at most one card further
+        // land on the nearest card, at most one further
         const _track = this.el.track;
         const _card = _track.children[0]?.offsetWidth ?? 0;
         const _speed = performance.now() - this.drag.time > 80 ? 0 : this.drag.speed;

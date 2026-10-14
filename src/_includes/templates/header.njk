@@ -2,9 +2,9 @@
 {%- from "components/atoms/code-block.njk" import codeBlock -%}
 {#
     site header, sticky with a frosted background
-    url: the current page.url, marks Components as active on component pages
-    inner pages get the search here, the home page has its own in the hero (both use #search-items)
-    below lg the links and the search move into the sliding menu
+    url: page.url, marks Components active on component pages
+    search on inner pages, the home page has its own
+    below lg the links and search move into the sliding menu
 #}
 {% macro header(props) %}
 {%- set onHome = props.url == '/' -%}
@@ -28,7 +28,7 @@
     </div>
 </header>
 
-{# sliding menu, outside the header since its backdrop blur would trap a fixed child #}
+{# sliding menu, outside the header so the blur doesn't trap it #}
 <div id="mobile-menu" class="group invisible fixed inset-0 z-50 transition-[visibility] delay-500 duration-0 data-open:visible data-open:delay-0 lg:hidden" data-mobile-menu>
     <div class="absolute inset-0 bg-kit-text/30 opacity-0 transition-opacity duration-500 group-data-open:opacity-100" data-mobile-menu-close></div>
     <div class="absolute inset-y-0 right-0 flex w-full max-w-sm translate-x-full flex-col overflow-y-auto bg-kit-bg px-4 pb-8 shadow-2xl transition-transform duration-500 ease-out-expo group-data-open:translate-x-0 sm:px-6" role="dialog" aria-modal="true" aria-label="Menu" data-mobile-menu-panel>
@@ -80,7 +80,7 @@
 </div>
 {% endif %}
 
-{# the suggestions, text is what the home page filters on, so both agree #}
+{# the suggestions, same text the home page filters on #}
 {%- set searchItems = [] -%}
 {%- for group in props.components -%}
     {%- for item in group.items -%}
@@ -100,8 +100,8 @@
 {% endmacro %}
 
 {#
-    search with suggestions, script.js sets it up with _autocomplete
-    Enter with no suggestion picked goes to the home page with ?q=, which shows the results
+    search with suggestions, set up in script.js
+    Enter with no pick goes to /?q=
 #}
 {% macro searchForm(props) %}
 <form class="relative {{ props.class }}" action="/" method="get" role="search" data-search>

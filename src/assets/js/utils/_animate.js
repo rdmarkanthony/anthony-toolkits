@@ -212,7 +212,7 @@ export class _animate {
             target.style.animationDelay = _delay;
         }
 
-        // keep its own timing, a parent's --animate-* is removed on clean
+        // keep its own timing on clean
         target.style.animationDuration = _styles.animationDuration;
         target.style.animationDelay = _styles.animationDelay;
 

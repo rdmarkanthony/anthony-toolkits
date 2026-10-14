@@ -2,19 +2,12 @@
 title: Background | Scrolling Animation | Anthony Toolkits
 ---
 
-{% from "components/atoms/back-link.njk" import backLink %}
 {% from "components/atoms/icon.njk" import angle %}
-{% from "components/atoms/code-block.njk" import codeBlock %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
 
-<section class="px-4 pt-24 pb-16 md:pt-32">
-    <div class="mx-auto max-w-295">
-        {{ backLink({ label: 'Scrolling animation', url: '/components/scrolling-animation/' }) }}
-        <p class="mb-4 font-mono text-sm text-gray-500">Demo · _parallaxBackground · _parallaxFloating</p>
-        <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">Parallax background</h1>
-        <p class="mb-16 max-w-2xl text-lg text-gray-600 md:text-xl">Backgrounds that move slower than the page, so they look further away. Add a data attribute to the background, the script does the rest.</p>
-        <p class="flex animate-bounce items-center gap-1 text-sm font-medium">Scroll down {{ angle('down') }}</p>
-    </div>
-</section>
+{{ pageIntro({ back: { label: 'Scrolling animation', url: '/components/scrolling-animation/' }, label: '_parallaxBackground · _parallaxFloating', title: 'Parallax background', description: 'Backgrounds that move slower than the page, so they look further away. Add a data attribute, the script does the rest.' }) }}
+
+<p class="mx-auto -mt-4 mb-16 flex max-w-295 animate-bounce items-center gap-1 px-4 text-sm font-medium [box-sizing:content-box]">Scroll down {{ angle('down') }}</p>
 
 {# demo: full width background #}
 <section class="relative min-h-screen">
@@ -66,87 +59,49 @@ title: Background | Scrolling Animation | Anthony Toolkits
     </div>
 </section>
 
-<section class="px-4 py-24">
-    <div class="mx-auto max-w-295">
-        <h2 class="mb-8 text-3xl font-bold tracking-tight">How it's built</h2>
-        <div class="grid gap-10">
-            <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
-                <div>
-                    <h3 class="mb-2 text-xl font-semibold">Background markup</h3>
-                    <p class="text-gray-600">The background fills an <code class="font-mono text-sm">overflow-hidden</code> parent. The script makes it taller by the range so it always covers the parent, and moves it from <code class="font-mono text-sm">-range</code> to 0 as the parent crosses the screen.</p>
-                </div>
-                {% set code %}{% raw %}
+{% set markup %}{% raw %}
+<!-- background: fills an overflow-hidden parent -->
 <section class="relative min-h-screen">
     <div class="absolute inset-0 overflow-hidden">
-        <div class="absolute inset-0 bg-cover bg-center" data-parallax-background="100,easing" style="background-image: url('/assets/img/sample-image.webp')"></div>
+        <div class="absolute inset-0 bg-cover bg-center" data-parallax-background="200,easing" style="background-image: url('...')"></div>
     </div>
 </section>
-                {% endraw %}{% endset %}
-                {{ codeBlock(code, 'html') }}
-            </div>
-            <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
-                <div>
-                    <h3 class="mb-2 text-xl font-semibold">Floating markup</h3>
-                    <p class="text-gray-600">Any element works. To fill a frame, make it taller than the frame by the range and start it that far above, so no gap shows at the top as it moves down.</p>
-                </div>
-                {% set code %}{% raw %}
-<!-- 80px range: 80px taller, starting 80px above -->
+
+<!-- floating: taller by the range, moved up by it -->
 <div class="relative aspect-3/2 overflow-hidden">
-    <img class="absolute inset-x-0 -top-20 h-[calc(100%+80px)] w-full object-cover" data-parallax-floating="80" src="/assets/img/sample-image.webp" alt="" />
+    <img class="absolute inset-x-0 -top-20 h-[calc(100%+80px)] w-full object-cover" data-parallax-floating="80" src="..." alt="" />
 </div>
-                {% endraw %}{% endset %}
-                {{ codeBlock(code, 'html') }}
-            </div>
-            <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
-                <div>
-                    <h3 class="mb-2 text-xl font-semibold">Script</h3>
-                    <p class="text-gray-600">One instance per element. The options come from the data attributes. Both stay still when reduced motion is on.</p>
-                </div>
-                {% set code %}{% raw %}
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_parallax.js
+    // CSS
+        // src/assets/css/components/parallax.css
+
+// data-parallax-background="range,easing", range default 500
 document.querySelectorAll('[data-parallax-background]').forEach((target) => {
     new _parallaxBackground({ target });
 });
 
+// data-parallax-floating="range", range default 50, always eased
 document.querySelectorAll('[data-parallax-floating]').forEach((target) => {
     new _parallaxFloating({ target });
 });
-                {% endraw %}{% endset %}
-                {{ codeBlock(code, 'js') }}
-            </div>
-            <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
-                <div>
-                    <h3 class="mb-2 text-xl font-semibold">Options</h3>
-                    <p class="text-gray-600">Set in the data attribute, or as props when there's no attribute value.</p>
-                </div>
-                <dl class="grid gap-x-6 gap-y-1 rounded-2xl border border-gray-200 p-6 text-sm md:grid-cols-[auto_1fr] md:gap-y-3">
-                    <dt class="font-mono font-semibold">data-parallax-background="range,easing"</dt>
-                    <dd class="mb-3 text-gray-600 last:mb-0 md:mb-0">range in pixels, default 500. Add <code class="font-mono">easing</code> to ease it.</dd>
-                    <dt class="font-mono font-semibold">data-parallax-floating="range"</dt>
-                    <dd class="mb-3 text-gray-600 last:mb-0 md:mb-0">range in pixels, default 50. Always eased.</dd>
-                    <dt class="font-mono font-semibold">{ range, easing }</dt>
-                    <dd class="mb-3 text-gray-600 last:mb-0 md:mb-0">Same options as props, e.g. <code class="font-mono">new _parallaxBackground({ target, range: 200 })</code></dd>
-                </dl>
-            </div>
-        </div>
-    </div>
-</section>
+
+// range: px or any css length, or props: { target, range: 200, easing: true }
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The background moves from <code class="font-mono text-sm">-range</code> to 0 as its parent crosses the screen. Floating moves from 0 to its range as it crosses the screen.',
+    code: pageScript,
+    note: 'The browser moves the background in step with the scroll, so it stays smooth on phones. Eased ones and older browsers get their position from the script. Both stay still when reduced motion is on.'
+}) }}
 
 {% footerscript %}
-<script type="module">
-    // Requirements
-        // JS
-            // gsap
-            // src/assets/js/utils/_event.js
-            // src/assets/js/utils/_parallax.js
-
-    // for parallax background
-    document.querySelectorAll('[data-parallax-background]').forEach((target) => {
-        new _parallaxBackground({ target });
-    });
-
-    // for floating content
-    document.querySelectorAll('[data-parallax-floating]').forEach((target) => {
-        new _parallaxFloating({ target });
-    });
-</script>
+<script type="module">{{ pageScript | safe }}</script>
 {% endfooterscript %}

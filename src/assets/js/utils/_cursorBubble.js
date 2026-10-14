@@ -1,11 +1,11 @@
-// usage: new _cursorBubble({ classes, ease }), a dot that trails the mouse, off on touch screens
-// over [data-cursor="name"] the bubble gets data-state="name", style it with group-data-[state=name]:
-// data-cursor="grow" is built in, "hidden" hides it, data-cursor-text shows a label
-// data-cursor-icon="#id" adds a <template>'s svg to the label, emoji go in the text
+// usage: new _cursorBubble({ classes, ease }), a dot trailing the mouse
+// [data-cursor="name"] sets data-state="name" on the bubble
+// built in: "grow", "hidden"; data-cursor-text adds a label
+// data-cursor-icon="#id" adds a <template>'s svg
 export class _cursorBubble {
-    // the look, project-wide with Object.assign(_cursorBubble.classes, { dot: "..." })
-    // bubble is display: contents, so the dot can blend with the page
-    // no scale classes here, they would scale toward the screen corner
+    // the look, override with Object.assign(_cursorBubble.classes, {...})
+    // display: contents, so the dot blends with the page
+    // no scale classes, they scale toward the corner
     static classes = {
         bubble: "group contents",
         dot: "pointer-events-none fixed top-0 left-0 z-999 size-3 -translate-1/2 rounded-full bg-white opacity-0 mix-blend-difference transition-[opacity,width,height] duration-300 group-data-visible:opacity-100 group-data-text:size-0 group-data-[state=grow]:size-20",

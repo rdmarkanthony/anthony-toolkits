@@ -2,9 +2,9 @@ import { _event } from "./_event";
 import { _emitter } from "./_emitter";
 
 // usage: new _themeScroller({ sections, target, line, defaultTheme, duration, events })
-// the target (the body by default) gets the theme of the section filling the screen, e.g. data-scroll-theme="dark" adds .dark
-// line: px from the top, or a function returning it, follows the section under that line instead
-// put the first theme on the target in the html to avoid a flash, e.g. <body class="dark">
+// target (body) gets the theme of the section on screen, e.g. data-scroll-theme="dark"
+// line: px from the top, or a function, picks the section under it
+// set the first theme in the html, e.g. <body class="dark">
 export class _themeScroller extends _emitter {
     constructor(props = {}) {
         super(props.events);

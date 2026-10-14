@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import components from "./components.js";
 
-// components.js items with starter: true, and their files merged from each demo page's "// Requirements"
+// starter: true items, files from each page's "// Requirements"
 export default () => {
     const items = components.flatMap((group) => group.items.filter((item) => item.starter));
     const sections = new Map();

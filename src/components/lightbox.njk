@@ -124,7 +124,7 @@ document.querySelectorAll('[data-lightbox]').forEach((item) => {
     });
 });
 
-// auto open on page load if the url hash belongs to a lightbox, e.g. /page/#my-lightbox
+// open on load from the url hash, e.g. /page/#my-lightbox
 if (location.hash.length > 1) {
     const _trigger = [...document.querySelectorAll('[data-lightbox]')].find((item) => item.getAttribute('href') === location.hash);
     if (_trigger) _openLightbox(_trigger);

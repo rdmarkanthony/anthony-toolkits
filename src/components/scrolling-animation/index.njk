@@ -117,9 +117,9 @@ Object.assign(window, {
     new _parallaxScroller({
         target: document.querySelector('.js-fade-section'),
         events: {
-            // offset.current is 0 when the section enters the screen and 1 when it leaves
-            update(scroller) {
-                gsap.set(scroller.target, { opacity: _parallax.clamp(scroller.portion('0%', '50%')) });
+            // 0% enters the screen, 100% leaves
+            init(scroller) {
+                scroller.animate(scroller.target, { opacity: [0, 1] }, ['0%', '50%']);
             },
         },
     });
@@ -139,23 +139,29 @@ Object.assign(window, {
         <div class="grid grid-cols-1 gap-6">
             <div class="rounded-2xl border border-gray-200 p-6">
                 <h3 class="mb-1 font-mono font-semibold">_parallaxScroller</h3>
-                <p class="mb-4 text-gray-600">Measures the target when the page resizes, then on scroll only does the math, at most once per frame. <code class="font-mono text-sm">offset.current</code> is 0 when the target enters the screen and 1 when it leaves, unclamped. Change <code class="font-mono text-sm">offset.top</code> and <code class="font-mono text-sm">offset.bottom</code> in <code class="font-mono text-sm">resize</code> for another range. <code class="font-mono text-sm">portion(min, max)</code> gives the progress within part of the range, as percents of <code class="font-mono text-sm">offset.current</code> or as scroll positions.</p>
+                <p class="mb-4 text-gray-600">Measures the target when the page resizes, then on scroll only does the math, at most once per frame. <code class="font-mono text-sm">offset.current</code> is 0 when the target enters the screen and 1 when it leaves, unclamped. Change <code class="font-mono text-sm">offset.top</code> and <code class="font-mono text-sm">offset.bottom</code> in <code class="font-mono text-sm">resize</code> for another range. <code class="font-mono text-sm">animate(target, keyframes, range)</code> hands values like opacity or translate to the browser, which moves them in step with the scroll, so they stay smooth on phones. Use <code class="font-mono text-sm">update</code> for the rest, like states or canvas frames. Ranges are percents of the range or scroll positions.</p>
                 {% set code %}{% raw %}
 const _scroller = new _parallaxScroller({
     target: document.querySelector('.js-my-section'),
     events: {
         // once, before measuring
-        init(scroller) {},
-        // after measuring, e.g. from the section's top until its end reaches the bottom of the screen
+        init(scroller) {
+            // keyframes as in element.animate(), range default ['0%', '100%']
+            scroller.animate(scroller.target, { scale: [0.8, 1] }, ['20%', '60%']);
+
+            // functions rerun on resize, e.g. fade out at the end
+            scroller.animate(scroller.target, { opacity: [1, 0] }, (scroller) => [scroller.offset.bottom - _parallax.height(), scroller.offset.bottom]);
+        },
+        // after measuring, e.g. set your own range
         resize(scroller) {
             const _offset = _parallax.getOffset(scroller.target);
             scroller.offset.top = _offset.top;
             scroller.offset.bottom = _offset.bottom - _parallax.height();
         },
-        // on scroll
+        // on scroll, for the rest
         update(scroller) {
-            const _progress = _parallax.clamp(scroller.portion('20%', '60%'));
-            gsap.set(scroller.target, { scale: 0.8 + _progress * 0.2 });
+            const _progress = _parallax.clamp(scroller.portion('20%', '60%')); // 0 - 1 within part of the range
+            scroller.target.dataset.state = _progress === 1 ? 'done' : '';
         },
     },
 });
@@ -195,8 +201,8 @@ _event.dispatch(el, 'visible', { index: 1 }); // listeners read e.detail
 <script type="module">
     // Requirements
         // JS
-            // gsap
             // src/assets/js/utils/_event.js
+            // src/assets/js/utils/_emitter.js
             // src/assets/js/utils/_parallax.js
             // hls.js, src/assets/js/utils/_hlsVideo.js (for the video preview)
 
@@ -208,10 +214,7 @@ _event.dispatch(el, 'visible', { index: 1 }); // listeners read e.detail
         target: document.querySelector('.js-preview-video'),
         events: {
             init(scroller) {
-                scroller.el.cover = scroller.target.querySelector('.js-preview-video-cover');
-            },
-            update(scroller) {
-                gsap.set(scroller.el.cover, { opacity: 1 - _parallax.clamp(scroller.portion('0%', '40%')) });
+                scroller.animate(scroller.target.querySelector('.js-preview-video-cover'), { opacity: [1, 0] }, ['0%', '40%']);
             },
         },
     });
