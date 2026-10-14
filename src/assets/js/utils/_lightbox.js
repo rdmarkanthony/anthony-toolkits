@@ -2,7 +2,7 @@ import { _event } from "./_event";
 import { _emitter } from "./_emitter";
 
 // usage: new _lightbox({ target, modal, animation, events }), target is the element or selector to show
-// the content moves into the lightbox and back on close, a lightbox replaces the others, a modal opens on top
+// content moves in and back on close, a modal opens on top
 // close: lightbox.hide(), _lightbox.close() for the latest, _lightbox.close("all")
 export class _lightbox extends _emitter {
     constructor(props) {
@@ -165,7 +165,7 @@ export class _lightbox extends _emitter {
     }
 
     hide(status, callback, delay = null) {
-        // before the animating check, so a closing lightbox still closes the others
+        // before the animating check, so the others still close
         if (status === "all") {
             _lightbox.close("all");
             return;

@@ -38,15 +38,15 @@ export const _parallax = {
     getRange(min, max) {
         return (_parallax.scrollTop() - min) / (max - min);
     },
-    // css and js scroll timelines, e.g. parallax.css and _parallaxScroller.animate()
+    // browser supports scroll timelines
     scrollTimeline() {
         return "ScrollTimeline" in window && CSS.supports("animation-timeline: view()");
     },
 };
 
 // usage: new _parallaxScroller({ target, events: { init, resize, update } })
-// offset.current is 0 when the target enters the screen and 1 when it leaves, change offset.top/bottom on resize
-// animate() hands values like opacity or translate to the browser, update is for the rest, e.g. states
+// offset.current: 0 as the target enters, 1 as it leaves
+// animate() for css values, update for the rest
 export class _parallaxScroller extends _emitter {
     constructor(props) {
         super(props.events);
@@ -105,7 +105,7 @@ export class _parallaxScroller extends _emitter {
         this.emit("update");
     }
 
-    // a scroll position, from a percent of this range or a scroll position
+    // scroll position from a percent or a position
     position(value) {
         return typeof value === "string" && value.includes("%") ? this.offset.top + (parseFloat(value) / 100) * (this.offset.bottom - this.offset.top) : value;
     }
@@ -115,8 +115,8 @@ export class _parallaxScroller extends _emitter {
         return _parallax.getRange(this.position(min), this.position(max));
     }
 
-    // usage: animate(target, { opacity: [0, 1] }, ["0%", "50%"]), range by percent or scroll position, default the whole range
-    // the browser runs it in step with the scroll; keyframes and range can be functions of the scroller, run again on resize
+    // usage: animate(target, { opacity: [0, 1] }, ["0%", "50%"]), default the whole range
+    // keyframes and range can be functions, rerun on resize
     animate(target, keyframes, range = ["0%", "100%"]) {
         const _item = { target, keyframes, range, animation: null };
 
@@ -161,8 +161,8 @@ export class _parallaxScroller extends _emitter {
     }
 }
 
-// usage: new _parallaxOffset({ target, trigger }), sets --offset and --near on the target as the trigger (default its parent) crosses the screen
-// --offset is -1 as it enters, 0 in the middle, 1 as it leaves; --near is 1 in the middle, 0 at the edges
+// usage: new _parallaxOffset({ target, trigger }), sets --offset and --near, trigger defaults to the parent
+// --offset: -1 to 1 across the screen, --near: 1 in the middle
 // css does the motion, e.g. parallax.css
 export class _parallaxOffset {
     constructor(props) {
@@ -203,7 +203,7 @@ export class _parallaxOffset {
     }
 }
 
-// sets --range for parallax.css, a number is px, or any css length like 15vh
+// --range for parallax.css, px or any css length
 class _parallaxRange {
     setRange(value, fallback) {
         const _value = value?.trim() || String(fallback);
@@ -211,7 +211,7 @@ class _parallaxRange {
         this.target.style.setProperty("--range", this.range);
     }
 
-    // the script sets --offset instead of the browser, eased with a css transition
+    // eased: the script sets --offset, a transition eases it
     follow(trigger, easing) {
         this.target.dataset.parallaxOffset = easing ? "easing" : "";
         this.offset = new _parallaxOffset({ target: this.target, trigger });
@@ -226,8 +226,8 @@ class _parallaxRange {
 }
 
 // usage: data-parallax-background="range,easing", range default 500
-// fills its overflow-hidden parent, taller by the range, and moves from -range to 0 as the parent crosses the screen
-// the browser moves it in step with the page scroll, or the script when eased
+// fills its overflow-hidden parent, moves -range to 0
+// the browser moves it, the script when eased
 export class _parallaxBackground extends _parallaxRange {
     constructor(props) {
         super();
@@ -255,7 +255,7 @@ export class _parallaxBackground extends _parallaxRange {
 }
 
 // usage: data-parallax-floating="range", range default 50
-// moves from 0 to range as it crosses the screen, always eased
+// moves 0 to range, always eased
 export class _parallaxFloating extends _parallaxRange {
     constructor(props) {
         super();

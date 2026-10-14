@@ -1,13 +1,13 @@
 import { _emitter } from "./_emitter";
 
 // usage: new _googleMap({ target, apiKey, markers: [{ id, lat, lng, title, popup }], styles, selectZoom, render, events })
-// styles: a JSON theme, ignored when options.mapId is set; markers and the popup are html styled by `classes`
+// styles: a JSON theme, ignored with options.mapId; looks in `classes`
 // the api loads once per page, when the first map nears the screen
 let _api = null;
 let _Overlay = null;
 const _instances = new Set();
 
-// google calls this on a bad key or a site the key doesn't allow
+// google calls this on a bad or blocked key
 window.gm_authFailure = () => _instances.forEach((instance) => instance.emit("error"));
 
 const _loadAPI = (key) =>
@@ -177,7 +177,7 @@ export class _googleMap extends _emitter {
         this.map.fitBounds(_bounds, padding);
     }
 
-    // one level at a time, so a big zoom still animates, false if another zoom took over
+    // one level at a time so it animates, false if interrupted
     async zoomTo(zoom, position) {
         const _run = (this.run = {});
         if (position) this.map.panTo(position);
@@ -190,7 +190,7 @@ export class _googleMap extends _emitter {
         return true;
     }
 
-    // by data or id, the selected one again zooms back in on it
+    // by data or id, the selected one zooms back in
     async select(item) {
         // before the map loads, picks it once ready
         if (!this.map) return void (this.pending = item);

@@ -1,7 +1,7 @@
-// QR codes drawn as an svg in target (it fills target's width), qrcode loads only on pages that use it
+// QR code as an svg, fills target's width
 // usage: const qr = await _qrCode({ target, text: "https://example.com" }), call again with new text to redraw
 // qr.download("png" | "svg", "file-name") saves it, qr.svg is the markup, qr.text the text
-// colors are hex, "#000000" or "#00000000" for transparent; _qrCode.wifi({ ssid, password }) makes the text for a wifi QR
+// colors in hex, _qrCode.wifi({ ssid, password }) makes wifi text
 
 // qrcode, loaded on first use so other pages don't download it
 const _importQRCode = () => import("qrcode");

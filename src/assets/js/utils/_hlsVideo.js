@@ -16,7 +16,7 @@ export class _hlsVideo {
     }
 
     init() {
-        // autoplay is handled here, only while on screen and not with reduced motion
+        // autoplays on screen only, not with reduced motion
         this.autoplay = this.target.autoplay && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         this.target.autoplay = false;
 

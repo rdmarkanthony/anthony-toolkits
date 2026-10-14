@@ -2,7 +2,7 @@ import { _event } from "./_event";
 import { _emitter } from "./_emitter";
 
 // usage: new _canvasBanner({ target, assets: { count, path, type, digits, size, resizeMode, step, buffer, mobile }, transition: { duration }, events })
-// assets.mobile: { path, type, size, step, media }, replaces those options when media matches (default below 768px)
+// assets.mobile: { path, type, size, step, media }, below 768px or on media
 export class _canvasBanner extends _emitter {
     constructor(props) {
         super(props.events);
@@ -25,7 +25,7 @@ export class _canvasBanner extends _emitter {
             size: _assets.size ?? [0, 0],
             resizeMode: _assets.resizeMode ?? "width", // width, height or contain
             step: Math.max(_assets.step ?? 1, 1), // 2 skips every other frame
-            buffer: _assets.buffer ?? 20, // frames kept loaded before and after the current one
+            buffer: _assets.buffer ?? 20, // frames kept loaded around the current one
             current: 0,
             shown: -1,
         };
@@ -108,7 +108,7 @@ export class _canvasBanner extends _emitter {
     load() {
         const { list, current, buffer } = this.assets;
 
-        // unload the frames outside the buffer, but not the one on screen
+        // unload frames outside the buffer, except the shown one
         list.forEach((frame, index) => {
             if (!frame || index === this.assets.shown || Math.abs(index - current) <= buffer) return;
 
@@ -235,7 +235,7 @@ export class _canvasBanner extends _emitter {
         this.target.style.width = `${_width}px`;
         this.target.style.height = `${_height}px`;
 
-        // sharp on high density screens, but no bigger than the images
+        // sharp on retina, capped at the image size
         const _scale = Math.min(window.devicePixelRatio || 1, this.assets.size[0] / _width);
         const _canvasWidth = Math.round(_width * _scale);
         const _canvasHeight = Math.round(_height * _scale);

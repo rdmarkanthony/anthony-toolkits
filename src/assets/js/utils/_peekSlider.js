@@ -1,7 +1,7 @@
-// carousel of 1 to 3 cards, the next one peeks at the edge, Swiper loads only on pages that use it
-// usage: new _peekSlider({ target }), target holds a .swiper, Swiper options and ease (css easing) replace the defaults
+// card carousel, the next card peeks at the edge
+// usage: new _peekSlider({ target, ease, ...Swiper options }), target holds a .swiper
 // drag, touch and trackpad swipes move it, page scroll stays vertical
-// css, in your main css file so Tailwind classes win: @import "swiper/css" layer(components);
+// css: @import "swiper/css" layer(components);
 
 // swiper, loaded on first use so other pages don't download it
 const _importSwiper = () => Promise.all([import("swiper"), import("swiper/modules")]);
@@ -52,8 +52,8 @@ export class _peekSlider {
         return this.swiper;
     }
 
-    // one trackpad swipe moves one slide, its fading momentum is ignored
-    // a new swipe: a 100ms pause, the other direction, or the delta rising again
+    // one trackpad swipe, one slide
+    // new swipe: a pause, a turn, or a rising delta
     wheel(e) {
         const _delta = Math.abs(e.deltaX);
         if (_delta <= Math.abs(e.deltaY)) return;

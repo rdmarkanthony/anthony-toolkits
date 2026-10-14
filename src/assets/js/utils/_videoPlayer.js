@@ -3,7 +3,7 @@ import { _emitter } from "./_emitter";
 import { _players, _pauseAll, _cover } from "./_media";
 
 // usage: new _videoPlayer({ target, src, poster, autoplay, stretch, controls, events }), src is an .mp4 or .m3u8
-// autoplay videos are muted loops, stretch covers the target at any ratio, playing one with sound pauses the others
+// autoplay: muted loop, stretch: covers the target
 // the target gets state classes: video-loading, video-canplay, video-playing, video-paused, video-ended, sound-on, sound-off
 export class _videoPlayer extends _emitter {
     constructor(props) {

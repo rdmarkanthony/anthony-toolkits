@@ -51,7 +51,7 @@ title: Select box | Anthony Toolkits
     </div>
 </section>
 
-{# demo: a custom look per option, and the button shows only the code #}
+{# demo: custom options, the button shows the code #}
 <section class="bg-gray-50 px-4 py-16">
     <div class="mx-auto max-w-295">
         <h2 class="mb-2 text-3xl font-bold tracking-tight">Custom options</h2>
@@ -104,7 +104,7 @@ title: Select box | Anthony Toolkits
 
 {% set markup %}{% raw %}
 <label for="fruit">Fruit</label>
-<!-- data-select-box="search" adds a search, "native" uses the phone's picker on touch screens -->
+<!-- data-select-box="search" adds a search, "native" the phone's picker -->
 <select id="fruit" name="fruit" data-select-box>
     <!-- value="" is the placeholder, hidden keeps it out of the list -->
     <option value="" disabled selected hidden>Choose a fruit</option>
@@ -139,7 +139,7 @@ document.querySelectorAll('select[data-select-box]').forEach((target) => {
     });
 });
 
-// custom options, the button shows the code only, and a look for this one
+// custom options, the button shows the code only
 new _selectBox({
     target: '#sample-phone-code',
     search: 'Find a country',
@@ -155,7 +155,7 @@ new _selectBox({
     },
 });
 
-// the select is the source of truth, read it like any form field
+// read the select like any form field
 const _values = document.querySelector('.js-select-values');
 const _fruit = document.querySelector('#sample-fruit');
 const _country = document.querySelector('#sample-country');

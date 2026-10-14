@@ -1,8 +1,8 @@
-// endless row: plays as a marquee or waits for a drag, the items wrap around forever
-// usage: new _horizontalLoop({ target }), target's children are the items, too few get cloned to fill the row
+// endless row: a marquee or draggable, items wrap forever
+// usage: new _horizontalLoop({ target }), its children are the items
 // options: speed (1 = 100px a second), paused, center, snap, draggable, pauseOnHover, scroll, onChange(item, index)
-// scroll: the page scroll moves it too, 1 = as far as the page, minus goes right; the browser does it, so it stays smooth
-// play(), pause(), next(), previous(), toIndex(i), move(px), setDirection("left" | "right"), destroy(); pauses itself off screen
+// scroll: page scroll moves it, 1 = as far as the page, minus goes right
+// play(), pause(), next(), previous(), toIndex(i), move(px), setDirection("left" | "right"), destroy()
 import { gsap } from "gsap";
 import { _event } from "./_event";
 
@@ -13,7 +13,7 @@ let _timeline = null;
 const _pageTimeline = () => (_timeline ??= new ScrollTimeline({ source: document.documentElement }));
 const _scrollTimeline = () => "ScrollTimeline" in window && CSS.supports("animation-timeline: view()");
 
-// draggable and inertia, loaded on first use so other pages don't download them
+// draggable and inertia, loaded on first use
 const _importDraggable = () => Promise.all([import("gsap/Draggable"), import("gsap/InertiaPlugin")]);
 
 export class _horizontalLoop {
@@ -21,7 +21,7 @@ export class _horizontalLoop {
         this.target = target ?? null;
         this.speed = speed * 100;
         this.factor = scroll;
-        // the browser moves it with the scroll, otherwise the script sets each item's time
+        // browser-driven on scroll, else the script sets the time
         this.linked = scroll !== 0 && _scrollTimeline();
         this.center = center;
         this.snap = snap;
@@ -100,7 +100,7 @@ export class _horizontalLoop {
             this.target.addEventListener("pointerleave", this.handlers.leave);
         }
 
-        // the row or an item changed width, e.g. a resize or an image loaded
+        // the row or an item changed width
         this.resizeObserver = new ResizeObserver(() => {
             cancelAnimationFrame(this.frame);
             this.frame = requestAnimationFrame(() => this.refresh());
@@ -110,7 +110,7 @@ export class _horizontalLoop {
         this.viewObserver = new IntersectionObserver(([entry]) => this.hold("view", !entry.isIntersecting));
         this.viewObserver.observe(this.target);
 
-        // the page got taller, e.g. images loaded: enough rounds to reach the bottom
+        // page got taller: add rounds to reach the bottom
         if (this.linked) this.unsubscribe.push(_event.observeResize(() => this.place()));
         if (this.factor) {
             this.unsubscribe.push(
@@ -149,7 +149,7 @@ export class _horizontalLoop {
         this.items = [...this.target.children];
     }
 
-    // each item slides left to the start, then comes back in from the end, one round is the row's width
+    // items slide left and wrap, one round is the row's width
     build() {
         this.animations.forEach((animation) => animation.cancel());
 
@@ -177,13 +177,13 @@ export class _horizontalLoop {
             return _animation;
         });
 
-        // each item's stop: left edge where the first one starts, or centered in the row
+        // each item's stop: at the start, or centered
         const _inset = _items[0].getBoundingClientRect().left - this.target.getBoundingClientRect().left;
         this.timeWrap = gsap.utils.wrap(0, _tl.duration());
         this.times = _items.map((item, i) => this.timeWrap((item.offsetLeft - _startX) / this.speed + (this.center ? (this.widths[i] / 2 - this.rowWidth / 2 + _inset) / this.speed : 0)));
     }
 
-    // item i over a number of rounds: slides left to the start, jumps to the end, slides back in; reversed for minus scroll
+    // item i's keyframes over the rounds, reversed for minus scroll
     // plain keyframes, as phones handle them best on the scroll
     keyframes(i, rounds = 1, reverse = false) {
         const _total = this.totalWidth;
@@ -203,7 +203,7 @@ export class _horizontalLoop {
         return this.factor ? (this.factor * window.scrollY) / this.speed : 0;
     }
 
-    // with the scroll, enough rounds to reach the bottom of the page
+    // enough rounds to reach the page bottom
     place() {
         if (!this.timeline) return;
         if (this.linked) {
@@ -213,7 +213,7 @@ export class _horizontalLoop {
         this.render(true);
     }
 
-    // hands the time to the items: a scroll range for the browser, or each one's time
+    // pass the time to the items
     render(force = false) {
         if (!this.timeline) return;
         const _phase = this.timeline.time() * this.speed;
@@ -224,7 +224,7 @@ export class _horizontalLoop {
             return;
         }
 
-        // a round is this much page scroll, starting before the top so the time lines up
+        // page scroll per round, starting above the top
         const _length = this.totalWidth / Math.abs(this.factor);
         const _start = gsap.utils.wrap(0, _length, -_phase / this.factor) - _length;
         if (_start === this.start && !force) return;
@@ -255,7 +255,7 @@ export class _horizontalLoop {
         [this.target, ...this.items].forEach((el) => this.resizeObserver.observe(el));
     }
 
-    // the item whose stop is closest to the time, with the scroll's part
+    // the item whose stop is closest to the time
     closest(time = this.timeWrap(this.timeline.time() + this.shift())) {
         const _duration = this.timeline.duration();
         let _index = 0;
@@ -301,7 +301,7 @@ export class _horizontalLoop {
         const _next = gsap.utils.wrap(0, _length, index);
         let _time = this.timeWrap(this.times[_next] - this.shift());
 
-        // crossing the seam: go past the end or before the start, wrapped
+        // crossing the seam, wrapped
         if (_time > _tl.time() !== index > _current && index !== _current) _time += _tl.duration() * (index > _current ? 1 : -1);
 
         this.index = _next;
@@ -350,14 +350,14 @@ export class _horizontalLoop {
         this.timeline.paused(!this.playing || this.holds.size > 0);
     }
 
-    // a throw cut short never completes, so let go of its hold here
+    // a cut-short throw never completes, release its hold
     stopThrow() {
         if (!this.draggable?.isThrowing) return;
         gsap.killTweensOf(this.proxy);
         this.holds.delete("drag");
     }
 
-    // trackpad swipes move the row as far as the fingers, page scroll stays vertical
+    // trackpad swipes move the row, page scroll stays vertical
     wheel(e) {
         if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
         e.preventDefault();
@@ -407,7 +407,7 @@ export class _horizontalLoop {
                 _caught = _throwing;
                 _throwing = false;
             },
-            // only a real drag holds it, a finger scrolling the page past it doesn't
+            // only a real drag holds it, not a page scroll
             onDragStart: () => {
                 this.hold("drag", true);
                 // it may have moved since the press, carry on from here

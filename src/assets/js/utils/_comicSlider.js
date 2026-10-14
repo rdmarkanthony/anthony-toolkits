@@ -1,7 +1,7 @@
-// comic reader: shows one frame (an area of a page) at a time, pans to the next frame, fades to a new page
-// usage: new _comicSlider({ target, frames }), target holds .js-comic-stage with one <img> per page
-// a frame: { page, top, left, right, bottom } in % of its page, optional mobile: { top, left, right, bottom }
-// optional .js-comic-prev / .js-comic-next; duration (s), ease, mobile (media query or function); events: change
+// comic reader: pans frame to frame, fades between pages
+// usage: new _comicSlider({ target, frames }), .js-comic-stage holds one <img> per page
+// frame: { page, top, left, right, bottom, mobile } in % of the page
+// options: duration (s), ease, mobile, events: change; optional .js-comic-prev/next
 import { gsap } from "gsap";
 import { _emitter } from "./_emitter";
 
@@ -36,7 +36,7 @@ export class _comicSlider extends _emitter {
         this.el.prev = this.target.querySelector(".js-comic-prev");
         this.el.next = this.target.querySelector(".js-comic-next");
 
-        // each page: a box sized to the frame clips it, the image moves inside
+        // a frame-sized box clips each page
         this.pages = [...this.el.stage.querySelectorAll("img")].map((img) => {
             const _box = document.createElement("div");
             const _layer = document.createElement("div");
@@ -89,7 +89,7 @@ export class _comicSlider extends _emitter {
         this.el.stage.addEventListener("pointerdown", this.handlers.down);
         this.el.stage.addEventListener("pointerup", this.handlers.up);
 
-        // a resize can also switch to or from the mobile frames
+        // resize may switch to or from mobile frames
         this.observer = new ResizeObserver(() => this.refresh());
         this.observer.observe(this.el.stage);
 

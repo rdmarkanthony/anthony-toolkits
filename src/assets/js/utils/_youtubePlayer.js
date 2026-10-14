@@ -141,7 +141,7 @@ export class _youtubePlayer extends _emitter {
             this.player.unloadModule?.("captions");
             this.player.unloadModule?.("cc");
 
-            // youtube shows its ui for a few secs after playing starts or seeks
+            // youtube shows its ui briefly after play or seek
             this.timers.reveal = setTimeout(() => this.fade(true), this.revealDelay);
 
             // fade out before the end

@@ -60,14 +60,14 @@ title: Background | Scrolling Animation | Anthony Toolkits
 </section>
 
 {% set markup %}{% raw %}
-<!-- background: fills an overflow-hidden parent, the script makes it taller by the range -->
+<!-- background: fills an overflow-hidden parent -->
 <section class="relative min-h-screen">
     <div class="absolute inset-0 overflow-hidden">
         <div class="absolute inset-0 bg-cover bg-center" data-parallax-background="200,easing" style="background-image: url('...')"></div>
     </div>
 </section>
 
-<!-- floating: to fill a frame, make it taller by the range and start it that far above -->
+<!-- floating: taller by the range, moved up by it -->
 <div class="relative aspect-3/2 overflow-hidden">
     <img class="absolute inset-x-0 -top-20 h-[calc(100%+80px)] w-full object-cover" data-parallax-floating="80" src="..." alt="" />
 </div>
@@ -82,7 +82,7 @@ title: Background | Scrolling Animation | Anthony Toolkits
     // CSS
         // src/assets/css/components/parallax.css
 
-// data-parallax-background="range,easing", range default 500, add easing to ease it
+// data-parallax-background="range,easing", range default 500
 document.querySelectorAll('[data-parallax-background]').forEach((target) => {
     new _parallaxBackground({ target });
 });
@@ -92,7 +92,7 @@ document.querySelectorAll('[data-parallax-floating]').forEach((target) => {
     new _parallaxFloating({ target });
 });
 
-// the range is in pixels, or any css length like "15vh"; props work too: { target, range: 200, easing: true }
+// range: px or any css length, or props: { target, range: 200, easing: true }
 {% endraw %}{% endset %}
 
 {{ scriptUsage({

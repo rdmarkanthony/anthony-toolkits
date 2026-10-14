@@ -49,7 +49,7 @@ const _update = (value) => {
         digit.target.style.display = index >= _characters.length ? 'none' : 'block';
     });
 
-    // add digits when needed, numeric: false to also roll commas and points
+    // add digits when needed, numeric: false rolls commas too
     _characters.forEach((character, index) => {
         if (_digits[index]) return;
 

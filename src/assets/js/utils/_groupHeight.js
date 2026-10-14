@@ -14,7 +14,7 @@ const _equalHeight = (list) => {
     });
 };
 
-// data-gh="group,within" or data-rgh="group,within", within is the min window width (default 0)
+// data-gh / data-rgh="group,within", within: min window width
 const _groups = (items, attribute) => {
     const _list = {};
 
@@ -30,7 +30,7 @@ const _groups = (items, attribute) => {
 
 // usage: _groupHeight.init(), runs on load and after each resize
 // [data-gh-parent]: equal heights for the [data-gh] of the same group
-// [data-rgh-parent]: the same, but only between [data-rgh-item] on the same row
+// [data-rgh-parent]: the same, per row of [data-rgh-item]
 export const _groupHeight = {
     init() {
         _event.resize((state) => {

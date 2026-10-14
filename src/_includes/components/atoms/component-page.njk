@@ -24,12 +24,12 @@
 {%- endmacro %}
 
 {#
-    the page script, shown as code, starting with its // Requirements
+    the page script as code, starting with its // Requirements
     usage:
     {% set pageScript %}{% raw %}// Requirements ... new _tabs({ target });{% endraw %}{% endset %}
     {{ scriptUsage({ code: pageScript, note: '...' }) }}
-    optional: markup, markupNote, css, cssNote (shown between the markup and the script); code can be left out on CSS-only pages
-    then run the same script: {% footerscript %}<script type="module">{{ pageScript | safe }}</script>{% endfooterscript %}
+    optional: markup, markupNote, css, cssNote
+    run it too: {% footerscript %}<script type="module">{{ pageScript | safe }}</script>{% endfooterscript %}
 #}
 {% macro scriptUsage(props) -%}
 <section class="mt-8 border-t border-kit-line px-4 py-16 md:py-28">

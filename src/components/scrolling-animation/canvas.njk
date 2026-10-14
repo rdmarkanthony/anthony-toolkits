@@ -54,10 +54,10 @@ const _canvas = new _canvasBanner({
         // type: 'jpg', default
         digits: 4, // zero-padding, default from the count
         size: [1004, 1214], // [width, height], for the ratio
-        resizeMode: 'contain', // width (default) fills the parent's width, height its height, contain fits inside it
+        resizeMode: 'contain', // width (default), height or contain
         // step: 1, every nth frame, the last is always kept
-        // buffer: 20, frames kept loaded before and after the current one
-        // any of path, type, size, step, buffer below 768px wide, or when media matches
+        // buffer: 20, frames kept loaded around the current one
+        // path, type, size, step, buffer below 768px or on media
         mobile: {
             path: '/assets/img/headphone/small_',
             type: 'webp',

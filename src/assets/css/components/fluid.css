@@ -47,7 +47,7 @@
     --container-6xl: calc(72 * var(--fluid-rem));
     --container-7xl: calc(80 * var(--fluid-rem));
 
-    /* text without a text-* class, on children so cqw is this box */
+    /* default text size, on children so cqw is this box */
     :where(& > *) {
         font-size: var(--text-base);
     }

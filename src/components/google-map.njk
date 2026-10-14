@@ -62,14 +62,14 @@ title: Google Map | Anthony Toolkits
 <!-- a map on its own, give it a size -->
 <div class="js-google-map aspect-video" data-api-key="YOUR_API_KEY"></div>
 
-<!-- places: a sticky map, and an accordion of countries holding the places -->
+<!-- places: a sticky map and a country accordion -->
 <div class="js-places grid lg:grid-cols-2">
     <div class="js-google-map sticky top-0 h-[35svh] lg:h-svh" data-api-key="YOUR_API_KEY"></div>
     <div class="js-accordion">
         <div class="js-accordion-set">
             <button class="js-accordion-set-title" type="button">Singapore</button>
             <div class="js-accordion-set-content" hidden="until-found">
-                <!-- each place is a button with its marker data, aria-pressed when picked -->
+                <!-- a place button with its marker data -->
                 <button class="js-place" type="button" aria-pressed="false" data-id="merlion-park" data-title="Merlion Park" data-lat="1.2868" data-lng="103.8545">Merlion Park</button>
             </div>
         </div>
@@ -80,7 +80,7 @@ title: Google Map | Anthony Toolkits
 {% set title = 'js-accordion-set-title group flex w-full cursor-pointer items-center justify-between gap-6 px-5 py-4 text-left text-lg font-semibold transition-colors hover:text-gray-600' %}
 {% set chevron = '<svg class="size-5 shrink-0 transition-transform duration-300 group-aria-expanded:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>' %}
 
-{# demo: tourist spots by country, the map and the accordion follow the same pick #}
+{# demo: tourist spots by country #}
 <section class="px-4 py-16">
     <div class="mx-auto flex max-w-295 flex-col gap-6">
         <div class="flex flex-wrap items-end justify-between gap-4">
@@ -139,7 +139,7 @@ title: Google Map | Anthony Toolkits
         // src/assets/js/utils/_accordion.js
         // src/assets/js/utils/_googleMap.js
 
-// JSON themes from mapstyle.withgoogle.com or snazzymaps.com, null is Google's own look
+// JSON themes from mapstyle.withgoogle.com or snazzymaps.com
 const _themes = {
     light: [
         { elementType: 'geometry', stylers: [{ color: '#f3f4f6' }] },

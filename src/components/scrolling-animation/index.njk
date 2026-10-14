@@ -117,7 +117,7 @@ Object.assign(window, {
     new _parallaxScroller({
         target: document.querySelector('.js-fade-section'),
         events: {
-            // 0% is when the section enters the screen, 100% when it leaves
+            // 0% enters the screen, 100% leaves
             init(scroller) {
                 scroller.animate(scroller.target, { opacity: [0, 1] }, ['0%', '50%']);
             },
@@ -149,10 +149,10 @@ const _scroller = new _parallaxScroller({
             // keyframes as in element.animate(), range default ['0%', '100%']
             scroller.animate(scroller.target, { scale: [0.8, 1] }, ['20%', '60%']);
 
-            // functions run again on resize, e.g. fade out over the last screen of the range
+            // functions rerun on resize, e.g. fade out at the end
             scroller.animate(scroller.target, { opacity: [1, 0] }, (scroller) => [scroller.offset.bottom - _parallax.height(), scroller.offset.bottom]);
         },
-        // after measuring, e.g. from the section's top until its end reaches the bottom of the screen
+        // after measuring, e.g. set your own range
         resize(scroller) {
             const _offset = _parallax.getOffset(scroller.target);
             scroller.offset.top = _offset.top;

@@ -1,6 +1,6 @@
 // component registry: drives the home page, header and footer
 // set `ready: true` once the component is migrated to src/components/
-// a category `url` links its heading to an overview page, `utils` labels the card
+// category `url`: overview page, `utils`: card label
 // `starter: true` adds it to the starter kit popup
 export default [
     {

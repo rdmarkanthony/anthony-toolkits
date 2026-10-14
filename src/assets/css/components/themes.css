@@ -1,4 +1,4 @@
-/* themes: redefine the kit-* colors for everything inside, e.g. <body class="dark"> */
+/* themes: redefine kit-* colors inside, e.g. <body class="dark"> */
 .light {
     --color-kit-bg: #ffffff;
     --color-kit-surface: #f5f4ef;

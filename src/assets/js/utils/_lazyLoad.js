@@ -1,6 +1,6 @@
-// usage: _lazyLoad() watches the page (call again for new content), await _lazyLoad({ target }) loads target's now
-// .js-lazy with data-src/data-srcset/data-sizes (img, source, video, iframe), data-bg, data-poster or data-href (svg image)
-// done ones get .is-loaded or .is-error and fire a bubbling "lazyload" event, e.detail.error
+// usage: _lazyLoad() watches the page, await _lazyLoad({ target }) loads it now
+// .js-lazy with data-src, data-srcset, data-sizes, data-bg, data-poster or data-href
+// done: .is-loaded or .is-error, and a "lazyload" event
 const _defaults = {
     selector: ".js-lazy, .js-lazy-bg",
     // how far from the screen it starts loading
@@ -29,7 +29,7 @@ const _swap = (node) => {
     return _changed;
 };
 
-// resolves with the element once it has loaded or failed, the same promise every time
+// resolves once loaded or failed, same promise each call
 const _load = (el) => {
     if (_loading.has(el)) return _loading.get(el);
 
@@ -93,7 +93,7 @@ const _load = (el) => {
     return _promise;
 };
 
-// display: none, e.g. the desktop copy of a mobile image, is left for the observer
+// display: none is left for the observer
 const _isRendered = (el) => el.getClientRects().length > 0;
 
 const _watch = (options) => {

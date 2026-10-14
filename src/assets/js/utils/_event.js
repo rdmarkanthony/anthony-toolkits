@@ -28,7 +28,7 @@ export const _event = {
             window.addEventListener("load", (e) => _run(_resizeState.callbacks, "ready", e));
 
             window.addEventListener("resize", (e) => {
-                // skip while scrolling on phones, nothing needs to be measured again
+                // skip the phone address bar resize
                 if (_isToolbarResize()) return;
 
                 _run(_resizeState.callbacks, "resize", e);

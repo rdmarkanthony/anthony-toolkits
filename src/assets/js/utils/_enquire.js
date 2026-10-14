@@ -1,6 +1,6 @@
-// calls the function of the breakpoint the window is in, once each time it enters it
-// usage: new _enquire({ 0: (enquire) => {}, 768: (enquire) => {} }), enquire.breakpoint is the width it entered
-// keys are min-widths in px, matched with matchMedia so they agree with the CSS media queries
+// runs a breakpoint's function each time the window enters it
+// usage: new _enquire({ 0: (enquire) => {}, 768: (enquire) => {} })
+// keys are min-widths in px, enquire.breakpoint is the one entered
 export class _enquire {
     constructor(breakpoints = {}) {
         this.queries = Object.entries(breakpoints)
