@@ -36,6 +36,7 @@ import { _qrCode } from "./utils/_qrCode";
 import { _peekSlider } from "./utils/_peekSlider";
 import { _snapSlider } from "./utils/_snapSlider";
 import { _horizontalLoop } from "./utils/_horizontalLoop";
+import { _comicSlider } from "./utils/_comicSlider";
 
 // expose for inline scripts, each page sets up its own components
 Object.assign(window, {
@@ -78,6 +79,7 @@ Object.assign(window, {
     _peekSlider,
     _snapSlider,
     _horizontalLoop,
+    _comicSlider,
 });
 
 // modules run after the html is parsed, and before the inline page scripts,
