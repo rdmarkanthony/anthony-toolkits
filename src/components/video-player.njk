@@ -41,6 +41,15 @@ title: Video player | Anthony Toolkits
         ]
     },
     {
+        title: 'Pause out of view',
+        description: 'Pauses when scrolled out of view. Autoplay videos play again when back, videos with sound stay paused.',
+        src: video,
+        players: [
+            { label: 'Standard', options: ',pause-out-view', ratio: 'aspect-video' },
+            { label: 'Autoplay', options: ',autoplay,pause-out-view', ratio: 'aspect-video' }
+        ]
+    },
+    {
         title: 'With Plyr',
         description: 'Plyr controls instead of the browser\'s, the same look in every browser. Plyr only loads on pages that use it.',
         src: video,
@@ -84,7 +93,7 @@ title: Video player | Anthony Toolkits
 </section>
 
 {% set markup %}{% raw %}
-<!-- data-video-player="src,autoplay,stretch,plyr", any options in any order -->
+<!-- data-video-player="src,autoplay,stretch,pause-out-view,plyr", any options in any order -->
 <div class="relative aspect-video bg-black" data-video-player="/assets/video/name/name.m3u8"></div>
 
 <!-- with Plyr controls and a poster -->
@@ -117,6 +126,7 @@ document.querySelectorAll('[data-video-player]').forEach((target) => {
         poster: target.dataset.poster,
         autoplay: _options.includes('autoplay'),
         stretch: _options.includes('stretch'),
+        pauseOutView: _options.includes('pause-out-view'),
         events: {
             // fade autoplay videos in when they start
             beforeInit: (instance) => {

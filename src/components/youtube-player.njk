@@ -38,8 +38,29 @@ title: YouTube player | Anthony Toolkits
     </div>
 </section>
 
+{# demo: pause out of view #}
+<section class="px-4 pb-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-2 text-3xl font-bold tracking-tight">Pause out of view</h2>
+        <p class="mb-8 max-w-2xl text-gray-600">Pauses when scrolled out of view. Autoplay videos play again when back, videos with sound stay paused.</p>
+        <div class="grid gap-10 md:grid-cols-2">
+            {% for player in [
+                { label: 'Standard', attr: '23atch1EPLM,pause-out-view' },
+                { label: 'Autoplay', attr: '25QyCxVkXwQ,autoplay,pause-out-view' }
+            ] %}
+            <div class="flex flex-col gap-3">
+                <p class="font-semibold">{{ player.label }} <code class="ml-2 font-mono text-xs font-normal text-gray-500">{{ player.attr }}</code></p>
+                <div class="relative aspect-video bg-black" data-yt-player="{{ player.attr }}">
+                    {% if 'autoplay' in player.attr %}<div class="absolute inset-0 z-10"></div>{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
 {% set markup %}{% raw %}
-<!-- data-yt-player="id,autoplay,stretch" -->
+<!-- data-yt-player="id,autoplay,stretch,pause-out-view", any options in any order -->
 <div class="relative aspect-video bg-black" data-yt-player="23atch1EPLM"></div>
 
 <!-- a muted background that covers its box -->
@@ -55,15 +76,16 @@ title: YouTube player | Anthony Toolkits
         // src/assets/js/utils/_youtubePlayer.js
 
 document.querySelectorAll('[data-yt-player]').forEach((target) => {
-    const [_id, _autoplay, _stretch] = target.dataset.ytPlayer.split(',');
+    const [_id, ..._options] = target.dataset.ytPlayer.split(',');
     if (!_id) return;
 
     new _youtubePlayer({
         target,
         id: _id,
-        autoplay: _autoplay === 'autoplay',
-        controls: _autoplay !== 'autoplay',
-        stretch: _stretch === 'stretch',
+        autoplay: _options.includes('autoplay'),
+        controls: !_options.includes('autoplay'),
+        stretch: _options.includes('stretch'),
+        pauseOutView: _options.includes('pause-out-view'),
     });
 });
 {% endraw %}{% endset %}
@@ -72,7 +94,7 @@ document.querySelectorAll('[data-yt-player]').forEach((target) => {
     markup: markup,
     markupNote: 'The player fills its box, so give the box a size, e.g. <code class="font-mono text-sm">aspect-video</code>.',
     code: pageScript,
-    note: 'Loads the YouTube iframe API once. Events: <code class="font-mono text-sm">beforeInit</code>, <code class="font-mono text-sm">afterInit</code>, <code class="font-mono text-sm">onReady</code>, <code class="font-mono text-sm">onStateChange</code>.'
+    note: 'Loads the YouTube iframe API once. Events: <code class="font-mono text-sm">beforeInit</code>, <code class="font-mono text-sm">afterInit</code>, <code class="font-mono text-sm">onReady</code>, <code class="font-mono text-sm">onStateChange</code>. <code class="font-mono text-sm">play()</code>, <code class="font-mono text-sm">pause()</code>.'
 }) }}
 
 {% footerscript %}
