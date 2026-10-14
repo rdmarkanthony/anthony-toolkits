@@ -1,0 +1,50 @@
+/*
+    parallax background and floating, _parallax.js sets --range from the data attribute
+    the browser moves the background in step with the scroll; when eased or without scroll timelines,
+    the script sets --offset (data-parallax-offset) and a transition does the easing
+*/
+@layer components {
+    @media (prefers-reduced-motion: no-preference) {
+        :has(> [data-parallax-background]) {
+            view-timeline: --parallax-background;
+        }
+
+        /* taller than the parent by the range, so it always covers it */
+        [data-parallax-background] {
+            top: 0;
+            height: calc(100% + var(--range, 500px));
+        }
+
+        @supports (animation-timeline: view()) {
+            [data-parallax-background] {
+                animation: parallax-background linear both;
+                animation-timeline: --parallax-background;
+                animation-range: cover;
+            }
+        }
+
+        /* --offset: -1 as it enters the screen, 1 as it leaves */
+        [data-parallax-background][data-parallax-offset] {
+            animation: none;
+            translate: 0 calc((var(--offset, 1) - 1) * var(--range, 500px) / 2);
+            will-change: translate;
+        }
+        [data-parallax-floating][data-parallax-offset] {
+            translate: 0 calc((var(--offset, -1) + 1) * var(--range, 50px) / 2);
+            will-change: translate;
+        }
+        [data-parallax-offset="easing"] {
+            transition: translate 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+        }
+    }
+}
+
+/* from -range to 0 */
+@keyframes parallax-background {
+    from {
+        translate: 0 calc(var(--range, 500px) * -1);
+    }
+    to {
+        translate: 0 0;
+    }
+}

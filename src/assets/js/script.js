@@ -28,7 +28,7 @@ import { _plyr } from "./utils/_plyr";
 import { _youtubePlayer } from "./utils/_youtubePlayer";
 import { _hlsVideo } from "./utils/_hlsVideo";
 import { _autoScroll, _autoScrollHash } from "./utils/_autoScroll";
-import { _parallax, _parallaxScroller, _parallaxBackground, _parallaxFloating } from "./utils/_parallax";
+import { _parallax, _parallaxScroller, _parallaxOffset, _parallaxBackground, _parallaxFloating } from "./utils/_parallax";
 import { _canvasBanner } from "./utils/_canvasBanner";
 import { _themeScroller } from "./utils/_themeScroller";
 import { _cursorBubble } from "./utils/_cursorBubble";
@@ -71,6 +71,7 @@ Object.assign(window, {
     _autoScrollHash,
     _parallax,
     _parallaxScroller,
+    _parallaxOffset,
     _parallaxBackground,
     _parallaxFloating,
     _canvasBanner,

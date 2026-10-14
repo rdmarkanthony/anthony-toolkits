@@ -120,9 +120,9 @@ document.querySelectorAll('[data-parallax-floating]').forEach((target) => {
                 </div>
                 <dl class="grid gap-x-6 gap-y-1 rounded-2xl border border-gray-200 p-6 text-sm md:grid-cols-[auto_1fr] md:gap-y-3">
                     <dt class="font-mono font-semibold">data-parallax-background="range,easing"</dt>
-                    <dd class="mb-3 text-gray-600 last:mb-0 md:mb-0">range in pixels, default 500. Add <code class="font-mono">easing</code> to ease it.</dd>
+                    <dd class="mb-3 text-gray-600 last:mb-0 md:mb-0">range in pixels, or any CSS length like <code class="font-mono">15vh</code>, default 500. Add <code class="font-mono">easing</code> to ease it.</dd>
                     <dt class="font-mono font-semibold">data-parallax-floating="range"</dt>
-                    <dd class="mb-3 text-gray-600 last:mb-0 md:mb-0">range in pixels, default 50. Always eased.</dd>
+                    <dd class="mb-3 text-gray-600 last:mb-0 md:mb-0">range in pixels or any CSS length, default 50. Always eased.</dd>
                     <dt class="font-mono font-semibold">{ range, easing }</dt>
                     <dd class="mb-3 text-gray-600 last:mb-0 md:mb-0">Same options as props, e.g. <code class="font-mono">new _parallaxBackground({ target, range: 200 })</code></dd>
                 </dl>
@@ -134,9 +134,11 @@ document.querySelectorAll('[data-parallax-floating]').forEach((target) => {
 {% footerscript %}
 <script type="module">
     // Requirements
+        // CSS
+            // src/assets/css/components/parallax.css
         // JS
-            // gsap
             // src/assets/js/utils/_event.js
+            // src/assets/js/utils/_emitter.js
             // src/assets/js/utils/_parallax.js
 
     // for parallax background

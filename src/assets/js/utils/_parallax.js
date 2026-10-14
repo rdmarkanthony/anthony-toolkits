@@ -1,4 +1,3 @@
-import { gsap } from "gsap";
 import { _event } from "./_event";
 import { _emitter } from "./_emitter";
 
@@ -34,6 +33,10 @@ export const _parallax = {
     // progress, 0 at min and 1 at max
     getRange(min, max) {
         return (_parallax.scrollTop() - min) / (max - min);
+    },
+    // css scroll timelines, e.g. parallax.css
+    scrollTimeline() {
+        return CSS.supports("animation-timeline: view()");
     },
 };
 
@@ -109,16 +112,15 @@ export class _parallaxScroller extends _emitter {
     }
 }
 
-// usage: data-parallax-background="range,easing", range in px (default 500)
-export class _parallaxBackground {
+// usage: new _parallaxOffset({ target, trigger }), sets --offset and --near on the target as the trigger (default its parent) crosses the screen
+// --offset is -1 as it enters, 0 in the middle, 1 as it leaves; --near is 1 in the middle, 0 at the edges
+// css does the motion, e.g. parallax.css
+export class _parallaxOffset {
     constructor(props) {
         this.target = props.target ?? null;
+        this.trigger = props.trigger ?? this.target?.parentElement;
 
-        const [_range, _easing] = (this.target?.dataset.parallaxBackground ?? "").split(",");
-        this.range = Number.isNaN(parseInt(_range)) ? (props.range ?? 500) : parseInt(_range);
-        this.easing = _easing === "easing" || (props.easing ?? false);
-
-        this.y = null;
+        this.offset = null;
         this.scroller = null;
 
         if (this.target && !this.target.dataset.parallaxInit && !_reducedMotion()) this.init();
@@ -126,76 +128,82 @@ export class _parallaxBackground {
 
     init() {
         this.target.dataset.parallaxInit = "true";
-        this.target.style.willChange = "transform";
-
-        this.setY = this.easing ? gsap.quickTo(this.target, "y", { duration: 0.5, ease: "power3" }) : gsap.quickSetter(this.target, "y", "px");
 
         this.scroller = new _parallaxScroller({
-            target: this.target.parentElement,
+            target: this.trigger,
             events: {
-                // taller than the parent by the range, so it always covers it
-                resize: (scroller) => (this.target.style.height = `${scroller.target.offsetHeight + this.range}px`),
                 update: (scroller) => this.update(scroller.offset.current),
             },
         });
     }
 
     update(progress) {
-        // from -range to 0
-        const _y = Math.round((_parallax.clamp(progress) - 1) * this.range * 10) / 10;
-        if (_y === this.y) return;
+        const _offset = Math.round(Math.max(-1, Math.min(progress * 2 - 1, 1)) * 10000) / 10000;
+        if (_offset === this.offset) return;
 
-        this.y = _y;
-        this.setY(_y);
+        this.offset = _offset;
+        this.target.style.setProperty("--offset", _offset);
+        this.target.style.setProperty("--near", 1 - Math.abs(_offset));
     }
 
     destroy() {
         this.scroller?.destroy();
-        gsap.set(this.target, { clearProps: "transform,height,willChange" });
+        this.target.style.removeProperty("--offset");
+        this.target.style.removeProperty("--near");
         delete this.target.dataset.parallaxInit;
     }
 }
 
-// usage: data-parallax-floating="range", range in px (default 50)
-export class _parallaxFloating {
-    constructor(props) {
-        this.target = props.target ?? null;
-
-        const _range = parseInt(this.target?.dataset.parallaxFloating);
-        this.range = Number.isNaN(_range) ? (props.range ?? 50) : _range;
-
-        this.y = null;
-        this.scroller = null;
-
-        if (this.target && !this.target.dataset.parallaxInit && !_reducedMotion()) this.init();
+// sets --range for parallax.css, a number is px, or any css length like 15vh
+class _parallaxRange {
+    setRange(value, fallback) {
+        const _value = value?.trim() || String(fallback);
+        this.target.style.setProperty("--range", /^-?[\d.]+$/.test(_value) ? `${_value}px` : _value);
     }
 
-    init() {
-        this.target.dataset.parallaxInit = "true";
-        this.target.style.willChange = "transform";
-
-        this.setY = gsap.quickTo(this.target, "y", { duration: 0.5, ease: "power3" });
-
-        this.scroller = new _parallaxScroller({
-            target: this.target,
-            events: {
-                update: (scroller) => this.update(scroller.offset.current),
-            },
-        });
-    }
-
-    update(progress) {
-        // from 0 to range
-        const _y = Math.round(_parallax.clamp(progress) * this.range * 10) / 10;
-        if (_y === this.y) return;
-
-        this.y = _y;
-        this.setY(_y);
+    // the script sets --offset instead of the browser, eased with a css transition
+    follow(trigger, easing) {
+        this.target.dataset.parallaxOffset = easing ? "easing" : "";
+        this.offset = new _parallaxOffset({ target: this.target, trigger });
     }
 
     destroy() {
-        this.scroller?.destroy();
-        gsap.set(this.target, { clearProps: "transform,willChange" });
-        delete this.target.dataset.parallaxInit;
+        this.offset?.destroy();
+        this.target.style.removeProperty("--range");
+        delete this.target.dataset.parallaxOffset;
+    }
+}
+
+// usage: data-parallax-background="range,easing", range default 500
+// fills its overflow-hidden parent, taller by the range, and moves from -range to 0 as the parent crosses the screen
+// the browser moves it in step with the scroll, the script only when eased or without scroll timelines
+export class _parallaxBackground extends _parallaxRange {
+    constructor(props) {
+        super();
+        this.target = props.target ?? null;
+
+        const [_range, _easing] = (this.target?.dataset.parallaxBackground ?? "").split(",");
+        this.easing = _easing?.trim() === "easing" || (props.easing ?? false);
+        this.offset = null;
+
+        if (this.target) {
+            this.setRange(_range, props.range ?? 500);
+            if (this.easing || !_parallax.scrollTimeline()) this.follow(this.target.parentElement, this.easing);
+        }
+    }
+}
+
+// usage: data-parallax-floating="range", range default 50
+// moves from 0 to range as it crosses the screen, always eased
+export class _parallaxFloating extends _parallaxRange {
+    constructor(props) {
+        super();
+        this.target = props.target ?? null;
+        this.offset = null;
+
+        if (this.target) {
+            this.setRange(this.target.dataset.parallaxFloating, props.range ?? 50);
+            this.follow(this.target, true);
+        }
     }
 }
