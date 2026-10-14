@@ -38,8 +38,8 @@ export class _animate {
             const _dataset = _item.dataset.animate.split(",");
 
             const _relation = _dataset[0] ? _dataset[0] : "";
-            let _delay = _dataset[1] ? (!isNaN(parseFloat(_dataset[1])) ? parseFloat(_dataset[1]) : _dataset[1]) : this.delay; // default animation delay
-            let _duration = _dataset[2] && !isNaN(parseFloat(_dataset[2])) ? parseFloat(_dataset[2]) : this.duration; // default animation duration
+            let _delay = _dataset[1] ? (!isNaN(parseFloat(_dataset[1])) ? parseFloat(_dataset[1]) : _dataset[1]) : this.delay;
+            let _duration = _dataset[2] && !isNaN(parseFloat(_dataset[2])) ? parseFloat(_dataset[2]) : this.duration;
 
             if (_relation === "parent") {
                 const _startDelay = _delay;
@@ -50,14 +50,13 @@ export class _animate {
                     return typeof _startDelay === "number" ? _startDelay + this.adjacentDelay * _index : `calc(${_startDelay} + ${(this.adjacentDelay * _index).toFixed(2)}s)`;
                 };
 
-                // find all the children of this parent
                 _item.querySelectorAll('[data-animate="children"]').forEach((item) => {
                     const _item = item;
 
                     Array.from(_item.children).forEach((item) => {
                         const _item = item;
 
-                        // if this children has children too
+                        // nested children
                         if (_item.dataset.animate === "children") {
                             Array.from(_item.children).forEach((item) => {
                                 const _item = item;
@@ -66,7 +65,7 @@ export class _animate {
 
                                 this.set(_item, _delay, _duration);
 
-                                _delay = _nextDelay(); // stagger the delay for all child
+                                _delay = _nextDelay();
                             });
                         } else {
                             if (_item.dataset.animate) return;
@@ -75,7 +74,7 @@ export class _animate {
 
                             this.set(_item, _delay, _duration);
 
-                            _delay = _nextDelay(); // stagger the delay for all child
+                            _delay = _nextDelay();
                         }
                     });
                 });
@@ -96,7 +95,7 @@ export class _animate {
 
         [..._items, ..._titles].forEach((item) => this.items.add(item));
 
-        // animate the containers upon inview
+        // animate when in view
         _items.forEach((item) => {
             const _item = item;
             const _dataset = _item.dataset.animate.split(",");
@@ -111,7 +110,6 @@ export class _animate {
                         _item.classList.remove("opacity-0");
                         _item.removeAttribute("data-animate");
 
-                        // animate each child
                         _item.querySelectorAll('[data-animate="child"]').forEach((item) => {
                             const _item = item;
 
@@ -122,7 +120,7 @@ export class _animate {
                             _event.dispatch(_item, "visible");
                         });
                     } else if (_relation === "children") {
-                        // this is the parent of child, no animation, just show the content
+                        // a wrapper, just show it
                         _item.classList.remove("opacity-0");
                         _item.removeAttribute("data-animate");
                     } else {
@@ -206,7 +204,7 @@ export class _animate {
             target.style.animationDelay = _delay;
         }
 
-        // if should have stagger animation-delay
+        // stagger delay
         if (target.dataset.animateDelay) {
             const _delay = parseFloat(this.staggerDelay) ? `${this.staggerDelay.toFixed(2)}s` : this.staggerDelay;
 

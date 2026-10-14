@@ -119,7 +119,7 @@ title: QR code | Anthony Toolkits
 
 const _popup = document.querySelector('#qr-popup');
 
-// draws the QR code on submit (Enter or the button), getText returns null when the form isn't valid
+// draw on submit, getText is null when the form is invalid
 const _setup = (form, getText, name) => {
     const _code = form.querySelector('.js-qr-code');
     const _zoom = form.querySelector('.js-qr-zoom');

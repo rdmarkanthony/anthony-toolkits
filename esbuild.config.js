@@ -1,7 +1,6 @@
 import esbuild from "esbuild";
 import dotenv from "dotenv";
 
-// Load environment variables
 dotenv.config();
 
 const isWatch = process.argv.includes("--watch");

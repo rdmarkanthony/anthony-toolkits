@@ -147,7 +147,7 @@ export class _comicSlider extends _emitter {
         this.show(this.index - 1);
     }
 
-    // shows the current frame again without a tween, e.g. after the frames or the stage changed
+    // redraw the current frame without a tween
     refresh() {
         if (!this.rect) return;
         gsap.killTweensOf(this.rect);
@@ -157,7 +157,7 @@ export class _comicSlider extends _emitter {
         this.render();
     }
 
-    // fits the area inside the stage, centered, the box clips the rest of the page
+    // fit the area in the stage, centered
     render() {
         const _page = this.pages[this.page];
         const { top, left, right, bottom } = this.rect;

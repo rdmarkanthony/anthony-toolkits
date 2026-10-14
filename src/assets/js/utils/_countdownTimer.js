@@ -33,7 +33,7 @@ export class _countdownTimer extends _emitter {
     }
 
     update() {
-        if (this.dateTime.ended) return; // stop updating if already ended
+        if (this.dateTime.ended) return;
 
         this.dateTime.now = DateTime.now().setZone(this.timeZone);
         this.dateTime.diff = this.dateTime.target.diff(this.dateTime.now, ["days", "hours", "minutes", "seconds"]).toObject();
@@ -42,7 +42,7 @@ export class _countdownTimer extends _emitter {
             hours: Math.max(0, this.dateTime.diff.hours),
             minutes: Math.max(0, this.dateTime.diff.minutes),
             seconds: Math.max(0, Math.floor(this.dateTime.diff.seconds)),
-        }; // avoid returning negative diff values
+        };
 
         if (this.dateTime.diff.days <= 0 && this.dateTime.diff.hours <= 0 && this.dateTime.diff.minutes <= 0 && parseInt(this.dateTime.diff.seconds) <= 0) {
             this.dateTime.ended = true;

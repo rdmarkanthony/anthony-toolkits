@@ -3,7 +3,7 @@ import { gsap } from "gsap";
 import { DateTime } from "luxon";
 import flatpickr from "flatpickr";
 
-// utils, each one also works on its own: copy it with the files it imports
+// utils, copy each one with the files it imports
 import { _event } from "./utils/_event";
 import { _enquire } from "./utils/_enquire";
 import { _emitter } from "./utils/_emitter";
@@ -31,6 +31,7 @@ import { _autoScroll, _autoScrollHash } from "./utils/_autoScroll";
 import { _parallax, _parallaxScroller, _parallaxBackground, _parallaxFloating } from "./utils/_parallax";
 import { _canvasBanner } from "./utils/_canvasBanner";
 import { _themeScroller } from "./utils/_themeScroller";
+import { _cursorBubble } from "./utils/_cursorBubble";
 import { _googleMap } from "./utils/_googleMap";
 import { _qrCode } from "./utils/_qrCode";
 import { _peekSlider } from "./utils/_peekSlider";
@@ -38,7 +39,7 @@ import { _snapSlider } from "./utils/_snapSlider";
 import { _horizontalLoop } from "./utils/_horizontalLoop";
 import { _comicSlider } from "./utils/_comicSlider";
 
-// expose for inline scripts, each page sets up its own components
+// for the inline page scripts
 Object.assign(window, {
     gsap,
     DateTime,
@@ -74,6 +75,7 @@ Object.assign(window, {
     _parallaxFloating,
     _canvasBanner,
     _themeScroller,
+    _cursorBubble,
     _googleMap,
     _qrCode,
     _peekSlider,
@@ -82,8 +84,7 @@ Object.assign(window, {
     _comicSlider,
 });
 
-// modules run after the html is parsed, and before the inline page scripts,
-// so --header-height is set before the components measure
+// set before the page scripts measure
 const _header = document.querySelector(".header-content");
 const _footer = document.querySelector(".footer-content");
 
@@ -110,7 +111,7 @@ document.querySelector("[data-starter-copy]")?.addEventListener("click", async (
     setTimeout(() => (_button.textContent = "Copy file list"), 2000);
 });
 
-// smooth scroll for links with data-auto-scroll to a section of the same page, "#" goes to the top
+// data-auto-scroll links glide to their section, "#" to the top
 document.addEventListener("click", (e) => {
     const _link = e.target.closest("a[data-auto-scroll]");
     if (!_link) return;
@@ -125,13 +126,13 @@ document.addEventListener("click", (e) => {
     _autoScroll({ target: _target });
 });
 
-// header and home search: a suggestion opens its component, Enter without one goes to /?q=
-// same match as the home filter, so suggestions and results agree
+// header and home search, Enter with no pick goes to /?q=
+// same match as the home filter
 const _searchItems = JSON.parse(document.getElementById("search-items")?.textContent ?? "[]");
 const _escapeHTML = (text) => String(text).replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 
 document.querySelectorAll("[data-search]").forEach((form) => {
-    // the home results are right below, so no "See all" or empty message
+    // home shows the results below, no "See all"
     const _onHome = form.hasAttribute("data-home-search");
 
     new _autocomplete({
@@ -146,7 +147,7 @@ document.querySelectorAll("[data-search]").forEach((form) => {
     });
 });
 
-// sliding menu below lg, the rest of the page is inert while it's open
+// sliding menu below lg, the page is inert while open
 const _menu = document.querySelector("[data-mobile-menu]");
 const _menuButton = document.querySelector("[data-mobile-menu-open]");
 const _pageParts = [_header, document.querySelector(".main-content"), _footer].filter(Boolean);
@@ -159,7 +160,7 @@ const _toggleMenu = (open) => {
     document.documentElement.classList.toggle("overflow-hidden", open);
     _pageParts.forEach((part) => (part.inert = open));
 
-    // the close button, not the search, so the phone keyboard doesn't cover the menu
+    // not the search, so no phone keyboard pops up
     (open ? _menu.querySelector("button[data-mobile-menu-close]") : _menuButton).focus({ preventScroll: true });
 };
 

@@ -35,7 +35,7 @@ title: Video Intro | Scrolling Animation | Anthony Toolkits
                     <li class="translate-y-17.5 pb-20 opacity-0 transition duration-500 last:pb-0 data-[state=active]:translate-y-0 data-[state=active]:opacity-100 data-[state=past]:-translate-y-17.5"><h2 class="mb-2 text-5xl leading-[1.2] font-bold md:text-[80px]">The cover fades as the section enters</h2></li>
                     <li class="translate-y-17.5 pb-20 opacity-0 transition duration-500 last:pb-0 data-[state=active]:translate-y-0 data-[state=active]:opacity-100 data-[state=past]:-translate-y-17.5"><h2 class="mb-2 text-5xl leading-[1.2] font-bold md:text-[80px]">Each title steps in at mid screen</h2></li>
                     <li class="translate-y-17.5 pb-20 opacity-0 transition duration-500 last:pb-0 data-[state=active]:translate-y-0 data-[state=active]:opacity-100 data-[state=past]:-translate-y-17.5"><h2 class="mb-2 text-5xl leading-[1.2] font-bold md:text-[80px]">States are data attributes</h2></li>
-                    {# the last title holds at mid screen: a screen-high sticky box whose bottom meets the section's, so both unpin together. flow-root keeps the box's negative margin inside the li, min-h is 50vh for the box + 30vh hold #}
+                    {# the last title holds at mid screen until the video unpins #}
                     <li class="flow-root min-h-[80vh] translate-y-17.5 opacity-0 transition duration-500 data-[state=active]:translate-y-0 data-[state=active]:opacity-100">
                         <div class="sticky top-0 -mt-[50vh] min-h-screen pt-[50vh]"><h2 class="mb-2 -translate-y-1/2 text-5xl leading-[1.2] font-bold md:text-[80px]">Copy the section and its script</h2></div>
                     </li>
@@ -66,7 +66,7 @@ title: Video Intro | Scrolling Animation | Anthony Toolkits
     <div class="js-title-intro-content relative pt-[50vh] text-center">
         <ul class="js-title-intro-list">
             <li class="pb-20 opacity-0 transition data-[state=active]:opacity-100"><h2>...</h2></li>
-            <!-- the last title holds at mid screen until the video unpins. flow-root keeps the negative margin inside the li, min-h is 50vh + the hold -->
+            <!-- the last title holds at mid screen until the video unpins -->
             <li class="flow-root min-h-[80vh] opacity-0 transition data-[state=active]:opacity-100">
                 <div class="sticky top-0 -mt-[50vh] min-h-screen pt-[50vh]"><h2 class="-translate-y-1/2">...</h2></div>
             </li>
@@ -130,7 +130,6 @@ new _parallaxScroller({
 </section>
 
 {% footerscript %}
-<!-- this script is just for this page -->
 <script type="module">
     // Requirements
         // JS

@@ -108,7 +108,7 @@ const _scrollRows = [...document.querySelectorAll('.js-loop-scroll')].map((targe
 // cards: still until dragged, a throw stops with a card centered
 document.querySelectorAll('.js-loop-cards').forEach((target) => new _horizontalLoop({ target, paused: true, center: true }));
 
-// marquee: plays on its own, stops while the mouse is over it, the page scroll speeds it up
+// marquee: plays on its own, pauses on hover
 const _marquees = [...document.querySelectorAll('.js-loop-marquee')].map((target) => new _horizontalLoop({ target, speed: 0.8, pauseOnHover: true }));
 
 let _lastScroll = window.scrollY;
