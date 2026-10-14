@@ -207,7 +207,8 @@ export class _parallaxOffset {
 class _parallaxRange {
     setRange(value, fallback) {
         const _value = value?.trim() || String(fallback);
-        this.target.style.setProperty("--range", /^-?[\d.]+$/.test(_value) ? `${_value}px` : _value);
+        this.range = /^-?[\d.]+$/.test(_value) ? `${_value}px` : _value;
+        this.target.style.setProperty("--range", this.range);
     }
 
     // the script sets --offset instead of the browser, eased with a css transition
@@ -218,6 +219,7 @@ class _parallaxRange {
 
     destroy() {
         this.offset?.destroy();
+        this.scroller?.destroy();
         this.target.style.removeProperty("--range");
         delete this.target.dataset.parallaxOffset;
     }
@@ -225,7 +227,7 @@ class _parallaxRange {
 
 // usage: data-parallax-background="range,easing", range default 500
 // fills its overflow-hidden parent, taller by the range, and moves from -range to 0 as the parent crosses the screen
-// the browser moves it in step with the scroll, the script only when eased or without scroll timelines
+// the browser moves it in step with the page scroll, or the script when eased
 export class _parallaxBackground extends _parallaxRange {
     constructor(props) {
         super();
@@ -234,10 +236,20 @@ export class _parallaxBackground extends _parallaxRange {
         const [_range, _easing] = (this.target?.dataset.parallaxBackground ?? "").split(",");
         this.easing = _easing?.trim() === "easing" || (props.easing ?? false);
         this.offset = null;
+        this.scroller = null;
 
-        if (this.target) {
-            this.setRange(_range, props.range ?? 500);
-            if (this.easing || !_parallax.scrollTimeline()) this.follow(this.target.parentElement, this.easing);
+        if (!this.target) return;
+
+        this.setRange(_range, props.range ?? 500);
+
+        if (this.easing) this.follow(this.target.parentElement, true);
+        else if (!_reducedMotion()) {
+            this.scroller = new _parallaxScroller({
+                target: this.target.parentElement,
+                events: {
+                    init: (scroller) => scroller.animate(this.target, { translate: [`0 calc(${this.range} * -1)`, "0 0"] }),
+                },
+            });
         }
     }
 }
