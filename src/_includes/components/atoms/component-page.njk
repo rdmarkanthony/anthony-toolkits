@@ -15,7 +15,7 @@
         {% if props.label -%}
         {{ tags(props.label, 'mb-6') }}
         {%- endif %}
-        <h1 class="mb-6 max-w-4xl font-display text-[2.75rem] leading-[1.02] font-semibold tracking-tight text-balance md:text-[4.5rem]">{{ props.title }}</h1>
+        <h1 class="mb-6 max-w-4xl font-display text-[--spacing(11)] leading-[1.02] font-semibold tracking-tight text-balance md:text-[--spacing(18)]">{{ props.title }}</h1>
         {% if props.description -%}
         <p class="max-w-2xl text-lg text-kit-muted md:text-xl">{{ props.description | safe }}</p>
         {%- endif %}
@@ -28,13 +28,13 @@
     usage:
     {% set pageScript %}{% raw %}// Requirements ... new _tabs({ target });{% endraw %}{% endset %}
     {{ scriptUsage({ code: pageScript, note: '...' }) }}
-    optional: markup, markupNote, css, cssNote (shown between the markup and the script)
+    optional: markup, markupNote, css, cssNote (shown between the markup and the script); code can be left out on CSS-only pages
     then run the same script: {% footerscript %}<script type="module">{{ pageScript | safe }}</script>{% endfooterscript %}
 #}
 {% macro scriptUsage(props) -%}
 <section class="mt-8 border-t border-kit-line px-4 py-16 md:py-28">
     <div class="mx-auto max-w-295">
-        <h2 class="mb-10 font-display text-[2.5rem] leading-[1.02] font-semibold tracking-tight md:mb-16 md:text-[3.5rem]">How to use</h2>
+        <h2 class="mb-10 font-display text-[--spacing(10)] leading-[1.02] font-semibold tracking-tight md:mb-16 md:text-[--spacing(14)]">How to use</h2>
         <div class="grid gap-10">
             {% if props.markup -%}
             <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
@@ -58,6 +58,7 @@
                 {{ codeBlock(props.css, 'css') }}
             </div>
             {%- endif %}
+            {% if props.code -%}
             <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
                 <div>
                     <h3 class="mb-2 font-display text-2xl font-medium tracking-tight">Script</h3>
@@ -67,6 +68,7 @@
                 </div>
                 {{ codeBlock(props.code, 'js') }}
             </div>
+            {%- endif %}
         </div>
     </div>
 </section>

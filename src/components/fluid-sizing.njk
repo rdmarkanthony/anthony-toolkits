@@ -1,0 +1,148 @@
+---
+title: Fluid sizing | Anthony Toolkits
+htmlClass: lg:fluid
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: 'fluid · cqw', title: 'Fluid sizing', description: 'Tailwind sizes that scale with the width of their section, using cqw. Write <code class="font-mono text-base">p-8</code> or <code class="font-mono text-base">text-5xl</code> as usual, and they grow and shrink like a 1440px design. This whole page uses it, resize the window.' }) }}
+
+{% set cards = ['Strategy', 'Design', 'Development'] %}
+{% set probe = '<span class="js-rem-probe invisible absolute w-4" aria-hidden="true"></span>' %}
+{% set readout = 'font-mono text-sm text-gray-500' %}
+
+{# demo: lg:fluid on the section, the same classes as any page #}
+<section class="relative bg-gray-50 py-16 lg:fluid">
+    {{ probe | safe }}
+    <div class="container-1">
+        <div class="mb-10 flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <h2 class="text-3xl font-bold tracking-tight">Page section</h2>
+                <p class="mt-2 text-gray-600">Desktop: scales with the page. Mobile: plain rem.</p>
+            </div>
+            <p class="{{ readout }}">1rem = <span class="js-rem-value">16px</span></p>
+        </div>
+        <h3 class="max-w-4xl text-5xl font-semibold tracking-tight md:text-6xl">Lorem ipsum dolor sit amet consectetur</h3>
+        <p class="mt-6 max-w-2xl text-lg text-gray-600">Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero est illo eius laudantium laborum.</p>
+        <div class="mt-12 grid gap-6 md:grid-cols-3">
+            {% for card in cards %}
+            <div class="rounded-3xl bg-white p-8 shadow-sm">
+                <p class="font-mono text-sm text-gray-500">0{{ loop.index }}</p>
+                <p class="mt-10 text-2xl font-semibold tracking-tight">{{ card }}</p>
+                <p class="mt-2 text-gray-600">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# demo: fluid on a box, sizes follow the box, not the window #}
+<section class="px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <div class="mb-10 flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <h2 class="text-3xl font-bold tracking-tight">Any box</h2>
+                <p class="mt-2 text-gray-600">Desktop: move the slider, sizes follow the box. Mobile: plain rem.</p>
+            </div>
+            <label class="hidden items-center gap-3 md:flex {{ readout }}">
+                <span class="js-box-value w-12 text-right">100%</span>
+                <input class="js-box-range w-40 accent-gray-950" type="range" min="40" max="100" value="100" aria-label="Box width" />
+            </label>
+        </div>
+        <div class="js-box relative md:fluid [--fluid-design:1180]">
+            {{ probe | safe }}
+            <div class="grid gap-8 rounded-3xl bg-gray-950 p-12 text-white md:grid-cols-2">
+                <div>
+                    <p class="font-mono text-sm text-gray-400">1rem = <span class="js-rem-value">16px</span></p>
+                    <h3 class="mt-6 text-5xl font-semibold tracking-tight">Lorem ipsum dolor</h3>
+                </div>
+                <div>
+                    <p class="text-lg text-gray-300">Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero est illo eius laudantium laborum.</p>
+                    <a class="mt-8 inline-block rounded-full bg-white px-6 py-3 font-medium text-gray-950" href="#">Lorem ipsum</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# demo: one-off sizes, px to cqw #}
+{% set input = 'h-12 w-full rounded-md border border-gray-300 bg-white px-3 font-mono focus:border-gray-950 focus:outline-none' %}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="text-3xl font-bold tracking-tight">px to cqw</h2>
+        <p class="mt-2 mb-10 max-w-2xl text-gray-600">For one-off sizes, e.g. <code class="font-mono text-sm">lg:text-[5cqw]</code>. px ÷ design width × 100.</p>
+        <form class="js-cqw grid max-w-2xl gap-4 sm:grid-cols-3 sm:items-end">
+            <label>
+                <span class="mb-2 block font-semibold">px</span>
+                <input class="{{ input }}" name="px" type="number" min="0" step="any" value="72" />
+            </label>
+            <label>
+                <span class="mb-2 block font-semibold">Design width</span>
+                <input class="{{ input }}" name="design" type="number" min="1" value="1440" />
+            </label>
+            <output class="flex h-12 items-center rounded-md bg-gray-950 px-4 font-mono text-white" name="result">5cqw</output>
+        </form>
+    </div>
+</section>
+
+{% set pageMarkup %}{% raw %}<!-- scales from lg, plain rem below -->
+<section class="lg:fluid">
+    <div class="container-1">
+        <h2 class="text-6xl">...</h2>
+        <div class="grid gap-6 p-8">...</div>
+    </div>
+</section>
+
+<!-- a box, from md, made at 1180px -->
+<div class="md:fluid [--fluid-design:1180]">...</div>
+
+<!-- whole site -->
+<html class="lg:fluid">{% endraw %}{% endset %}
+
+{% set pageCss %}{% raw %}/* style.css */
+@import "./components/fluid.css";
+
+/* fluid.css (short) */
+@utility fluid {
+    container-type: inline-size;
+    --fluid-rem: calc(100cqw * 16 / var(--fluid-design, 1440));
+    --spacing: calc(0.25 * var(--fluid-rem));
+    --text-base: max(0.875rem, var(--fluid-rem));
+    --text-5xl: calc(3 * var(--fluid-rem));
+    /* ...the rest of --text-*, --radius-*, --container-* */
+}{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: pageMarkup,
+    markupNote: 'Add <code class="font-mono text-sm">fluid</code> to a section or box. Spacing, text, radius and max-w sizes inside it scale. Inside a nested <code class="font-mono text-sm">@container</code>, they follow that one.',
+    css: pageCss,
+    cssNote: 'No script. Copy <code class="font-mono text-sm">src/assets/css/components/fluid.css</code>, Tailwind v4. It also has <code class="font-mono text-sm">container-1</code>, the 1180px page column.'
+}) }}
+
+{% footerscript %}
+<script type="module">
+    // demo readouts only, fluid needs no script
+    const _probes = document.querySelectorAll('.js-rem-probe');
+    const _showRem = () => _probes.forEach((probe) => {
+        const _value = probe.parentElement.querySelector('.js-rem-value');
+        _value.textContent = `${probe.getBoundingClientRect().width.toFixed(1)}px`;
+    });
+    _showRem();
+    _event.resize(_showRem);
+
+    const _box = document.querySelector('.js-box');
+    const _range = document.querySelector('.js-box-range');
+    _range.addEventListener('input', () => {
+        _box.style.width = `${_range.value}%`;
+        document.querySelector('.js-box-value').textContent = `${_range.value}%`;
+        _showRem();
+    });
+
+    const _form = document.querySelector('.js-cqw');
+    _form.addEventListener('submit', (e) => e.preventDefault());
+    _form.addEventListener('input', () => {
+        const _cqw = (_form.px.valueAsNumber / _form.design.valueAsNumber) * 100;
+        _form.result.value = Number.isFinite(_cqw) ? `${+_cqw.toFixed(2)}cqw` : '-';
+    });
+</script>
+{% endfooterscript %}

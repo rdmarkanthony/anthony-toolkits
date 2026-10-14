@@ -25,6 +25,7 @@ export default function (eleventyConfig) {
     // port the assets
     eleventyConfig.addPassthroughCopy("src/assets/img");
     eleventyConfig.addPassthroughCopy("src/assets/video");
+    eleventyConfig.addPassthroughCopy("src/assets/data");
 
     // zero-pad numbers
     eleventyConfig.addFilter("pad", (value, length = 2) => String(value).padStart(length, "0"));
