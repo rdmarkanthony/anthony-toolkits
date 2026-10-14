@@ -1,9 +1,14 @@
-// usage: new _autocomplete({ input, list, items, match, render, limit, more, empty, optionClass }), an ARIA combobox
+import { _emitter } from "./_emitter";
+
+// usage: new _autocomplete({ input, list, items, match, render, limit, more, empty, optionClass, events }), an ARIA combobox
 // input sits in a <form> so Enter with nothing picked submits it, list is an empty element with an id
 // items: [{ url, ... }], match(item, query) with query trimmed and lowercase, render(item) is the link's html
 // more(value, total) => { url, html } adds a last link past `limit`, empty(value) is the html when nothing matches
-export class _autocomplete {
+// events: init, update (box.value, box.results), show, hide, select (box.active), pick (box.picked)
+export class _autocomplete extends _emitter {
     constructor(props) {
+        super(props.events);
+
         this.input = props.input ?? null;
         this.list = props.list ?? null;
         this.items = props.items ?? [];
@@ -14,8 +19,11 @@ export class _autocomplete {
         this.empty = props.empty ?? null;
         this.optionClass = props.optionClass ?? "";
 
+        this.value = "";
+        this.results = [];
         this.options = [];
         this.active = -1;
+        this.picked = null;
 
         if (this.input && this.list) this.init();
     }
@@ -36,6 +44,7 @@ export class _autocomplete {
         // keep the focus on the input, so a click on a suggestion isn't lost to the blur
         // mousedown too, iOS Safari still moves the focus after a prevented pointerdown
         this.onPress = (e) => e.preventDefault();
+        this.onClick = (e) => this.pick(this.options.indexOf(e.target.closest("a")));
 
         this.input.addEventListener("input", this.onInput);
         this.input.addEventListener("focus", this.onFocus);
@@ -43,15 +52,21 @@ export class _autocomplete {
         this.input.addEventListener("focusout", this.onFocusout);
         this.list.addEventListener("pointerdown", this.onPress);
         this.list.addEventListener("mousedown", this.onPress);
+        this.list.addEventListener("click", this.onClick);
+
+        this.emit("init");
     }
 
     update() {
         const value = this.input.value.trim();
         const query = value.toLowerCase();
-        if (!query) return this.close();
+        const matches = query ? this.items.filter((item) => this.match(item, query)) : [];
 
-        const matches = this.items.filter((item) => this.match(item, query));
-        if (!matches.length && !this.empty) return this.close();
+        this.value = value;
+        this.results = matches.slice(0, this.limit);
+        this.emit("update");
+
+        if (!query || (!matches.length && !this.empty)) return this.close();
 
         const links = matches.slice(0, this.limit).map((item) => ({ url: item.url, html: this.render(item) }));
         if (this.more && matches.length > this.limit) links.push(this.more(value, matches.length));
@@ -110,6 +125,7 @@ export class _autocomplete {
     }
 
     select(index) {
+        const changed = index !== this.active;
         this.active = index;
         this.options.forEach((option, i) => option.setAttribute("aria-selected", String(i === index)));
 
@@ -120,17 +136,30 @@ export class _autocomplete {
         } else {
             this.input.removeAttribute("aria-activedescendant");
         }
+
+        if (changed) this.emit("select");
+    }
+
+    // a click or Enter, "more" picks null
+    pick(index) {
+        if (index < 0) return;
+        this.picked = this.results[index] ?? null;
+        this.emit("pick");
     }
 
     open() {
+        if (!this.list.hidden) return;
         this.list.hidden = false;
         this.input.setAttribute("aria-expanded", "true");
+        this.emit("show");
     }
 
     close() {
+        this.select(-1);
+        if (this.list.hidden) return;
         this.list.hidden = true;
         this.input.setAttribute("aria-expanded", "false");
-        this.select(-1);
+        this.emit("hide");
     }
 
     destroy() {
@@ -142,5 +171,6 @@ export class _autocomplete {
         this.input.removeEventListener("focusout", this.onFocusout);
         this.list.removeEventListener("pointerdown", this.onPress);
         this.list.removeEventListener("mousedown", this.onPress);
+        this.list.removeEventListener("click", this.onClick);
     }
 }

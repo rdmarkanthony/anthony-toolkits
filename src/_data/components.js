@@ -56,6 +56,7 @@ export default [
         category: "Forms",
         items: [
             { label: "Select box", url: "/components/select-box/", description: "A styled dropdown for a native select, with search and keyboard support.", utils: "_selectBox", ready: true },
+            { label: "Search suggestion", url: "/components/search-suggestion/", description: "Suggestions below a search input as you type, with keyboard support.", utils: "_autocomplete", ready: true },
         ],
     },
     {

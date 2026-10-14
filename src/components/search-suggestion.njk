@@ -1,0 +1,86 @@
+---
+title: Search suggestion | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+{% from "components/atoms/icon.njk" import search %}
+
+{{ pageIntro({ label: '_autocomplete', title: 'Search suggestion', description: 'Suggestions show below the search as you type. Click one to open it. Try "you", "shop" or "music".' }) }}
+
+{# demo: popular sites from a json file #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-2 text-3xl font-bold tracking-tight">Popular sites</h2>
+        <p class="mb-8 max-w-2xl text-gray-600">Arrow keys to move, Enter to open, Esc to close. Enter with nothing picked searches Google.</p>
+        <form class="relative max-w-2xl" action="https://www.google.com/search" method="get" role="search">
+            <label class="relative block">
+                <span class="sr-only">Search sites</span>
+                <span class="pointer-events-none absolute top-1/2 left-6 -translate-y-1/2 text-xl text-gray-500">{{ search() }}</span>
+                <input id="site-search" class="h-16 w-full rounded-full border-2 border-gray-300 bg-white pr-32 pl-15 text-lg shadow-lg outline-none transition-colors placeholder:text-gray-400 focus:border-gray-950" type="search" name="q" placeholder="Search sites" autocomplete="off" />
+            </label>
+            <button class="absolute top-2 right-2 h-12 cursor-pointer rounded-full bg-gray-950 px-6 font-medium text-white transition-colors hover:bg-gray-700" type="submit">Search</button>
+            <div id="site-search-list" class="absolute top-full right-0 left-0 z-10 mt-2 max-h-96 overflow-y-auto rounded-3xl border border-gray-200 bg-white p-2 shadow-xl" hidden></div>
+        </form>
+        <p class="mt-6 font-mono text-sm text-gray-500">Events, newest first:</p>
+        <p class="js-search-log mt-2 h-30 font-mono text-sm whitespace-pre-line"></p>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- Enter with nothing picked submits the form -->
+<form class="relative" action="https://www.google.com/search" method="get" role="search">
+    <label>
+        <span class="sr-only">Search sites</span>
+        <input id="site-search" type="search" name="q" autocomplete="off" />
+    </label>
+    <!-- the suggestions, needs an id -->
+    <div id="site-search-list" class="absolute top-full right-0 left-0" hidden></div>
+</form>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_autocomplete.js
+    // JSON
+        // src/assets/data/sites.json, [{ label, url, keywords }]
+
+const _logList = document.querySelector('.js-search-log');
+const _log = (text) => (_logList.textContent = [text, ..._logList.textContent.split('\n')].filter(Boolean).slice(0, 5).join('\n'));
+const _escapeHTML = (text) => String(text).replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
+
+const _search = new _autocomplete({
+    input: document.querySelector('#site-search'),
+    list: document.querySelector('#site-search-list'),
+    limit: 6,
+    match: (item, query) => `${item.label} ${item.keywords}`.toLowerCase().includes(query),
+    render: (item) => `<span class="font-medium">${_escapeHTML(item.label)}</span><span class="text-sm text-gray-500">${new URL(item.url).hostname}</span>`,
+    empty: (value) => `<p class="px-4 py-3 text-gray-500">No sites match “${_escapeHTML(value)}”.</p>`,
+    optionClass: 'flex items-baseline justify-between gap-4 rounded-2xl px-5 py-3 text-lg aria-selected:bg-gray-100',
+    events: {
+        init: (box) => {},
+        update: (box) => _log(`update "${box.value}", ${box.results.length} results`), // on each keystroke
+        show: (box) => _log('show'),
+        hide: (box) => _log('hide'),
+        select: (box) => _log(`select ${box.results[box.active]?.label ?? 'none'}`), // arrow keys or hover
+        pick: (box) => _log(`pick ${box.picked?.label}`), // click or Enter, then the link opens
+    },
+});
+
+// load the items, or set them from any api
+fetch('/assets/data/sites.json')
+    .then((response) => response.json())
+    .then((items) => (_search.items = items));
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'An input and an empty list with an id, inside a form.',
+    code: pageScript,
+    note: 'Each item needs a <code class="font-mono text-sm">url</code>, a suggestion is a link to it. <code class="font-mono text-sm">match</code> gets the query trimmed and lowercase, <code class="font-mono text-sm">render</code> returns the html. Style the picked one with <code class="font-mono text-sm">aria-selected:</code>. More listeners with <code class="font-mono text-sm">_search.on(\'pick\', fn)</code>.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
