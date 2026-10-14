@@ -1,9 +1,10 @@
 import { _event } from "./_event";
 import { _emitter } from "./_emitter";
 
-// usage: new _lightbox({ target, modal, animation, events }), target is the element or selector to show
+// usage: new _lightbox({ target, modal, close, animation, events }), target is the element or selector to show
 // content moves in and back on close, a modal opens on top
-// close: lightbox.hide(), _lightbox.close() for the latest, _lightbox.close("all")
+// close: "page" (default) or "inside" puts the X on the content's corner
+// closing: lightbox.hide(), _lightbox.close() for the latest, _lightbox.close("all")
 export class _lightbox extends _emitter {
     constructor(props) {
         super(props.events);
@@ -11,6 +12,7 @@ export class _lightbox extends _emitter {
         if (!window._lightboxList) window._lightboxList = []; // the open lightboxes
 
         this.modal = props.modal || false;
+        this.close = props.close || "page";
 
         this.target = "";
         this.el = {
@@ -99,10 +101,18 @@ export class _lightbox extends _emitter {
 
     createCloseButton() {
         this.el.btn.close = document.createElement("a");
-        this.el.btn.close.classList.add("js-lightbox-btn", "btn-close", "z-[3]", "block", "absolute", "xl:fixed", "top-0", "right-0", "p-4", "text-white", "hover:text-red-500", "transition-colors", "duration-200");
+        this.el.btn.close.classList.add("js-lightbox-btn", "btn-close", "z-[3]", "block", "absolute", "top-0", "right-0", "p-4", "hover:text-red-500", "transition-colors", "duration-200");
         this.el.btn.close.href = "#";
         this.el.btn.close.innerHTML = `<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.207 6.207a1 1 0 0 0-1.414-1.414L12 10.586 6.207 4.793a1 1 0 0 0-1.414 1.414L10.586 12l-5.793 5.793a1 1 0 1 0 1.414 1.414L12 13.414l5.793 5.793a1 1 0 0 0 1.414-1.414L13.414 12l5.793-5.793z" fill="currentColor"/></svg>`;
-        this.el.main.appendChild(this.el.btn.close); // scrolls with long content, fixed on xl
+
+        // inside: on the content's corner, page: scrolls with long content, fixed on xl
+        if (this.close === "inside") {
+            this.el.btn.close.classList.add("text-gray-950");
+            this.content.original.appendChild(this.el.btn.close);
+        } else {
+            this.el.btn.close.classList.add("xl:fixed", "text-white");
+            this.el.main.appendChild(this.el.btn.close);
+        }
 
         this.el.btn.close.addEventListener("click", (e) => {
             e.preventDefault();
@@ -213,6 +223,7 @@ export class _lightbox extends _emitter {
     destroy() {
         if (!this.target) return; // already gone
 
+        if (this.close === "inside") this.el.btn.close?.remove(); // not left in the content
         this.content.original.classList.remove("js-lightbox-center", "lightbox-animate", "lightbox-fadeIn", "lightbox-fadeInUp", "lightbox-zoomIn", "lightbox-fadeOut", "lightbox-fadeOutDown", "lightbox-zoomOut");
         if (this.content.parent) this.content.parent.appendChild(this.content.original);
 
