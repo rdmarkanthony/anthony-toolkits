@@ -28,7 +28,7 @@
     usage:
     {% set pageScript %}{% raw %}// Requirements ... new _tabs({ target });{% endraw %}{% endset %}
     {{ scriptUsage({ code: pageScript, note: '...' }) }}
-    optional: markup, markupNote, css, cssNote
+    optional: markup, markupNote, css, cssNote, more: [{ title, note, code, lang }]
     run it too: {% footerscript %}<script type="module">{{ pageScript | safe }}</script>{% endfooterscript %}
 #}
 {% macro scriptUsage(props) -%}
@@ -69,6 +69,17 @@
                 {{ codeBlock(props.code, 'js') }}
             </div>
             {%- endif %}
+            {% for block in props.more -%}
+            <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-10">
+                <div>
+                    <h3 class="mb-2 font-display text-2xl font-medium tracking-tight">{{ block.title }}</h3>
+                    {% if block.note -%}
+                    <p class="text-kit-muted">{{ block.note | safe }}</p>
+                    {%- endif %}
+                </div>
+                {{ codeBlock(block.code, block.lang or 'js') }}
+            </div>
+            {%- endfor %}
         </div>
     </div>
 </section>

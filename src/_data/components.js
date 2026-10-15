@@ -43,6 +43,7 @@ export default [
             { label: "Cursor bubble", url: "/components/cursor-bubble/", description: "A dot that trails the mouse, grows over big type and shows labels.", utils: "_cursorBubble", ready: true },
             { label: "Typing animation", url: "/components/typing-animation/", description: "Typewriter text effect.", utils: "_typing", ready: true },
             { label: "Scramble text", url: "/components/scramble-text/", description: "Letters flip through random characters, then settle into the text.", utils: "_scrambleText", ready: true },
+            { label: "Three.js background", url: "/components/three-background/", description: "A 3D canvas behind any section, starting with particles that follow the mouse.", utils: "_threeBackground · three.js", ready: true },
         ],
     },
     {
