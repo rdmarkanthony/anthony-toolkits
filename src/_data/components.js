@@ -20,6 +20,7 @@ export default [
         url: "/components/scrolling-animation/",
         items: [
             { label: "Canvas image sequence", url: "/components/scrolling-animation/canvas/", description: "Scrub through image frames on a canvas as you scroll.", utils: "_canvasBanner · _parallaxScroller", ready: true },
+            { label: "Image expand", url: "/components/scrolling-animation/image-expand/", description: "A small banner grows to cover the screen, then a heading comes in.", utils: "_parallaxScroller", ready: true },
             { label: "Parallax background", url: "/components/scrolling-animation/background/", description: "Backgrounds and floating elements that move slower than the page.", utils: "_parallaxBackground · _parallaxFloating", ready: true },
             { label: "Stacking columns", url: "/components/scrolling-animation/stacking-columns/", description: "A pinned row where each column stays while the next slides over it.", utils: "_parallaxScroller", ready: true },
             { label: "Text reveal", url: "/components/scrolling-animation/text/", description: "Body text that turns from grey to dark word by word on scroll.", utils: "_parallaxScroller", ready: true },
