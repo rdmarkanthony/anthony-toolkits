@@ -8,9 +8,9 @@ title: Three.js background | Anthony Toolkits
 {{ pageIntro({ label: '_threeBackground · three.js', title: 'Three.js background', description: 'A 3D canvas behind any section. It only runs while on screen. Pick an effect below, or write your own.' }) }}
 
 {% set effects = [
-    { url: '/components/three-background/particles/', title: 'Particles', text: 'Dots that drift and move away from the mouse.', utils: '_threeParticles' },
     { url: '/components/three-background/blobs/', title: 'Blobs', text: 'Big soft colors with grain that glide to new colors.', utils: '_threeBlobs' },
-    { url: '/components/three-background/glow/', title: 'Glow', text: 'One soft glow that follows the mouse, over film grain.', utils: '_threeGlow' }
+    { url: '/components/three-background/glow/', title: 'Glow', text: 'One soft glow that follows the mouse, over film grain.', utils: '_threeGlow' },
+    { url: '/components/three-background/particles/', title: 'Particles', text: 'Dots that drift and move away from the mouse.', utils: '_threeParticles' }
 ] %}
 <section id="demos" class="px-4 pb-16">
     <div class="mx-auto max-w-295">
@@ -18,14 +18,14 @@ title: Three.js background | Anthony Toolkits
         <div class="grid gap-6 md:grid-cols-3">
             {% for effect in effects %}
             <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="{{ effect.url }}">
-                {% if loop.index == 1 %}
+                {% if effect.title == 'Particles' %}
                 {# preview: dots on dark #}
                 <div class="relative aspect-4/3 overflow-hidden bg-gray-950">
                     {% for i in range(1, 41) %}
                     <span class="absolute size-1 rounded-full bg-white" style="left: {{ (i * 37) % 100 }}%; top: {{ (i * 61) % 100 }}%; opacity: {{ 0.3 + (i % 3) * 0.2 }}"></span>
                     {% endfor %}
                 </div>
-                {% elif loop.index == 2 %}
+                {% elif effect.title == 'Blobs' %}
                 {# preview: soft colors with grain #}
                 <div class="relative aspect-4/3 overflow-hidden bg-[#b8a797]">
                     <span class="absolute -top-1/4 -right-1/6 size-48 rounded-full bg-[#ddc4b8] blur-3xl"></span>
