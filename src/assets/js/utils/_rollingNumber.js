@@ -1,5 +1,7 @@
-import { gsap } from "gsap";
 import { _event } from "./_event";
+
+// power1.inOut
+const _ease = "cubic-bezier(0.455, 0.03, 0.515, 0.955)";
 
 export class _rollingNumber {
     constructor(props) {
@@ -18,11 +20,6 @@ export class _rollingNumber {
         this.startNumber = props.startNumber ?? 0;
 
         this.height = 0;
-        this.currentOffset = 0;
-
-        // tweened values
-        this.offset = { value: 0 };
-        this.width = { value: 0 };
 
         this.debug = props.debug ?? false;
 
@@ -88,21 +85,14 @@ export class _rollingNumber {
             if (props.callback) props.callback(this);
         });
 
-        if (!this.numeric)
-            gsap.fromTo(
-                this.width,
-                { value: this.el.numbers[_from].querySelector("span").offsetWidth },
-                {
-                    value: this.el.numbers[_to].querySelector("span").offsetWidth,
-                    duration: (_duration * 0.5) / 1000,
-                    delay: (_duration * 0.5) / 1000,
-                    ease: "power1.inOut",
-                    overwrite: true,
-                    onUpdate: () => {
-                        this.target.style.width = `${this.width.value}px`;
-                    },
-                }
-            );
+        if (!this.numeric) {
+            const _width = (index) => `${this.el.numbers[index].querySelector("span").offsetWidth}px`;
+
+            // the width follows in the second half
+            this.widthAnimation?.cancel();
+            this.target.style.width = _width(_to);
+            this.widthAnimation = this.target.animate({ width: [_width(_from), _width(_to)] }, { duration: _duration * 0.5, delay: _duration * 0.5, easing: _ease, fill: "backwards" });
+        }
     }
 
     resize(status) {
@@ -122,22 +112,17 @@ export class _rollingNumber {
         this.tween(status === "init" ? this.startNumber * this.height : this.currentOffset, (status === "init" ? this.startNumber : this.currentNumber) * this.height, this.duration);
     }
 
+    // where the digits strip is, mid-roll too
+    get currentOffset() {
+        const _transform = getComputedStyle(this.el.main).transform;
+        return _transform === "none" ? 0 : -new DOMMatrix(_transform).m42;
+    }
+
     // move the digits strip, durations in ms
     tween(from, to, duration, onComplete) {
-        gsap.fromTo(
-            this.offset,
-            { value: from },
-            {
-                value: to,
-                duration: duration / 1000,
-                ease: "power1.inOut",
-                overwrite: true,
-                onUpdate: () => {
-                    this.el.main.style.transform = `translate3d(0, -${this.offset.value}px, 0)`;
-                    this.currentOffset = this.offset.value;
-                },
-                onComplete,
-            }
-        );
+        this.animation?.cancel();
+        this.el.main.style.transform = `translate3d(0, -${to}px, 0)`;
+        this.animation = this.el.main.animate({ transform: [`translate3d(0, -${from}px, 0)`, `translate3d(0, -${to}px, 0)`] }, { duration, easing: _ease });
+        if (onComplete) this.animation.onfinish = onComplete;
     }
 }
