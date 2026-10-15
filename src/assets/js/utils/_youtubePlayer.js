@@ -1,6 +1,6 @@
 import { _event } from "./_event";
 import { _emitter } from "./_emitter";
-import { _players, _pauseAll, _cover } from "./_media";
+import { _players, _pauseAll, _cover, _watchView, _pauseOutView } from "./_media";
 
 const _youtubeAPI = () => {
     if (typeof window.onYouTubeIframeAPIReady !== "undefined") return;
@@ -33,6 +33,7 @@ export class _youtubePlayer extends _emitter {
         this.autoplay = props.autoplay ?? false;
         this.controls = props.controls !== undefined ? (props.controls ? 1 : 0) : 1;
         this.stretch = props.stretch ?? false;
+        this.pauseOutView = props.pauseOutView ?? false;
 
         this.revealDelay = props.revealDelay ?? 4500;
         this.timers = {};
@@ -59,6 +60,8 @@ export class _youtubePlayer extends _emitter {
             this.el.player.style.width = `100%`;
             this.el.player.style.height = `100%`;
         }
+
+        if (this.pauseOutView) this.offView = _watchView(this);
 
         this.emit("afterInit");
 
@@ -104,6 +107,7 @@ export class _youtubePlayer extends _emitter {
                     if (event.data === 1) {
                         this.isPlaying = true;
                         if (!this.autoplay) _pauseAll(this);
+                        _pauseOutView(this);
                     } else {
                         this.isPlaying = false;
                     }
@@ -166,6 +170,14 @@ export class _youtubePlayer extends _emitter {
 
     resize() {
         if (this.stretch) _cover(this.target, this.el.player);
+    }
+
+    play() {
+        this.player?.playVideo?.();
+    }
+
+    pause() {
+        this.player?.pauseVideo?.();
     }
 
     static pauseAll(currentPlayer) {

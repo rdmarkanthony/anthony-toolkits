@@ -17,6 +17,7 @@ title: Lightbox | Anthony Toolkits
             <a class="{{ button }}" href="#sample-image" data-lightbox>Open an image</a>
             <a class="{{ button }}" href="#sample-lightbox" target="_blank" data-lightbox>Open in a new tab (skipped)</a>
             <a class="{{ button }}" href="#" data-lightbox>Open without content</a>
+            <a class="{{ button }}" href="#sample-inside" data-lightbox="inside">Close button inside</a>
         </div>
 
         {# the contents, hidden until opened #}
@@ -68,6 +69,16 @@ title: Lightbox | Anthony Toolkits
                 </div>
             </div>
 
+            <div id="sample-inside" class="mx-auto max-w-3xl rounded-2xl bg-white p-6 md:p-12">
+                <h2 class="pr-8 text-2xl font-bold tracking-tight">Close button inside</h2>
+                <p class="mt-4 text-gray-600">The <code class="font-mono text-sm">X</code> sits on the content's corner and scrolls with it.</p>
+                <div class="mt-4 flex flex-col gap-4 text-gray-600">
+                    {% for i in range(0, 4) %}
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam corporis possimus natus! Nemo laboriosam placeat, sapiente quo, dignissimos sequi expedita odit, quibusdam esse facere maxime quod tenetur enim dolores qui.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
             <div id="sample-lightbox3" class="mx-auto max-w-3xl rounded-2xl bg-white p-6 md:p-12">
                 <div class="flex flex-col gap-4 text-gray-600">
                     {% for i in range(0, 8) %}
@@ -86,6 +97,8 @@ title: Lightbox | Anthony Toolkits
 <a href="#my-lightbox" data-lightbox>Open</a>
 <!-- data-lightbox="modal" opens on top of the current lightbox -->
 <a href="#my-modal" data-lightbox="modal">Open a modal</a>
+<!-- data-lightbox="inside" puts the close button on the content's corner, e.g. "modal,inside" -->
+<a href="#my-lightbox" data-lightbox="inside">Open</a>
 
 <div class="hidden">
     <div id="my-lightbox" class="mx-auto max-w-3xl rounded-2xl bg-white p-12">...</div>
@@ -101,10 +114,12 @@ title: Lightbox | Anthony Toolkits
 
 const _openLightbox = (trigger) => {
     const _href = trigger.getAttribute('href');
+    const _options = trigger.dataset.lightbox.split(',');
 
     new _lightbox({
         target: _href && _href !== '#' ? document.querySelector(_href) : null,
-        modal: trigger.dataset.lightbox.split(',')[0] === 'modal',
+        modal: _options.includes('modal'),
+        close: _options.includes('inside') ? 'inside' : 'page', // page or inside
         animation: 'zoom', // zoom, fade, fadeUp or none
         events: {
             beforeShow: (lightbox) => {},

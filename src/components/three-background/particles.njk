@@ -1,0 +1,87 @@
+---
+title: Particles | Three.js background | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Three.js background', url: '/components/three-background/' }, label: '_threeParticles · _threeBackground', title: 'Particles', description: 'Dots that drift slowly, move away from the mouse and tilt with it. Calm by default, for text on top.' }) }}
+
+{# demo: particles behind a hero #}
+<section class="px-4 pb-4">
+    <div class="mx-auto max-w-295">
+        <div class="js-three-dark flex min-h-[80vh] flex-col justify-between gap-16 overflow-hidden rounded-3xl bg-gray-950 p-8 text-white md:p-12">
+            <p class="font-mono text-sm text-gray-400">Move your mouse here</p>
+            <div class="max-w-2xl">
+                <h2 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">Lorem ipsum dolor sit amet</h2>
+                <p class="mb-8 max-w-lg text-lg text-gray-300">Consectetur adipisicing elit. Libero est illo eius laudantium laborum, quis nostrud exercitation.</p>
+                <div class="flex flex-wrap gap-3">
+                    <a class="rounded-full bg-white px-6 py-3 font-medium text-gray-950" href="#">Get started</a>
+                    <a class="rounded-full border border-white/30 px-6 py-3 font-medium" href="#">Learn more</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# demo: light, colors, play and pause #}
+<section class="px-4 pt-12 pb-16">
+    <div class="mx-auto grid max-w-295 gap-4 md:grid-cols-2">
+        <div class="js-three-light flex min-h-96 flex-col justify-end gap-2 overflow-hidden rounded-3xl bg-gray-50 p-8">
+            <h2 class="text-3xl font-bold tracking-tight">Colors</h2>
+            <p class="max-w-sm text-gray-600">An array of colors, fewer and bigger dots. Lorem ipsum dolor sit amet consectetur.</p>
+        </div>
+        <div class="flex min-h-96 flex-col justify-between gap-6 rounded-3xl border border-gray-200 p-8">
+            <h2 class="text-3xl font-bold tracking-tight">Methods and events</h2>
+            <div class="flex flex-col gap-4">
+                <div class="flex flex-wrap gap-3">
+                    <button class="js-three-pause cursor-pointer rounded-full bg-gray-950 px-5 py-2 font-medium text-white" type="button">pause()</button>
+                    <button class="js-three-play cursor-pointer rounded-full bg-gray-100 px-5 py-2 font-medium" type="button">play()</button>
+                </div>
+                <p class="font-mono text-sm text-gray-500">colors card: <span class="js-three-log">-</span></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_inview.js
+        // src/assets/js/utils/_threeBackground.js
+        // src/assets/js/utils/_threeParticles.js
+    // Packages
+        // three
+
+new _threeBackground({
+    target: document.querySelector('.js-three-dark'),
+    // defaults: count: 800, color: '#ffffff', size: 2.5, speed: 0.1, depth: 4, radius: 2, push: 0.8, parallax: 0.08, opacity: 0.6
+    effect: _threeParticles(),
+});
+
+// methods and events
+const _log = document.querySelector('.js-three-log');
+const _light = new _threeBackground({
+    target: document.querySelector('.js-three-light'),
+    effect: _threeParticles({ color: ['#7dd3fc', '#fcd34d', '#fda4af'], count: 120, size: 7, parallax: 0 }),
+    events: {
+        ready: () => (_log.textContent = 'ready'),
+        play: () => (_log.textContent = 'play'),
+        pause: (instance) => (_log.textContent = `pause, at ${instance.time.toFixed(1)}s`),
+    },
+});
+window._light = _light; // for trying it in the console
+
+document.querySelector('.js-three-pause').addEventListener('click', () => _light.pause());
+document.querySelector('.js-three-play').addEventListener('click', () => _light.play());
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: 'Options: <code class="font-mono text-sm">color</code> (one or an array), <code class="font-mono text-sm">size</code> in px, <code class="font-mono text-sm">radius</code> and <code class="font-mono text-sm">push</code> for the mouse, <code class="font-mono text-sm">parallax</code> for the tilt. It also pauses on its own off screen. Markup and the base are on the <a class="underline" href="/components/three-background/">overview</a>.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

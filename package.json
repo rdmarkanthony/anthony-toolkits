@@ -31,7 +31,8 @@
         "plyr": "^3.8.5",
         "qrcode": "1.5.4",
         "split-type": "^0.3.4",
-        "swiper": "^12.2.0"
+        "swiper": "^12.2.0",
+        "three": "^0.186.1"
     },
     "devDependencies": {
         "@tailwindcss/cli": "^4.2.0",

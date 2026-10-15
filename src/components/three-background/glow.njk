@@ -1,0 +1,62 @@
+---
+title: Glow | Three.js background | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Three.js background', url: '/components/three-background/' }, label: '_threeGlow · _threeBackground', title: 'Glow', description: 'One soft glow that rests on a spot and follows the mouse, with a smaller one across. Film grain on top.' }) }}
+
+{# demo: glow follows the cursor, light and dark #}
+<section class="px-4 pb-16">
+    <div class="mx-auto max-w-295">
+        <div class="js-three-glow flex min-h-[80vh] flex-col justify-between gap-16 overflow-hidden rounded-3xl p-8 text-white transition-colors duration-700 data-[theme=light]:text-gray-950 md:p-12" data-theme="dark">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <p class="font-mono text-sm opacity-60">Move your mouse here</p>
+                <button class="js-glow-theme cursor-pointer rounded-full border border-current/30 px-4 py-2 font-medium" type="button">Light / dark</button>
+            </div>
+            <div class="max-w-xl">
+                <h2 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">Lorem ipsum dolor</h2>
+                <p class="text-lg opacity-70">Consectetur adipisicing elit. The glow rests on the right, follows your mouse, and a smaller one moves across.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_inview.js
+        // src/assets/js/utils/_threeBackground.js
+        // src/assets/js/utils/_threeGlow.js
+    // Packages
+        // three
+
+// set() fades to the other theme
+const _themes = {
+    dark: { color: '#818cf8', background: '#0c0c0e', strength: 0.3 },
+    light: { color: '#818cf8', background: '#f5f4ef', strength: 0.6 },
+};
+const _target = document.querySelector('.js-three-glow');
+const _glow = _threeGlow({
+    // defaults: rest: [0.7, 0.45], radius: 0.25, blur: 0.08, mirror: 0.6, grain: 0.28, follow: 1.2
+    ..._themes.dark,
+});
+new _threeBackground({ target: _target, effect: _glow });
+
+document.querySelector('.js-glow-theme').addEventListener('click', () => {
+    const _theme = _target.dataset.theme === 'dark' ? 'light' : 'dark';
+    _target.dataset.theme = _theme;
+    _glow.set(_themes[_theme]);
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: '<code class="font-mono text-sm">set({ color, background, strength, rest })</code> fades to them. <code class="font-mono text-sm">rest</code> is <code class="font-mono text-sm">[x, y]</code> from 0 to 1, <code class="font-mono text-sm">radius</code> and <code class="font-mono text-sm">blur</code> are part of the longer side. Follows a mouse only, not touch. Markup and the base are on the <a class="underline" href="/components/three-background/">overview</a>.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

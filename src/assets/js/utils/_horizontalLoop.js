@@ -35,6 +35,7 @@ export class _horizontalLoop {
 
         this.items = [];
         this.animations = [];
+        this.manual = true;
         this.loops = 1;
         this.unsubscribe = [];
         this.times = [];
@@ -152,6 +153,7 @@ export class _horizontalLoop {
     // items slide left and wrap, one round is the row's width
     build() {
         this.animations.forEach((animation) => animation.cancel());
+        this.animations = [];
 
         const _items = this.items;
         const _last = _items[_items.length - 1];
@@ -169,13 +171,6 @@ export class _horizontalLoop {
         _tl.to({}, { duration: _total / this.speed });
 
         this.loopAt = _items.map((item, i) => item.offsetLeft - _startX + this.widths[i]);
-        this.animations = _items.map((item, i) => {
-            if (this.linked) return item.animate(this.keyframes(i), { timeline: _pageTimeline(), fill: "both" });
-
-            const _animation = item.animate(this.keyframes(i), { duration: 1000, fill: "both" });
-            _animation.pause();
-            return _animation;
-        });
 
         // each item's stop: at the start, or centered
         const _inset = _items[0].getBoundingClientRect().left - this.target.getBoundingClientRect().left;
@@ -208,9 +203,35 @@ export class _horizontalLoop {
         if (!this.timeline) return;
         if (this.linked) {
             this.loops = Math.ceil((document.documentElement.scrollHeight - window.innerHeight) / (this.totalWidth / Math.abs(this.factor))) + 2;
-            this.animations.forEach((animation, i) => animation.effect.setKeyframes(this.keyframes(i, this.loops, this.factor < 0)));
+            this.frames = this.items.map((item, i) => this.keyframes(i, this.loops, this.factor < 0));
         }
+        this.mode(true);
+    }
+
+    // drags and tweens move it by script, after them the browser moves it with the scroll again
+    mode(force = false) {
+        const _manual = !this.linked || this.holds.has("drag") || this.holds.has("tween");
+        if (force || _manual !== this.manual) this.setup(_manual);
+    }
+
+    // safari's scroll thread keeps an animation's first range, so the browser gets new ones each time it takes over
+    setup(manual) {
+        const _old = this.animations;
+        this.manual = manual;
+        this.start = null;
+
+        this.animations = this.items.map((item, i) => {
+            if (!manual) return item.animate(this.frames[i], { timeline: _pageTimeline(), fill: "both" });
+
+            const _animation = item.animate(this.keyframes(i), { duration: 1000, fill: "both" });
+            _animation.pause();
+            return _animation;
+        });
         this.render(true);
+
+        // the old ones stay until the new ones show, so nothing flashes
+        if (manual) _old.forEach((animation) => animation.cancel());
+        else Promise.allSettled(this.animations.map((animation) => animation.ready)).then(() => _old.forEach((animation) => animation.cancel()));
     }
 
     // pass the time to the items
@@ -218,7 +239,7 @@ export class _horizontalLoop {
         if (!this.timeline) return;
         const _phase = this.timeline.time() * this.speed;
 
-        if (!this.linked) {
+        if (this.manual) {
             const _time = _wrapProgress((_phase + this.factor * window.scrollY) / this.totalWidth) * 1000;
             this.animations.forEach((animation) => (animation.currentTime = _time));
             return;
@@ -309,6 +330,7 @@ export class _horizontalLoop {
 
         if (vars.duration === 0) {
             _tl.time(this.timeWrap(_time));
+            this.mode();
             return;
         }
 
@@ -342,6 +364,7 @@ export class _horizontalLoop {
 
     hold(reason, on) {
         on ? this.holds.add(reason) : this.holds.delete(reason);
+        this.mode();
         this.update();
     }
 

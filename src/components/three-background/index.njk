@@ -1,0 +1,115 @@
+---
+title: Three.js background | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_threeBackground · three.js', title: 'Three.js background', description: 'A 3D canvas behind any section. It only runs while on screen. Pick an effect below, or write your own.' }) }}
+
+{% set effects = [
+    { url: '/components/three-background/particles/', title: 'Particles', text: 'Dots that drift and move away from the mouse.', utils: '_threeParticles' },
+    { url: '/components/three-background/blobs/', title: 'Blobs', text: 'Big soft colors with grain that glide to new colors.', utils: '_threeBlobs' },
+    { url: '/components/three-background/glow/', title: 'Glow', text: 'One soft glow that follows the mouse, over film grain.', utils: '_threeGlow' }
+] %}
+<section id="demos" class="px-4 pb-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-8 text-3xl font-bold tracking-tight">Effects</h2>
+        <div class="grid gap-6 md:grid-cols-3">
+            {% for effect in effects %}
+            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="{{ effect.url }}">
+                {% if loop.index == 1 %}
+                {# preview: dots on dark #}
+                <div class="relative aspect-4/3 overflow-hidden bg-gray-950">
+                    {% for i in range(1, 41) %}
+                    <span class="absolute size-1 rounded-full bg-white" style="left: {{ (i * 37) % 100 }}%; top: {{ (i * 61) % 100 }}%; opacity: {{ 0.3 + (i % 3) * 0.2 }}"></span>
+                    {% endfor %}
+                </div>
+                {% elif loop.index == 2 %}
+                {# preview: soft colors with grain #}
+                <div class="relative aspect-4/3 overflow-hidden bg-[#b8a797]">
+                    <span class="absolute -top-1/4 -right-1/6 size-48 rounded-full bg-[#ddc4b8] blur-3xl"></span>
+                    <span class="absolute -right-1/6 -bottom-1/4 size-48 rounded-full bg-[#cf5e58] blur-3xl"></span>
+                    <span class="absolute -bottom-1/3 -left-1/6 size-48 rounded-full bg-[#d6d3c5] blur-3xl"></span>
+                </div>
+                {% else %}
+                {# preview: one glow on dark #}
+                <div class="relative aspect-4/3 overflow-hidden bg-gray-950">
+                    <span class="absolute top-1/4 right-1/6 size-36 rounded-full bg-indigo-400 opacity-40 blur-3xl"></span>
+                </div>
+                {% endif %}
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">{{ effect.title }}</h3>
+                    <p class="mb-6 flex-1 text-gray-600">{{ effect.text }}</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">{{ effect.utils }}</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- the canvas goes in first, behind the content -->
+<section class="js-three-bg min-h-screen bg-gray-950">
+    <h2>Title</h2>
+</section>
+{% endraw %}{% endset %}
+
+{% set baseCode %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_inview.js
+        // src/assets/js/utils/_threeBackground.js
+        // plus one effect, e.g. src/assets/js/utils/_threeParticles.js
+    // Packages
+        // three
+
+const _background = new _threeBackground({
+    target: document.querySelector('.js-three-bg'),
+    effect: _threeParticles(), // or _threeBlobs(), _threeGlow(), your own
+    pixelRatio: 2, // the max, for phones
+    events: {
+        ready: (instance) => {},
+        play: (instance) => {},
+        pause: (instance) => {},
+    },
+});
+
+_background.ready.then(() => {}); // three.js loaded
+_background.pause();
+_background.play();
+_background.destroy();
+{% endraw %}{% endset %}
+
+{% set effectCode %}{% raw %}
+// your own effect, each gets the instance
+// instance: three, scene, camera, renderer, pointer (-1 to 1), view (world size), size (px), time, delta, progress (scroll 0 to 1)
+const _spinningBox = () => {
+    let _box = null;
+
+    return {
+        setup({ three: THREE, scene }) {
+            _box = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshNormalMaterial());
+            scene.add(_box);
+        },
+        update({ delta }) {
+            _box.rotation.y += delta;
+        },
+        // optional: resize(instance), destroy(instance)
+    };
+};
+
+new _threeBackground({ target, effect: _spinningBox() });
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The canvas fills the target, behind its content. The target gets <code class="font-mono text-sm">position: relative</code> if static, and <code class="font-mono text-sm">isolation: isolate</code>.',
+    code: baseCode,
+    note: 'Methods: <code class="font-mono text-sm">play()</code>, <code class="font-mono text-sm">pause()</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">ready</code>, <code class="font-mono text-sm">play</code>, <code class="font-mono text-sm">pause</code>, <code class="font-mono text-sm">resize</code>, <code class="font-mono text-sm">frame</code>. Off screen or in a hidden tab it pauses, reduced motion shows one still frame. three.js loads only when used.',
+    more: [{ title: 'Own effect', note: 'An object with <code class="font-mono text-sm">setup</code> and <code class="font-mono text-sm">update</code>, three.js comes in as <code class="font-mono text-sm">instance.three</code>.', code: effectCode }]
+}) }}

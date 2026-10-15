@@ -1,0 +1,93 @@
+---
+title: Blobs | Three.js background | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Three.js background', url: '/components/three-background/' }, label: '_threeBlobs · _threeBackground', title: 'Blobs', description: 'Big soft colors that blend into each other, with film grain. set() glides them to new colors and spots, like a project switch.' }) }}
+
+{# demo: blobs behind text, each project sets its colors #}
+{% set projects = [
+    { id: 'sandstone', title: 'Sandstone', text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero est illo eius laudantium laborum.' },
+    { id: 'merlot', title: 'Merlot', text: 'Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.' },
+    { id: 'lagoon', title: 'Lagoon', text: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat.' },
+    { id: 'dusk', title: 'Dusk', text: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt.' },
+    { id: 'forest', title: 'Forest', text: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque.' },
+    { id: 'olive', title: 'Olive', text: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.' }
+] %}
+<section class="px-4 pb-16">
+    <div class="mx-auto max-w-295">
+        <div class="js-three-blobs flex min-h-[80vh] flex-col justify-between gap-16 overflow-hidden rounded-3xl p-8 text-gray-950 transition-colors duration-700 data-[theme=dark]:text-white md:p-12" data-theme="light">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <p class="font-mono text-sm opacity-70">Pick a project</p>
+                <div class="js-blob-projects flex flex-wrap gap-2">
+                    {% for project in projects %}
+                    <button class="cursor-pointer rounded-full border border-current/30 px-4 py-2 font-medium transition-colors duration-300 aria-[current=true]:border-white aria-[current=true]:bg-white aria-[current=true]:text-gray-950" type="button" data-project="{{ project.id }}"{% if loop.first %} aria-current="true"{% endif %}>{{ project.title }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+            {% for project in projects %}
+            <div class="max-w-xl" data-project-panel="{{ project.id }}"{% if not loop.first %} hidden{% endif %}>
+                <p class="mb-4 font-mono text-sm opacity-70">0{{ loop.index }} / Case study</p>
+                <h2 class="mb-4 text-5xl font-bold tracking-tight md:text-7xl">{{ project.title }}</h2>
+                <p class="text-lg opacity-80">{{ project.text }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_inview.js
+        // src/assets/js/utils/_threeBackground.js
+        // src/assets/js/utils/_threeBlobs.js
+    // Packages
+        // three
+
+// colors with their spots, [x, y] from -1 to 1, y up
+const _spots = [[-0.6, 0.5], [0.55, 0.95], [0.85, -0.6], [-0.3, -1]];
+const _palettes = {
+    sandstone: { colors: ['#bba898', '#ddc4b8', '#cf5e58', '#d6d3c5'], background: '#b8a797', theme: 'light' },
+    merlot: { colors: ['#7c1832', '#141a2b', '#1d5a86', '#a35366'], background: '#5a1f35', theme: 'dark' },
+    lagoon: { colors: ['#2e7a6c', '#d4a352', '#c8e6d6', '#5a8f84'], background: '#3a7d6f', theme: 'dark' },
+    dusk: { colors: ['#22252c', '#6b7581', '#e6c08a', '#2a3038'], background: '#24272e', theme: 'dark' },
+    forest: { colors: ['#2b4538', '#b8d3d6', '#5c8c8a', '#4b7d48'], background: '#33503f', theme: 'dark' },
+    olive: { colors: ['#47695c', '#9b7f4f', '#3b5c44', '#727b72'], background: '#4d6a5c', theme: 'dark' },
+};
+
+const _target = document.querySelector('.js-three-blobs');
+const _blobs = _threeBlobs({
+    // defaults: size: 1, opacity: 1, speed: 0.4, wobble: 0.3, flow: 0.25, follow: 0.05, grain: 0.12, transition: 2
+    ..._palettes.sandstone,
+    positions: _spots,
+});
+new _threeBackground({ target: _target, effect: _blobs });
+
+const _projects = document.querySelector('.js-blob-projects');
+const _pick = (e) => {
+    const _button = e.target.closest('[data-project]');
+    if (!_button || _button.getAttribute('aria-current')) return;
+
+    const _palette = _palettes[_button.dataset.project];
+    _projects.querySelector('[aria-current]')?.removeAttribute('aria-current');
+    _button.setAttribute('aria-current', 'true');
+    document.querySelectorAll('[data-project-panel]').forEach((panel) => (panel.hidden = panel.dataset.projectPanel !== _button.dataset.project));
+
+    _target.dataset.theme = _palette.theme; // text color
+    _blobs.set({ ..._palette, positions: _spots });
+};
+['pointerover', 'click'].forEach((type) => _projects.addEventListener(type, _pick));
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: '<code class="font-mono text-sm">set({ colors, background, positions })</code> glides there. Leave out <code class="font-mono text-sm">positions</code> for random spots in the <code class="font-mono text-sm">area</code>. <code class="font-mono text-sm">size</code> is how far each color reaches, <code class="font-mono text-sm">speed</code>, <code class="font-mono text-sm">wobble</code> and <code class="font-mono text-sm">flow</code> set the motion, 0 keeps it still. <code class="font-mono text-sm">grain</code> 0 turns the noise off. Markup and the base are on the <a class="underline" href="/components/three-background/">overview</a>.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

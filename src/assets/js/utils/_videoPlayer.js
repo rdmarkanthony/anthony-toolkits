@@ -1,9 +1,9 @@
 import { _event } from "./_event";
 import { _emitter } from "./_emitter";
-import { _players, _pauseAll, _cover } from "./_media";
+import { _players, _pauseAll, _cover, _watchView, _pauseOutView } from "./_media";
 
-// usage: new _videoPlayer({ target, src, poster, autoplay, stretch, controls, events }), src is an .mp4 or .m3u8
-// autoplay: muted loop, stretch: covers the target
+// usage: new _videoPlayer({ target, src, poster, autoplay, stretch, pauseOutView, controls, events }), src is an .mp4 or .m3u8
+// autoplay: muted loop, stretch: covers the target, pauseOutView: pauses while out of view
 // the target gets state classes: video-loading, video-canplay, video-playing, video-paused, video-ended, sound-on, sound-off
 export class _videoPlayer extends _emitter {
     constructor(props) {
@@ -22,6 +22,7 @@ export class _videoPlayer extends _emitter {
         this.autoplay = props.autoplay ?? false;
         this.controls = props.controls || !this.autoplay;
         this.stretch = props.stretch ?? false;
+        this.pauseOutView = props.pauseOutView ?? false;
 
         this.isPlaying = false;
         this.isLoading = true;
@@ -104,6 +105,7 @@ export class _videoPlayer extends _emitter {
             this.target.classList.remove("video-paused", "video-ended");
 
             if (!this.isSilent) _pauseAll(this);
+            _pauseOutView(this);
 
             this.emit("play");
         });
@@ -128,6 +130,8 @@ export class _videoPlayer extends _emitter {
         });
 
         this.updateSound();
+
+        if (this.pauseOutView) this.offView = _watchView(this);
 
         if (this.stretch) {
             if (getComputedStyle(this.target).overflow === "visible") this.target.style.overflow = "hidden";
@@ -163,6 +167,7 @@ export class _videoPlayer extends _emitter {
 
         this.abort.abort();
         this.offResize?.();
+        this.offView?.();
 
         if (this.plyr) {
             // Plyr puts back a copy of the video, remove that too

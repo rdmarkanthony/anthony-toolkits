@@ -6,7 +6,7 @@ title: Scrolling Animation | Anthony Toolkits
 {% from "components/atoms/code-block.njk" import codeBlock %}
 {% from "components/atoms/component-page.njk" import pageIntro %}
 
-{{ pageIntro({ title: 'Scrolling Animation', description: 'Animations that follow the scroll: video intros, image sequences and parallax backgrounds. Each demo shows its markup and script, ready to use on any website.' }) }}
+{{ pageIntro({ title: 'Scrolling Animation', description: 'Animations that follow the scroll: video intros, image sequences, parallax backgrounds and text reveals. Each demo shows its markup and script, ready to use on any website.' }) }}
 
 <section id="demos" class="px-4 py-16">
     <div class="mx-auto max-w-295">
@@ -59,6 +59,18 @@ title: Scrolling Animation | Anthony Toolkits
                     <h3 class="mb-2 text-xl font-semibold">Parallax background</h3>
                     <p class="mb-6 flex-1 text-gray-600">Backgrounds move slower than the page, with or without easing, plus a floating image.</p>
                     <p class="mb-4 font-mono text-xs text-gray-500">_parallaxBackground · _parallaxFloating</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
+            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/scrolling-animation/text/">
+                {# preview: the words darken as the card scrolls in #}
+                <div class="flex aspect-4/3 items-center bg-white px-8">
+                    <p class="js-preview-text text-2xl leading-tight font-semibold tracking-tight">Each word turns dark as the text scrolls up the screen.</p>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">Text reveal</h3>
+                    <p class="mb-6 flex-1 text-gray-600">Body text starts grey and turns dark word by word as it scrolls.</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">_parallaxScroller</p>
                     <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
                 </div>
             </a>
@@ -221,5 +233,20 @@ _event.dispatch(el, 'visible', { index: 1 }); // listeners read e.detail
 
     // parallax background preview
     document.querySelectorAll('[data-parallax-background]').forEach((target) => new _parallaxBackground({ target }));
+
+    // text reveal preview, each word fades in turn
+    new _parallaxScroller({
+        target: document.querySelector('.js-preview-text'),
+        events: {
+            init(scroller) {
+                scroller.target.innerHTML = scroller.target.textContent.replace(/\S+/g, '<span>$&</span>');
+                const _words = [...scroller.target.children];
+                const _total = 1 + (_words.length - 1) * 0.1;
+                _words.forEach((word, index) => {
+                    scroller.animate(word, { opacity: [0.15, 1] }, [`${((index * 0.1) / _total) * 100}%`, `${((index * 0.1 + 1) / _total) * 100}%`]);
+                });
+            },
+        },
+    });
 </script>
 {% endfooterscript %}
