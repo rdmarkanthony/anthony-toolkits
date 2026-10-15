@@ -1,0 +1,160 @@
+---
+title: Stacking Columns | Scrolling Animation | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Scrolling animation', url: '/components/scrolling-animation/' }, label: '_parallaxScroller', title: 'Stacking columns', description: 'The section pins and the columns move sideways. Each column stops next to the titles on the left and stays, while the next one slides over it. Click a title to open its column.' }) }}
+
+<p class="mx-auto -mt-4 mb-[20vh] flex max-w-295 animate-bounce items-center gap-1 px-4 text-sm font-medium [box-sizing:content-box]">Scroll down {{ angle('down') }}</p>
+
+{% set columns = [
+    { title: 'Pin', heading: 'The section pins', text: 'It stays on screen while you scroll, and the columns move to the left.', tone: 'bg-stone-100' },
+    { title: 'Stay', heading: 'Column stays', text: 'A column stops once it is in and stays in view.', tone: 'bg-stone-200' },
+    { title: 'Cover', heading: 'The next one covers it', text: 'The next column slides over it from the right.', tone: 'bg-stone-300' },
+    { title: 'Click', heading: 'Click a title', text: 'It scrolls to that column, its title goes to the stack and its content opens.', tone: 'bg-stone-800 text-white' },
+    { title: 'Release', heading: 'Last one in', text: 'It stays a while, then the section scrolls on as normal.', tone: 'bg-stone-950 text-white' }
+] %}
+
+{# demo #}
+<section class="js-stacking-columns relative">
+    <div class="js-stacking-columns-pin md:sticky md:top-(--header-height) md:h-[calc(100svh-var(--header-height,0px))] md:overflow-hidden">
+        <ul class="js-stacking-columns-track md:flex md:h-full">
+            {% for column in columns %}
+            <li class="group sticky top-(--header-height) flex h-[calc(100svh-var(--header-height,0px))] flex-col md:static md:h-auto md:shrink-0 md:flex-row {{ column.tone }}">
+                <div class="js-stacking-columns-title group/title relative flex cursor-pointer h-12 flex-row-reverse items-center justify-end gap-3 border-t border-black/10 px-6 transition-colors duration-300 hover:bg-current/8 md:h-auto md:w-20 md:flex-col md:gap-4 md:border-t-0 md:border-l md:px-0 md:py-10">
+                    <h2 class="text-lg font-semibold tracking-tight transition-transform duration-300 md:rotate-180 md:text-2xl md:[writing-mode:vertical-rl] md:group-hover/title:-translate-y-2"><button class="cursor-pointer after:absolute after:inset-0" type="button">{{ column.title }}</button></h2>
+                    <span class="size-1.5 scale-0 rounded-full bg-orange-500 transition-transform duration-300 group-data-[state=active]:scale-100 md:size-2"></span>
+                    <span class="text-xs font-medium opacity-60 transition duration-300 group-data-[state=active]:text-orange-500 group-data-[state=active]:opacity-100 md:text-sm">{{ loop.index | pad(2) }}</span>
+                </div>
+                <div class="js-stacking-columns-content flex flex-1 flex-col p-6 md:w-screen md:flex-none md:justify-end md:p-16">
+                    <p class="mb-6 font-display text-[--spacing(24)] leading-none font-semibold opacity-15 md:mb-auto md:text-[--spacing(60)]">{{ loop.index | pad(2) }}</p>
+                    <h3 class="mb-3 text-3xl font-semibold tracking-tight md:text-5xl">{{ column.heading }}</h3>
+                    <p class="max-w-md opacity-70 md:text-lg">{{ column.text }}</p>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<section class="js-stacking-columns relative">
+    <!-- md and up: a sticky row below the header -->
+    <div class="js-stacking-columns-pin md:sticky md:top-(--header-height) md:h-[calc(100svh-var(--header-height,0px))] md:overflow-hidden">
+        <ul class="js-stacking-columns-track md:flex md:h-full">
+            <!-- a background, so the next column covers it, data-state="active" while open -->
+            <!-- mobile: sticky rows below the header -->
+            <li class="group sticky top-(--header-height) flex h-[calc(100svh-var(--header-height,0px))] flex-col bg-stone-100 md:static md:h-auto md:flex-row md:shrink-0">
+                <div class="js-stacking-columns-title relative flex h-12 cursor-pointer hover:bg-current/8 md:h-auto md:w-20 md:flex-col">
+                    <!-- after:inset-0 makes the whole title clickable -->
+                    <h2 class="md:rotate-180 md:[writing-mode:vertical-rl]"><button class="after:absolute after:inset-0" type="button">Pin</button></h2>
+                    <span class="group-data-[state=active]:text-orange-500">01</span>
+                </div>
+                <!-- md and up: the script sets the width -->
+                <div class="js-stacking-columns-content flex-1 p-6 md:flex-none">...</div>
+            </li>
+        </ul>
+    </div>
+</section>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_parallax.js
+
+// sideways from md, rows on mobile
+const _horizontal = window.matchMedia('(min-width: 48rem)');
+
+document.querySelectorAll('.js-stacking-columns').forEach((target) => {
+    new _parallaxScroller({
+        target,
+        events: {
+            init(scroller) {
+                scroller.el.pin = target.querySelector('.js-stacking-columns-pin');
+                scroller.el.track = target.querySelector('.js-stacking-columns-track');
+                scroller.el.list = [...scroller.el.track.children];
+                scroller.el.titles = scroller.el.list.map((item) => item.querySelector('.js-stacking-columns-title'));
+                scroller.el.contents = scroller.el.list.map((item) => item.querySelector('.js-stacking-columns-content'));
+
+                // the row moves left over the whole range
+                scroller.animate(scroller.el.track, (scroller) => ({ translate: ['0 0', `${scroller.horizontal ? -scroller.distance : 0}px 0`] }));
+
+                scroller.el.list.forEach((item, index) => {
+                    // a column moves back by the same amount once it reaches the stack
+                    scroller.animate(item, (scroller) => ({ translate: ['0 0', `${scroller.horizontal ? scroller.distance - scroller.stick[index] : 0}px 0`] }), (scroller) => [scroller.offset.top + scroller.stick[index], scroller.offset.bottom]);
+
+                    // its title scrolls to it
+                    scroller.el.titles[index].addEventListener('click', () => {
+                        window.scrollTo({ top: scroller.offset.top + scroller.stick[index], behavior: 'smooth' });
+                    });
+                });
+            },
+            resize(scroller) {
+                scroller.horizontal = _horizontal.matches;
+
+                // everything sticks below the header, --header-height from script.js
+                const _header = parseFloat(getComputedStyle(document.body).getPropertyValue('--header-height')) || 0;
+                scroller.offset.top = _parallax.getOffset(target).top - _header;
+
+                if (scroller.horizontal) {
+                    scroller.el.track.style.removeProperty('height');
+
+                    // content fills the screen next to all the titles
+                    const _titles = scroller.el.titles.reduce((total, title) => total + title.offsetWidth, 0);
+                    scroller.el.contents.forEach((content) => (content.style.width = `${target.offsetWidth - _titles}px`));
+
+                    // scroll until the last column is in, then stay pinned for half a screen more
+                    scroller.distance = scroller.el.track.scrollWidth - target.offsetWidth;
+                    target.style.height = `${scroller.el.pin.offsetHeight + _parallax.height() * 0.5 + scroller.distance}px`;
+
+                    // when each column reaches the stack, after the titles before it
+                    let _stack = 0;
+                    scroller.stick = scroller.el.list.map((item, index) => {
+                        const _stick = Math.min(item.offsetLeft - _stack, scroller.distance);
+                        _stack += scroller.el.titles[index].offsetWidth;
+                        return _stick;
+                    });
+                } else {
+                    target.style.removeProperty('height');
+                    scroller.el.contents.forEach((content) => content.style.removeProperty('width'));
+
+                    // each row covers the one before it
+                    const _height = scroller.el.list[0].offsetHeight;
+                    scroller.stick = scroller.el.list.map((item, index) => index * _height);
+
+                    // rows stick within the list, half a screen more keeps the last one a while
+                    scroller.el.track.style.height = `${_height * scroller.el.list.length + _parallax.height() * 0.5}px`;
+                }
+
+                // while the section is pinned
+                scroller.offset.bottom = scroller.offset.top + scroller.stick.at(-1);
+            },
+            update(scroller) {
+                // the open column, the last one at the stack
+                const _scroll = _parallax.scrollTop() - scroller.offset.top;
+                const _current = scroller.stick.reduce((current, stick, index) => (_scroll >= stick - 1 ? index : current), 0);
+
+                scroller.el.list.forEach((item, index) => {
+                    item.dataset.state = index === _current ? 'active' : '';
+                });
+            },
+        },
+    });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Each column has its title, then its content, and a background so the next column covers it. From <code class="font-mono text-sm">md</code> the columns sit in a sticky, screen-high row, on mobile they are sticky rows that cover each other.',
+    code: pageScript,
+    note: 'Just <code class="font-mono text-sm">_parallaxScroller</code>. On resize the content gets the screen width minus all the titles, and the section gets tall enough to scroll it in, plus half a screen so the last column stays a while. Click a title to scroll to its column. On scroll, the open column gets <code class="font-mono text-sm">data-state="active"</code>. <code class="font-mono text-sm">animate()</code> moves the row left, and moves each column back by the same amount once it reaches the stack, so it stays smooth. On mobile it uses plain <code class="font-mono text-sm">position: sticky</code>, each row covers the one before it.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

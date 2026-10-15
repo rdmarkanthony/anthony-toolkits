@@ -6,7 +6,7 @@ title: Scrolling Animation | Anthony Toolkits
 {% from "components/atoms/code-block.njk" import codeBlock %}
 {% from "components/atoms/component-page.njk" import pageIntro %}
 
-{{ pageIntro({ title: 'Scrolling Animation', description: 'Animations that follow the scroll: video intros, image sequences, parallax backgrounds and text reveals. Each demo shows its markup and script, ready to use on any website.' }) }}
+{{ pageIntro({ title: 'Scrolling Animation', description: 'Animations that follow the scroll: video intros, image sequences, parallax backgrounds, stacking columns and text reveals. Each demo shows its markup and script, ready to use on any website.' }) }}
 
 <section id="demos" class="px-4 py-16">
     <div class="mx-auto max-w-295">
@@ -44,6 +44,22 @@ title: Scrolling Animation | Anthony Toolkits
                     <h3 class="mb-2 text-xl font-semibold">Parallax background</h3>
                     <p class="mb-6 flex-1 text-gray-600">Backgrounds move slower than the page, with or without easing, plus a floating image.</p>
                     <p class="mb-4 font-mono text-xs text-gray-500">_parallaxBackground · _parallaxFloating</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
+            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/scrolling-animation/stacking-columns/">
+                {# preview: two titles stacked, the next column slides over #}
+                <div class="flex aspect-4/3 overflow-hidden text-xs font-semibold">
+                    <span class="flex w-7 shrink-0 items-end justify-center border-l border-black/10 bg-stone-100 py-3"><span class="rotate-180 [writing-mode:vertical-rl]">Pin</span></span>
+                    <span class="flex w-7 shrink-0 items-end justify-center border-l border-black/10 bg-stone-200 py-3"><span class="rotate-180 [writing-mode:vertical-rl]">Stay</span></span>
+                    <span class="flex-1 bg-stone-200"></span>
+                    <span class="flex w-7 shrink-0 items-end justify-center border-l border-black/10 bg-stone-300 py-3"><span class="rotate-180 [writing-mode:vertical-rl]">Cover</span></span>
+                    <span class="w-1/4 shrink-0 bg-stone-300"></span>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">Stacking columns</h3>
+                    <p class="mb-6 flex-1 text-gray-600">A pinned row moves sideways. Each column stays next to the titles while the next one slides over it.</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">_parallaxScroller</p>
                     <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
                 </div>
             </a>
