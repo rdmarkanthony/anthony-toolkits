@@ -2,8 +2,11 @@
 // usage: new _comicSlider({ target, frames }), .js-comic-stage holds one <img> per page
 // frame: { page, top, left, right, bottom, mobile } in % of the page
 // options: duration (s), ease, mobile, events: change; optional .js-comic-prev/next
-import { gsap } from "gsap";
 import { _emitter } from "./_emitter";
+import { _tween } from "./_tween";
+
+// power1.out, for the page fade
+const _fadeEase = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
 
 // a frame's edges, missing ones are the page's own
 const _area = ({ top = 0, left = 0, right = 100, bottom = 100 }) => ({ top, left, right, bottom });
@@ -114,11 +117,19 @@ export class _comicSlider extends _emitter {
         const { page, ...rect } = this.frame(this.index);
         const _duration = duration ?? (matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : this.duration);
 
-        if (this.rect) gsap.killTweensOf(this.rect);
+        this.tween?.stop();
 
         if (page === this.page) {
             // same page: pan and zoom to the new area
-            gsap.to(this.rect, { ...rect, duration: _duration, ease: this.ease, onUpdate: () => this.render() });
+            const _from = { ...this.rect };
+            this.tween = _tween({
+                duration: _duration * 1000,
+                ease: this.ease,
+                update: (progress) => {
+                    Object.keys(rect).forEach((key) => (this.rect[key] = _from[key] + (rect[key] - _from[key]) * progress));
+                    this.render();
+                },
+            });
         } else {
             // a new page fades in on top, already at its frame
             const _old = this.pages[this.page];
@@ -127,10 +138,19 @@ export class _comicSlider extends _emitter {
             this.rect = rect;
             this.render();
 
-            gsap.killTweensOf([_new.box, _old?.box]);
-            gsap.set(_new.box, { zIndex: 1 });
-            gsap.fromTo(_new.box, { autoAlpha: 0 }, { autoAlpha: 1, duration: _duration * 0.75, ease: "power1.out" });
-            if (_old) gsap.set(_old.box, { zIndex: 0, autoAlpha: 0, delay: _duration * 0.75 });
+            const _fade = _duration * 750;
+            // the old page's opacity, it may be mid-fade
+            const _opacity = _old ? getComputedStyle(_old.box).opacity : 0;
+            [_new.box, _old?.box].forEach((box) => box?.getAnimations().forEach((animation) => animation.cancel()));
+
+            Object.assign(_new.box.style, { zIndex: 1, opacity: 1, visibility: "visible" });
+            _new.box.animate({ opacity: [0, 1] }, { duration: _fade, easing: _fadeEase });
+
+            // the old page hides once the new one is in
+            if (_old) {
+                Object.assign(_old.box.style, { zIndex: 0, opacity: 0, visibility: "hidden" });
+                _old.box.animate({ opacity: [_opacity, _opacity], visibility: ["visible", "visible"] }, { duration: _fade });
+            }
         }
 
         if (this.el.prev) this.el.prev.disabled = this.index <= 0;
@@ -150,7 +170,7 @@ export class _comicSlider extends _emitter {
     // redraw the current frame without a tween
     refresh() {
         if (!this.rect) return;
-        gsap.killTweensOf(this.rect);
+        this.tween?.stop();
         const { page, ...rect } = this.frame(this.index);
         if (page !== this.page) return this.show(this.index, { duration: 0 });
         this.rect = rect;
@@ -197,9 +217,9 @@ export class _comicSlider extends _emitter {
             this.el.stage.removeEventListener("pointerup", this.handlers.up);
         }
 
-        if (this.rect) gsap.killTweensOf(this.rect);
+        this.tween?.stop();
         this.pages.forEach(({ img, box }) => {
-            gsap.killTweensOf(box);
+            box.getAnimations().forEach((animation) => animation.cancel());
             img.style.cssText = "";
             box.replaceWith(img);
         });

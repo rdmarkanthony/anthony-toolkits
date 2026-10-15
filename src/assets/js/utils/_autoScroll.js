@@ -1,28 +1,7 @@
-// gsap-style ease names ("power2.out", "power4.inOut"...), the "in" curves
-const _eases = {
-    none: (p) => p,
-    power0: (p) => p,
-    power1: (p) => p ** 2,
-    power2: (p) => p ** 3,
-    power3: (p) => p ** 4,
-    power4: (p) => p ** 5,
-    sine: (p) => 1 - Math.cos((p * Math.PI) / 2),
-    expo: (p) => (p ? 2 ** (10 * (p - 1)) : 0),
-    circ: (p) => 1 - Math.sqrt(1 - p * p),
-};
-const _easing = (ease) => {
-    if (typeof ease === "function") return ease;
-
-    const [_name, _type = "out"] = String(ease).split(".");
-    const _in = _eases[_name] ?? _eases.power2;
-
-    if (_type === "in") return _in;
-    if (_type === "inOut") return (p) => (p < 0.5 ? _in(p * 2) / 2 : 1 - _in((1 - p) * 2) / 2);
-    return (p) => 1 - _in(1 - p);
-};
+import { _tween } from "./_tween";
 
 // the running scroll, a new one replaces it
-let _frame;
+let _running;
 
 const _scrollTop = () => window.scrollY;
 const _offsetTop = (target) => target.getBoundingClientRect().top + _scrollTop();
@@ -70,20 +49,13 @@ export const _autoScroll = ({ target, offset, speed = 500, ease = "power2.out", 
     const _reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const _from = _scrollTop();
-    const _duration = _reduce ? 0 : speed;
-    const _ease = _easing(ease);
-    const _start = performance.now();
 
-    cancelAnimationFrame(_frame);
-
-    const _step = (now) => {
-        const _progress = _duration ? Math.min((now - _start) / _duration, 1) : 1;
-
+    _running?.stop();
+    _running = _tween({
+        duration: _reduce ? 0 : speed,
+        ease,
         // instant, so css scroll-behavior: smooth doesn't fight it
-        window.scrollTo({ top: _from + (_y - _from) * _ease(_progress), behavior: "instant" });
-
-        if (_progress < 1) _frame = requestAnimationFrame(_step);
-        else callback?.({ target, direction: _direction, offset: _offset, y: _y });
-    };
-    _step(_start);
+        update: (progress) => window.scrollTo({ top: _from + (_y - _from) * progress, behavior: "instant" }),
+        complete: () => callback?.({ target, direction: _direction, offset: _offset, y: _y }),
+    });
 };

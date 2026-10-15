@@ -5,7 +5,7 @@ title: Comic slider | Sliders | Anthony Toolkits
 {% from "components/atoms/icon.njk" import angle %}
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
 
-{{ pageIntro({ back: { label: 'Sliders', url: '/components/sliders/' }, label: '_comicSlider · GSAP', title: 'Comic slider', description: 'Reads comic pages frame by frame. It pans and zooms to each panel, and fades to the next page. Make the frames with the <a class="underline" href="/components/sliders/comic-generator/">frame generator</a>.' }) }}
+{{ pageIntro({ back: { label: 'Sliders', url: '/components/sliders/' }, label: '_comicSlider', title: 'Comic slider', description: 'Reads comic pages frame by frame. It pans and zooms to each panel, and fades to the next page. Make the frames with the <a class="underline" href="/components/sliders/comic-generator/">frame generator</a>.' }) }}
 
 {% set button = 'grid size-9 cursor-pointer place-items-center rounded-full bg-gray-200 text-lg text-gray-700 transition-colors duration-300 hover:bg-gray-300 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-gray-200' %}
 
@@ -44,8 +44,7 @@ title: Comic slider | Sliders | Anthony Toolkits
     // JS
         // src/assets/js/utils/_comicSlider.js
         // src/assets/js/utils/_emitter.js
-    // Package
-        // pnpm add gsap
+        // src/assets/js/utils/_tween.js
 
 // from the frame generator, edges in % of the page
 const _frames = [
