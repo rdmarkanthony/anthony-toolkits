@@ -102,12 +102,11 @@ title: Scrolling Animation | Anthony Toolkits
                 <div>
                     <p class="mb-2 text-sm text-gray-500">01</p>
                     <h3 class="mb-2 text-xl font-semibold">script.js loads the utils</h3>
-                    <p class="text-gray-600">It imports gsap and the utils from <code class="font-mono text-sm">src/assets/js/utils/</code>, and puts every util on <code class="font-mono text-sm">window</code> for page scripts. In your project, import only the utils you use. Bundle it with any bundler, this site uses esbuild.</p>
+                    <p class="text-gray-600">It imports the utils from <code class="font-mono text-sm">src/assets/js/utils/</code>, and puts every util on <code class="font-mono text-sm">window</code> for page scripts. In your project, import only the utils you use. Bundle it with any bundler, this site uses esbuild.</p>
                 </div>
                 {% set code %}{% raw %}
 // src/assets/js/script.js, the scrolling utils
 Object.assign(window, {
-    gsap,
     _event,
     _parallax,
     _parallaxScroller,
