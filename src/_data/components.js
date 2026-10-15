@@ -20,6 +20,7 @@ export default [
         url: "/components/scrolling-animation/",
         items: [
             { label: "Canvas image sequence", url: "/components/scrolling-animation/canvas/", description: "Scrub through image frames on a canvas as you scroll.", utils: "_canvasBanner · _parallaxScroller", ready: true },
+            { label: "Image expand", url: "/components/scrolling-animation/image-expand/", description: "A small banner grows to cover the screen, then a heading comes in.", utils: "_parallaxScroller", ready: true },
             { label: "Parallax background", url: "/components/scrolling-animation/background/", description: "Backgrounds and floating elements that move slower than the page.", utils: "_parallaxBackground · _parallaxFloating", ready: true },
             { label: "Stacking columns", url: "/components/scrolling-animation/stacking-columns/", description: "A pinned row where each column stays while the next slides over it.", utils: "_parallaxScroller", ready: true },
             { label: "Text reveal", url: "/components/scrolling-animation/text/", description: "Body text that turns from grey to dark word by word on scroll.", utils: "_parallaxScroller", ready: true },
@@ -39,7 +40,7 @@ export default [
         category: "Sliders",
         url: "/components/sliders/",
         items: [
-            { label: "Comic slider", url: "/components/sliders/comic/", description: "Goes through comic pages frame by frame, with a frame generator.", utils: "_comicSlider · GSAP", ready: true },
+            { label: "Comic slider", url: "/components/sliders/comic/", description: "Goes through comic pages frame by frame, with a frame generator.", utils: "_comicSlider", ready: true },
             { label: "Loop slider", url: "/components/sliders/loop/", description: "An endless row that moves on scroll, drag or as a marquee.", utils: "_horizontalLoop · GSAP", ready: true },
             { label: "Peek slider", url: "/components/sliders/peek/", description: "A carousel of 1 to 3 cards, with the next one peeking at the edge.", utils: "_peekSlider · Swiper", ready: true },
             { label: "Snap slider", url: "/components/sliders/snap/", description: "A card row on native scroll snap, no library.", utils: "_snapSlider", ready: true },

@@ -6,11 +6,17 @@ title: Anthony Toolkits
 {% from "components/atoms/icon.njk" import angle, search %}
 {% from "components/atoms/tag.njk" import tags %}
 
-<section class="px-4 pt-20 pb-16 md:pt-32">
+<section class="px-4 pt-20 md:pt-32">
     <div class="mx-auto max-w-295">
         <h1 class="mb-6 font-display text-[--spacing(13)] leading-[0.95] font-semibold tracking-tight md:text-[--spacing(26)]">{{ site.name }}<span class="text-kit-accent">.</span></h1>
-        <p class="mb-10 max-w-2xl text-lg text-kit-muted md:text-xl">{{ site.description }} Each component shows its markup and script, ready to copy into any website.</p>
-        <form class="relative z-10 w-full" action="/" method="get" role="search" data-search data-home-search>
+        <p class="max-w-2xl text-lg text-kit-muted md:text-xl">{{ site.description }} Each component shows its markup and script, ready to copy into any website.</p>
+    </div>
+</section>
+
+{# sticks under the header, so the search is always in reach #}
+<div class="pointer-events-none sticky top-16 z-30 mt-7 mb-13 px-4 py-3 md:top-20">
+    <div class="mx-auto max-w-295">
+        <form class="pointer-events-auto relative w-full" action="/" method="get" role="search" data-search data-home-search>
             <label class="group relative block">
                 <span class="sr-only">Search components</span>
                 <span class="pointer-events-none absolute top-1/2 left-5 -translate-y-1/2 text-kit-text md:left-6 md:text-xl">{{ search() }}</span>
@@ -20,9 +26,9 @@ title: Anthony Toolkits
             <div id="search-home-list" class="absolute top-full left-0 mt-2 max-h-[70vh] w-full overflow-y-auto rounded-3xl border border-kit-line bg-kit-bg p-2 shadow-xl" hidden data-search-list></div>
         </form>
     </div>
-</section>
+</div>
 
-<section id="components" class="scroll-mt-20 px-4 pt-8 pb-24 md:pb-32">
+<section id="components" class="scroll-mt-36 md:scroll-mt-42 px-4 pt-8 pb-24 md:pb-32">
     <div class="mx-auto max-w-295 space-y-16 md:space-y-24">
         {% for group in components %}
         <div data-filter-group>
@@ -89,6 +95,12 @@ title: Anthony Toolkits
         if (e.key !== "/" || e.metaKey || e.ctrlKey || e.target.closest("input, textarea, select, [contenteditable]")) return;
         e.preventDefault();
         _input.focus();
+    });
+
+    // typing while stuck goes back to the top of the list
+    const _list = document.getElementById("components");
+    _input.addEventListener("input", () => {
+        if (_list.getBoundingClientRect().top < _form.getBoundingClientRect().bottom) _list.scrollIntoView();
     });
 
     // Enter only closes the phone keyboard

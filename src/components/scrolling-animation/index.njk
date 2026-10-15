@@ -6,7 +6,7 @@ title: Scrolling Animation | Anthony Toolkits
 {% from "components/atoms/code-block.njk" import codeBlock %}
 {% from "components/atoms/component-page.njk" import pageIntro %}
 
-{{ pageIntro({ title: 'Scrolling Animation', description: 'Animations that follow the scroll: video intros, image sequences, parallax backgrounds, stacking columns and text reveals. Each demo shows its markup and script, ready to use on any website.' }) }}
+{{ pageIntro({ title: 'Scrolling Animation', description: 'Animations that follow the scroll: video intros, image sequences, image expands, parallax backgrounds, stacking columns and text reveals. Each demo shows its markup and script, ready to use on any website.' }) }}
 
 <section id="demos" class="px-4 py-16">
     <div class="mx-auto max-w-295">
@@ -32,6 +32,19 @@ title: Scrolling Animation | Anthony Toolkits
                     <h3 class="mb-2 text-xl font-semibold">Canvas image sequence</h3>
                     <p class="mb-6 flex-1 text-gray-600">50 frames drawn on a canvas, the frame follows the scroll position like a video scrubber.</p>
                     <p class="mb-4 font-mono text-xs text-gray-500">_canvasBanner</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
+            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/scrolling-animation/image-expand/">
+                {# preview: the banner, and faintly the full screen it grows to #}
+                <div class="relative aspect-4/3 overflow-hidden bg-white">
+                    <img class="absolute inset-0 size-full object-cover opacity-15" src="/assets/img/sample-image.webp" alt="" loading="lazy" />
+                    <img class="absolute inset-0 size-full object-cover [clip-path:inset(28%_18%_round_12px)]" src="/assets/img/sample-image.webp" alt="" loading="lazy" />
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">Image expand</h3>
+                    <p class="mb-6 flex-1 text-gray-600">A small banner in the middle grows to cover the screen, then the heading comes in.</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">_parallaxScroller</p>
                     <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
                 </div>
             </a>
@@ -102,12 +115,11 @@ title: Scrolling Animation | Anthony Toolkits
                 <div>
                     <p class="mb-2 text-sm text-gray-500">01</p>
                     <h3 class="mb-2 text-xl font-semibold">script.js loads the utils</h3>
-                    <p class="text-gray-600">It imports gsap and the utils from <code class="font-mono text-sm">src/assets/js/utils/</code>, and puts every util on <code class="font-mono text-sm">window</code> for page scripts. In your project, import only the utils you use. Bundle it with any bundler, this site uses esbuild.</p>
+                    <p class="text-gray-600">It imports the utils from <code class="font-mono text-sm">src/assets/js/utils/</code>, and puts every util on <code class="font-mono text-sm">window</code> for page scripts. In your project, import only the utils you use. Bundle it with any bundler, this site uses esbuild.</p>
                 </div>
                 {% set code %}{% raw %}
 // src/assets/js/script.js, the scrolling utils
 Object.assign(window, {
-    gsap,
     _event,
     _parallax,
     _parallaxScroller,

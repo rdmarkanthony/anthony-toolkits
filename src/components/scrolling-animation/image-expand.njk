@@ -1,0 +1,96 @@
+---
+title: Image Expand | Scrolling Animation | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Scrolling animation', url: '/components/scrolling-animation/' }, label: '_parallaxScroller', title: 'Image expand', description: 'The section pins with a small banner in the middle. It grows until it covers the screen, then the heading comes in.' }) }}
+
+<p class="mx-auto -mt-4 mb-[20vh] flex max-w-295 animate-bounce items-center gap-1 px-4 text-sm font-medium [box-sizing:content-box]">Scroll down {{ angle('down') }}</p>
+
+{# demo #}
+<section class="js-image-expand relative h-[300svh]">
+    <div class="js-image-expand-pin sticky top-(--header-height) h-[calc(100svh-var(--header-height,0px))] overflow-hidden">
+        <div class="js-image-expand-media absolute inset-0 overflow-hidden bg-black [clip-path:inset(30%_10%_round_24px)]">
+            <img class="js-image-expand-image absolute inset-0 size-full object-cover" src="/assets/img/sample-image.webp" alt="" />
+            <div class="js-image-expand-dim absolute inset-0 bg-black opacity-0"></div>
+        </div>
+        <div class="js-image-expand-heading absolute inset-0 grid place-content-center p-6 text-center text-white opacity-0">
+            <h2 class="mb-4 text-5xl leading-none font-bold tracking-tight md:text-[--spacing(24)]">Grow to full screen</h2>
+            <p class="mx-auto max-w-md opacity-80 md:text-lg">The banner's clip-path opens with the scroll, then the heading comes in.</p>
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- the height is the scroll length, the pin stays for all of it -->
+<section class="js-image-expand relative h-[300svh]">
+    <div class="js-image-expand-pin sticky top-(--header-height) h-[calc(100svh-var(--header-height,0px))] overflow-hidden">
+        <!-- the script clips it to the banner, this one is before it runs -->
+        <div class="js-image-expand-media absolute inset-0 [clip-path:inset(30%_10%_round_24px)]">
+            <img class="js-image-expand-image absolute inset-0 size-full object-cover" src="image.jpg" alt="" />
+            <!-- dims the image for the heading -->
+            <div class="js-image-expand-dim absolute inset-0 bg-black opacity-0"></div>
+        </div>
+        <div class="js-image-expand-heading absolute inset-0 grid place-content-center text-white opacity-0">
+            <h2>...</h2>
+        </div>
+    </div>
+</section>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_parallax.js
+
+document.querySelectorAll('.js-image-expand').forEach((target) => {
+    new _parallaxScroller({
+        target,
+        events: {
+            init(scroller) {
+                scroller.el.pin = target.querySelector('.js-image-expand-pin');
+                scroller.el.media = target.querySelector('.js-image-expand-media');
+                scroller.el.image = target.querySelector('.js-image-expand-image');
+                scroller.el.dim = target.querySelector('.js-image-expand-dim');
+                scroller.el.heading = target.querySelector('.js-image-expand-heading');
+
+                // the banner opens to the full screen in the first half, the image zooms out a bit
+                scroller.animate(scroller.el.media, (scroller) => ({ clipPath: [scroller.banner, 'inset(0px 0px round 0px)'] }), ['0%', '50%']);
+                scroller.animate(scroller.el.image, { scale: [1.3, 1] }, ['0%', '50%']);
+
+                // then it dims and the heading comes in, the rest is a hold
+                scroller.animate(scroller.el.dim, { opacity: [0, 0.5] }, ['40%', '60%']);
+                scroller.animate(scroller.el.heading, { opacity: [0, 1], translate: ['0 40px', '0 0'] }, ['45%', '70%']);
+            },
+            resize(scroller) {
+                // while the section is pinned, --header-height from script.js
+                const _header = parseFloat(getComputedStyle(document.body).getPropertyValue('--header-height')) || 0;
+                scroller.offset.top = _parallax.getOffset(target).top - _header;
+                scroller.offset.bottom = scroller.offset.top + target.offsetHeight - scroller.el.pin.offsetHeight;
+
+                // the banner, centered, up to 640px wide
+                const _width = scroller.el.pin.offsetWidth;
+                const _height = scroller.el.pin.offsetHeight;
+                const _bannerWidth = Math.min(_width - 48, 640);
+                const _bannerHeight = Math.min(_bannerWidth * 0.6, _height * 0.5);
+                scroller.banner = `inset(${(_height - _bannerHeight) / 2}px ${(_width - _bannerWidth) / 2}px round 24px)`;
+            },
+        },
+    });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'A tall section with a sticky, screen-high pin below the header. The image is clipped to a banner, the heading sits on top, hidden.',
+    code: pageScript,
+    note: 'Just <code class="font-mono text-sm">_parallaxScroller</code>. On resize the script measures the banner as a <code class="font-mono text-sm">clip-path: inset()</code>, and the range is set to while the section is pinned. <code class="font-mono text-sm">animate()</code> takes percents of that range: the clip opens in the first half, then the dim and heading come in, and the last 30% is a hold. The keyframes are a function, so the banner is measured again on resize.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

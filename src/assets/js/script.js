@@ -1,5 +1,4 @@
 // libraries
-import { gsap } from "gsap";
 import { DateTime } from "luxon";
 import flatpickr from "flatpickr";
 
@@ -46,7 +45,6 @@ import { _comicSlider } from "./utils/_comicSlider";
 
 // for the inline page scripts
 Object.assign(window, {
-    gsap,
     DateTime,
     flatpickr,
     _event,

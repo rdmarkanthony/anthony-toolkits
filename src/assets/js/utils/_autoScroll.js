@@ -1,7 +1,7 @@
-import { gsap } from "gsap";
-import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import { _tween } from "./_tween";
 
-gsap.registerPlugin(ScrollToPlugin);
+// the running scroll, a new one replaces it
+let _running;
 
 const _scrollTop = () => window.scrollY;
 const _offsetTop = (target) => target.getBoundingClientRect().top + _scrollTop();
@@ -26,7 +26,7 @@ export const _autoScrollHash = (props = {}) => {
     else window.addEventListener("load", _scroll, { once: true });
 };
 
-// usage: _autoScroll({ target, offset, speed, ease, callback })
+// usage: _autoScroll({ target, offset, speed, ease, callback }), ease is a gsap-style name or (p) => p
 export const _autoScroll = ({ target, offset, speed = 500, ease = "power2.out", callback } = {}) => {
     if (!target) return;
 
@@ -48,11 +48,14 @@ export const _autoScroll = ({ target, offset, speed = 500, ease = "power2.out", 
 
     const _reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    gsap.to(window, {
-        scrollTo: { y: _y, autoKill: false },
-        duration: _reduce ? 0 : speed / 1000,
+    const _from = _scrollTop();
+
+    _running?.stop();
+    _running = _tween({
+        duration: _reduce ? 0 : speed,
         ease,
-        overwrite: true,
-        onComplete: () => callback?.({ target, direction: _direction, offset: _offset, y: _y }),
+        // instant, so css scroll-behavior: smooth doesn't fight it
+        update: (progress) => window.scrollTo({ top: _from + (_y - _from) * progress, behavior: "instant" }),
+        complete: () => callback?.({ target, direction: _direction, offset: _offset, y: _y }),
     });
 };
