@@ -1,8 +1,9 @@
 // particles effect for _threeBackground: dots drift, move away from the pointer and tilt with it
 // usage: new _threeBackground({ target, effect: _threeParticles({ count, color, size, speed, depth, radius, push, parallax, opacity }) })
 // color: one color or an array, picked per dot, size in px, radius and speed in world units
+// calm by default for text on top
 export const _threeParticles = (props = {}) => {
-    const _options = { count: 1500, color: "#ffffff", size: 3, speed: 0.15, depth: 4, radius: 2, push: 1.2, parallax: 0.15, opacity: 1, ...props };
+    const _options = { count: 800, color: "#ffffff", size: 2.5, speed: 0.1, depth: 4, radius: 2, push: 0.8, parallax: 0.08, opacity: 0.6, ...props };
 
     let _points = null;
     let _base, _velocity, _offset, _positions;

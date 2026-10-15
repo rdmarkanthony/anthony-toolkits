@@ -23,6 +23,15 @@ export default [
         ],
     },
     {
+        category: "Three.js background",
+        url: "/components/three-background/",
+        items: [
+            { label: "Particles", url: "/components/three-background/particles/", description: "Dots that drift and move away from the mouse.", utils: "_threeParticles", ready: true },
+            { label: "Blobs", url: "/components/three-background/blobs/", description: "Big soft colors with grain that glide to new colors.", utils: "_threeBlobs", ready: true },
+            { label: "Glow", url: "/components/three-background/glow/", description: "One soft glow that follows the mouse, over film grain.", utils: "_threeGlow", ready: true },
+        ],
+    },
+    {
         category: "Layout",
         items: [
             { label: "Breakpoints", url: "/components/breakpoints/", description: "The responsive breakpoints, shown live as you resize.", utils: "Tailwind @theme", ready: true },
@@ -43,7 +52,6 @@ export default [
             { label: "Cursor bubble", url: "/components/cursor-bubble/", description: "A dot that trails the mouse, grows over big type and shows labels.", utils: "_cursorBubble", ready: true },
             { label: "Typing animation", url: "/components/typing-animation/", description: "Typewriter text effect.", utils: "_typing", ready: true },
             { label: "Scramble text", url: "/components/scramble-text/", description: "Letters flip through random characters, then settle into the text.", utils: "_scrambleText", ready: true },
-            { label: "Three.js background", url: "/components/three-background/", description: "A 3D canvas behind any section, starting with particles that follow the mouse.", utils: "_threeBackground · three.js", ready: true },
         ],
     },
     {
