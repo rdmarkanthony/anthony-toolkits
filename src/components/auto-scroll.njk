@@ -4,7 +4,7 @@ title: Auto scroll | Anthony Toolkits
 
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
 
-{{ pageIntro({ label: '_autoScroll', title: 'Auto scroll', description: 'Smooth scrolls the page to an element with gsap, stopping below a fixed or sticky <code class="font-mono text-base">.header-content</code>. Jumps straight there when the visitor prefers reduced motion.' }) }}
+{{ pageIntro({ label: '_autoScroll', title: 'Auto scroll', description: 'Smooth scrolls the page to an element, stopping below a fixed or sticky <code class="font-mono text-base">.header-content</code>. Jumps straight there when the visitor prefers reduced motion.' }) }}
 
 {% set button = 'rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700' %}
 {% set sections = [
@@ -42,7 +42,6 @@ title: Auto scroll | Anthony Toolkits
 {% set pageScript %}{% raw %}
 // Requirements
     // JS
-        // gsap, with gsap/ScrollToPlugin
         // src/assets/js/utils/_autoScroll.js
 
 const _status = document.querySelector('.js-auto-scroll-status');
@@ -67,7 +66,7 @@ document.querySelectorAll('.js-auto-scroll').forEach((link) => {
 
 {{ scriptUsage({
     code: pageScript,
-    note: '<code class="font-mono text-sm">_autoScroll({ target, offset, speed, ease, callback })</code>, the speed in ms. <code class="font-mono text-sm">offset</code> defaults to the header height. Add <code class="font-mono text-sm">data-scroll-parent=".selector"</code> on the target to scroll to its closest matching parent instead.<br><br><code class="font-mono text-sm">_autoScrollHash(options)</code> scrolls to the element of the url hash once the page loads (<code class="font-mono text-sm">#id</code> or <code class="font-mono text-sm">#id?query</code>), only if it\'s visible, so a hash meant for a lightbox or a closed accordion is left to that script. Call it in your main script before the page scripts read the hash, as <code class="font-mono text-sm">script.js</code> does for this site.'
+    note: '<code class="font-mono text-sm">_autoScroll({ target, offset, speed, ease, callback })</code>, the speed in ms. <code class="font-mono text-sm">ease</code> takes a gsap-style name like <code class="font-mono text-sm">"power2.out"</code>, or a function. <code class="font-mono text-sm">offset</code> defaults to the header height. Add <code class="font-mono text-sm">data-scroll-parent=".selector"</code> on the target to scroll to its closest matching parent instead.<br><br><code class="font-mono text-sm">_autoScrollHash(options)</code> scrolls to the element of the url hash once the page loads (<code class="font-mono text-sm">#id</code> or <code class="font-mono text-sm">#id?query</code>), only if it\'s visible, so a hash meant for a lightbox or a closed accordion is left to that script. Call it in your main script before the page scripts read the hash, as <code class="font-mono text-sm">script.js</code> does for this site.'
 }) }}
 
 {% footerscript %}
