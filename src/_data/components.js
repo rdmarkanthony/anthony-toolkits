@@ -10,6 +10,7 @@ export default [
             { label: "Video intro", url: "/components/scrolling-animation/video-intro/", description: "Sticky video whose cover fades in, then titles step in on scroll.", utils: "_parallaxScroller · _hlsVideo", ready: true },
             { label: "Canvas image sequence", url: "/components/scrolling-animation/canvas/", description: "Scrub through image frames on a canvas as you scroll.", utils: "_canvasBanner · _parallaxScroller", ready: true },
             { label: "Parallax background", url: "/components/scrolling-animation/background/", description: "Backgrounds and floating elements that move slower than the page.", utils: "_parallaxBackground · _parallaxFloating", ready: true },
+            { label: "Text reveal", url: "/components/scrolling-animation/text/", description: "Body text that turns from grey to dark word by word on scroll.", utils: "_parallaxScroller", ready: true },
         ],
     },
     {
