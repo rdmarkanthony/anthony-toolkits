@@ -19,11 +19,11 @@ title: Stacking Columns | Scrolling Animation | Anthony Toolkits
 
 {# demo #}
 <section class="js-stacking-columns relative">
-    <div class="md:sticky md:top-0 md:h-screen md:overflow-hidden">
+    <div class="js-stacking-columns-pin md:sticky md:top-(--header-height) md:h-[calc(100svh-var(--header-height,0px))] md:overflow-hidden">
         <ul class="js-stacking-columns-track md:flex md:h-full">
             {% for column in columns %}
-            <li class="group sticky flex flex-col md:static md:shrink-0 md:flex-row {{ column.tone }}">
-                <div class="js-stacking-columns-title group/title relative flex h-12 flex-row-reverse items-center justify-end gap-3 border-t border-black/10 px-6 transition-colors duration-300 hover:bg-current/8 md:h-auto md:w-20 md:flex-col md:gap-4 md:border-t-0 md:border-l md:px-0 md:py-10">
+            <li class="group sticky top-(--header-height) flex h-[calc(100svh-var(--header-height,0px))] flex-col md:static md:h-auto md:shrink-0 md:flex-row {{ column.tone }}">
+                <div class="js-stacking-columns-title group/title relative flex cursor-pointer h-12 flex-row-reverse items-center justify-end gap-3 border-t border-black/10 px-6 transition-colors duration-300 hover:bg-current/8 md:h-auto md:w-20 md:flex-col md:gap-4 md:border-t-0 md:border-l md:px-0 md:py-10">
                     <h2 class="text-lg font-semibold tracking-tight transition-transform duration-300 md:rotate-180 md:text-2xl md:[writing-mode:vertical-rl] md:group-hover/title:-translate-y-2"><button class="cursor-pointer after:absolute after:inset-0" type="button">{{ column.title }}</button></h2>
                     <span class="size-1.5 scale-0 rounded-full bg-orange-500 transition-transform duration-300 group-data-[state=active]:scale-100 md:size-2"></span>
                     <span class="text-xs font-medium opacity-60 transition duration-300 group-data-[state=active]:text-orange-500 group-data-[state=active]:opacity-100 md:text-sm">{{ loop.index | pad(2) }}</span>
@@ -41,13 +41,13 @@ title: Stacking Columns | Scrolling Animation | Anthony Toolkits
 
 {% set markup %}{% raw %}
 <section class="js-stacking-columns relative">
-    <!-- md and up: a sticky, screen-high row -->
-    <div class="md:sticky md:top-0 md:h-screen md:overflow-hidden">
+    <!-- md and up: a sticky row below the header -->
+    <div class="js-stacking-columns-pin md:sticky md:top-(--header-height) md:h-[calc(100svh-var(--header-height,0px))] md:overflow-hidden">
         <ul class="js-stacking-columns-track md:flex md:h-full">
             <!-- a background, so the next column covers it, data-state="active" while open -->
-            <!-- mobile: sticky rows, the script sets top and height -->
-            <li class="group sticky flex flex-col bg-stone-100 md:static md:flex-row md:shrink-0">
-                <div class="js-stacking-columns-title relative flex h-12 hover:bg-current/8 md:h-auto md:w-20 md:flex-col">
+            <!-- mobile: sticky rows below the header -->
+            <li class="group sticky top-(--header-height) flex h-[calc(100svh-var(--header-height,0px))] flex-col bg-stone-100 md:static md:h-auto md:flex-row md:shrink-0">
+                <div class="js-stacking-columns-title relative flex h-12 cursor-pointer hover:bg-current/8 md:h-auto md:w-20 md:flex-col">
                     <!-- after:inset-0 makes the whole title clickable -->
                     <h2 class="md:rotate-180 md:[writing-mode:vertical-rl]"><button class="after:absolute after:inset-0" type="button">Pin</button></h2>
                     <span class="group-data-[state=active]:text-orange-500">01</span>
@@ -75,6 +75,7 @@ document.querySelectorAll('.js-stacking-columns').forEach((target) => {
         target,
         events: {
             init(scroller) {
+                scroller.el.pin = target.querySelector('.js-stacking-columns-pin');
                 scroller.el.track = target.querySelector('.js-stacking-columns-track');
                 scroller.el.list = [...scroller.el.track.children];
                 scroller.el.titles = scroller.el.list.map((item) => item.querySelector('.js-stacking-columns-title'));
@@ -95,12 +96,13 @@ document.querySelectorAll('.js-stacking-columns').forEach((target) => {
             },
             resize(scroller) {
                 scroller.horizontal = _horizontal.matches;
-                scroller.offset.top = _parallax.getOffset(target).top;
+
+                // everything sticks below the header, --header-height from script.js
+                const _header = parseFloat(getComputedStyle(document.body).getPropertyValue('--header-height')) || 0;
+                scroller.offset.top = _parallax.getOffset(target).top - _header;
 
                 if (scroller.horizontal) {
                     scroller.el.track.style.removeProperty('height');
-                    scroller.el.list.forEach((item) => item.style.removeProperty('top'));
-                    scroller.el.list.forEach((item) => item.style.removeProperty('height'));
 
                     // content fills the screen next to all the titles
                     const _titles = scroller.el.titles.reduce((total, title) => total + title.offsetWidth, 0);
@@ -108,7 +110,7 @@ document.querySelectorAll('.js-stacking-columns').forEach((target) => {
 
                     // scroll until the last column is in, then stay pinned for half a screen more
                     scroller.distance = scroller.el.track.scrollWidth - target.offsetWidth;
-                    target.style.height = `${_parallax.height() * 1.5 + scroller.distance}px`;
+                    target.style.height = `${scroller.el.pin.offsetHeight + _parallax.height() * 0.5 + scroller.distance}px`;
 
                     // when each column reaches the stack, after the titles before it
                     let _stack = 0;
@@ -121,14 +123,9 @@ document.querySelectorAll('.js-stacking-columns').forEach((target) => {
                     target.style.removeProperty('height');
                     scroller.el.contents.forEach((content) => content.style.removeProperty('width'));
 
-                    // each row sticks below the sticky header and covers the one before it
-                    const _header = document.querySelector('.header-content')?.offsetHeight ?? 0;
-                    const _height = _parallax.height() - _header;
-                    scroller.stick = scroller.el.list.map((item, index) => {
-                        item.style.top = `${_header}px`;
-                        item.style.height = `${_height}px`;
-                        return index * _height - _header;
-                    });
+                    // each row covers the one before it
+                    const _height = scroller.el.list[0].offsetHeight;
+                    scroller.stick = scroller.el.list.map((item, index) => index * _height);
 
                     // rows stick within the list, half a screen more keeps the last one a while
                     scroller.el.track.style.height = `${_height * scroller.el.list.length + _parallax.height() * 0.5}px`;
