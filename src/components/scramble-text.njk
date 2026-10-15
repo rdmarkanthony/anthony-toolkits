@@ -1,0 +1,129 @@
+---
+title: Scramble text | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_scrambleText', title: 'Scramble text', description: 'Letters flip through random characters, then settle into the text. Hover the buttons, or play it from your own script.' }) }}
+
+{# demo: hover #}
+<section class="px-4 pb-4">
+    <div class="mx-auto grid max-w-295 gap-4 md:grid-cols-2">
+        <div class="flex min-h-72 flex-col justify-between gap-10 rounded-3xl bg-gray-100 p-8">
+            <h2 class="text-3xl font-bold tracking-tight">On hover</h2>
+            <div class="flex flex-wrap gap-3">
+                <button class="js-scramble-hover cursor-pointer rounded-full bg-gray-950 px-6 py-3 font-medium text-white" type="button">Get started</button>
+                <button class="js-scramble-hover cursor-pointer rounded-full border border-gray-950 px-6 py-3 font-medium" type="button" data-order="center">From the center</button>
+                <a class="js-scramble-hover rounded-full px-6 py-3 font-medium underline underline-offset-4" href="#" data-order="random">Random order</a>
+                <button class="js-scramble-hover cursor-pointer rounded-full bg-white px-6 py-3 font-medium" type="button">UPPERCASE</button>
+            </div>
+        </div>
+        <div class="flex min-h-72 flex-col justify-between gap-10 rounded-3xl bg-gray-950 p-8 text-white">
+            <h2 class="text-3xl font-bold tracking-tight">Own characters</h2>
+            <div class="flex flex-wrap gap-3 font-mono">
+                {# unsettled letters glow green #}
+                <button class="js-scramble-hover cursor-pointer rounded-full border border-emerald-400/40 px-6 py-3 text-emerald-300 [&_[data-scrambling]]:text-emerald-400 [&_[data-scrambling]]:[text-shadow:0_0_8px_currentColor]" type="button" data-chars="ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789">Enter the code</button>
+                <button class="js-scramble-hover cursor-pointer rounded-full border border-white/30 px-6 py-3 [&_[data-scrambling]]:opacity-50" type="button" data-chars="01">Binary</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# demo: plays from a script #}
+<section class="px-4 pt-12 pb-16">
+    <div class="mx-auto grid max-w-295 gap-4 md:grid-cols-2">
+        <div class="flex min-h-72 flex-col justify-between gap-10 rounded-3xl border border-gray-200 p-8">
+            <p class="text-gray-600">setInterval, every 3 seconds</p>
+            <p class="js-scramble-interval font-mono text-4xl font-bold tracking-tight md:text-5xl">SYSTEM ONLINE</p>
+        </div>
+        <div class="flex min-h-72 flex-col justify-between gap-10 rounded-3xl border border-gray-200 p-8">
+            <p class="text-gray-600">New text after each complete</p>
+            <p class="text-4xl font-bold tracking-tight md:text-5xl">We <span class="js-scramble-words text-emerald-500">design</span></p>
+        </div>
+        <div class="flex flex-col gap-6 rounded-3xl bg-gray-100 p-8 md:col-span-2">
+            <p class="js-scramble-control text-4xl font-bold tracking-tight md:text-6xl">Press play</p>
+            <div class="flex flex-wrap items-center gap-3">
+                <button class="js-scramble-play cursor-pointer rounded-full bg-gray-950 px-5 py-2 font-medium text-white" type="button">play()</button>
+                <button class="js-scramble-new cursor-pointer rounded-full bg-white px-5 py-2 font-medium" type="button">play('New text')</button>
+                <button class="js-scramble-stop cursor-pointer rounded-full bg-white px-5 py-2 font-medium" type="button">stop()</button>
+                <p class="font-mono text-sm text-gray-500">last event: <span class="js-scramble-log">-</span></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<button class="js-scramble [&_[data-scrambling]]:text-emerald-400" type="button">Get started</button>
+
+<!-- or scramble a part, hover on the button -->
+<button class="js-scramble-button" type="button">
+    <span class="js-scramble-label">Get started</span>
+    <svg>...</svg>
+</button>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_scrambleText.js
+
+// hover
+document.querySelectorAll('.js-scramble-hover').forEach((target) => {
+    new _scrambleText({
+        target,
+        // defaults: hover: true, duration: 400, speed: 40, order: 'start', chars a to z
+        order: target.dataset.order,
+        chars: target.dataset.chars,
+    });
+});
+
+// plays on its own, no hover
+const _interval = new _scrambleText({ target: document.querySelector('.js-scramble-interval'), hover: false });
+setInterval(() => _interval.play(), 3000);
+
+// a new word after each one settles
+const _words = ['design', 'build', 'ship'];
+let _index = 0;
+
+new _scrambleText({
+    target: document.querySelector('.js-scramble-words'),
+    hover: false,
+    events: {
+        complete: (instance) => {
+            _index = (_index + 1) % _words.length;
+            setTimeout(() => instance.play(_words[_index]), 1500);
+        },
+    },
+}).play();
+
+// methods and events
+const _log = document.querySelector('.js-scramble-log');
+const _control = new _scrambleText({
+    target: document.querySelector('.js-scramble-control'),
+    hover: false,
+    duration: 1500,
+    events: {
+        start: () => (_log.textContent = 'start'),
+        // instance.progress goes 0 to 1
+        update: (instance) => (_log.textContent = `update, ${Math.round(instance.progress * 100)}%`),
+    },
+});
+_control.on('complete', () => (_log.textContent = 'complete'));
+window._control = _control; // for trying it in the console
+
+document.querySelector('.js-scramble-play').addEventListener('click', () => _control.play());
+document.querySelector('.js-scramble-new').addEventListener('click', () => _control.play(_control.text === 'New text' ? 'Press play' : 'New text'));
+document.querySelector('.js-scramble-stop').addEventListener('click', () => _control.stop());
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The target and each unsettled letter get <code class="font-mono text-sm">[data-scrambling]</code>, for styling. <code class="font-mono text-sm">trigger</code> sets what to hover, the target by default.',
+    code: pageScript,
+    note: 'Options: <code class="font-mono text-sm">target</code>, <code class="font-mono text-sm">trigger</code>, <code class="font-mono text-sm">hover</code>, <code class="font-mono text-sm">chars</code> (a to z, same case as the text), <code class="font-mono text-sm">duration</code>, <code class="font-mono text-sm">speed</code> (ms per flip), <code class="font-mono text-sm">order</code> (start, end, center, random). Methods: <code class="font-mono text-sm">play(text)</code>, <code class="font-mono text-sm">stop()</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">start</code>, <code class="font-mono text-sm">update</code>, <code class="font-mono text-sm">complete</code>. Reduced motion skips the scramble.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
