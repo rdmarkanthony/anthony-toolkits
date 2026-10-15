@@ -4,6 +4,18 @@
 // `starter: true` adds it to the starter kit popup
 export default [
     {
+        category: "Animation",
+        items: [
+            { label: "Animate", url: "/components/animate/", description: "Animate.css effects triggered in view.", utils: "_animate · _inview · _splitText", ready: true, starter: true },
+            { label: "Animated number", url: "/components/animated-number/", description: "Count up to a value on scroll.", utils: "_animatedNumber · _inview", ready: true },
+            { label: "Rolling number", url: "/components/rolling-number/", description: "Odometer-style rolling digits.", utils: "_rollingNumber · _inview", ready: true },
+            { label: "Theme scroller", url: "/components/theme-scroller/", description: "The page or header takes the theme of the section on screen.", utils: "_themeScroller", ready: true },
+            { label: "Cursor bubble", url: "/components/cursor-bubble/", description: "A dot that trails the mouse, grows over big type and shows labels.", utils: "_cursorBubble", ready: true },
+            { label: "Typing animation", url: "/components/typing-animation/", description: "Typewriter text effect.", utils: "_typing", ready: true },
+            { label: "Scramble text", url: "/components/scramble-text/", description: "Letters flip through random characters, then settle into the text.", utils: "_scrambleText", ready: true },
+        ],
+    },
+    {
         category: "Scrolling animation",
         url: "/components/scrolling-animation/",
         items: [
@@ -11,6 +23,15 @@ export default [
             { label: "Canvas image sequence", url: "/components/scrolling-animation/canvas/", description: "Scrub through image frames on a canvas as you scroll.", utils: "_canvasBanner · _parallaxScroller", ready: true },
             { label: "Parallax background", url: "/components/scrolling-animation/background/", description: "Backgrounds and floating elements that move slower than the page.", utils: "_parallaxBackground · _parallaxFloating", ready: true },
             { label: "Text reveal", url: "/components/scrolling-animation/text/", description: "Body text that turns from grey to dark word by word on scroll.", utils: "_parallaxScroller", ready: true },
+        ],
+    },
+    {
+        category: "Three.js background",
+        url: "/components/three-background/",
+        items: [
+            { label: "Particles", url: "/components/three-background/particles/", description: "Dots that drift and move away from the mouse.", utils: "_threeParticles", ready: true },
+            { label: "Blobs", url: "/components/three-background/blobs/", description: "Big soft colors with grain that glide to new colors.", utils: "_threeBlobs", ready: true },
+            { label: "Glow", url: "/components/three-background/glow/", description: "One soft glow that follows the mouse, over film grain.", utils: "_threeGlow", ready: true },
         ],
     },
     {
@@ -24,12 +45,12 @@ export default [
         ],
     },
     {
-        category: "Three.js background",
-        url: "/components/three-background/",
+        category: "Media",
         items: [
-            { label: "Particles", url: "/components/three-background/particles/", description: "Dots that drift and move away from the mouse.", utils: "_threeParticles", ready: true },
-            { label: "Blobs", url: "/components/three-background/blobs/", description: "Big soft colors with grain that glide to new colors.", utils: "_threeBlobs", ready: true },
-            { label: "Glow", url: "/components/three-background/glow/", description: "One soft glow that follows the mouse, over film grain.", utils: "_threeGlow", ready: true },
+            { label: "Lightbox", url: "/components/lightbox/", description: "Opens any element on the page in a popup, modals stack.", utils: "_lightbox", ready: true },
+            { label: "YouTube player", url: "/components/youtube-player/", description: "YouTube embeds, with muted autoplay backgrounds.", utils: "_youtubePlayer", ready: true },
+            { label: "Video player", url: "/components/video-player/", description: "MP4 and HLS videos, with muted autoplay backgrounds.", utils: "_videoPlayer", ready: true },
+            { label: "Lazyload", url: "/components/lazyload/", description: "Images, backgrounds and videos that load as they near the screen.", utils: "_lazyLoad", ready: true, starter: true },
         ],
     },
     {
@@ -41,27 +62,6 @@ export default [
             { label: "Tabs", url: "/components/tabs/", description: "Links that switch between content panels, nestable.", utils: "_tabs", ready: true },
             { label: "Accordion", url: "/components/accordion/", description: "Titles that open and close their content in place, for FAQs.", utils: "_accordion", ready: true },
             { label: "Hover indicator", url: "/components/hover-indicator/", description: "A background or line that slides to the hovered or selected item.", utils: "_hoverIndicator", ready: true },
-        ],
-    },
-    {
-        category: "Animation",
-        items: [
-            { label: "Animate", url: "/components/animate/", description: "Animate.css effects triggered in view.", utils: "_animate · _inview · _splitText", ready: true, starter: true },
-            { label: "Animated number", url: "/components/animated-number/", description: "Count up to a value on scroll.", utils: "_animatedNumber · _inview", ready: true },
-            { label: "Rolling number", url: "/components/rolling-number/", description: "Odometer-style rolling digits.", utils: "_rollingNumber · _inview", ready: true },
-            { label: "Theme scroller", url: "/components/theme-scroller/", description: "The page or header takes the theme of the section on screen.", utils: "_themeScroller", ready: true },
-            { label: "Cursor bubble", url: "/components/cursor-bubble/", description: "A dot that trails the mouse, grows over big type and shows labels.", utils: "_cursorBubble", ready: true },
-            { label: "Typing animation", url: "/components/typing-animation/", description: "Typewriter text effect.", utils: "_typing", ready: true },
-            { label: "Scramble text", url: "/components/scramble-text/", description: "Letters flip through random characters, then settle into the text.", utils: "_scrambleText", ready: true },
-        ],
-    },
-    {
-        category: "Media",
-        items: [
-            { label: "Lightbox", url: "/components/lightbox/", description: "Opens any element on the page in a popup, modals stack.", utils: "_lightbox", ready: true },
-            { label: "YouTube player", url: "/components/youtube-player/", description: "YouTube embeds, with muted autoplay backgrounds.", utils: "_youtubePlayer", ready: true },
-            { label: "Video player", url: "/components/video-player/", description: "MP4 and HLS videos, with muted autoplay backgrounds.", utils: "_videoPlayer", ready: true },
-            { label: "Lazyload", url: "/components/lazyload/", description: "Images, backgrounds and videos that load as they near the screen.", utils: "_lazyLoad", ready: true, starter: true },
         ],
     },
     {
