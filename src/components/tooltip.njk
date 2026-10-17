@@ -1,0 +1,182 @@
+---
+title: Tooltip | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_tooltip', title: 'Tooltip', description: 'A small label on hover or keyboard focus, set with <code class="font-mono text-base">data-tooltip</code>, or one that stays open with links and a close button. Or call <code class="font-mono text-base">_tooltip.show()</code> for a quick message, instead of <code class="font-mono text-base">alert()</code>. It flips below when there\'s no room above.' }) }}
+
+{% set icon = 'grid size-11 place-items-center rounded-md border border-gray-300 transition-colors hover:border-gray-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-950' %}
+{% set button = 'rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700' %}
+{% set svg = 'class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"' %}
+
+{# demo: hover and focus #}
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Hover and focus</h2>
+            <p class="max-w-xl text-gray-600">Hover the buttons, or tab to them. Delete and CDN have their own look with <code class="font-mono text-sm">data-tooltip-class</code>.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            <button class="{{ icon }}" type="button" aria-label="Edit" data-tooltip="Edit">
+                <svg {{ svg | safe }}><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
+            </button>
+            <button class="{{ icon }}" type="button" aria-label="Share" data-tooltip="Share">
+                <svg {{ svg | safe }}><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4" /></svg>
+            </button>
+            <button class="{{ icon }}" type="button" aria-label="Delete" data-tooltip="Delete, can't be undone" data-tooltip-place="bottom" data-tooltip-class="rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold text-white">
+                <svg {{ svg | safe }}><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" /></svg>
+            </button>
+        </div>
+        <p class="max-w-xl text-gray-600">It works on text too, like <span class="cursor-help font-medium text-gray-950 underline decoration-dotted underline-offset-4" tabindex="0" data-tooltip="Content delivery network" data-tooltip-class="max-w-xs rounded-full bg-white px-4 py-2 text-sm text-gray-950 shadow-lg ring-1 ring-gray-200">CDN</span>.</p>
+        <div class="flex flex-wrap gap-3">
+            {% for place in ['top', 'bottom', 'left', 'right'] %}
+            <button class="rounded-md border border-gray-300 px-4 py-2 font-medium capitalize transition-colors hover:border-gray-950" type="button" data-tooltip="On the {{ place }}" data-tooltip-place="{{ place }}">{{ place }}</button>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# demo: pointing at a parent #}
+<section class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Point at a parent</h2>
+            <p class="max-w-xl text-gray-600">The <code class="font-mono text-sm">i</code> and Share buttons are small, the tooltip points at the whole card.</p>
+        </div>
+        <div class="js-tooltip-card flex max-w-sm flex-col gap-4 rounded-2xl border border-gray-200 p-6">
+            <div class="flex items-center justify-between gap-4">
+                <p class="text-xl font-bold tracking-tight">Pro plan</p>
+                <button class="grid size-7 place-items-center rounded-full border border-gray-300 font-mono text-sm transition-colors hover:border-gray-950" type="button" aria-label="About the price" data-tooltip="Billed yearly, cancel any time" data-tooltip-anchor=".js-tooltip-card" data-tooltip-place="right">i</button>
+            </div>
+            <p class="text-4xl font-bold tracking-tight">$12<span class="text-base font-medium text-gray-500"> / month</span></p>
+            <button class="js-tooltip-share {{ button }}" type="button">Share</button>
+        </div>
+    </div>
+</section>
+
+{# demo: stays open, content from a template #}
+<section class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Stays open</h2>
+            <p class="max-w-xl text-gray-600">Content from a <code class="font-mono text-sm">&lt;template&gt;</code>, with links and a close button. Opens on click, so it works on phones. The hint also closes when you open Filters.</p>
+        </div>
+        <p class="flex items-center gap-2 text-lg">
+            Free shipping on orders over $50
+            <button class="grid size-7 place-items-center rounded-full border border-gray-300 font-mono text-sm transition-colors hover:border-gray-950" type="button" aria-label="About shipping" aria-expanded="false" data-tooltip-content="#tooltip-shipping" data-tooltip-place="bottom">?</button>
+        </p>
+        <div class="flex flex-wrap items-center gap-3">
+            <button class="js-tooltip-filters rounded-md border border-gray-300 px-4 py-2 font-medium transition-colors hover:border-gray-950" type="button">Filters</button>
+            <button class="js-tooltip-hint {{ button }}" type="button">Show the hint</button>
+        </div>
+    </div>
+</section>
+
+<template id="tooltip-shipping">
+    <div class="flex flex-col gap-2 pr-6">
+        <p class="font-semibold">Shipping</p>
+        <p class="text-gray-300">Orders over $50 ship free within the country. Smaller orders are $5. Most arrive in 2 to 4 days, remote areas can take a week.</p>
+        <a class="font-medium underline underline-offset-4 hover:text-gray-300" href="#">Read the shipping policy</a>
+    </div>
+    <button class="absolute top-2 right-2 grid size-7 place-items-center rounded-full text-gray-300 transition-colors hover:bg-white/10 hover:text-white" type="button" aria-label="Close" data-tooltip-close>&times;</button>
+</template>
+
+<template id="tooltip-hint">
+    <div class="flex flex-col items-start gap-3">
+        <p><span class="font-semibold">New:</span> save your filters and use them again next time.</p>
+        <button class="rounded-md bg-white px-3 py-1.5 font-medium text-gray-950 transition-colors hover:bg-gray-200" type="button" data-tooltip-close>Got it</button>
+    </div>
+</template>
+
+{# demo: messages instead of alert() #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Instead of alert()</h2>
+            <p class="max-w-xl text-gray-600">A message next to the button, gone after a moment.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+            <p class="rounded-md border border-dashed border-gray-400 bg-white px-4 py-2 font-mono font-semibold tracking-widest">SAVE20</p>
+            <button class="js-tooltip-copy {{ button }}" type="button">Copy code</button>
+            <button class="js-tooltip-cart {{ button }}" type="button">Add to cart</button>
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- icon-only buttons still need an aria-label -->
+<button type="button" aria-label="Edit" data-tooltip="Edit">...</button>
+
+<!-- below, flips above when there's no room -->
+<button type="button" data-tooltip="Delete" data-tooltip-place="bottom">...</button>
+
+<!-- points at the card, the button keeps focus -->
+<div class="card">
+    <button type="button" aria-label="About" data-tooltip="Billed yearly" data-tooltip-anchor=".card" data-tooltip-place="right">i</button>
+</div>
+
+<!-- its own look, replaces the default bg, text and padding -->
+<button type="button" data-tooltip="Delete" data-tooltip-class="rounded-md bg-red-600 px-3 py-1.5 text-sm text-white">...</button>
+
+<!-- text needs tabindex for keyboard focus -->
+<span tabindex="0" data-tooltip="Content delivery network">CDN</span>
+
+<!-- stays open: opens a template on click, [data-tooltip-close] closes it -->
+<button type="button" aria-label="About shipping" aria-expanded="false" data-tooltip-content="#tooltip-shipping">?</button>
+<template id="tooltip-shipping">
+    <p>Orders over $50 ship free.</p>
+    <a href="/shipping/">Read the shipping policy</a>
+    <button type="button" aria-label="Close" data-tooltip-close>&times;</button>
+</template>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_tooltip.js
+
+// once per page, for all [data-tooltip] and [data-tooltip-content]
+_tooltip.init();
+
+// a quick message, instead of alert()
+const _copy = document.querySelector('.js-tooltip-copy');
+
+_copy.addEventListener('click', async () => {
+    await navigator.clipboard.writeText('SAVE20');
+    _tooltip.show(_copy, 'Copied', { duration: 1500 });
+});
+
+const _cart = document.querySelector('.js-tooltip-cart');
+let _count = 0;
+
+_cart.addEventListener('click', () => _tooltip.show(_cart, `Added, ${++_count} in your cart`, { duration: 2000, place: 'bottom' }));
+
+// anchor: a parent's selector, found with closest(), or an element
+const _share = document.querySelector('.js-tooltip-share');
+
+_share.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(location.href);
+    _tooltip.show(_share, 'Link copied', { duration: 1500, anchor: '.js-tooltip-card' });
+});
+
+// a template from code, e.g. a hint on load, it stays until closed
+const _filters = document.querySelector('.js-tooltip-filters');
+
+document.querySelector('.js-tooltip-hint').addEventListener('click', () => {
+    _tooltip.show(_filters, null, { content: '#tooltip-hint', place: 'bottom' });
+});
+
+// close it from code, only if the hint is the one open
+_filters.addEventListener('click', () => _tooltip.hide(_filters));
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    code: pageScript,
+    note: '<code class="font-mono text-sm">_tooltip.show(target, text, { duration, place, anchor, content, class })</code>, content is a template or its selector, text is then <code class="font-mono text-sm">null</code>. Place is top, bottom, left or right. Without a duration it stays until <code class="font-mono text-sm">_tooltip.hide()</code> or Escape, <code class="font-mono text-sm">_tooltip.hide(target)</code> only closes that target\'s. Messages with a duration are read out by screen readers.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

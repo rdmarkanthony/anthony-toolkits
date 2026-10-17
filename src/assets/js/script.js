@@ -7,6 +7,7 @@ import { _event } from "./utils/_event";
 import { _enquire } from "./utils/_enquire";
 import { _emitter } from "./utils/_emitter";
 import { _filter } from "./utils/_filter";
+import { _urlVars } from "./utils/_urlVars";
 import { _autocomplete } from "./utils/_autocomplete";
 import { _inview } from "./utils/_inview";
 import { _splitText } from "./utils/_splitText";
@@ -21,6 +22,7 @@ import { _threeBlobs } from "./utils/_threeBlobs";
 import { _threeGlow } from "./utils/_threeGlow";
 import { _countdownTimer } from "./utils/_countdownTimer";
 import { _tabs } from "./utils/_tabs";
+import { _tooltip } from "./utils/_tooltip";
 import { _hoverIndicator } from "./utils/_hoverIndicator";
 import { _accordion } from "./utils/_accordion";
 import { _groupHeight } from "./utils/_groupHeight";
@@ -51,6 +53,7 @@ Object.assign(window, {
     _enquire,
     _emitter,
     _filter,
+    _urlVars,
     _autocomplete,
     _inview,
     _splitText,
@@ -65,6 +68,7 @@ Object.assign(window, {
     _threeGlow,
     _countdownTimer,
     _tabs,
+    _tooltip,
     _hoverIndicator,
     _accordion,
     _groupHeight,

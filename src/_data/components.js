@@ -64,6 +64,7 @@ export default [
             { label: "Group height", url: "/components/group-height/", description: "Equalize heights across grouped elements.", utils: "_groupHeight", ready: true },
             { label: "Hover indicator", url: "/components/hover-indicator/", description: "A background or line that slides to the hovered or selected item.", utils: "_hoverIndicator", ready: true },
             { label: "Tabs", url: "/components/tabs/", description: "Links that switch between content panels, nestable.", utils: "_tabs", ready: true },
+            { label: "Tooltip", url: "/components/tooltip/", description: "A small label on hover or focus, or a quick message instead of alert().", utils: "_tooltip", ready: true },
         ],
     },
     {
@@ -90,6 +91,7 @@ export default [
             { label: "Events", url: "/components/event/", description: "Shared resize, scroll and element-size listeners, plus custom events.", utils: "_event", ready: true, starter: true },
             { label: "Filter", url: "/components/filter/", description: "Live search for a list, set up with data attributes.", utils: "_filter", ready: true },
             { label: "Inview", url: "/components/inview/", description: "Run a callback when an element scrolls into or out of view.", utils: "_inview", ready: true, starter: true },
+            { label: "URL vars", url: "/components/url-vars/", description: "Read and write ?query vars without a reload, so a page can be shared as it is.", utils: "_urlVars", ready: true },
         ],
     },
 ];
