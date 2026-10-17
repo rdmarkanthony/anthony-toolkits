@@ -1,0 +1,139 @@
+---
+title: Page transition | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_pageTransition', title: 'Page transition', description: 'An animation as a link leaves the page, and another as the next page shows. The look is CSS, so a new one is just keyframes. Back and forward show the page as it was, not the cover.' }) }}
+
+{% set headLine %}<script>try{const t=JSON.parse(sessionStorage.pageTransition);sessionStorage.removeItem("pageTransition");if(Date.now()-t.time<1e4)document.documentElement.dataset.pageEnter=t.name}catch{}</script>{% endset %}
+
+{% set wipeCSS %}
+/* the cover for circle and slide, white by default */
+:root {
+    --page-cover: #111113;
+}
+
+/* your own: a blue cover up from the bottom, off the top on the next page */
+@media (prefers-reduced-motion: no-preference) {
+    [data-page-leave="wipe"]::after {
+        background-color: #2563eb;
+        animation: wipe-in 0.6s cubic-bezier(0.65, 0, 0.35, 1) both;
+    }
+    [data-page-enter="wipe"]::after {
+        background-color: #2563eb;
+        animation: wipe-out 0.6s cubic-bezier(0.65, 0, 0.35, 1) both;
+    }
+}
+
+@keyframes wipe-in {
+    from { opacity: 1; translate: 0 100%; }
+    to { opacity: 1; translate: 0 0; }
+}
+@keyframes wipe-out {
+    from { opacity: 1; translate: 0 0; }
+    to { opacity: 1; translate: 0 -100%; }
+}
+{% endset %}
+
+{% headerscript %}{{ headLine | safe }}{% endheaderscript %}
+{% styles %}<style>{{ wipeCSS | safe }}</style>{% endstyles %}
+
+{% set card = 'flex flex-col gap-2 rounded-2xl border border-gray-200 p-6 transition-colors hover:border-gray-950' %}
+{% set button = 'rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700' %}
+
+{% set presets = [
+    { name: 'fade', text: 'The page fades out, the next fades in.' },
+    { name: 'circle', text: 'Grows from where you click.' },
+    { name: 'slide', text: 'A cover slides in, then off the next page.' },
+    { name: 'wipe', text: 'Your own, from the CSS below.' }
+] %}
+
+{# demo: each look, back to this page #}
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Pick one</h2>
+            <p class="js-arrived text-gray-600">Each opens this page again.</p>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {% for preset in presets %}
+            <a class="{{ card }}" href="?via={{ preset.name }}" data-page-transition="{{ preset.name }}">
+                <span class="font-mono font-semibold">{{ preset.name }}</span>
+                <span class="text-gray-600">{{ preset.text }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# demo: on a parent, a link can opt out #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">On a parent</h2>
+            <p class="max-w-xl text-gray-600">Every link inside gets it. A new tab, a download, another site or Cmd-click opens as usual.</p>
+        </div>
+        <nav class="flex flex-wrap gap-x-6 gap-y-3 font-medium" data-page-transition="circle">
+            <a class="underline underline-offset-4" href="?via=circle&page=2">Page 2</a>
+            <a class="underline underline-offset-4" href="?via=circle&page=3">Page 3</a>
+            <a class="underline underline-offset-4" href="?page=4" data-page-transition="false">Page 4, no transition</a>
+            <a class="underline underline-offset-4" href="?page=5" target="_blank">Page 5, new tab</a>
+        </nav>
+        <p class="text-gray-600">Open one, then press back. The page is here, not the circle.</p>
+    </div>
+</section>
+
+{# demo: from code #}
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col items-start gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">From code</h2>
+            <p class="max-w-xl text-gray-600">E.g. after a form is sent.</p>
+        </div>
+        <button class="{{ button }} js-page-code" type="button">Send</button>
+    </div>
+</section>
+
+{% set pageMarkup %}<!-- in the <head> of every page, before the css shows anything -->
+{{ headLine }}
+
+<!-- on a link, or a parent for all its links -->
+<a href="/about/" data-page-transition="circle">About</a>
+
+<nav data-page-transition="fade">
+    <a href="/">Home</a>
+    <a href="/menu/" data-page-transition="false">No transition</a>
+</nav>{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_pageTransition.js
+    // CSS
+        // src/assets/css/components/page-transition.css
+
+_pageTransition.init();
+
+// from code
+document.querySelector('.js-page-code').addEventListener('click', () => {
+    _pageTransition.leave('?via=code', 'circle');
+});
+
+// how this page was opened
+const _arrived = document.documentElement.dataset.pageEnter;
+if (_arrived) document.querySelector('.js-arrived').textContent = `Opened with ${_arrived}.`;
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: pageMarkup,
+    markupNote: 'The head line passes the name to the next page, so it starts hidden with no flash. Leave the value empty for fade.',
+    css: wipeCSS,
+    cssNote: 'fade, circle and slide are in page-transition.css. For your own, animate anything under <code class="font-mono text-sm">[data-page-leave]</code> and <code class="font-mono text-sm">[data-page-enter]</code>. The page opens once the leave animation ends.',
+    code: pageScript,
+    note: 'A click from the keyboard grows the circle from the link. With reduced motion there\'s no animation, the page just opens.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
