@@ -27,7 +27,8 @@ export const _pageTransition = {
         if (_ready) return;
         _ready = true;
 
-        document.addEventListener("click", (e) => {
+        // on window, the last stop, so analytics and other click scripts see it first, not yet prevented
+        window.addEventListener("click", (e) => {
             const link = e.target.closest("a[href]");
             const name = link?.closest("[data-page-transition]")?.dataset.pageTransition;
             if (name === undefined || name === "false" || _skip(link, e)) return;
