@@ -1,0 +1,76 @@
+---
+title: Device | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_device', title: 'Device', description: 'The OS, browser and mobile from the user agent, for fixes like "only on iOS". For behavior use <code class="font-mono text-base">touch</code> and <code class="font-mono text-base">hover</code>, a touch laptop or an iPad with a mouse isn\'t "mobile".' }) }}
+
+{# demo: what this device reports #}
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <h2 class="text-3xl font-bold tracking-tight">This device</h2>
+        <dl class="js-device-list grid gap-3 sm:grid-cols-2 md:grid-cols-3"></dl>
+        <p class="font-mono text-sm break-all text-gray-500"><span class="text-gray-950">&lt;html&gt;</span> <span class="js-device-classes"></span></p>
+        <p class="font-mono text-sm break-all text-gray-500"><span class="text-gray-950">userAgent</span> <span class="js-device-ua"></span></p>
+    </div>
+</section>
+
+{# demo: a css fix from the html classes #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Only on iOS</h2>
+            <p class="max-w-xl text-gray-600">The tip uses <code class="font-mono text-sm">in-[.is-ios]:flex</code>, open this page on an iPhone or iPad to see it.</p>
+        </div>
+        <div class="hidden max-w-md items-center gap-4 rounded-2xl bg-gray-950 p-5 text-white in-[.is-ios]:flex">
+            <svg class="size-8 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" /></svg>
+            <p>Tap Share, then <span class="font-semibold">Add to Home Screen</span> to keep this app on your phone.</p>
+        </div>
+        <p class="text-gray-600 in-[.is-ios]:hidden">Not iOS, so the tip is hidden.</p>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_device.js
+
+// is-ios is-safari is-mobile on <html>, for CSS fixes
+_device.classes();
+
+// in JS
+if (_device.os === 'ios') {
+    // e.g. an iOS-only fix
+}
+
+// show what this device reports
+const _list = document.querySelector('.js-device-list');
+
+const _render = () => {
+    const _items = { os: _device.os, browser: _device.browser, mobile: _device.mobile, touch: _device.touch, hover: _device.hover };
+
+    _list.innerHTML = Object.entries(_items).map(([key, value]) => `
+        <div class="rounded-2xl border border-gray-200 p-5">
+            <dt class="font-mono text-sm text-gray-500">_device.${key}</dt>
+            <dd class="mt-1 text-2xl font-bold tracking-tight">${value}</dd>
+        </div>`).join('');
+};
+
+_render();
+
+// touch and hover change when a mouse is plugged in
+['(pointer: coarse)', '(hover: hover)'].forEach((query) => window.matchMedia(query).addEventListener('change', _render));
+
+document.querySelector('.js-device-classes').textContent = document.documentElement.className;
+document.querySelector('.js-device-ua').textContent = navigator.userAgent;
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: '<code class="font-mono text-sm">os</code>: ios, android, mac, windows, linux, chromeos. <code class="font-mono text-sm">browser</code>: safari, chrome, firefox, edge, opera, samsung. Both can be unknown. On iOS every browser runs Safari\'s engine, so use <code class="font-mono text-sm">os === \'ios\'</code> for Safari fixes there.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
