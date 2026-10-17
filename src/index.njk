@@ -76,19 +76,14 @@ title: Anthony Toolkits
     // ?q= from the header search, kept in the url
     const _form = document.querySelector("[data-home-search]");
     const _input = _form.querySelector("[data-filter-input]");
-    const _query = new URLSearchParams(location.search).get("q");
+    const _query = _urlVars.get("q");
 
     if (_query) {
         _input.value = _query;
         _input.dispatchEvent(new Event("input"));
     }
 
-    _input.addEventListener("input", () => {
-        const _url = new URL(location.href);
-        const _value = _input.value.trim();
-        _value ? _url.searchParams.set("q", _value) : _url.searchParams.delete("q");
-        history.replaceState(history.state, "", _url);
-    });
+    _input.addEventListener("input", () => _urlVars.set({ q: _input.value.trim() }));
 
     // "/" jumps to the search, unless typing somewhere else
     document.addEventListener("keydown", (e) => {
