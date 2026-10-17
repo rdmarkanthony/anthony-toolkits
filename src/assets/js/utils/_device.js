@@ -1,4 +1,4 @@
-// the os, browser and mobile from the user agent, plus touch and hover from media queries
+// os, browser and mobile from the user agent, touch and hover from media queries
 // usage: _device.os === "ios", _device.browser === "safari", _device.classes() adds e.g. is-ios is-safari to <html>
 // for behavior use touch / hover, a touch laptop or an iPad with a mouse isn't "mobile"
 const _ua = navigator.userAgent;

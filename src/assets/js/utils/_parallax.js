@@ -8,14 +8,13 @@ let _timeline = null;
 const _pageTimeline = () => (_timeline ??= new ScrollTimeline({ source: document.documentElement }));
 
 export const _parallax = {
-    // limit between 0 and 1
     clamp(value) {
         return Math.min(Math.max(value, 0), 1);
     },
     scrollTop() {
         return window.scrollY;
     },
-    // viewport size without the scrollbar, what the layout fits into
+    // viewport without the scrollbar
     width() {
         return document.documentElement.clientWidth;
     },
@@ -38,7 +37,6 @@ export const _parallax = {
     getRange(min, max) {
         return (_parallax.scrollTop() - min) / (max - min);
     },
-    // browser supports scroll timelines
     scrollTimeline() {
         return "ScrollTimeline" in window && CSS.supports("animation-timeline: view()");
     },
@@ -142,8 +140,7 @@ export class _parallaxScroller extends _emitter {
                 item.animation.effect.setKeyframes(_keyframes);
             }
         } else {
-            // iOS Safari keeps a running scroll animation's old range and keyframes
-            // so a new one when they change, the old one goes once it shows
+            // iOS Safari ignores changes to a running one, so a new one, the old goes once it shows
             const _key = JSON.stringify([item.min, item.max, _keyframes]);
 
             if (_key !== item.key) {

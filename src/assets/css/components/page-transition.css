@@ -1,16 +1,15 @@
 /*
     page transitions for _pageTransition.js
-    data-page-leave on <html> as the page goes, data-page-enter on the next one
-    your own: any animation under [data-page-leave="name"] and [data-page-enter="name"]
-    --page-x, --page-y: where the link was clicked, --page-cover: the cover color
+    your own: animate anything under [data-page-leave="name"] and [data-page-enter="name"]
+    --page-x, --page-y: the click, --page-cover: the cover color
 */
 @layer components {
-    /* no sideways scroll from a cover moving in */
+    /* no sideways scroll as a cover moves in */
     [data-page-leave] {
         overflow-x: hidden;
     }
 
-    /* a cover over everything, hidden until a transition shows it */
+    /* the cover, hidden until a transition shows it */
     [data-page-leave]::after,
     [data-page-enter]::after {
         content: "";
@@ -31,7 +30,7 @@
             animation: page-fade-in 0.6s ease-out both;
         }
 
-        /* circle: grows from the click, fades off the next page */
+        /* circle: grows from the click */
         [data-page-leave="circle"]::after {
             inset: auto;
             top: var(--page-y, 50%);
@@ -46,7 +45,7 @@
             animation: page-cover-out 0.5s ease both;
         }
 
-        /* slide: the cover comes in from the right, and leaves to the left on the next page */
+        /* slide: in from the right, out to the left */
         [data-page-leave="slide"]::after {
             animation: page-slide-in 0.6s cubic-bezier(0.65, 0, 0.35, 1) both;
         }

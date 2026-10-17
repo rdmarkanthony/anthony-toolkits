@@ -1,7 +1,6 @@
 // load a script, stylesheet, json, image or font once, as a promise
-// usage: await _load.script(src), const data = await _load.json(url), or _load.json(url).then((data) => {})
-// an array loads together: _load.script([lib, plugin]) still runs them in order, _load.json([a, b]) gives [a, b]
-// { progress: (done, total, item) => {} } runs as each one loads, e.g. for a preloader
+// usage: await _load.script(src), const data = await _load.json(url)
+// arrays load together, scripts still run in order, { progress: (done, total, item) => {} } for a preloader
 // a second call gets the same promise, a failed one can be tried again
 const _cache = new Map();
 
@@ -85,8 +84,7 @@ export const _load = {
         );
     },
 
-    // every caller gets the same object, copy it before changing it
-    // { fresh: true } skips the cache, e.g. for data that changes
+    // every caller gets the same object, { fresh: true } skips the cache
     json(url, options = {}) {
         const load = async (item) => {
             const response = await fetch(item);
@@ -119,8 +117,7 @@ export const _load = {
         );
     },
 
-    // a font from @font-face or Google Fonts, before measuring text, e.g. _splitText
-    // { weight: 700, style: "italic" } for another face
+    // e.g. before measuring text, { weight: 700, style: "italic" } for another face
     font(family, options = {}) {
         const face = (item) => `${options.style ?? "normal"} ${options.weight ?? 400} 1em "${item}"`;
 
