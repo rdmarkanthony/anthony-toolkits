@@ -13,6 +13,7 @@
 @import "./components/themes.css";
 @import "./components/fluid.css";
 @import "./components/parallax.css";
+@import "./components/page-transition.css";
 
 /*
     toolkit look, light theme

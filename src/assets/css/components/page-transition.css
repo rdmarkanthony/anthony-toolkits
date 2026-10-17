@@ -1,0 +1,110 @@
+/*
+    page transitions for _pageTransition.js
+    your own: animate anything under [data-page-leave="name"] and [data-page-enter="name"]
+    --page-x, --page-y: the click, --page-cover: the cover color
+*/
+@layer components {
+    /* no sideways scroll as a cover moves in */
+    [data-page-leave] {
+        overflow-x: hidden;
+    }
+
+    /* the cover, hidden until a transition shows it */
+    [data-page-leave]::after,
+    [data-page-enter]::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 2147483647;
+        background-color: var(--page-cover, #fff);
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        /* fade: the page fades out, the next fades in */
+        [data-page-leave="fade"] body {
+            animation: page-fade-out 0.4s ease-in both;
+        }
+        [data-page-enter="fade"] body {
+            animation: page-fade-in 0.6s ease-out both;
+        }
+
+        /* circle: grows from the click */
+        [data-page-leave="circle"]::after {
+            inset: auto;
+            top: var(--page-y, 50%);
+            left: var(--page-x, 50%);
+            width: 300vmax;
+            height: 300vmax;
+            margin: -150vmax 0 0 -150vmax;
+            border-radius: 50%;
+            animation: page-circle 0.8s cubic-bezier(0.65, 0, 0.35, 1) both;
+        }
+        [data-page-enter="circle"]::after {
+            animation: page-cover-out 0.5s ease both;
+        }
+
+        /* slide: in from the right, out to the left */
+        [data-page-leave="slide"]::after {
+            animation: page-slide-in 0.6s cubic-bezier(0.65, 0, 0.35, 1) both;
+        }
+        [data-page-leave="slide"] body {
+            animation: page-push 0.6s cubic-bezier(0.65, 0, 0.35, 1) both;
+        }
+        [data-page-enter="slide"]::after {
+            animation: page-slide-out 0.6s cubic-bezier(0.65, 0, 0.35, 1) both;
+        }
+    }
+
+    @keyframes page-fade-out {
+        to {
+            opacity: 0;
+        }
+    }
+    @keyframes page-fade-in {
+        from {
+            opacity: 0;
+        }
+    }
+    @keyframes page-cover-out {
+        from {
+            opacity: 1;
+        }
+    }
+    @keyframes page-circle {
+        from {
+            opacity: 1;
+            scale: 0;
+        }
+        to {
+            opacity: 1;
+            scale: 1;
+        }
+    }
+    @keyframes page-slide-in {
+        from {
+            opacity: 1;
+            translate: 100% 0;
+        }
+        to {
+            opacity: 1;
+            translate: 0 0;
+        }
+    }
+    @keyframes page-slide-out {
+        from {
+            opacity: 1;
+            translate: 0 0;
+        }
+        to {
+            opacity: 1;
+            translate: -100% 0;
+        }
+    }
+    @keyframes page-push {
+        to {
+            translate: -15% 0;
+        }
+    }
+}

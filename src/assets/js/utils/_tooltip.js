@@ -1,10 +1,7 @@
-// usage: _tooltip.init(), then data-tooltip="Text" shows on hover and keyboard focus
-// data-tooltip-content="#id" opens a <template> on click instead, it stays until a click outside, Escape or [data-tooltip-close]
-// data-tooltip-place="bottom", "left" or "right", it flips when there's no room
-// data-tooltip-anchor=".card" points it at a parent instead, found with closest()
-// data-tooltip-class="..." replaces the look for that one, see classes.tip
-// _tooltip.show(target, "Copied", { duration: 1500 }) for a quick message instead of alert()
-// _tooltip.hide() closes it, _tooltip.hide(target) only closes that target's
+// usage: _tooltip.init(), then data-tooltip="Text" shows on hover and focus
+// data-tooltip-content="#id" opens a <template> on click, until a click outside, Escape or [data-tooltip-close]
+// data-tooltip-place="bottom" | "left" | "right", data-tooltip-anchor=".card" (closest), data-tooltip-class="..."
+// _tooltip.show(target, "Copied", { duration: 1500 }) instead of alert(), _tooltip.hide(target) closes it
 const _id = "js-tooltip";
 const _flip = { top: "bottom", bottom: "top", left: "right", right: "left" };
 let _el = null;
@@ -18,7 +15,7 @@ let _ready = false;
 const _find = (e) => e.target.closest?.("[data-tooltip]");
 const _props = (target) => ({ place: target.dataset.tooltipPlace, anchor: target.dataset.tooltipAnchor, class: target.dataset.tooltipClass });
 
-// hover: the tooltip describes its target, content: the target says it's open
+// hover describes the target, content marks it open
 const _aria = (on) => {
     const target = _tooltip.target;
     if (!target) return;
@@ -43,7 +40,7 @@ const _position = () => {
     // the other side only when it has room
     const room = { top: rect.top - h, bottom: innerHeight - rect.bottom - h, left: rect.left - w, right: width - rect.right - w };
     let place = room[_place] < gap && room[_flip[_place]] >= gap ? _flip[_place] : _place;
-    // no room left or right, e.g. on mobile
+    // no room left or right
     if (room[place] < gap && (place === "left" || place === "right")) place = room.top >= gap ? "top" : "bottom";
 
     const clamp = (value, max) => Math.min(Math.max(value, gap), max - gap);
@@ -51,7 +48,7 @@ const _position = () => {
     const x = place === "left" ? rect.left - w - gap : place === "right" ? rect.right + gap : clamp(rect.left + rect.width / 2 - w / 2, width - w);
     const y = place === "top" ? rect.top - h - gap : place === "bottom" ? rect.bottom + gap : clamp(rect.top + rect.height / 2 - h / 2, innerHeight - h);
 
-    // the arrow sits on the edge facing the anchor
+    // the arrow faces the anchor
     const side = place === "top" || place === "bottom";
     _el.style.left = `${x}px`;
     _el.style.top = `${y}px`;
@@ -81,11 +78,11 @@ const _create = () => {
 
 export const _tooltip = {
     // override with Object.assign(_tooltip.classes, {...})
-    // data-visible when shown, data-content for a template, data-place is the side it ended on
+    // data-visible, data-content for a template, data-place for the side
     classes: {
-        // always on: position, fade and the arrow, which takes the background
+        // always on: position, fade and the arrow
         base: "pointer-events-none fixed inset-auto m-0 overflow-visible opacity-0 transition-opacity duration-150 before:absolute before:top-(--arrow-y) before:left-(--arrow-x) before:size-2 before:-translate-1/2 before:rotate-45 before:bg-inherit data-visible:opacity-100 data-content:data-visible:pointer-events-auto starting:data-visible:opacity-0 motion-reduce:transition-none",
-        // the look, data-tooltip-class or { class } replaces it for one tooltip
+        // the look, data-tooltip-class or { class } replaces it
         tip: "max-w-xs rounded-md bg-gray-950 px-3 py-1.5 text-sm font-medium text-white data-content:rounded-lg data-content:p-4 data-content:font-normal",
     },
 
@@ -119,7 +116,7 @@ export const _tooltip = {
             if (_content && _el.contains(e.target) && e.target.closest("[data-tooltip-close]")) _tooltip.hide();
         });
 
-        // before click, so a button that opens one from code doesn't close it right away
+        // pointerdown, so a click that opens one from code doesn't close it
         document.addEventListener("pointerdown", (e) => _content && !_el.contains(e.target) && !_tooltip.target.contains(e.target) && _tooltip.hide());
     },
 
@@ -145,14 +142,13 @@ export const _tooltip = {
         _el.setAttribute("role", _content ? "dialog" : "tooltip");
         _el.toggleAttribute("data-content", _content);
 
-        // shown again, so it's on top of a dialog opened after it
-        // source: Tab goes from the target into the content, where supported
+        // shown again to sit above a dialog opened after it, source: Tab moves into it
         if (_el.matches(":popover-open")) _el.hidePopover();
         _el.showPopover({ source: _target });
         _position();
         _el.toggleAttribute("data-visible", true);
 
-        // a timed message is read out once, not tied to the target
+        // a timed message is read out once
         if (_content || !options.duration) _aria(true);
 
         if (options.duration) {

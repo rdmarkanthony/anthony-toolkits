@@ -8,14 +8,13 @@ let _timeline = null;
 const _pageTimeline = () => (_timeline ??= new ScrollTimeline({ source: document.documentElement }));
 
 export const _parallax = {
-    // limit between 0 and 1
     clamp(value) {
         return Math.min(Math.max(value, 0), 1);
     },
     scrollTop() {
         return window.scrollY;
     },
-    // viewport size without the scrollbar, what the layout fits into
+    // viewport without the scrollbar
     width() {
         return document.documentElement.clientWidth;
     },
@@ -38,7 +37,6 @@ export const _parallax = {
     getRange(min, max) {
         return (_parallax.scrollTop() - min) / (max - min);
     },
-    // browser supports scroll timelines
     scrollTimeline() {
         return "ScrollTimeline" in window && CSS.supports("animation-timeline: view()");
     },
@@ -131,18 +129,30 @@ export class _parallaxScroller extends _emitter {
         const _range = typeof item.range === "function" ? item.range(this) : item.range;
         [item.min, item.max] = _range.map((value) => this.position(value));
 
-        if (!item.animation) {
-            // without scroll timelines, update() sets its time instead
-            item.manual = !_parallax.scrollTimeline();
-            item.animation = item.target.animate(_keyframes, item.manual ? { duration: 1000, fill: "both" } : { timeline: _pageTimeline(), fill: "both" });
-            if (item.manual) item.animation.pause();
-        } else if (typeof item.keyframes === "function") {
-            item.animation.effect.setKeyframes(_keyframes);
-        }
+        // without scroll timelines, update() sets its time instead
+        item.manual ??= !_parallax.scrollTimeline();
 
-        if (!item.manual) {
-            item.animation.rangeStart = `${item.min}px`;
-            item.animation.rangeEnd = `${item.max}px`;
+        if (item.manual) {
+            if (!item.animation) {
+                item.animation = item.target.animate(_keyframes, { duration: 1000, fill: "both" });
+                item.animation.pause();
+            } else if (typeof item.keyframes === "function") {
+                item.animation.effect.setKeyframes(_keyframes);
+            }
+        } else {
+            // iOS Safari ignores changes to a running one, so a new one, the old goes once it shows
+            const _key = JSON.stringify([item.min, item.max, _keyframes]);
+
+            if (_key !== item.key) {
+                const _old = item.animation;
+                const _cancel = () => _old?.cancel();
+
+                item.key = _key;
+                item.animation = item.target.animate(_keyframes, { timeline: _pageTimeline(), fill: "both" });
+                item.animation.rangeStart = `${item.min}px`;
+                item.animation.rangeEnd = `${item.max}px`;
+                item.animation.ready.then(_cancel, _cancel);
+            }
         }
 
         this.seek(item);

@@ -1,0 +1,204 @@
+---
+title: Load | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_load', title: 'Load', description: 'Loads a script, stylesheet, JSON, image or font once and gives a promise, so you can <code class="font-mono text-base">await</code> it. A second call waits on the same load. Handy for third-party scripts you only need on click, or images that must be ready before they show.' }) }}
+
+{% set button = 'shrink-0 rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700' %}
+
+{% set groups = [
+    { title: 'Scripts and styles', rows: [
+        { id: 'script', title: 'script(src)', text: 'Loads on the first click, then it\'s ready.', code: "await _load.script('…/confetti.browser.min.js')" },
+        { id: 'scripts', title: 'script([a, b])', text: 'Downloads together, runs in order. greet-loud.js needs greet.js.', code: "await _load.script(['/greet.js', '/greet-loud.js'])" },
+        { id: 'attrs', title: 'script(src, { attrs })', text: 'Attributes on the tag, e.g. a key the script reads.', code: "await _load.script('/config.js', { attrs: { 'data-key': 'abc123' } })" },
+        { id: 'style', title: 'style(href)', text: 'A stylesheet, the box below takes its look.', code: "await _load.style('/theme.css')" }
+    ] },
+    { title: 'JSON', rows: [
+        { id: 'json', title: 'json(url)', text: 'Run it twice, the second one is instant.', code: "const _sites = await _load.json('/sites.json')" },
+        { id: 'jsons', title: 'json([a, b])', text: 'Both at once, in the same order.', code: "const [_sites, _colors] = await _load.json(['/sites.json', '/colors.json'])" },
+        { id: 'fresh', title: 'json(url, { fresh: true })', text: 'Skips the cache, a new request each time.', code: "await _load.json('/colors.json', { fresh: true })" },
+        { id: 'then', title: '.then()', text: 'A callback instead of await.', code: "_load.json('/colors.json').then((colors) => {})" },
+        { id: 'missing', title: 'try / catch', text: 'A 404 throws, a failed load can be tried again.', code: "try { await _load.json('/missing.json') } catch (error) {}" }
+    ] },
+    { title: 'Images and fonts', rows: [
+        { id: 'image', title: 'image(src)', text: 'Downloaded and decoded, so it shows without a flash.', code: "const _img = await _load.image('/sample-image.webp')" },
+        { id: 'images', title: 'image([...], { progress })', text: 'A preloader, progress runs as each one loads.', code: "await _load.image(_frames, { progress: (done, total, item) => {} })" },
+        { id: 'font', title: 'font(family, { weight })', text: 'Wait for a web font before measuring text.', code: "await _load.font('Bricolage Grotesque', { weight: 700 })" },
+        { id: 'mixed', title: 'Promise.all', text: 'Different types at once.', code: "await Promise.all([_load.style(href), _load.json(url)])" }
+    ] }
+] %}
+
+{# demo: a row per function, all logging to one panel #}
+<section class="px-4 py-16">
+    <div class="mx-auto grid max-w-295 grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
+        <div class="flex flex-col gap-12">
+            {% for group in groups %}
+            <div class="flex flex-col gap-3">
+                <h2 class="mb-2 text-3xl font-bold tracking-tight">{{ group.title }}</h2>
+                {% for row in group.rows %}
+                <div class="flex flex-col gap-3 rounded-2xl border border-gray-200 p-5">
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <p class="font-mono font-semibold">{{ row.title }}</p>
+                            <p class="text-gray-600">{{ row.text }}</p>
+                        </div>
+                        <button class="{{ button }}" type="button" data-run="{{ row.id }}">Run</button>
+                    </div>
+                    <code class="overflow-x-auto rounded-md bg-gray-50 px-3 py-2 font-mono text-sm whitespace-nowrap">{{ row.code | escape }}</code>
+                    {% if row.id == 'style' %}
+                    <div class="js-load-styled rounded-md border border-gray-200 px-4 py-6 text-center font-medium transition-colors duration-500">Styled by theme.css</div>
+                    {% elif row.id == 'image' %}
+                    <img class="js-load-image hidden aspect-video w-full rounded-md object-cover" width="640" height="360" alt="Sample" />
+                    {% elif row.id == 'images' %}
+                    <div class="flex items-center gap-4">
+                        <div class="grid aspect-502/607 w-28 shrink-0 place-items-center overflow-hidden rounded-md bg-gray-50">
+                            <img class="js-load-frame hidden size-full object-cover" width="502" height="607" alt="Headphones turning" />
+                            <p class="js-load-percent font-mono text-sm text-gray-500">0%</p>
+                        </div>
+                        <div class="h-1.5 flex-1 overflow-hidden rounded-full bg-gray-200">
+                            <div class="js-load-bar h-full w-0 bg-gray-950 transition-[width] duration-200"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="rounded-2xl border border-gray-200 p-6 lg:sticky lg:top-[calc(var(--header-height)+1.5rem)]">
+            <p class="mb-4 font-mono text-sm text-gray-500">log, newest first</p>
+            <ul class="js-load-log flex flex-col gap-1 font-mono text-sm break-words"></ul>
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_load.js
+
+const _path = '/assets/data/load';
+const _log = document.querySelector('.js-load-log');
+
+const _write = (text, error) => {
+    const _item = document.createElement('li');
+    _item.textContent = text;
+    if (error) _item.className = 'text-red-600';
+    _log.prepend(_item);
+
+    while (_log.children.length > 16) _log.lastChild.remove();
+};
+
+// each Run button, timed, errors go to the log
+const _runs = {
+    async script() {
+        await _load.script('https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js');
+        window.confetti({ particleCount: 120, spread: 80, origin: { y: 0.7 } });
+    },
+
+    async scripts() {
+        await _load.script([`${_path}/greet.js`, `${_path}/greet-loud.js`]);
+        return window.greetLoud('Anthony');
+    },
+
+    async attrs() {
+        await _load.script(`${_path}/config.js`, { attrs: { 'data-key': 'abc123' } });
+        return `key: ${window.loadConfig.key}`;
+    },
+
+    async style() {
+        await _load.style(`${_path}/theme.css`);
+    },
+
+    async json() {
+        const _sites = await _load.json('/assets/data/sites.json');
+        return `${_sites.length} sites, first: ${_sites[0].label}`;
+    },
+
+    async jsons() {
+        const [_sites, _colors] = await _load.json(['/assets/data/sites.json', `${_path}/colors.json`]);
+        return `${_sites.length} sites, ${_colors.length} colors`;
+    },
+
+    async fresh() {
+        const _colors = await _load.json(`${_path}/colors.json`, { fresh: true });
+        return `${_colors.length} colors, not cached`;
+    },
+
+    then() {
+        return _load.json(`${_path}/colors.json`).then((colors) => colors.map((color) => color.name).join(', '));
+    },
+
+    async missing() {
+        await _load.json(`${_path}/missing.json`);
+    },
+
+    async image() {
+        const _img = await _load.image('/assets/img/sample-image.webp');
+        const _target = document.querySelector('.js-load-image');
+        _target.src = _img.src;
+        _target.classList.remove('hidden');
+        return `${_img.naturalWidth} × ${_img.naturalHeight}`;
+    },
+
+    async images() {
+        const _frames = Array.from({ length: 50 }, (_, i) => `/assets/img/headphone/small_${String(i).padStart(4, '0')}.webp`);
+        const _bar = document.querySelector('.js-load-bar');
+        const _percent = document.querySelector('.js-load-percent');
+
+        const _images = await _load.image(_frames, {
+            progress: (done, total) => {
+                _bar.style.width = `${(done / total) * 100}%`;
+                _percent.textContent = `${Math.round((done / total) * 100)}%`;
+            },
+        });
+
+        // all decoded, so swapping the src never flashes
+        const _frame = document.querySelector('.js-load-frame');
+        if (_frame.classList.contains('hidden')) {
+            _percent.hidden = true;
+            _frame.classList.remove('hidden');
+            let _index = 0;
+            setInterval(() => (_frame.src = _images[_index++ % _images.length].src), 50);
+        }
+
+        return `${_images.length} frames`;
+    },
+
+    async font() {
+        const _face = await _load.font('Bricolage Grotesque', { weight: 700 });
+        return `${_face.family} ready`;
+    },
+
+    async mixed() {
+        const [, _colors] = await Promise.all([_load.style(`${_path}/theme.css`), _load.json(`${_path}/colors.json`)]);
+        return `theme.css and ${_colors.length} colors`;
+    },
+};
+
+document.addEventListener('click', async (e) => {
+    const _button = e.target.closest('[data-run]');
+    if (!_button) return;
+
+    const _name = _button.dataset.run;
+    const _start = performance.now();
+
+    try {
+        const _result = await _runs[_name]();
+        _write(`${_name}: ${Math.round(performance.now() - _start)}ms${_result ? `, ${_result}` : ''}`);
+    } catch (error) {
+        _write(error.message, true);
+    }
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: 'Every function takes a single item or an array, and <code class="font-mono text-sm">{ progress: (done, total, item) => {} }</code>. A script or stylesheet already in the html is taken as loaded. Every caller gets the same JSON object, copy it before changing it.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
