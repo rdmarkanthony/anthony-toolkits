@@ -6,6 +6,7 @@ import flatpickr from "flatpickr";
 import { _event } from "./utils/_event";
 import { _enquire } from "./utils/_enquire";
 import { _device } from "./utils/_device";
+import { _load } from "./utils/_load";
 import { _emitter } from "./utils/_emitter";
 import { _filter } from "./utils/_filter";
 import { _urlVars } from "./utils/_urlVars";
@@ -53,6 +54,7 @@ Object.assign(window, {
     _event,
     _enquire,
     _device,
+    _load,
     _emitter,
     _filter,
     _urlVars,
