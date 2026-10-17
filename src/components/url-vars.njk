@@ -1,0 +1,171 @@
+---
+title: URL vars | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_urlVars', title: 'URL vars', description: 'Reads and writes <code class="font-mono text-base">?query</code> vars without a reload. Change the demos, then reload or share the link, they open the same way.' }) }}
+
+{% set field = 'h-11 w-full rounded-md border border-gray-300 bg-white px-3 focus:border-gray-950 focus:outline-none' %}
+{% set button = 'rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700' %}
+
+{# the live url #}
+<div class="sticky top-(--header-height) z-10 border-y border-gray-200 bg-white/90 px-4 py-3 backdrop-blur">
+    <p class="mx-auto max-w-295 truncate font-mono text-sm"><span class="text-gray-500">url:</span> <span class="js-url-now"></span></p>
+</div>
+
+{# demo: filters kept in the url #}
+<section class="px-4 py-16">
+    <div class="js-url-shop mx-auto flex max-w-295 flex-col gap-8">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Filters</h2>
+            <p class="max-w-xl text-gray-600">Each field is one var: <code class="font-mono text-sm">q</code>, <code class="font-mono text-sm">sort</code> and <code class="font-mono text-sm">sale</code>.</p>
+        </div>
+        <div class="grid gap-4 md:grid-cols-[1fr_14rem_auto] md:items-center">
+            <input class="js-url-q {{ field }}" type="search" placeholder="Search" autocomplete="off" aria-label="Search" />
+            <select class="js-url-sort {{ field }}" aria-label="Sort">
+                <option value="">Name</option>
+                <option value="low">Price, low to high</option>
+                <option value="high">Price, high to low</option>
+            </select>
+            <label class="flex items-center gap-2 text-gray-600">
+                <input class="js-url-sale size-4 accent-gray-950" type="checkbox" />
+                On sale
+            </label>
+        </div>
+        <ul class="js-url-list grid gap-3 sm:grid-cols-2 md:grid-cols-3"></ul>
+    </div>
+</section>
+
+{# demo: many values packed in one var #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="js-url-loans mx-auto flex max-w-295 flex-col gap-8">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Packed values</h2>
+            <p class="max-w-xl text-gray-600">All rows in one var: <code class="font-mono text-sm">_</code> between the fields, <code class="font-mono text-sm">,</code> between the rows, e.g. <code class="font-mono text-sm">?c=10000_1.5_6</code>.</p>
+        </div>
+        <div class="js-url-rows flex flex-col gap-3"></div>
+        <div>
+            <button class="js-url-add {{ button }}" type="button">Add a loan</button>
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_urlVars.js
+
+const _urlNow = document.querySelector('.js-url-now');
+const _showUrl = () => (_urlNow.textContent = location.pathname + location.search);
+
+// filters: read on load, write on change
+const _shop = document.querySelector('.js-url-shop');
+const _q = _shop.querySelector('.js-url-q');
+const _sort = _shop.querySelector('.js-url-sort');
+const _sale = _shop.querySelector('.js-url-sale');
+const _list = _shop.querySelector('.js-url-list');
+
+const _products = [
+    { name: 'Canvas bag', price: 45, sale: true },
+    { name: 'Desk lamp', price: 89, sale: false },
+    { name: 'Notebook', price: 12, sale: true },
+    { name: 'Water bottle', price: 25, sale: false },
+    { name: 'Wool scarf', price: 60, sale: true },
+    { name: 'Wall clock', price: 38, sale: false },
+];
+
+const _vars = _urlVars.get();
+_q.value = _vars.q ?? '';
+_sort.value = _vars.sort ?? '';
+_sale.checked = _vars.sale === '1';
+
+const _renderShop = () => {
+    const _items = _products
+        .filter((item) => item.name.toLowerCase().includes(_q.value.trim().toLowerCase()) && (!_sale.checked || item.sale))
+        .sort((a, b) => (_sort.value === 'low' ? a.price - b.price : _sort.value === 'high' ? b.price - a.price : a.name.localeCompare(b.name)));
+
+    _list.innerHTML = _items.map((item) => `<li class="flex justify-between rounded-md border border-gray-200 px-4 py-3"><span>${item.name}</span><span class="tabular-nums text-gray-600">$${item.price}${item.sale ? ' · sale' : ''}</span></li>`).join('') || '<li class="text-gray-600">Nothing matches.</li>';
+};
+
+const _saveShop = () => {
+    _urlVars.set({ q: _q.value.trim(), sort: _sort.value, sale: _sale.checked ? '1' : null });
+    _renderShop();
+    _showUrl();
+};
+
+_shop.addEventListener('input', _saveShop);
+_renderShop();
+
+// packed values: amount_rate_terms per row, rows split by ","
+const _loans = document.querySelector('.js-url-loans');
+const _rows = _loans.querySelector('.js-url-rows');
+
+const _unpack = (value) => (value ? value.split(',').map((row) => row.split('_').map(Number)) : [[10000, 1.5, 6]]);
+const _pack = (rows) => rows.map((row) => row.join('_')).join(',');
+
+let _loanRows = _unpack(_urlVars.get('c'));
+
+// monthly payment, rate is % per month
+const _monthly = ([amount, rate, terms]) => {
+    if (!terms) return 0;
+    if (!rate) return amount / terms;
+    const _r = rate / 100;
+    return (amount * _r) / (1 - (1 + _r) ** -terms);
+};
+
+const _renderLoans = () => {
+    const _input = (index, field, value, label) => `<label class="flex flex-col gap-1 text-sm text-gray-600">${label}<input class="h-11 w-full rounded-md border border-gray-300 bg-white px-3 text-base text-gray-950 tabular-nums focus:border-gray-950 focus:outline-none" type="number" min="0" step="any" value="${value}" data-row="${index}" data-field="${field}" /></label>`;
+
+    _rows.innerHTML = _loanRows.map((row, i) => `
+        <div class="grid items-end gap-3 rounded-2xl border border-gray-200 bg-white p-4 sm:grid-cols-[1fr_1fr_1fr_8rem_auto]">
+            ${_input(i, 0, row[0], 'Amount')}
+            ${_input(i, 1, row[1], 'Rate % / month')}
+            ${_input(i, 2, row[2], 'Months')}
+            <p class="text-sm text-gray-600">Monthly<br /><span class="js-url-monthly text-lg font-semibold text-gray-950 tabular-nums">${_monthly(row).toFixed(2)}</span></p>
+            <button class="h-11 rounded-md px-3 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-950 disabled:invisible" type="button" data-remove="${i}" ${_loanRows.length === 1 ? 'disabled' : ''}>Remove</button>
+        </div>`).join('');
+};
+
+const _saveLoans = () => {
+    _urlVars.set({ c: _pack(_loanRows) });
+    _showUrl();
+};
+
+_rows.addEventListener('input', (e) => {
+    const _field = e.target.closest('[data-field]');
+    if (!_field) return;
+
+    const _row = _loanRows[_field.dataset.row];
+    _row[_field.dataset.field] = Number(_field.value) || 0;
+    _field.closest('.grid').querySelector('.js-url-monthly').textContent = _monthly(_row).toFixed(2);
+    _saveLoans();
+});
+
+_rows.addEventListener('click', (e) => {
+    const _remove = e.target.closest('[data-remove]');
+    if (!_remove) return;
+
+    _loanRows.splice(_remove.dataset.remove, 1);
+    _renderLoans();
+    _saveLoans();
+});
+
+_loans.querySelector('.js-url-add').addEventListener('click', () => {
+    _loanRows.push([10000, 1.5, 6]);
+    _renderLoans();
+    _saveLoans();
+});
+
+_renderLoans();
+_showUrl();
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: '<code class="font-mono text-sm">get(key)</code> gives a string or <code class="font-mono text-sm">null</code>, <code class="font-mono text-sm">get()</code> gives all as an object. <code class="font-mono text-sm">set(vars, { push: true })</code> adds a history entry. <code class="font-mono text-sm">remove(...keys)</code>. <code class="font-mono text-sm">hash()</code> gives the #id without its ?query.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

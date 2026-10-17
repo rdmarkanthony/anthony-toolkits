@@ -7,6 +7,7 @@ import { _event } from "./utils/_event";
 import { _enquire } from "./utils/_enquire";
 import { _emitter } from "./utils/_emitter";
 import { _filter } from "./utils/_filter";
+import { _urlVars } from "./utils/_urlVars";
 import { _autocomplete } from "./utils/_autocomplete";
 import { _inview } from "./utils/_inview";
 import { _splitText } from "./utils/_splitText";
@@ -51,6 +52,7 @@ Object.assign(window, {
     _enquire,
     _emitter,
     _filter,
+    _urlVars,
     _autocomplete,
     _inview,
     _splitText,
