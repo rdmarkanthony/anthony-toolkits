@@ -22,6 +22,7 @@ import { _threeBlobs } from "./utils/_threeBlobs";
 import { _threeGlow } from "./utils/_threeGlow";
 import { _countdownTimer } from "./utils/_countdownTimer";
 import { _tabs } from "./utils/_tabs";
+import { _tooltip } from "./utils/_tooltip";
 import { _hoverIndicator } from "./utils/_hoverIndicator";
 import { _accordion } from "./utils/_accordion";
 import { _groupHeight } from "./utils/_groupHeight";
@@ -67,6 +68,7 @@ Object.assign(window, {
     _threeGlow,
     _countdownTimer,
     _tabs,
+    _tooltip,
     _hoverIndicator,
     _accordion,
     _groupHeight,
