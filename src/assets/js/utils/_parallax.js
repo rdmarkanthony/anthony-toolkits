@@ -131,18 +131,31 @@ export class _parallaxScroller extends _emitter {
         const _range = typeof item.range === "function" ? item.range(this) : item.range;
         [item.min, item.max] = _range.map((value) => this.position(value));
 
-        if (!item.animation) {
-            // without scroll timelines, update() sets its time instead
-            item.manual = !_parallax.scrollTimeline();
-            item.animation = item.target.animate(_keyframes, item.manual ? { duration: 1000, fill: "both" } : { timeline: _pageTimeline(), fill: "both" });
-            if (item.manual) item.animation.pause();
-        } else if (typeof item.keyframes === "function") {
-            item.animation.effect.setKeyframes(_keyframes);
-        }
+        // without scroll timelines, update() sets its time instead
+        item.manual ??= !_parallax.scrollTimeline();
 
-        if (!item.manual) {
-            item.animation.rangeStart = `${item.min}px`;
-            item.animation.rangeEnd = `${item.max}px`;
+        if (item.manual) {
+            if (!item.animation) {
+                item.animation = item.target.animate(_keyframes, { duration: 1000, fill: "both" });
+                item.animation.pause();
+            } else if (typeof item.keyframes === "function") {
+                item.animation.effect.setKeyframes(_keyframes);
+            }
+        } else {
+            // iOS Safari keeps a running scroll animation's old range and keyframes
+            // so a new one when they change, the old one goes once it shows
+            const _key = JSON.stringify([item.min, item.max, _keyframes]);
+
+            if (_key !== item.key) {
+                const _old = item.animation;
+                const _cancel = () => _old?.cancel();
+
+                item.key = _key;
+                item.animation = item.target.animate(_keyframes, { timeline: _pageTimeline(), fill: "both" });
+                item.animation.rangeStart = `${item.min}px`;
+                item.animation.rangeEnd = `${item.max}px`;
+                item.animation.ready.then(_cancel, _cancel);
+            }
         }
 
         this.seek(item);
