@@ -72,7 +72,7 @@ title: Scramble text | Anthony Toolkits
 document.querySelectorAll('.js-scramble-hover').forEach((target) => {
     new _scrambleText({
         target,
-        // defaults: hover: true, duration: 400, speed: 40, order: 'start', chars a to z
+        // defaults: hover: true, duration: 400, speed: 40, order: 'start', chars: the text's own letters
         order: target.dataset.order,
         chars: target.dataset.chars,
     });
@@ -121,7 +121,7 @@ document.querySelector('.js-scramble-stop').addEventListener('click', () => _con
     markup: markup,
     markupNote: 'The target and each unsettled letter get <code class="font-mono text-sm">[data-scrambling]</code>, for styling. <code class="font-mono text-sm">trigger</code> sets what to hover, the target by default.',
     code: pageScript,
-    note: 'Options: <code class="font-mono text-sm">target</code>, <code class="font-mono text-sm">trigger</code>, <code class="font-mono text-sm">hover</code>, <code class="font-mono text-sm">chars</code> (a to z, same case as the text), <code class="font-mono text-sm">duration</code>, <code class="font-mono text-sm">speed</code> (ms per flip), <code class="font-mono text-sm">order</code> (start, end, center, random). Methods: <code class="font-mono text-sm">play(text)</code>, <code class="font-mono text-sm">stop()</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">start</code>, <code class="font-mono text-sm">update</code>, <code class="font-mono text-sm">complete</code>. Reduced motion skips the scramble.'
+    note: 'Options: <code class="font-mono text-sm">target</code>, <code class="font-mono text-sm">trigger</code>, <code class="font-mono text-sm">hover</code>, <code class="font-mono text-sm">chars</code> (the text's own letters by default, same case), <code class="font-mono text-sm">duration</code>, <code class="font-mono text-sm">speed</code> (ms per flip), <code class="font-mono text-sm">order</code> (start, end, center, random). Methods: <code class="font-mono text-sm">play(text)</code>, <code class="font-mono text-sm">stop()</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">start</code>, <code class="font-mono text-sm">update</code>, <code class="font-mono text-sm">complete</code>. Reduced motion skips the scramble.'
 }) }}
 
 {% footerscript %}

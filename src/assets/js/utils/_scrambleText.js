@@ -1,7 +1,7 @@
 import { _emitter } from "./_emitter";
 
 // usage: new _scrambleText({ target, trigger, hover: true, chars, duration, speed, order, events })
-// letters flip through random chars in the same case, then settle, play(text) runs it, also to a new text
+// letters flip through random chars in the same case, then settle, the text's own letters by default, play(text) runs it, also to a new text
 // the target gets [data-scrambling] while it runs, each unsettled letter too
 export class _scrambleText extends _emitter {
     constructor(props = {}) {
@@ -12,7 +12,7 @@ export class _scrambleText extends _emitter {
         this.hover = props.hover ?? true;
 
         this.text = props.text ?? this.target?.textContent.trim() ?? "";
-        this.chars = props.chars ?? "abcdefghijklmnopqrstuvwxyz";
+        this.chars = props.chars ?? null;
         this.duration = props.duration ?? 400;
         this.speed = props.speed ?? 40;
         this.order = props.order ?? "start";
@@ -44,6 +44,7 @@ export class _scrambleText extends _emitter {
     render() {
         this.label.textContent = this.text;
         this.letters = [];
+        this.ownChars = [...new Set(this.text.toLowerCase().replace(/\s/g, ""))];
 
         const _visual = document.createElement("span");
         _visual.setAttribute("aria-hidden", "true");
@@ -91,7 +92,8 @@ export class _scrambleText extends _emitter {
 
     // same case as the real letter
     randomChar(final) {
-        const _char = this.chars[Math.floor(Math.random() * this.chars.length)];
+        const _chars = this.chars ?? this.ownChars;
+        const _char = _chars[Math.floor(Math.random() * _chars.length)];
 
         if (final !== final.toLowerCase()) return _char.toUpperCase();
         if (final !== final.toUpperCase()) return _char.toLowerCase();
