@@ -14,7 +14,7 @@ export default [
             { label: "Scramble text", url: "/components/scramble-text/", description: "Letters flip through random characters, then settle into the text.", utils: "_scrambleText", ready: true },
             { label: "Text roll", url: "/components/text-roll/", description: "Link and button text that rolls up on hover, a copy coming in from below.", utils: "_textRoll", ready: true },
             { label: "Theme scroller", url: "/components/theme-scroller/", description: "The page or header takes the theme of the section on screen.", utils: "_themeScroller", ready: true },
-            { label: "Typing animation", url: "/components/typing-animation/", description: "Typewriter text effect.", utils: "_typing", ready: true },
+            { label: "Typing animation", url: "/components/typing-animation/", description: "Types and erases lines, with styled parts and a steady cursor.", utils: "_typing", ready: true },
         ],
     },
     {
