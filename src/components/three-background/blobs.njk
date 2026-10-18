@@ -22,7 +22,7 @@ title: Blobs | Three.js background | Anthony Toolkits
                 <p class="font-mono text-sm opacity-70">Pick a project</p>
                 <div class="js-blob-projects flex flex-wrap gap-2">
                     {% for project in projects %}
-                    <button class="cursor-pointer rounded-full border border-current/30 px-4 py-2 font-medium transition-colors duration-300 aria-[current=true]:border-white aria-[current=true]:bg-white aria-[current=true]:text-gray-950" type="button" data-project="{{ project.id }}"{% if loop.first %} aria-current="true"{% endif %}>{{ project.title }}</button>
+                    <button class="cursor-pointer rounded-full border border-gray-950/30 px-4 py-2 font-medium text-gray-950 transition-colors duration-700 in-data-[theme=dark]:border-white/30 in-data-[theme=dark]:text-white aria-[current=true]:border-white aria-[current=true]:bg-white aria-[current=true]:text-gray-950" type="button" data-project="{{ project.id }}"{% if loop.first %} aria-current="true"{% endif %}>{{ project.title }}</button>
                     {% endfor %}
                 </div>
             </div>
@@ -80,7 +80,7 @@ const _pick = (e) => {
     _target.dataset.theme = _palette.theme; // text color
     _blobs.set({ ..._palette, positions: _spots });
 };
-['pointerover', 'click'].forEach((type) => _projects.addEventListener(type, _pick));
+_projects.addEventListener('click', _pick);
 {% endraw %}{% endset %}
 
 {{ scriptUsage({
