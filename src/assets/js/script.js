@@ -117,6 +117,16 @@ _event.resize(() => {
 // before the page scripts read the hash
 _autoScrollHash();
 
+// components directory popup, from the header links or /#components-directory
+document.addEventListener("click", (e) => {
+    // a pick closes it, so "All with descriptions" can glide on the home page
+    if (e.target.closest("#components-directory a")) return _lightbox.close();
+    if (!e.target.closest("[data-directory-open]")) return;
+    e.preventDefault();
+    new _lightbox({ target: "#components-directory" });
+});
+if (location.hash === "#components-directory") new _lightbox({ target: "#components-directory" });
+
 // starter kit popup, from the header links or /#starter-kit
 document.addEventListener("click", (e) => {
     if (!e.target.closest("[data-starter-open]")) return;
