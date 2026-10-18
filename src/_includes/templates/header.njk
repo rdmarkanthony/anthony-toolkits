@@ -11,7 +11,7 @@
 {%- set onComponents = props.url and props.url.startsWith('/components/') -%}
 <header class="header-content sticky top-0 z-40 border-b border-kit-line bg-kit-bg/75 px-4 backdrop-blur-lg">
     <div class="mx-auto flex h-16 max-w-295 items-center justify-between gap-4 md:h-20">
-        <a class="font-display text-xl font-semibold tracking-tight whitespace-nowrap md:text-2xl" href="/">{{ props.site.name }}<span class="text-kit-accent">.</span></a>
+        <a class="font-display text-xl font-semibold tracking-tight whitespace-nowrap md:text-2xl" href="/" aria-label="{{ props.site.name }}">{{ props.site.shortName }}<span class="text-kit-accent">.</span></a>
         <div class="flex items-center gap-8">
             {% if not onHome %}
             {{ searchForm({ id: 'search-header', class: 'hidden w-72 lg:block', listClass: 'absolute top-full right-0 mt-2 max-h-[70vh] w-96 overflow-y-auto rounded-3xl border border-kit-line bg-kit-bg p-2 shadow-xl' }) }}
@@ -41,11 +41,43 @@
         {% endif %}
         <nav aria-label="Main">
             <ul class="flex flex-col gap-4">
-                <li><a class="font-display text-3xl font-semibold tracking-tight transition-colors duration-300 hover:text-kit-accent {{ 'text-kit-accent' if onComponents }}" href="/#components" data-auto-scroll{% if onComponents %} aria-current="true"{% endif %}>Components</a></li>
+                <li><a class="font-display text-3xl font-semibold tracking-tight transition-colors duration-300 hover:text-kit-accent {{ 'text-kit-accent' if onComponents }}" href="/#components" data-directory-open{% if onComponents %} aria-current="true"{% endif %}>Components</a></li>
                 {% if props.starterKit.items.length %}<li><a class="font-display text-3xl font-semibold tracking-tight transition-colors duration-300 hover:text-kit-accent" href="#starter-kit" data-starter-open>Starter kit</a></li>{% endif %}
                 <li><a class="group inline-flex items-center gap-1.5 font-display text-3xl font-semibold tracking-tight transition-colors duration-300 hover:text-kit-accent" href="{{ props.site.github }}" target="_blank" rel="noopener">GitHub{{ external('duration-500 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5') }}</a></li>
             </ul>
         </nav>
+    </div>
+</div>
+
+{# components directory popup, names only, opened by the Components links #}
+<div class="hidden">
+    <div id="components-directory" class="mx-auto w-full max-w-6xl rounded-3xl bg-kit-bg p-6 md:p-10">
+        <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+            <h2 class="font-display text-3xl font-semibold tracking-tight md:text-4xl">Components</h2>
+            <a class="text-sm font-medium text-kit-muted transition-colors duration-300 hover:text-kit-accent" href="/#components" data-auto-scroll>All with descriptions</a>
+        </div>
+        <div class="columns-1 gap-10 sm:columns-2 lg:columns-4">
+            {% for group in props.components %}
+            <div class="mb-8 break-inside-avoid">
+                {% set groupActive = group.url and props.url == group.url %}
+                {% if group.url %}
+                <a class="mb-2 block text-xs tracking-wide uppercase transition-colors duration-300 hover:text-kit-accent {{ 'text-kit-accent' if groupActive else 'text-kit-muted' }}" href="{{ group.url }}"{% if groupActive %} aria-current="page"{% endif %}>{{ group.category }}</a>
+                {% else %}
+                <p class="mb-2 text-xs tracking-wide text-kit-muted uppercase">{{ group.category }}</p>
+                {% endif %}
+                <ul>
+                    {% for item in group.items %}{% if item.ready %}
+                    {% set active = props.url == item.url %}
+                    <li>
+                        <a class="flex items-center gap-2 py-1 transition-colors duration-300 hover:text-kit-accent {{ 'text-kit-accent' if active }}" href="{{ item.url }}"{% if active %} aria-current="page"{% endif %}>
+                            <span class="size-1.5 shrink-0 rounded-full bg-kit-accent {{ 'scale-100' if active else 'scale-0' }}" aria-hidden="true"></span>{{ item.label }}
+                        </a>
+                    </li>
+                    {% endif %}{% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
 
@@ -92,9 +124,9 @@
 <script type="application/json" id="search-items">{{ searchItems | dump | safe }}</script>
 {% endmacro %}
 
-{# Components link with the active dot #}
+{# Components link with the active dot, opens the directory popup #}
 {% macro componentsLink(active) %}
-<a class="flex items-center gap-2 transition-colors duration-300 hover:text-kit-text {{ 'text-kit-text' if active else 'text-kit-muted' }}" href="/#components" data-auto-scroll{% if active %} aria-current="true"{% endif %}>
+<a class="flex items-center gap-2 transition-colors duration-300 hover:text-kit-text {{ 'text-kit-text' if active else 'text-kit-muted' }}" href="/#components" data-directory-open{% if active %} aria-current="true"{% endif %}>
     <span class="size-1.5 rounded-full bg-kit-accent transition-transform duration-300 {{ 'scale-100' if active else 'scale-0' }}" aria-hidden="true"></span>Components
 </a>
 {% endmacro %}

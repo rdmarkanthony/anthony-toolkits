@@ -12,8 +12,9 @@ export default [
             { label: "Page transition", url: "/components/page-transition/", description: "An animation as a link leaves the page and as the next one shows, safe with the back button.", utils: "_pageTransition", ready: true },
             { label: "Rolling number", url: "/components/rolling-number/", description: "Odometer-style rolling digits.", utils: "_rollingNumber · _inview", ready: true },
             { label: "Scramble text", url: "/components/scramble-text/", description: "Letters flip through random characters, then settle into the text.", utils: "_scrambleText", ready: true },
+            { label: "Text roll", url: "/components/text-roll/", description: "Link and button text that rolls up on hover, a copy coming in from below.", utils: "_textRoll", ready: true },
             { label: "Theme scroller", url: "/components/theme-scroller/", description: "The page or header takes the theme of the section on screen.", utils: "_themeScroller", ready: true },
-            { label: "Typing animation", url: "/components/typing-animation/", description: "Typewriter text effect.", utils: "_typing", ready: true },
+            { label: "Typing animation", url: "/components/typing-animation/", description: "Types and erases lines, with styled parts and a steady cursor.", utils: "_typing", ready: true },
         ],
     },
     {

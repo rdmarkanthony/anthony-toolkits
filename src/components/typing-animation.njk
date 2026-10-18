@@ -2,64 +2,104 @@
 title: Typing animation | Anthony Toolkits
 ---
 
-{% from "components/atoms/component-page.njk" import scriptUsage %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
 
-{# demo: the title types itself #}
-<section class="px-4 pt-24 pb-16 md:pt-32">
-    <div class="mx-auto max-w-295">
-        <p class="mb-4 font-mono text-sm text-gray-500">_typing</p>
-        <h1 class="js-typing mb-6 min-h-[1.2em] text-5xl font-bold tracking-tight md:text-7xl"></h1>
-        <p class="max-w-2xl text-lg text-gray-600 md:text-xl">Types and erases text letter by letter, with a blinking cursor. Try the methods below in your browser's console, <code class="font-mono text-base">_title</code> is the title above.</p>
+{{ pageIntro({ label: '_typing', title: 'Typing animation', description: 'Types a line, erases it, then the next. Parts of a line can have their own style, and the box keeps its height so nothing jumps.' }) }}
+
+{# demo: hero lines, the name highlighted #}
+<section class="px-4 pb-4">
+    <div class="mx-auto grid max-w-295 gap-4 md:grid-cols-2">
+        <div class="flex min-h-96 flex-col justify-between gap-10 rounded-3xl bg-gray-950 p-8 text-white md:col-span-2 md:p-12">
+            <p class="font-mono text-sm text-white/60">Hero, styled parts</p>
+            <h2 class="js-typing-hero text-5xl leading-[1.05] font-bold tracking-tight md:text-8xl">I'm a Front-End Developer</h2>
+        </div>
+        <div class="flex min-h-72 flex-col justify-between gap-10 rounded-3xl bg-gray-100 p-8">
+            <p class="font-mono text-sm text-gray-500">Loop, inside a sentence</p>
+            <p class="text-4xl font-bold tracking-tight md:text-5xl">We <span class="js-typing-loop text-emerald-600">design</span></p>
+        </div>
+        <div class="flex min-h-72 flex-col justify-between gap-10 rounded-3xl border border-gray-200 p-8">
+            <p class="js-typing-control font-mono text-3xl tracking-tight md:text-4xl">Press a button</p>
+            <div class="flex flex-wrap items-center gap-2">
+                <button class="js-typing-play cursor-pointer rounded-full bg-gray-950 px-4 py-2 font-medium text-white" type="button">play()</button>
+                <button class="js-typing-type cursor-pointer rounded-full bg-gray-100 px-4 py-2 font-medium" type="button">type('...')</button>
+                <button class="js-typing-erase cursor-pointer rounded-full bg-gray-100 px-4 py-2 font-medium" type="button">erase()</button>
+                <button class="js-typing-stop cursor-pointer rounded-full bg-gray-100 px-4 py-2 font-medium" type="button">stop()</button>
+                <p class="w-full font-mono text-sm text-gray-500">last event: <span class="js-typing-log">-</span></p>
+            </div>
+        </div>
     </div>
 </section>
 
-<section class="px-4 py-16">
-    <div class="mx-auto max-w-295">
-        <dl class="grid gap-x-6 gap-y-1 rounded-2xl border border-gray-200 p-6 text-sm md:grid-cols-[auto_1fr] md:gap-y-3">
-            <dt class="font-mono font-semibold">_title.text = 'New message'</dt>
-            <dd class="mb-3 text-gray-600 md:mb-0">Sets the text to type</dd>
-            <dt class="font-mono font-semibold">_title.start(callback)</dt>
-            <dd class="mb-3 text-gray-600 md:mb-0">Types the text</dd>
-            <dt class="font-mono font-semibold">_title.erase(callback)</dt>
-            <dd class="mb-3 text-gray-600 md:mb-0">Erases it letter by letter</dd>
-            <dt class="font-mono font-semibold">_title.clear()</dt>
-            <dd class="mb-3 text-gray-600 md:mb-0">Clears it at once</dd>
-            <dt class="font-mono font-semibold">_title.showCursor() / hideCursor()</dt>
-            <dd class="text-gray-600">Shows or hides the blinking cursor</dd>
-        </dl>
-    </div>
-</section>
+{% set markup %}{% raw %}
+<!-- the text inside is the line when there's no lines option -->
+<h2 class="js-typing-hero">I'm a Front-End Developer</h2>
+
+<!-- after _typing, the label is for screen readers -->
+<h2 class="js-typing-hero">
+    <span class="typing-label">I'm a Front-End Developer</span>
+    <span class="typing" aria-hidden="true">
+        <span class="typing-ghost">...</span>
+        <span>
+            <span class="typing-text">...</span>
+            <span class="typing-cursor"></span>
+        </span>
+    </span>
+</h2>
+{% endraw %}{% endset %}
 
 {% set pageScript %}{% raw %}
 // Requirements
     // JS
         // src/assets/js/utils/_emitter.js
         // src/assets/js/utils/_typing.js
+    // CSS
+        // src/assets/css/components/typing.css
 
-const _title = new _typing({
-    target: document.querySelector('.js-typing'),
-    speed: 50, // ms per letter
+// lines are strings, or parts with their own class, "\n" breaks
+const _name = 'text-emerald-400';
+new _typing({
+    target: document.querySelector('.js-typing-hero'),
+    // defaults: speed: 60, eraseSpeed: 28, pause: 2000, gap: 350, delay: 0, loop: false, autoplay: true, cursor: true
+    lines: [
+        [{ text: "Hi, I'm\n" }, { text: 'Mark Anthony Recto', className: _name }],
+        [{ text: 'You can call me\n' }, { text: 'Anthony', className: _name }],
+        [{ text: "I'm a\n" }, { text: 'Front-End Developer', className: _name }],
+    ],
+    delay: 500,
 });
-window._title = _title; // for trying it in the console
 
-setTimeout(() => {
-    _title.text = 'Hello world!';
-    _title.start(() => {
-        setTimeout(() => {
-            _title.erase(() => {
-                _title.text = 'Typing animation';
-                _title.start((instance) => {
-                    setTimeout(() => instance.hideCursor(), 5000);
-                });
-            });
-        }, 1000);
-    });
-}, 500);
+new _typing({
+    target: document.querySelector('.js-typing-loop'),
+    lines: ['design', 'build', 'ship'],
+    loop: true,
+    pause: 1500,
+});
+
+// methods and events
+const _log = document.querySelector('.js-typing-log');
+const _control = new _typing({
+    target: document.querySelector('.js-typing-control'),
+    lines: ['Press a button', 'Second line', 'Last line'],
+    autoplay: false,
+    events: {
+        type: (instance) => (_log.textContent = `type, line ${instance.index}`),
+        erase: () => (_log.textContent = 'erase'),
+    },
+});
+_control.on('complete', () => (_log.textContent = 'complete'));
+window._control = _control; // for trying it in the console
+
+document.querySelector('.js-typing-play').addEventListener('click', () => _control.play());
+document.querySelector('.js-typing-type').addEventListener('click', () => _control.type('Something new'));
+document.querySelector('.js-typing-erase').addEventListener('click', () => _control.erase());
+document.querySelector('.js-typing-stop').addEventListener('click', () => _control.stop());
 {% endraw %}{% endset %}
 
 {{ scriptUsage({
+    markup: markup,
+    markupNote: 'Invisible copies of every line hold the height. The cursor takes the class of the part being typed, and gets <code class="font-mono text-sm">[data-busy]</code> while typing, so it stops blinking.',
     code: pageScript,
-    note: 'Events: <code class="font-mono text-sm">beforeStart</code>, <code class="font-mono text-sm">afterStart</code>, <code class="font-mono text-sm">beforeErase</code>, <code class="font-mono text-sm">afterErase</code>, in <code class="font-mono text-sm">events</code> or with <code class="font-mono text-sm">on()</code>.'
+    note: 'Options: <code class="font-mono text-sm">lines</code>, <code class="font-mono text-sm">speed</code> and <code class="font-mono text-sm">eraseSpeed</code> (ms per letter), <code class="font-mono text-sm">pause</code> (before erasing), <code class="font-mono text-sm">gap</code> (before the next line), <code class="font-mono text-sm">delay</code>, <code class="font-mono text-sm">loop</code>, <code class="font-mono text-sm">autoplay</code>, <code class="font-mono text-sm">cursor</code>, <code class="font-mono text-sm">label</code> (screen reader text, the last line by default). Methods: <code class="font-mono text-sm">play()</code>, <code class="font-mono text-sm">type(line)</code>, <code class="font-mono text-sm">erase()</code>, <code class="font-mono text-sm">stop()</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">type</code>, <code class="font-mono text-sm">erase</code>, <code class="font-mono text-sm">complete</code>. Reduced motion shows the last line.'
 }) }}
 
 {% footerscript %}

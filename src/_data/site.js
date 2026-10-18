@@ -1,6 +1,6 @@
 export default {
     name: "Anthony Toolkits",
-    // footer wordmark
+    // header and footer wordmark
     shortName: "Toolkits",
     description: "Reusable components and utilities for site development.",
     github: "https://github.com/rdmarkanthony/anthony-toolkits",

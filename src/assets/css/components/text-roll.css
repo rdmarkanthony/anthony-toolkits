@@ -1,0 +1,26 @@
+/*
+    text roll for _textRoll.js
+    on hover or focus, the text rolls up and a copy rolls in from below
+    mouse only, reduced motion keeps it still
+*/
+@layer components {
+    @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+        .text-roll {
+            --roll: calc(1lh + 0.2em);
+            display: inline-block;
+            padding-block: 0.1em;
+            margin-block: -0.1em;
+            vertical-align: top;
+            overflow: hidden;
+        }
+        .text-roll > span {
+            display: block;
+            text-shadow: 0 var(--roll) currentColor;
+            transition: translate 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        [data-text-roll]:hover .text-roll > span,
+        [data-text-roll]:focus-visible .text-roll > span {
+            translate: 0 calc(var(--roll) * -1);
+        }
+    }
+}

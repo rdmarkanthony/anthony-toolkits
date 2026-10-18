@@ -1,0 +1,55 @@
+/*
+    typing for _typing.js
+    lines stack in one grid cell, so the box keeps the tallest one's height
+    the cursor blinks when idle and holds still while typing
+*/
+@layer components {
+    .typing-label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+    .typing {
+        display: inline-grid;
+        white-space: pre-line;
+    }
+    .typing > * {
+        grid-area: 1 / 1;
+    }
+    .typing-ghost {
+        visibility: hidden;
+    }
+
+    .typing-cursor {
+        position: relative;
+        display: inline-block;
+        width: 0;
+        height: 0.85em;
+        vertical-align: -0.08em;
+    }
+    .typing-cursor::before {
+        content: "";
+        position: absolute;
+        inset-block: 0;
+        left: 0.06em;
+        width: 0.07em;
+        background: currentColor;
+        animation: typing-cursor 1s steps(1) infinite;
+    }
+    .typing-cursor[data-busy]::before {
+        animation: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .typing-cursor::before {
+            animation: none;
+        }
+    }
+    @keyframes typing-cursor {
+        50% {
+            opacity: 0;
+        }
+    }
+}

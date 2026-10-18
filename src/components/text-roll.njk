@@ -1,0 +1,71 @@
+---
+title: Text roll | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_textRoll', title: 'Text roll', description: 'Hover a link or button and its text rolls up, a copy coming in from below. CSS only after one call.' }) }}
+
+{# demo: buttons and links #}
+<section class="px-4 pb-16">
+    <div class="mx-auto grid max-w-295 gap-4 md:grid-cols-2">
+        <div class="flex min-h-72 flex-col justify-between gap-10 rounded-3xl bg-gray-100 p-8">
+            <h2 class="text-3xl font-bold tracking-tight">Buttons</h2>
+            <div class="flex flex-wrap gap-3">
+                <button class="js-text-roll cursor-pointer rounded-full bg-gray-950 px-6 py-3 font-medium text-white" type="button">Get started</button>
+                <button class="js-text-roll cursor-pointer rounded-full border border-gray-950 px-6 py-3 font-medium" type="button">Learn more</button>
+                {# the icon stays put, only the text rolls #}
+                <a class="js-text-roll inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 font-medium" href="#">
+                    View project
+                    <svg class="size-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
+                </a>
+            </div>
+        </div>
+        <div class="flex min-h-72 flex-col justify-between gap-10 rounded-3xl bg-gray-950 p-8 text-white">
+            <h2 class="text-3xl font-bold tracking-tight">Nav</h2>
+            <nav class="flex flex-wrap gap-x-8 gap-y-3 text-lg">
+                <a class="js-text-roll" href="#">About</a>
+                <a class="js-text-roll" href="#">Work</a>
+                <a class="js-text-roll" href="#">Journal</a>
+                <a class="js-text-roll text-emerald-400" href="#">Contact</a>
+            </nav>
+        </div>
+        <div class="flex flex-col gap-6 rounded-3xl border border-gray-200 p-8 md:col-span-2">
+            <p class="text-gray-600">Big type</p>
+            <a class="js-text-roll self-start text-5xl font-bold tracking-tight md:text-7xl" href="#">Let's talk</a>
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<a class="js-text-roll" href="#">About</a>
+
+<!-- after _textRoll(), svgs are left alone -->
+<a href="#" data-text-roll>
+    <span class="text-roll"><span>About</span></span>
+</a>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_textRoll.js
+    // CSS
+        // src/assets/css/components/text-roll.css
+
+_textRoll('.js-text-roll');
+
+// or any selector, and only inside a part of the page
+// _textRoll('footer a, .button-primary', document.querySelector('.js-popup'));
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Each text gets wrapped in <code class="font-mono text-sm">.text-roll</code>, the target gets <code class="font-mono text-sm">[data-text-roll]</code>. Running it twice skips what is already wrapped.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">_textRoll(selector, root)</code>. It rolls on hover and keyboard focus. Touch screens and reduced motion keep the text still.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
