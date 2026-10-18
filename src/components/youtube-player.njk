@@ -3,6 +3,7 @@ title: YouTube player | Anthony Toolkits
 ---
 
 {% from "components/atoms/component-page.njk" import scriptUsage %}
+{% from "components/atoms/back-link.njk" import backLink %}
 
 {# demo: a stretched autoplay video as the background #}
 <section class="relative overflow-hidden bg-gray-950 px-4 pt-24 pb-16 text-white md:pt-32">
@@ -11,6 +12,7 @@ title: YouTube player | Anthony Toolkits
         <div class="absolute inset-0 bg-black/50"></div>
     </div>
     <div class="relative mx-auto max-w-295">
+        {{ backLink({ label: 'Components', url: '/#components', class: 'text-gray-300 hover:text-white' }) }}
         <p class="mb-4 font-mono text-sm text-gray-300">_youtubePlayer</p>
         <h1 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">YouTube player</h1>
         <p class="max-w-2xl text-lg text-gray-300 md:text-xl">YouTube embeds from a data attribute. Autoplay videos are muted backgrounds without YouTube's buttons, and stretch covers the box at any ratio. Playing one video pauses the others.</p>

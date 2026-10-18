@@ -6,12 +6,12 @@
     page title, for component pages
     usage: {{ pageIntro({ label: '_tabs', title: 'Tabs', description: '...' }) }}
     label: the utils it uses, "_a · _b", shown as tags
-    back: { label, url } for a parent page, optional
+    back: { label, url } for a parent page, Components on the home page by default
 #}
 {% macro pageIntro(props) -%}
 <section class="px-4 pt-20 pb-16 md:pt-28">
     <div class="mx-auto max-w-295">
-        {% if props.back %}{{ backLink(props.back) }}{% endif %}
+        {{ backLink(props.back or { label: 'Components', url: '/#components' }) }}
         {% if props.label -%}
         {{ tags(props.label, 'mb-6') }}
         {%- endif %}

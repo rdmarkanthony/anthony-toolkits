@@ -1,9 +1,10 @@
 {#
-    link to a parent page that the header doesn't link to, above a page title
+    link to a parent page, above a page title
     usage: {{ backLink({ label: 'Scrolling animation', url: '/components/scrolling-animation/' }) }}
+    class: own colors, for dark heroes
 #}
 {%- from "components/atoms/icon.njk" import angle -%}
 
 {% macro backLink(props) -%}
-<a class="group mb-6 inline-flex items-center gap-1 text-sm font-medium text-kit-muted transition-colors duration-300 hover:text-kit-text" href="{{ props.url }}">{{ angle('left', 'group-hover:-translate-x-0.5') }} {{ props.label }}</a>
+<a class="group mb-6 inline-flex items-center gap-1 text-sm font-medium transition-colors duration-300 {{ props.class or 'text-kit-muted hover:text-kit-text' }}" href="{{ props.url }}">{{ angle('left', 'group-hover:-translate-x-0.5') }} {{ props.label }}</a>
 {%- endmacro %}
