@@ -19,6 +19,7 @@ import { _animatedNumber } from "./utils/_animatedNumber";
 import { _rollingNumber } from "./utils/_rollingNumber";
 import { _typing } from "./utils/_typing";
 import { _scrambleText } from "./utils/_scrambleText";
+import { _textRoll } from "./utils/_textRoll";
 import { _threeBackground } from "./utils/_threeBackground";
 import { _threeParticles } from "./utils/_threeParticles";
 import { _threeBlobs } from "./utils/_threeBlobs";
@@ -68,6 +69,7 @@ Object.assign(window, {
     _rollingNumber,
     _typing,
     _scrambleText,
+    _textRoll,
     _threeBackground,
     _threeParticles,
     _threeBlobs,
