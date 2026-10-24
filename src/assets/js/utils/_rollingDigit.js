@@ -3,7 +3,7 @@ import { _event } from "./_event";
 // power1.inOut
 const _ease = "cubic-bezier(0.455, 0.03, 0.515, 0.955)";
 
-export class _rollingNumber {
+export class _rollingDigit {
     constructor(props) {
         this.target = props.target ?? null;
 
@@ -49,7 +49,7 @@ export class _rollingNumber {
             if (state !== "init") this.resize();
         });
 
-        if (this.debug) console.log("_rollingNumber", this);
+        if (this.debug) console.log("_rollingDigit", this);
     }
 
     createNumber(value) {

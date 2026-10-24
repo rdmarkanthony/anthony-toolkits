@@ -1,0 +1,86 @@
+---
+title: Grain text | Three.js background | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Three.js background', url: '/components/three-background/' }, label: '_threeText · _threeBackground', title: 'Grain text', description: 'Words made of grains, repeated in every row. They light up and move away near the mouse, a click bursts them.' }) }}
+
+{# demo: type a word #}
+<section class="px-4 pb-4">
+    <div class="mx-auto max-w-295">
+        <div class="js-text-dark flex min-h-[80vh] flex-col justify-between gap-16 overflow-hidden rounded-3xl bg-gray-950 p-8 font-display font-extrabold text-white md:p-12">
+            <p class="font-mono text-sm font-normal text-gray-400">Move, click or tap here</p>
+            <form class="js-text-form flex max-w-md gap-2 font-sans font-normal">
+                <input class="js-text-input min-w-0 flex-1 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-white placeholder:text-gray-400 focus:border-white/50 focus:outline-none" type="text" maxlength="24" placeholder="Type a word" aria-label="Word" />
+                <button class="cursor-pointer rounded-full bg-white px-6 py-3 font-medium text-gray-950" type="submit">Make</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+{# demo: lines and colors, set() and burst() #}
+<section class="px-4 pt-12 pb-16">
+    <div class="mx-auto grid max-w-295 gap-4 md:grid-cols-2">
+        <div class="js-text-light min-h-96 overflow-hidden rounded-3xl bg-gray-50 font-serif font-bold"></div>
+        <div class="flex min-h-96 flex-col justify-between gap-6 rounded-3xl border border-gray-200 p-8">
+            <div>
+                <h2 class="mb-2 text-3xl font-bold tracking-tight">Methods</h2>
+                <p class="text-gray-600">Two lines that take turns by row, a serif font and an array of colors.</p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <button class="js-text-set cursor-pointer rounded-full bg-gray-950 px-5 py-2 font-medium text-white" type="button" data-text="Lorem&#10;ipsum">set('Lorem\nipsum')</button>
+                <button class="js-text-set cursor-pointer rounded-full bg-gray-100 px-5 py-2 font-medium" type="button" data-text="Hello">set('Hello')</button>
+                <button class="js-text-burst cursor-pointer rounded-full bg-gray-100 px-5 py-2 font-medium" type="button">burst()</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_inview.js
+        // src/assets/js/utils/_threeBackground.js
+        // src/assets/js/utils/_threeText.js
+    // Packages
+        // three
+
+// the font and weight come from the target, here font-display font-extrabold
+const _hero = _threeText({ text: 'Hello', rows: 5, gap: 3, size: 1.6 });
+new _threeBackground({
+    target: document.querySelector('.js-text-dark'),
+    // defaults: text: 'Hello', color: '#ffffff', rows: 4, spacing: 0.4, gap: 4, size: 2, opacity: 0.25, light: 2.5, grow: 1.6, follow: 8,
+    // font: null, weight: null, radius: 1.2, push: 40, spring: 30, damping: 6, burst: 10, depth: 0.4, parallax: 0.06
+    effect: _hero,
+});
+
+document.querySelector('.js-text-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const _input = document.querySelector('.js-text-input');
+    if (_input.value.trim()) _hero.set(_input.value.trim());
+    _input.value = '';
+});
+
+// set() and burst()
+const _text = _threeText({ text: 'Lorem\nipsum', color: ['#0f172a', '#4f46e5', '#f43f5e'], rows: 3, gap: 3, size: 2.5 });
+new _threeBackground({
+    target: document.querySelector('.js-text-light'),
+    effect: _text,
+});
+window._text = _text; // for trying it in the console
+
+document.querySelectorAll('.js-text-set').forEach((button) => button.addEventListener('click', () => _text.set(button.dataset.text)));
+document.querySelector('.js-text-burst').addEventListener('click', () => _text.burst());
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: 'Options: <code class="font-mono text-sm">rows</code> and <code class="font-mono text-sm">spacing</code> for the repeats, <code class="font-mono text-sm">gap</code> and <code class="font-mono text-sm">size</code> for the grains, <code class="font-mono text-sm">opacity</code>, <code class="font-mono text-sm">light</code> and <code class="font-mono text-sm">grow</code> for the glow at the mouse, <code class="font-mono text-sm">radius</code> and <code class="font-mono text-sm">push</code> for the mouse, <code class="font-mono text-sm">spring</code> and <code class="font-mono text-sm">damping</code> for the way back. Clicks on links, buttons and fields are ignored. Markup and the base are on the <a class="underline" href="/components/three-background/">overview</a>.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

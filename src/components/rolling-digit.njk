@@ -1,15 +1,15 @@
 ---
-title: Rolling number | Anthony Toolkits
+title: Rolling digit | Anthony Toolkits
 ---
 
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
 
-{{ pageIntro({ label: '_rollingNumber · _inview', title: 'Rolling number', description: 'Odometer-style digits that roll to the next value. One instance per digit, so any number of digits, commas and decimal points can roll at once.' }) }}
+{{ pageIntro({ label: '_rollingDigit · _inview', title: 'Rolling digit', description: 'Odometer-style digits that roll to the next value. One instance per digit, so any number of digits, commas and decimal points can roll at once.' }) }}
 
 {# demo #}
 <section class="px-4 py-16">
-    <div class="js-rolling-number mx-auto flex max-w-295 flex-col gap-6">
-        <div class="js-rolling-number-label flex text-6xl font-bold tracking-tight md:text-8xl">0</div>
+    <div class="js-rolling-digit mx-auto flex max-w-295 flex-col gap-6">
+        <div class="js-rolling-digit-label flex text-6xl font-bold tracking-tight md:text-8xl">0</div>
         <form class="flex max-w-md gap-2">
             <label class="grow">
                 <span class="sr-only">Number</span>
@@ -24,16 +24,16 @@ title: Rolling number | Anthony Toolkits
 // Requirements
     // JS
         // src/assets/js/utils/_event.js
-        // src/assets/js/utils/_rollingNumber.js
+        // src/assets/js/utils/_rollingDigit.js
         // src/assets/js/utils/_inview.js (optional, to start in view)
 
-const _wrap = document.querySelector('.js-rolling-number');
-const _label = _wrap.querySelector('.js-rolling-number-label');
+const _wrap = document.querySelector('.js-rolling-digit');
+const _label = _wrap.querySelector('.js-rolling-digit-label');
 const _input = _wrap.querySelector('input');
 
 const _cleanNumber = (value) => value.replace(/,/g, '').replace(/[^0-9.]/g, '');
 
-// one _rollingNumber per character
+// one _rollingDigit per character
 const _digits = [];
 let _rolling = false;
 
@@ -54,7 +54,7 @@ const _update = (value) => {
 
         const _div = document.createElement('div');
         _label.appendChild(_div);
-        _digits.push(new _rollingNumber({ target: _div, numeric: false }));
+        _digits.push(new _rollingDigit({ target: _div, numeric: false }));
     });
 
     // roll each digit
@@ -100,7 +100,7 @@ new _inview({
 
 {{ scriptUsage({
     code: pageScript,
-    note: '<code class="font-mono text-sm">new _rollingNumber({ target, numeric, maxNumber, startNumber, duration })</code> makes one digit, <code class="font-mono text-sm">roll({ from, to, duration, callback })</code> moves it. Durations in ms.'
+    note: '<code class="font-mono text-sm">new _rollingDigit({ target, numeric, maxNumber, startNumber, duration })</code> makes one digit, <code class="font-mono text-sm">roll({ from, to, duration, callback })</code> moves it. Durations in ms.'
 }) }}
 
 {% footerscript %}
