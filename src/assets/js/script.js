@@ -49,6 +49,7 @@ import { _canvasBanner } from "./utils/_canvasBanner";
 import { _themeScroller } from "./utils/_themeScroller";
 import { _cursorBubble } from "./utils/_cursorBubble";
 import { _magnetic } from "./utils/_magnetic";
+import { _lottie } from "./utils/_lottie";
 import { _googleMap } from "./utils/_googleMap";
 import { _qrCode } from "./utils/_qrCode";
 import { _peekSlider } from "./utils/_peekSlider";
@@ -111,6 +112,7 @@ Object.assign(window, {
     _themeScroller,
     _cursorBubble,
     _magnetic,
+    _lottie,
     _googleMap,
     _qrCode,
     _peekSlider,

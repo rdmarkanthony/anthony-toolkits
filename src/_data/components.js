@@ -40,6 +40,14 @@ export default [
         ],
     },
     {
+        category: "Lottie",
+        url: "/components/lottie/",
+        items: [
+            { label: "Lottie view, hover and click", url: "/components/lottie/play/", description: "Plays on screen, on hover, or on click as a toggle, plus a send button.", utils: "_lottie · lottie-web", ready: true },
+            { label: "Lottie scroll", url: "/components/lottie/scroll/", description: "The frames follow the scroll, pinned or as it passes.", utils: "_lottie · _parallaxScroller · lottie-web", ready: true },
+        ],
+    },
+    {
         category: "Sliders",
         url: "/components/sliders/",
         items: [

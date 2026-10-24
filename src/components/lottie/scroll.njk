@@ -1,0 +1,91 @@
+---
+title: Lottie scroll | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Lottie', url: '/components/lottie/' }, label: '_lottie · _parallaxScroller · lottie-web', title: 'Scroll', description: 'The frames follow the scroll, both ways. _parallaxScroller gives the progress, _lottie seeks to it. Pinned in a tall section, or as it passes through the screen.' }) }}
+
+{% set markup %}{% raw %}
+<!-- pinned: the tall section sets the distance, the inside sticks -->
+<section class="js-lottie-section relative min-h-[300vh]">
+    <div class="sticky top-0 flex h-screen items-center justify-center">
+        <div class="js-lottie-sunrise w-full max-w-xl" data-lottie="/assets/lottie/sunrise.json"></div>
+    </div>
+</section>
+{% endraw %}{% endset %}
+
+{# demo: pinned below the sticky site header #}
+<section class="js-lottie-section relative min-h-[300vh] bg-gray-50">
+    <div class="sticky top-(--header-height) flex h-[calc(100svh-var(--header-height,0px))] flex-col items-center justify-center gap-6 px-4">
+        <div class="js-lottie-sunrise w-full max-w-xl" data-lottie="/assets/lottie/sunrise.json"></div>
+        <p class="js-lottie-caption text-3xl font-bold tracking-tight opacity-0 md:text-5xl">Good morning.</p>
+        <p class="absolute right-6 bottom-6 rounded-full bg-white px-4 py-2 font-mono text-sm shadow-md"><span class="js-lottie-percent">0</span>%</p>
+    </div>
+</section>
+
+{# demo: draws in as it passes, no pin #}
+<section class="px-4 py-24">
+    <div class="mx-auto flex max-w-295 flex-col gap-24">
+        {% for step in ['Plan', 'Build', 'Launch'] %}
+        <div class="js-lottie-step flex items-center gap-6 {{ 'flex-row-reverse text-right' if loop.index % 2 == 0 }}">
+            <div class="js-lottie-pass size-24 shrink-0" data-lottie="/assets/lottie/check.json"></div>
+            <div>
+                <p class="font-mono text-sm text-gray-500">0{{ loop.index }}</p>
+                <h2 class="text-3xl font-bold tracking-tight">{{ step }}</h2>
+                <p class="mt-1 text-gray-600">Draws in as it passes, no pin.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // lottie-web (npm, its own chunk, loaded when needed)
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_parallax.js
+        // src/assets/js/utils/_lottie.js
+
+// pinned: play 'none', the scroller seeks it
+const _sunrise = new _lottie({ target: document.querySelector('.js-lottie-sunrise'), play: 'none' });
+const _percent = document.querySelector('.js-lottie-percent');
+
+const _scroller = new _parallaxScroller({
+    target: document.querySelector('.js-lottie-section'),
+    events: {
+        // while the section is pinned
+        resize(scroller) {
+            const _offset = _parallax.getOffset(scroller.target);
+
+            scroller.offset.top = _offset.top;
+            scroller.offset.bottom = _offset.bottom - _parallax.height();
+        },
+        update(scroller) {
+            _sunrise.seek(scroller.offset.current);
+            _percent.textContent = Math.round(_parallax.clamp(scroller.offset.current) * 100);
+        },
+    },
+});
+
+// the caption comes in with the rays, a part of the same range
+_scroller.animate(document.querySelector('.js-lottie-caption'), { opacity: [0, 1], translate: ['0 1rem', '0 0'] }, ['60%', '80%']);
+
+// passing: 0 as it comes in at the bottom, 1 as it leaves at the top, drawn by the middle
+document.querySelectorAll('.js-lottie-step').forEach((step) => {
+    const _check = new _lottie({ target: step.querySelector('.js-lottie-pass'), play: 'none' });
+
+    new _parallaxScroller({
+        target: step,
+        events: { update: (scroller) => _check.seek(scroller.portion('0%', '50%')) },
+    });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({ markup: markup, code: pageScript, note: '<code class="font-mono text-sm">seek(progress)</code>, 0 to 1, is kept until the file loads, so the scroller can start right away. Any scroll util works, here <code class="font-mono text-sm">_parallaxScroller</code>: its <code class="font-mono text-sm">resize</code> sets the pinned range, <code class="font-mono text-sm">portion()</code> a part of it, <code class="font-mono text-sm">animate()</code> the CSS around it.' }) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
