@@ -1,0 +1,111 @@
+---
+title: Magnetic button | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_magnetic', title: 'Magnetic button', description: 'Buttons and links that lean toward the mouse as it comes near, and spring back when it leaves. The util only gives the distance, the pull is your own CSS.' }) }}
+
+{% set pull = 'translate-x-(--x) translate-y-(--y)' %}
+{% set pullMore = 'translate-x-[calc(var(--x)*0.5)] translate-y-[calc(var(--y)*0.5)]' %}
+{% set arrow = '<svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>' %}
+
+{% set markup %}{% raw %}
+<!-- the button follows --x/--y, its text half as much again -->
+<a class="js-magnetic translate-x-(--x) translate-y-(--y) rounded-full bg-black text-white" href="/contact">
+    <span class="inline-block translate-x-[calc(var(--x)*0.5)] translate-y-[calc(var(--y)*0.5)]">Get in touch</span>
+</a>
+
+<!-- its own strength, 0 to 1 -->
+<button class="js-magnetic translate-x-(--x) translate-y-(--y)" type="button" data-magnetic="0.5">...</button>
+{% endraw %}{% endset %}
+
+{# demo: buttons, the text moves a bit more than the button #}
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-10">
+        <div>
+            <h2 class="text-3xl font-bold tracking-tight">Buttons</h2>
+            <p class="mt-2 max-w-2xl text-gray-600">Bring the mouse close. The text and icons move a little further than their button, so they feel lifted.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-6 rounded-3xl border border-gray-200 px-6 py-16 md:gap-10 md:px-16">
+            <a class="js-magnetic {{ pull }} inline-flex h-14 items-center rounded-full bg-gray-950 px-8 font-medium text-white" href="#">
+                <span class="inline-block {{ pullMore }}">Get in touch</span>
+            </a>
+            <a class="js-magnetic {{ pull }} inline-flex h-14 items-center rounded-full border border-gray-300 px-8 font-medium transition-colors hover:border-gray-950" href="#">
+                <span class="inline-block {{ pullMore }}">View work</span>
+            </a>
+            <a class="js-magnetic {{ pull }} flex size-14 items-center justify-center rounded-full border border-gray-300 transition-colors hover:border-gray-950 hover:bg-gray-950 hover:text-white" href="#" data-magnetic="0.5" aria-label="Open">
+                <span class="{{ pullMore }}">{{ arrow | safe }}</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+{# demo: a light pull on nav links #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-10">
+        <div>
+            <h2 class="text-3xl font-bold tracking-tight">Nav links</h2>
+            <p class="mt-2 max-w-2xl text-gray-600">A small pull and a short reach, so the links stay easy to read. The pill shows with <code class="font-mono text-sm">data-active</code>.</p>
+        </div>
+        <nav class="js-magnetic-nav rounded-3xl bg-white px-6 py-10">
+            <ul class="flex flex-wrap justify-center gap-2">
+                {% for link in ['Work', 'Services', 'About', 'Journal', 'Contact'] %}
+                <li><a class="{{ pull }} block rounded-full px-5 py-2.5 font-medium transition-colors data-active:bg-gray-100" href="#">{{ link }}</a></li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+</section>
+
+{# demo: a big call to action, felt from further away #}
+<section class="bg-gray-950 px-4 py-24 text-white">
+    <div class="mx-auto flex max-w-295 flex-col items-center gap-12 text-center">
+        <div>
+            <h2 class="text-3xl font-bold tracking-tight md:text-5xl">Have a project in mind?</h2>
+            <p class="mt-3 font-mono text-sm text-gray-400">last event: <span class="js-magnetic-event">-</span></p>
+        </div>
+        <a class="js-magnetic-cta {{ pull }} group flex size-44 items-center justify-center rounded-full bg-white text-lg font-semibold text-gray-950 md:size-56" href="#">
+            <span class="flex items-center gap-2 transition-[scale] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-data-active:scale-110 {{ pullMore }}">Let's talk {{ arrow | safe }}</span>
+        </a>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_magnetic.js
+
+// buttons, defaults: strength: 0.35 (or data-magnetic), radius: 40, ease: 0.15
+document.querySelectorAll('.js-magnetic').forEach((target) => new _magnetic({ target }));
+
+// nav links, a light pull close to each one
+document.querySelectorAll('.js-magnetic-nav a').forEach((target) => new _magnetic({ target, strength: 0.2, radius: 16 }));
+
+// the big one, felt from further away
+const _label = document.querySelector('.js-magnetic-event');
+new _magnetic({
+    target: document.querySelector('.js-magnetic-cta'),
+    strength: 0.25,
+    radius: 120,
+    events: {
+        enter: () => (_label.textContent = 'enter'),
+        leave: () => (_label.textContent = 'leave'),
+    },
+});
+
+// demo links go nowhere
+document.querySelectorAll('.js-magnetic, .js-magnetic-nav a, .js-magnetic-cta').forEach((link) => link.addEventListener('click', (e) => e.preventDefault()));
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The util sets <code class="font-mono text-sm">--x</code> and <code class="font-mono text-sm">--y</code> in px on the target, and <code class="font-mono text-sm">data-active</code> while the mouse is near. Move it with <code class="font-mono text-sm">translate-x-(--x) translate-y-(--y)</code>, no transition, the util eases it.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _magnetic({ target, strength, radius, ease, events })</code>. <code class="font-mono text-sm">strength</code> is how much of the distance to the center it moves, <code class="font-mono text-sm">radius</code> how far past its edges it reaches. Mouse only, off for touch and reduced motion. Methods: <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">enter</code>, <code class="font-mono text-sm">leave</code>.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

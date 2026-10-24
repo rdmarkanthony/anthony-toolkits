@@ -48,6 +48,7 @@ import { _parallax, _parallaxScroller, _parallaxOffset, _parallaxBackground, _pa
 import { _canvasBanner } from "./utils/_canvasBanner";
 import { _themeScroller } from "./utils/_themeScroller";
 import { _cursorBubble } from "./utils/_cursorBubble";
+import { _magnetic } from "./utils/_magnetic";
 import { _googleMap } from "./utils/_googleMap";
 import { _qrCode } from "./utils/_qrCode";
 import { _peekSlider } from "./utils/_peekSlider";
@@ -109,6 +110,7 @@ Object.assign(window, {
     _canvasBanner,
     _themeScroller,
     _cursorBubble,
+    _magnetic,
     _googleMap,
     _qrCode,
     _peekSlider,

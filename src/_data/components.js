@@ -9,6 +9,7 @@ export default [
             { label: "Animate", url: "/components/animate/", description: "Animate.css effects triggered in view.", utils: "_animate · _inview · _splitText", ready: true, starter: true },
             { label: "Animated number", url: "/components/animated-number/", description: "Count up to a value on scroll.", utils: "_animatedNumber · _inview", ready: true },
             { label: "Cursor bubble", url: "/components/cursor-bubble/", description: "A dot that trails the mouse, grows over big type and shows labels.", utils: "_cursorBubble", ready: true },
+            { label: "Magnetic button", url: "/components/magnetic-button/", description: "Buttons and links that lean toward the mouse as it comes near.", utils: "_magnetic", ready: true },
             { label: "Page transition", url: "/components/page-transition/", description: "An animation as a link leaves the page and as the next one shows, safe with the back button.", utils: "_pageTransition", ready: true },
             { label: "Rolling number", url: "/components/rolling-number/", description: "Odometer-style rolling digits.", utils: "_rollingNumber · _inview", ready: true },
             { label: "Scramble text", url: "/components/scramble-text/", description: "Letters flip through random characters, then settle into the text.", utils: "_scrambleText", ready: true },
