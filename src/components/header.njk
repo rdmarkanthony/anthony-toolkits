@@ -1,0 +1,85 @@
+---
+title: Header | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_header', title: 'Header', description: 'Scrolls away with the page at the top, then turns fixed and slides down on scroll up, up on scroll down. Works below a top bar, gives sticky content a var to sit under, and has a mobile menu that locks the page and closes on Esc.' }) }}
+
+{# the real demo markup, so the code shown is what the iframes run #}
+{% from "demos/header.njk" import demoHeader %}
+{% set markup %}
+{{ demoHeader() }}
+
+<!-- the header takes no space, so the first section leaves room for it -->
+<section class="pt-28">...</section>
+{% endset %}
+
+{% set sticky %}{% raw %}
+<!-- 0 while the header is hidden, its height while shown -->
+<div class="sticky top-(--header-offset) z-30 transition-[top] duration-500">...</div>
+
+<!-- or the full height, e.g. a screen tall section below it -->
+<div class="h-[calc(100svh-var(--header-height,0px))]">...</div>
+{% endraw %}{% endset %}
+
+{# demos: the pages run in iframes, fixed needs a real window #}
+<section class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="text-3xl font-bold tracking-tight">Desktop</h2>
+            <p class="mt-2 text-gray-600">Scroll inside the box. Past the header it turns fixed, hidden above, and slides in when you scroll up.</p>
+        </div>
+        <iframe class="h-[36rem] w-full rounded-3xl border border-gray-200" src="/components/header/demo/" title="Header demo, desktop" loading="lazy"></iframe>
+    </div>
+</section>
+
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto grid max-w-295 items-center gap-10 lg:grid-cols-[1fr_auto]">
+        <div class="flex flex-col gap-6">
+            <h2 class="text-3xl font-bold tracking-tight">Mobile menu</h2>
+            <ul class="flex max-w-md flex-col gap-2 text-gray-600">
+                <li>Opens from the burger, closes with the X, the shade, a link or Esc.</li>
+                <li>The page behind can't scroll or take focus.</li>
+                <li>Focus goes back to the burger on close.</li>
+            </ul>
+        </div>
+        <div class="h-[40rem] w-[23rem] max-w-full justify-self-center overflow-hidden rounded-[2.5rem] border-10 border-gray-950 bg-white">
+            <iframe class="size-full" src="/components/header/demo/" title="Header demo, phone" loading="lazy"></iframe>
+        </div>
+    </div>
+</section>
+
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="text-3xl font-bold tracking-tight">Something above it</h2>
+            <p class="mt-2 max-w-2xl text-gray-600">A notice and a bar sit above the header. Close the notice and the header moves up with it. It turns fixed only once it has scrolled out, and back at its own spot.</p>
+        </div>
+        <iframe class="h-[36rem] w-full rounded-3xl border border-gray-200" src="/components/header/demo/top-bar/" title="Header demo, top bar" loading="lazy"></iframe>
+    </div>
+</section>
+
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="text-3xl font-bold tracking-tight">Sticky below it</h2>
+            <p class="mt-2 max-w-2xl text-gray-600">The filters stick at <code class="font-mono text-sm">--header-offset</code>, so they move up when the header hides and down when it comes back.</p>
+        </div>
+        <iframe class="h-[36rem] w-full rounded-3xl border border-gray-200 bg-white" src="/components/header/demo/sticky/" title="Header demo, sticky" loading="lazy"></iframe>
+    </div>
+</section>
+
+{% set pageScript %}{% include "demos/header-script.js" %}{% endset %}
+{% set topBarScript %}{% include "demos/header-top-bar-script.js" %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'States are attributes, so style them with Tailwind: <code class="font-mono text-sm">data-fixed</code> and <code class="font-mono text-sm">data-hidden</code> on the header, <code class="font-mono text-sm">data-open</code> on the menu, <code class="font-mono text-sm">data-menu-open</code> on the header while it is open. The switch to fixed skips the transition, so only the slide animates.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _header({ target, menu, offset, tolerance, breakpoint, events })</code>. Methods: <code class="font-mono text-sm">show()</code>, <code class="font-mono text-sm">hide()</code>, <code class="font-mono text-sm">open()</code>, <code class="font-mono text-sm">close()</code>, <code class="font-mono text-sm">toggle()</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">fix</code>, <code class="font-mono text-sm">unfix</code>, <code class="font-mono text-sm">hide</code>, <code class="font-mono text-sm">show</code>, <code class="font-mono text-sm">open</code>, <code class="font-mono text-sm">close</code>. A shown fixed header stays fixed until it is back at its own spot, so it never jumps.',
+    more: [
+        { title: 'Sticky below it', note: 'Body gets <code class="font-mono text-sm">--header-height</code> and <code class="font-mono text-sm">--header-offset</code>, the part of the screen the header covers now. Give the transition the header\'s duration.', code: sticky, lang: 'html' },
+        { title: 'Something above it', note: 'Nothing to set up. It measures where it sits, and sees the bar change size.', code: topBarScript }
+    ]
+}) }}

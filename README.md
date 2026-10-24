@@ -44,6 +44,10 @@ Reusable components and utilities for site development, built on Eleventy + Nunj
 6. For links to a section of the same page, add `data-auto-scroll` (`href="#"` goes to the top). `script.js` smooth scrolls them with `_autoScroll`, below the sticky header.
 7. List the page in `src/_data/components.js` with `ready: true` and its `utils`. A category `url` links its heading to an overview page. Ready items also show up in the header search suggestions.
 
+### Lottie samples
+
+The animations in `src/assets/lottie/` are our own, built by `tools/make-lottie.js`. Add or change one there, then run `pnpm lottie` (or `pnpm lottie plane` for one).
+
 ### Using a component in another project
 
 `script.js` here loads every util, so every demo works on any page. In a project, import only the utils you use, from the component's Requires list, and copy its page script. hls.js is the only library loaded on demand, when a page has a video.

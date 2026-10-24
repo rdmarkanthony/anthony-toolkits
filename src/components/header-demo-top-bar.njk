@@ -1,0 +1,33 @@
+---
+title: Header demo, top bar | Anthony Toolkits
+permalink: /components/header/demo/top-bar/
+bare: true
+---
+
+{% from "demos/header.njk" import demoHeader, demoHero, demoGrid, demoEvent %}
+
+{# anything above the header: a notice that closes, a bar that stays #}
+<div class="js-top-bar grid grid-rows-[1fr] bg-indigo-600 text-white transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] data-closed:grid-rows-[0fr]">
+    <div class="overflow-hidden">
+        <div class="relative px-12 py-2.5 text-center text-sm">
+            Free shipping this week. <a class="font-medium underline underline-offset-2" href="#">Shop now</a>
+            <button class="js-top-bar-close absolute top-1/2 right-2 flex size-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-white/15" type="button" aria-label="Close notice">
+                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="flex h-9 items-center justify-between gap-4 bg-gray-900 px-5 text-xs text-gray-400 md:px-8">
+    <span>+1 234 567 890</span>
+    <span class="flex gap-4"><a class="hover:text-white" href="#">EN</a><a class="hover:text-white" href="#">Log in</a></span>
+</div>
+
+{{ demoHeader() }}
+{{ demoHero('Close the notice, the header follows.') }}
+{{ demoGrid() }}
+{{ demoEvent() }}
+
+{% footerscript %}
+<script type="module">{% include "demos/header-script.js" %}
+{% include "demos/header-top-bar-script.js" %}</script>
+{% endfooterscript %}

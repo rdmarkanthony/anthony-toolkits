@@ -1,0 +1,104 @@
+---
+title: Scroll progress | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_scrollProgress · _event', title: 'Scroll progress', description: 'How far down the page or an article you are, as a CSS var. Draw it as a bar, a ring or a number, and show a back to top button once you scroll.' }) }}
+
+{% set lorem = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero est illo eius laudantium laborum earum culpa corporis vel deleniti. Quia nemo porro, voluptatum dolores facere amet sequi minima, molestias quod reiciendis ratione.' %}
+
+{% set markup %}{% raw %}
+<!-- a bar, --progress is 0 to 1 -->
+<div class="js-progress fixed inset-x-0 top-0 h-1 origin-left scale-x-(--progress) bg-indigo-600"></div>
+
+<!-- back to top, data-active once you scroll a screen -->
+<button class="js-back-to-top fixed right-6 bottom-6 opacity-0 data-active:opacity-100" type="button" aria-label="Back to top">...</button>
+{% endraw %}{% endset %}
+
+{# demo: the page bar, under the header #}
+<div class="js-page-progress pointer-events-none fixed inset-x-0 top-(--header-height) z-30 h-1 origin-left scale-x-(--progress) bg-indigo-600"></div>
+
+{# demo: back to top with a progress ring #}
+<button class="js-back-to-top group fixed right-4 bottom-4 z-30 flex size-14 translate-y-4 cursor-pointer items-center justify-center rounded-full bg-white text-gray-950 opacity-0 shadow-lg transition-[opacity,translate] duration-300 pointer-events-none data-active:pointer-events-auto data-active:translate-y-0 data-active:opacity-100 md:right-6 md:bottom-6" type="button" aria-label="Back to top">
+    <svg class="absolute inset-0 size-full -rotate-90" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+        <circle cx="28" cy="28" r="26" stroke="currentColor" stroke-opacity="0.1" stroke-width="3" />
+        <circle cx="28" cy="28" r="26" stroke="currentColor" stroke-width="3" stroke-linecap="round" pathLength="1" stroke-dasharray="1" style="stroke-dashoffset: calc(1 - var(--progress, 0))" />
+    </svg>
+    <svg class="size-5 transition-transform duration-300 group-hover:-translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 15 7-7 7 7" /></svg>
+</button>
+
+<section class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-4">
+        <h2 class="text-3xl font-bold tracking-tight">Page and back to top</h2>
+        <p class="max-w-2xl text-gray-600">Scroll the page. The bar under the header fills up, and after one screen a button comes in at the bottom right, its ring filling too.</p>
+    </div>
+</section>
+
+{# demo: one article, its own progress #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-10">
+        <div>
+            <h2 class="text-3xl font-bold tracking-tight">One article</h2>
+            <p class="mt-2 max-w-2xl text-gray-600">Counts only this article, from its top at the header to its end at the bottom of the screen.</p>
+        </div>
+        <article class="js-article mx-auto w-full max-w-2xl rounded-3xl bg-white">
+            <div class="js-article-progress sticky top-(--header-height) z-10 overflow-hidden rounded-t-3xl border-b border-gray-200 bg-white/90 backdrop-blur">
+                <div class="flex items-center justify-between px-6 py-3 text-sm md:px-10">
+                    <span class="font-semibold">Designing for the scroll</span>
+                    <span class="font-mono text-gray-500"><span class="js-article-percent">0</span>% read</span>
+                </div>
+                <div class="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-(--progress) bg-gray-950"></div>
+            </div>
+            <div class="flex flex-col gap-5 px-6 py-10 text-gray-600 md:px-10">
+                {% for i in range(0, 10) %}
+                {% if i % 3 == 0 %}<h3 class="mt-4 text-xl font-bold tracking-tight text-gray-950">Part {{ i // 3 + 1 }}</h3>{% endif %}
+                <p>{{ lorem }}</p>
+                {% endfor %}
+            </div>
+        </article>
+    </div>
+</section>
+
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        {% for i in range(0, 4) %}<p class="max-w-2xl text-gray-600">{{ lorem }}</p>{% endfor %}
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_scrollProgress.js
+
+// the page, on the bar, defaults: threshold: one screen
+new _scrollProgress({ target: document.querySelector('.js-page-progress') });
+
+// back to top, same page progress for its ring
+const _backToTop = document.querySelector('.js-back-to-top');
+new _scrollProgress({ target: _backToTop });
+_backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+// one article, the number from the event
+const _percent = document.querySelector('.js-article-percent');
+new _scrollProgress({
+    target: document.querySelector('.js-article-progress'),
+    element: document.querySelector('.js-article'),
+    events: {
+        update: ({ progress }) => (_percent.textContent = Math.round(progress * 100)),
+    },
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The util sets <code class="font-mono text-sm">--progress</code> on the target, so Tailwind can use it, e.g. <code class="font-mono text-sm">scale-x-(--progress)</code>. A ring is an svg circle with <code class="font-mono text-sm">pathLength="1"</code> and <code class="font-mono text-sm">stroke-dashoffset: calc(1 - var(--progress))</code>.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _scrollProgress({ target, element, threshold, events })</code>. Target gets <code class="font-mono text-sm">data-active</code> past <code class="font-mono text-sm">threshold</code> px, or while its element is read. Methods: <code class="font-mono text-sm">update()</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">update</code> (with <code class="font-mono text-sm">progress</code>), <code class="font-mono text-sm">enter</code>, <code class="font-mono text-sm">leave</code>.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

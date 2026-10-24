@@ -1,0 +1,73 @@
+---
+title: Lottie | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_lottie · lottie-web', title: 'Lottie', description: 'Lottie animations that play on screen, on hover, on click or with the scroll. One util, the play mode is an option. lottie-web loads only when the first one nears the screen.' }) }}
+
+{% set samples = [
+    { url: '/components/lottie/play/#in-view', title: 'In view', text: 'Plays on screen and pauses when it leaves. A one-off plays once.', file: 'spinner' },
+    { url: '/components/lottie/play/#hover', title: 'Hover', text: 'Plays forward on hover and back when the mouse leaves.', file: 'arrow' },
+    { url: '/components/lottie/play/#click', title: 'Click', text: 'Toggles forward and back, like a menu button turning into an X.', file: 'menu' },
+    { url: '/components/lottie/play/#send', title: 'Send button', text: 'A paper plane flies off on click, then comes back.', file: 'plane' },
+    { url: '/components/lottie/scroll/', title: 'Scroll', text: 'The frames follow the scroll with _parallaxScroller, pinned or as it passes.', file: 'sunrise' }
+] %}
+<section id="demos" class="px-4 pb-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-8 text-3xl font-bold tracking-tight">Samples</h2>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {% for sample in samples %}
+            <a class="js-lottie-card group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="{{ sample.url }}">
+                <div class="flex aspect-4/3 items-center justify-center bg-gray-50">
+                    <div class="js-lottie-preview {{ 'w-3/4' if sample.file in ['sunrise', 'plane'] else 'size-24' }}" data-lottie="/assets/lottie/{{ sample.file }}.json"></div>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">{{ sample.title }}</h3>
+                    <p class="mb-6 flex-1 text-gray-600">{{ sample.text }}</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- the animation is drawn inside, give it a size -->
+<div class="js-lottie size-24" data-lottie="/assets/lottie/check.json"></div>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // lottie-web (npm, its own chunk, loaded when needed)
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_lottie.js
+
+// the cards play on hover, the scroll one follows the mouse across it
+document.querySelectorAll('.js-lottie-card').forEach((card) => {
+    const target = card.querySelector('.js-lottie-preview');
+    if (!target.dataset.lottie.includes('sunrise')) return new _lottie({ target, play: 'hover', trigger: card });
+
+    const _sunrise = new _lottie({ target, play: 'none' });
+    _sunrise.seek(0.9);
+    card.addEventListener('pointermove', (e) => {
+        const _rect = card.getBoundingClientRect();
+        _sunrise.seek((e.clientX - _rect.left) / _rect.width);
+    });
+    card.addEventListener('pointerleave', () => _sunrise.seek(0.9));
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Export from After Effects with Bodymovin, or download a .json from a Lottie library. The samples here are our own.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _lottie({ target, src, play, loop, speed, trigger, renderer, events })</code>. <code class="font-mono text-sm">play</code>: <code class="font-mono text-sm">inview</code> (default), <code class="font-mono text-sm">hover</code>, <code class="font-mono text-sm">click</code>, <code class="font-mono text-sm">none</code> (for scroll, with <code class="font-mono text-sm">seek()</code>). <code class="font-mono text-sm">ready</code> resolves with the lottie-web animation, also on <code class="font-mono text-sm">animation</code>. Methods: <code class="font-mono text-sm">seek(progress)</code>, <code class="font-mono text-sm">toggle(on)</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">ready</code>, <code class="font-mono text-sm">complete</code>, <code class="font-mono text-sm">toggle</code>. Reduced motion keeps in view and hover on a still frame.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

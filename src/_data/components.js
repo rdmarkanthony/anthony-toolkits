@@ -9,6 +9,7 @@ export default [
             { label: "Animate", url: "/components/animate/", description: "Animate.css effects triggered in view.", utils: "_animate · _inview · _splitText", ready: true, starter: true },
             { label: "Animated number", url: "/components/animated-number/", description: "Count up to a value on scroll.", utils: "_animatedNumber · _inview", ready: true },
             { label: "Cursor bubble", url: "/components/cursor-bubble/", description: "A dot that trails the mouse, grows over big type and shows labels.", utils: "_cursorBubble", ready: true },
+            { label: "Magnetic button", url: "/components/magnetic-button/", description: "Buttons and links that lean toward the mouse as it comes near.", utils: "_magnetic", ready: true },
             { label: "Page transition", url: "/components/page-transition/", description: "An animation as a link leaves the page and as the next one shows, safe with the back button.", utils: "_pageTransition", ready: true },
             { label: "Rolling number", url: "/components/rolling-number/", description: "Odometer-style rolling digits.", utils: "_rollingNumber · _inview", ready: true },
             { label: "Scramble text", url: "/components/scramble-text/", description: "Letters flip through random characters, then settle into the text.", utils: "_scrambleText", ready: true },
@@ -39,6 +40,14 @@ export default [
         ],
     },
     {
+        category: "Lottie",
+        url: "/components/lottie/",
+        items: [
+            { label: "Lottie view, hover and click", url: "/components/lottie/play/", description: "Plays on screen, on hover, or on click as a toggle, plus a send button.", utils: "_lottie · lottie-web", ready: true },
+            { label: "Lottie scroll", url: "/components/lottie/scroll/", description: "The frames follow the scroll, pinned or as it passes.", utils: "_lottie · _parallaxScroller · lottie-web", ready: true },
+        ],
+    },
+    {
         category: "Sliders",
         url: "/components/sliders/",
         items: [
@@ -64,7 +73,10 @@ export default [
             { label: "Breakpoints", url: "/components/breakpoints/", description: "The responsive breakpoints, shown live as you resize.", utils: "Tailwind @theme", ready: true },
             { label: "Fluid sizing", url: "/components/fluid-sizing/", description: "Tailwind sizes that scale with their section width, using cqw.", utils: "fluid · cqw", ready: true },
             { label: "Group height", url: "/components/group-height/", description: "Equalize heights across grouped elements.", utils: "_groupHeight", ready: true },
+            { label: "Header", url: "/components/header/", description: "Hides on scroll down, shows on scroll up, with a mobile menu that locks the page.", utils: "_header · _event", ready: true },
             { label: "Hover indicator", url: "/components/hover-indicator/", description: "A background or line that slides to the hovered or selected item.", utils: "_hoverIndicator", ready: true },
+            { label: "Scroll progress", url: "/components/scroll-progress/", description: "How far down the page or an article you are, plus a back to top button.", utils: "_scrollProgress · _event", ready: true },
+            { label: "Scrollspy", url: "/components/scrollspy/", description: "Marks the link of the section on screen, for contents, tabs or dots.", utils: "_scrollSpy · _event", ready: true },
             { label: "Tabs", url: "/components/tabs/", description: "Links that switch between content panels, nestable.", utils: "_tabs", ready: true },
             { label: "Tooltip", url: "/components/tooltip/", description: "A small label on hover or focus, or a quick message instead of alert().", utils: "_tooltip", ready: true },
         ],
@@ -72,6 +84,8 @@ export default [
     {
         category: "Forms",
         items: [
+            { label: "Form validation", url: "/components/form-validation/", description: "Checks fields as people type, with events to show errors your own way.", utils: "_formValidation", ready: true },
+            { label: "Range slider", url: "/components/range-slider/", description: "A styled range input with one thumb or two, still a native input.", utils: "_rangeSlider", ready: true },
             { label: "Search suggestion", url: "/components/search-suggestion/", description: "Suggestions below a search input as you type, with keyboard support.", utils: "_autocomplete", ready: true },
             { label: "Select box", url: "/components/select-box/", description: "A styled dropdown for a native select, with search and keyboard support.", utils: "_selectBox", ready: true },
         ],
@@ -82,6 +96,7 @@ export default [
             { label: "Countdown timer", url: "/components/countdown-timer/", description: "Countdown to a date and time.", utils: "_countdownTimer · _rollingNumber", ready: true },
             { label: "Google Map", url: "/components/google-map/", description: "Markers, popups and a custom theme, with a location list that flies to each place.", utils: "_googleMap", ready: true },
             { label: "QR code", url: "/components/qr-code/", description: "QR codes for links or Wi-Fi, saved as PNG or SVG.", utils: "_qrCode", ready: true },
+            { label: "Share", url: "/components/share/", description: "Share links, a copy link button and the phone share sheet.", utils: "_share", ready: true },
         ],
     },
     {

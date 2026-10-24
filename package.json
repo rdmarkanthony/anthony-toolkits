@@ -15,6 +15,7 @@
         "build:js": "node esbuild.config.js",
         "test": "echo \"Error: no test specified\" && exit 1",
         "format": "prettier --write .",
+        "lottie": "node tools/make-lottie.js",
         "preinstall": "npx only-allow pnpm"
     },
     "keywords": [],
@@ -27,6 +28,7 @@
         "flatpickr": "^4.6.13",
         "gsap": "^3.15.0",
         "hls.js": "^1.7.3",
+        "lottie-web": "5.12.2",
         "luxon": "^3.7.2",
         "plyr": "^3.8.5",
         "qrcode": "1.5.4",

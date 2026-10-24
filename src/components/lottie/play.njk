@@ -1,0 +1,199 @@
+---
+title: Lottie view, hover and click | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Lottie', url: '/components/lottie/' }, label: '_lottie · lottie-web', title: 'View, hover and click', description: 'The play modes on one page: on screen, on hover, on click as a toggle, and a send button that plays parts of one animation with lottie-web\'s own segments.' }) }}
+
+{% set card = 'flex flex-col items-center gap-6 rounded-3xl border border-gray-200 bg-white p-10' %}
+{% set heading = 'text-3xl font-bold tracking-tight' %}
+
+{% set markup %}{% raw %}
+<!-- in view, the default -->
+<div class="js-lottie size-24" data-lottie="/assets/lottie/check.json"></div>
+
+<!-- hover and click: the whole button is the trigger, the strokes take its text color -->
+<a class="js-lottie-button text-white" href="/work">
+    View work
+    <span class="js-lottie-arrow size-6 [&_path]:stroke-current" data-lottie="/assets/lottie/arrow.json"></span>
+</a>
+{% endraw %}{% endset %}
+
+{# demo: in view #}
+<section id="in-view" class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="{{ heading }}">In view</h2>
+            <p class="mt-2 max-w-2xl text-gray-600">Plays once it is on screen. A loop pauses when it leaves, a one-off plays once and stays on its last frame.</p>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2">
+            <div class="{{ card }}">
+                <div class="js-lottie-spinner size-28" data-lottie="/assets/lottie/spinner.json"></div>
+                <p class="text-gray-600"><code class="font-mono text-sm">loop: true</code>, paused while off screen.</p>
+            </div>
+            <div class="{{ card }}">
+                <div class="js-lottie-check size-28" data-lottie="/assets/lottie/check.json"></div>
+                <p class="text-gray-600">Plays when you reach it. <button class="js-lottie-replay cursor-pointer font-medium text-gray-950 underline underline-offset-2" type="button">Replay</button></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# demo: hover #}
+<section id="hover" class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="{{ heading }}">Hover</h2>
+            <p class="mt-2 max-w-2xl text-gray-600">Plays forward when the mouse comes in, and back from where it is when it leaves. Keyboard focus does the same.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-4 rounded-3xl bg-white px-6 py-12 md:px-12">
+            <a class="js-lottie-button inline-flex h-14 items-center gap-3 rounded-full bg-gray-950 pr-5 pl-7 font-medium text-white" href="#">
+                View work
+                <span class="js-lottie-arrow block size-7 [&_path]:stroke-current" data-lottie="/assets/lottie/arrow.json"></span>
+            </a>
+            <a class="js-lottie-button inline-flex h-14 items-center gap-3 rounded-full border border-gray-300 pr-5 pl-7 font-medium transition-colors hover:border-gray-950" href="#">
+                About us
+                <span class="js-lottie-arrow block size-7" data-lottie="/assets/lottie/arrow.json"></span>
+            </a>
+        </div>
+        <div class="grid gap-6 md:grid-cols-3">
+            {% for work in ['Ember', 'Lagoon', 'Meadow'] %}
+            <a class="js-lottie-button flex flex-col gap-4 rounded-3xl border border-gray-200 bg-white p-6 transition-colors hover:border-gray-950" href="#">
+                <div class="aspect-4/3 rounded-2xl bg-gray-100"></div>
+                <div class="flex items-center justify-between">
+                    <p class="text-lg font-semibold">{{ work }}</p>
+                    <span class="js-lottie-arrow block size-8" data-lottie="/assets/lottie/arrow.json"></span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# demo: click, as a toggle #}
+<section id="click" class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="{{ heading }}">Click</h2>
+            <p class="mt-2 max-w-2xl text-gray-600">Each click plays it forward or back, so it works as a toggle. <code class="font-mono text-sm">aria-pressed</code> follows the <code class="font-mono text-sm">toggle</code> event.</p>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2">
+            <div class="{{ card }}">
+                <button class="js-lottie-menu flex size-16 cursor-pointer items-center justify-center rounded-full bg-gray-950 text-white" type="button" aria-label="Menu" aria-pressed="false">
+                    <span class="js-lottie-menu-icon block size-9 [&_path]:stroke-current" data-lottie="/assets/lottie/menu.json"></span>
+                </button>
+                <p class="text-gray-600">Lines to an X and back.</p>
+            </div>
+            <div class="{{ card }}">
+                <ul class="flex w-full max-w-xs flex-col gap-2">
+                    {% for task in ['Brief', 'Design', 'Launch'] %}
+                    <li>
+                        <button class="js-lottie-task flex w-full cursor-pointer items-center gap-3 rounded-2xl px-3 py-2 text-left font-medium transition-colors hover:bg-gray-50 aria-pressed:text-gray-400 aria-pressed:line-through" type="button" aria-pressed="false">
+                            <span class="relative block size-8 shrink-0 rounded-full border-2 border-gray-300">
+                                <span class="js-lottie-task-icon absolute -inset-0.5 block" data-lottie="/assets/lottie/check.json"></span>
+                            </span>
+                            {{ task }}
+                        </button>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <p class="text-gray-600">The check draws in, and out again.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# demo: send, two parts of one animation #}
+<section id="send" class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="{{ heading }}">Send button</h2>
+            <p class="mt-2 max-w-2xl text-gray-600">Frame 0 is the button's icon. A click plays frames 0 to 75, the plane flies off, then 75 to 100 brings it back.</p>
+        </div>
+        <div class="flex flex-col items-center gap-6 rounded-3xl bg-white px-6 pt-40 pb-16">
+            <form class="js-send-form flex w-full max-w-md flex-col gap-3 sm:flex-row">
+                <input class="h-14 flex-1 rounded-full border border-gray-300 px-6 outline-none focus:border-gray-950" type="email" placeholder="you@example.com" aria-label="Email" />
+                <button class="js-send group inline-flex h-14 cursor-pointer items-center justify-center gap-3 rounded-full bg-gray-950 pr-7 pl-6 font-medium text-white" type="submit">
+                    <span class="relative block size-6 shrink-0">
+                        <span class="js-send-plane pointer-events-none absolute top-1/2 left-1/2 block h-60 w-100 -translate-1/2" data-lottie="/assets/lottie/plane.json"></span>
+                        <svg class="absolute inset-0 size-6 scale-50 opacity-0 transition-[opacity,scale] duration-300 group-data-[state=sent]:scale-100 group-data-[state=sent]:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg>
+                    </span>
+                    <span class="group-data-[state=sent]:hidden">Send</span>
+                    <span class="hidden group-data-[state=sent]:inline">Sent</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // lottie-web (npm, its own chunk, loaded when needed)
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_lottie.js
+
+// in view: a loop, defaults: play: 'inview', loop: false, speed: 1
+new _lottie({ target: document.querySelector('.js-lottie-spinner'), loop: true });
+
+// in view: once, replayed through lottie-web's own animation
+const _check = new _lottie({ target: document.querySelector('.js-lottie-check') });
+document.querySelector('.js-lottie-replay').addEventListener('click', async () => (await _check.ready).goToAndPlay(0, true));
+
+// hover: the whole button or card is the trigger
+document.querySelectorAll('.js-lottie-button').forEach((trigger) => {
+    new _lottie({ target: trigger.querySelector('.js-lottie-arrow'), play: 'hover', trigger, speed: 1.5 });
+});
+
+// click: isOn is the state after each click
+const _pressed = (trigger) => ({ isOn }) => trigger.setAttribute('aria-pressed', String(isOn));
+document.querySelectorAll('.js-lottie-menu').forEach((trigger) => {
+    new _lottie({ target: trigger.querySelector('.js-lottie-menu-icon'), play: 'click', trigger, events: { toggle: _pressed(trigger) } });
+});
+document.querySelectorAll('.js-lottie-task').forEach((trigger) => {
+    new _lottie({ target: trigger.querySelector('.js-lottie-task-icon'), play: 'click', trigger, speed: 1.5, events: { toggle: _pressed(trigger) } });
+});
+
+// send: play 'none', two segments of one animation
+const _send = document.querySelector('.js-send');
+const _plane = new _lottie({
+    target: document.querySelector('.js-send-plane'),
+    play: 'none',
+    events: {
+        complete: ({ animation }) => {
+            if (_send.dataset.state !== 'flying') return delete _send.dataset.state;
+
+            _send.dataset.state = 'sent';
+            setTimeout(() => {
+                _send.dataset.state = 'back';
+                animation.playSegments([75, 100], true);
+            }, 1800);
+        },
+    },
+});
+
+document.querySelector('.js-send-form').addEventListener('submit', async (e) => {
+    // send it yourself here, fetch() or _formValidation's submit
+    e.preventDefault();
+    if (_send.dataset.state) return;
+
+    const _animation = await _plane.ready;
+    _send.dataset.state = 'flying';
+    _animation.playSegments([0, 75], true);
+});
+
+// demo links go nowhere
+document.querySelectorAll('.js-lottie-button').forEach((link) => link.addEventListener('click', (e) => e.preventDefault()));
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Lottie colors are baked into the file. One color icons can follow the text with <code class="font-mono text-sm">[&_path]:stroke-current</code> (or <code class="font-mono text-sm">fill-current</code>).',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">ready</code> resolves with lottie-web\'s animation, for anything the modes don\'t cover: <code class="font-mono text-sm">goToAndPlay</code>, <code class="font-mono text-sm">playSegments</code>, <code class="font-mono text-sm">setSpeed</code>. <code class="font-mono text-sm">toggle(on)</code> sets a click toggle from code, e.g. closing the menu when a link is picked.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

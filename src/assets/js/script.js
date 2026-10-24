@@ -29,10 +29,16 @@ import { _tabs } from "./utils/_tabs";
 import { _tooltip } from "./utils/_tooltip";
 import { _hoverIndicator } from "./utils/_hoverIndicator";
 import { _accordion } from "./utils/_accordion";
+import { _header } from "./utils/_header";
+import { _scrollSpy } from "./utils/_scrollSpy";
+import { _scrollProgress } from "./utils/_scrollProgress";
+import { _share } from "./utils/_share";
 import { _groupHeight } from "./utils/_groupHeight";
 import { _lightbox } from "./utils/_lightbox";
 import { _lazyLoad } from "./utils/_lazyLoad";
 import { _selectBox } from "./utils/_selectBox";
+import { _formValidation } from "./utils/_formValidation";
+import { _rangeSlider } from "./utils/_rangeSlider";
 import { _videoPlayer } from "./utils/_videoPlayer";
 import { _plyr } from "./utils/_plyr";
 import { _youtubePlayer } from "./utils/_youtubePlayer";
@@ -42,6 +48,8 @@ import { _parallax, _parallaxScroller, _parallaxOffset, _parallaxBackground, _pa
 import { _canvasBanner } from "./utils/_canvasBanner";
 import { _themeScroller } from "./utils/_themeScroller";
 import { _cursorBubble } from "./utils/_cursorBubble";
+import { _magnetic } from "./utils/_magnetic";
+import { _lottie } from "./utils/_lottie";
 import { _googleMap } from "./utils/_googleMap";
 import { _qrCode } from "./utils/_qrCode";
 import { _peekSlider } from "./utils/_peekSlider";
@@ -79,10 +87,16 @@ Object.assign(window, {
     _tooltip,
     _hoverIndicator,
     _accordion,
+    _header,
+    _scrollSpy,
+    _scrollProgress,
+    _share,
     _groupHeight,
     _lightbox,
     _lazyLoad,
     _selectBox,
+    _formValidation,
+    _rangeSlider,
     _videoPlayer,
     _plyr,
     _youtubePlayer,
@@ -97,6 +111,8 @@ Object.assign(window, {
     _canvasBanner,
     _themeScroller,
     _cursorBubble,
+    _magnetic,
+    _lottie,
     _googleMap,
     _qrCode,
     _peekSlider,
@@ -106,12 +122,13 @@ Object.assign(window, {
 });
 
 // set before the page scripts measure
-const _header = document.querySelector(".header-content");
+const _headerContent = document.querySelector(".header-content");
 const _footer = document.querySelector(".footer-content");
 
+// skipped on bare demo pages, so a demo _header keeps its own
 _event.resize(() => {
-    document.body.style.setProperty("--header-height", `${_header?.offsetHeight ?? 0}px`);
-    document.body.style.setProperty("--footer-height", `${_footer?.offsetHeight ?? 0}px`);
+    if (_headerContent) document.body.style.setProperty("--header-height", `${_headerContent.offsetHeight}px`);
+    if (_footer) document.body.style.setProperty("--footer-height", `${_footer.offsetHeight}px`);
 });
 
 // before the page scripts read the hash
@@ -181,7 +198,7 @@ document.querySelectorAll("[data-search]").forEach((form) => {
 // sliding menu below lg, the page is inert while open
 const _menu = document.querySelector("[data-mobile-menu]");
 const _menuButton = document.querySelector("[data-mobile-menu-open]");
-const _pageParts = [_header, document.querySelector(".main-content"), _footer].filter(Boolean);
+const _pageParts = [_headerContent, document.querySelector(".main-content"), _footer].filter(Boolean);
 
 const _toggleMenu = (open) => {
     if (!_menu || open === _menu.hasAttribute("data-open")) return;
