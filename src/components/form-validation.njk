@@ -1,0 +1,225 @@
+---
+title: Form validation | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_formValidation', title: 'Form validation', description: 'Checks the native attributes plus your own rules as people type, with events for every change. Show errors under the fields, in a list, or any way you like.' }) }}
+
+{% set label = 'mb-2 block font-semibold' %}
+{% set input = 'w-full rounded-xl border border-gray-300 bg-white px-4 py-3 transition-colors outline-none focus:border-gray-950 aria-invalid:border-red-500' %}
+{% set error = 'js-field-error mt-2 text-sm text-red-600' %}
+{% set button = 'cursor-pointer rounded-full bg-gray-950 px-6 py-3 font-medium text-white transition-colors hover:bg-gray-700 disabled:opacity-50' %}
+
+{% set markup %}{% raw %}
+<form class="js-form">
+    <!-- .js-field and .js-field-error are optional, events work without them -->
+    <div class="js-field group">
+        <label for="email">Email</label>
+        <input id="email" class="aria-invalid:border-red-500" name="email" type="email" required />
+        <p class="js-field-error text-red-600" hidden></p>
+    </div>
+
+    <!-- own message for one check -->
+    <input name="terms" type="checkbox" required data-message-value-missing="Please accept the terms." />
+
+    <button type="submit">Sign up</button>
+</form>
+{% endraw %}{% endset %}
+
+{# demo: errors under the fields, a rule, a server error #}
+<section class="px-4 py-16">
+    <div class="mx-auto grid max-w-295 gap-10 lg:grid-cols-[1fr_28rem]">
+        <div class="flex flex-col gap-4">
+            <h2 class="text-3xl font-bold tracking-tight">Sign up</h2>
+            <ul class="flex max-w-md flex-col gap-2 text-gray-600">
+                <li>A field checks when you leave it, then as you type.</li>
+                <li>Submit checks them all and goes to the first error.</li>
+                <li>The confirm password is a rule of your own.</li>
+                <li>Use <code class="font-mono text-sm">taken@example.com</code> for an error from the server.</li>
+            </ul>
+            <p class="font-mono text-sm text-gray-500">last event: <span class="js-sign-up-event">-</span></p>
+        </div>
+        <form class="js-sign-up flex flex-col gap-5 rounded-3xl border border-gray-200 p-6 md:p-8">
+            <div class="js-field">
+                <label class="{{ label }}" for="fv-name">Name</label>
+                <input id="fv-name" class="{{ input }}" name="name" type="text" autocomplete="name" required minlength="2" />
+                <p class="{{ error }}" hidden></p>
+            </div>
+            <div class="js-field">
+                <label class="{{ label }}" for="fv-email">Email</label>
+                <input id="fv-email" class="{{ input }}" name="email" type="email" autocomplete="email" required />
+                <p class="{{ error }}" hidden></p>
+            </div>
+            <div class="js-field group">
+                <label class="{{ label }}" for="fv-password">Password</label>
+                <input id="fv-password" class="{{ input }}" name="password" type="password" autocomplete="new-password" required minlength="8" pattern=".*\d.*" title="Add at least one number." aria-describedby="fv-password-hint" />
+                <p id="fv-password-hint" class="mt-2 text-sm text-gray-500 group-data-invalid:hidden">8 characters or more, with a number.</p>
+                <p class="{{ error }}" hidden></p>
+            </div>
+            <div class="js-field">
+                <label class="{{ label }}" for="fv-confirm">Confirm password</label>
+                <input id="fv-confirm" class="{{ input }}" name="confirm" type="password" autocomplete="new-password" required />
+                <p class="{{ error }}" hidden></p>
+            </div>
+            <fieldset class="js-field group">
+                <legend class="{{ label }}">Plan</legend>
+                <div class="flex flex-wrap gap-2">
+                    {% for plan in ['Free', 'Pro', 'Team'] %}
+                    <label class="cursor-pointer rounded-full border border-gray-300 px-5 py-2 font-medium transition-colors group-data-invalid:border-red-500 has-checked:border-gray-950 has-checked:bg-gray-950 has-checked:text-white has-focus-visible:ring-2 has-focus-visible:ring-gray-950 has-focus-visible:ring-offset-2">
+                        <input class="sr-only" name="plan" type="radio" value="{{ plan | lower }}" required />{{ plan }}
+                    </label>
+                    {% endfor %}
+                </div>
+                <p class="{{ error }}" hidden></p>
+            </fieldset>
+            <div class="js-field">
+                <label class="{{ label }}" for="fv-country">Country</label>
+                <select id="fv-country" class="{{ input }}" name="country" required>
+                    <option value="" selected disabled>Choose a country</option>
+                    {% for country in ['Australia', 'Philippines', 'Singapore', 'United Kingdom', 'United States'] %}<option>{{ country }}</option>{% endfor %}
+                </select>
+                <p class="{{ error }}" hidden></p>
+            </div>
+            <div class="js-field">
+                <label class="flex cursor-pointer items-start gap-3">
+                    <input class="mt-1 size-4 accent-gray-950" name="terms" type="checkbox" required data-message-value-missing="Please accept the terms." />
+                    <span class="text-gray-600">I accept the terms and privacy policy.</span>
+                </label>
+                <p class="{{ error }}" hidden></p>
+            </div>
+            <button class="js-sign-up-button {{ button }}" type="submit">Create account</button>
+            <p class="js-sign-up-done rounded-xl bg-green-50 px-4 py-3 text-green-700" hidden>Account created. The form has been reset.</p>
+        </form>
+    </div>
+</section>
+
+{# demo: no error elements, a list of errors built from the events #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto grid max-w-295 gap-10 lg:grid-cols-[1fr_28rem]">
+        <div class="flex flex-col gap-4">
+            <h2 class="text-3xl font-bold tracking-tight">Your own error look</h2>
+            <p class="max-w-md text-gray-600">No error spots in the markup. The events fill a list at the top, and with <code class="font-mono text-sm">live: true</code> it checks from the first key.</p>
+            <p class="font-mono text-sm text-gray-500">last event: <span class="js-contact-event">-</span></p>
+        </div>
+        <form class="js-contact flex flex-col gap-5 rounded-3xl border border-gray-200 bg-white p-6 md:p-8">
+            <div class="js-contact-summary rounded-2xl bg-red-50 p-5 text-red-700" hidden>
+                <p class="mb-2 font-semibold">Please check:</p>
+                <ul class="js-contact-list flex list-disc flex-col gap-1 pl-5 text-sm"></ul>
+            </div>
+            <div>
+                <label class="{{ label }}" for="fv-contact-name">Name</label>
+                <input id="fv-contact-name" class="{{ input }}" name="name" type="text" required data-label="Name" />
+            </div>
+            <div>
+                <label class="{{ label }}" for="fv-contact-email">Email</label>
+                <input id="fv-contact-email" class="{{ input }}" name="email" type="email" required data-label="Email" />
+            </div>
+            <div>
+                <label class="{{ label }}" for="fv-contact-message">Message</label>
+                <textarea id="fv-contact-message" class="{{ input }} min-h-32" name="message" required minlength="20" data-label="Message"></textarea>
+            </div>
+            <button class="{{ button }}" type="submit">Send</button>
+        </form>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_formValidation.js
+
+// sign up: errors under the fields, defaults: live: false
+const _signUp = document.querySelector('.js-sign-up');
+const _signUpEvent = document.querySelector('.js-sign-up-event');
+const _signUpButton = document.querySelector('.js-sign-up-button');
+const _done = document.querySelector('.js-sign-up-done');
+
+const _signUpForm = new _formValidation({
+    target: _signUp,
+    // true or a message, rechecked when other fields change
+    rules: {
+        '[name="confirm"]': (input, form) => input.value === form.password.value || "Passwords don't match.",
+    },
+    // replaces a default for this form
+    messages: {
+        valueMissing: (input) => (input.type === 'radio' ? 'Please pick a plan.' : 'This field is required.'),
+    },
+    events: {
+        invalid: ({ field, message }) => (_signUpEvent.textContent = `invalid, ${field.name}: ${message}`),
+        valid: ({ field }) => (_signUpEvent.textContent = `valid, ${field.name}`),
+        error: ({ invalid }) => (_signUpEvent.textContent = `error, ${invalid.length} to fix`),
+        // all valid, stop the page load and send it yourself
+        submit: async ({ event }) => {
+            event.preventDefault();
+            _signUpEvent.textContent = 'submit';
+            _signUpButton.disabled = true;
+
+            // a fake request
+            await new Promise((resolve) => setTimeout(resolve, 600));
+            _signUpButton.disabled = false;
+
+            if (_signUp.email.value === 'taken@example.com') return _signUpForm.setError(_signUp.email, 'This email already has an account.');
+
+            _signUp.reset();
+            _done.hidden = false;
+            setTimeout(() => (_done.hidden = true), 3000);
+        },
+    },
+});
+
+// contact: a list built from the events
+const _contactEvent = document.querySelector('.js-contact-event');
+const _summary = document.querySelector('.js-contact-summary');
+const _list = document.querySelector('.js-contact-list');
+const _errors = new Map();
+
+const _render = () => {
+    _list.innerHTML = '';
+    _errors.forEach((message, input) => {
+        const _item = document.createElement('li');
+        _item.innerHTML = `<a class="underline underline-offset-2" href="#${input.id}"></a>`;
+        _item.firstChild.textContent = `${input.dataset.label}: ${message}`;
+        _list.append(_item);
+    });
+    _summary.hidden = !_errors.size;
+};
+
+new _formValidation({
+    target: document.querySelector('.js-contact'),
+    live: true,
+    events: {
+        invalid: ({ field, message }) => {
+            _contactEvent.textContent = `invalid, ${field.name}`;
+            _errors.set(field, message);
+            _render();
+        },
+        valid: ({ field }) => {
+            _contactEvent.textContent = `valid, ${field.name}`;
+            _errors.delete(field);
+            _render();
+        },
+        submit: ({ event, target }) => {
+            event.preventDefault();
+            _contactEvent.textContent = 'submit';
+            target.reset();
+        },
+        reset: () => {
+            _errors.clear();
+            _render();
+        },
+    },
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Rules come from the native attributes. The input gets <code class="font-mono text-sm">aria-invalid</code>, the <code class="font-mono text-sm">.js-field</code> wrapper <code class="font-mono text-sm">data-invalid</code> or <code class="font-mono text-sm">data-valid</code>, and the <code class="font-mono text-sm">.js-field-error</code> the message. Own messages with <code class="font-mono text-sm">data-message-*</code> per check (value-missing, type-mismatch, too-short...) or <code class="font-mono text-sm">data-message</code> for all.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _formValidation({ target, live, rules, messages, events })</code>. Methods: <code class="font-mono text-sm">validate(input)</code>, <code class="font-mono text-sm">validateAll()</code>, <code class="font-mono text-sm">setError(input, message)</code> for server errors, <code class="font-mono text-sm">clear(input)</code>, <code class="font-mono text-sm">reset()</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">invalid</code> and <code class="font-mono text-sm">valid</code> (with <code class="font-mono text-sm">field</code>, <code class="font-mono text-sm">message</code>), <code class="font-mono text-sm">error</code> on a blocked submit (with <code class="font-mono text-sm">invalid</code>), <code class="font-mono text-sm">submit</code> when all pass (with <code class="font-mono text-sm">event</code>), <code class="font-mono text-sm">reset</code>.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

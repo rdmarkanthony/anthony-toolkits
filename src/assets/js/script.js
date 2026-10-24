@@ -35,6 +35,7 @@ import { _groupHeight } from "./utils/_groupHeight";
 import { _lightbox } from "./utils/_lightbox";
 import { _lazyLoad } from "./utils/_lazyLoad";
 import { _selectBox } from "./utils/_selectBox";
+import { _formValidation } from "./utils/_formValidation";
 import { _videoPlayer } from "./utils/_videoPlayer";
 import { _plyr } from "./utils/_plyr";
 import { _youtubePlayer } from "./utils/_youtubePlayer";
@@ -87,6 +88,7 @@ Object.assign(window, {
     _lightbox,
     _lazyLoad,
     _selectBox,
+    _formValidation,
     _videoPlayer,
     _plyr,
     _youtubePlayer,
