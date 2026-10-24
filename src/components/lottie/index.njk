@@ -8,7 +8,7 @@ title: Lottie | Anthony Toolkits
 {{ pageIntro({ label: '_lottie · lottie-web', title: 'Lottie', description: 'Lottie animations that play on screen, on hover, on click or with the scroll. One util, the play mode is an option. lottie-web loads only when the first one nears the screen.' }) }}
 
 {% set samples = [
-    { url: '/components/lottie/play/#in-view', title: 'In view', text: 'Plays on screen and pauses when it leaves. A one-off plays once.', file: 'spinner' },
+    { url: '/components/lottie/play/#in-view', title: 'In view', text: 'Plays on screen and pauses when it leaves. A one-off plays once.', file: 'emoji-party' },
     { url: '/components/lottie/play/#hover', title: 'Hover', text: 'Plays forward on hover and back when the mouse leaves.', file: 'arrow' },
     { url: '/components/lottie/play/#click', title: 'Click', text: 'Toggles forward and back, like a menu button turning into an X.', file: 'menu' },
     { url: '/components/lottie/play/#send', title: 'Send button', text: 'A paper plane flies off on click, then comes back.', file: 'plane' },
@@ -63,7 +63,7 @@ document.querySelectorAll('.js-lottie-card').forEach((card) => {
 
 {{ scriptUsage({
     markup: markup,
-    markupNote: 'Export from After Effects with Bodymovin, or download a .json from a Lottie library. The samples here are our own.',
+    markupNote: 'Export from After Effects with Bodymovin, or download a .json from a Lottie library. The emoji are from <a class="underline underline-offset-2" href="https://googlefonts.github.io/noto-emoji-animation/" target="_blank" rel="noopener">Noto Emoji Animation</a> by Google, <a class="underline underline-offset-2" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>, the rest are our own.',
     code: pageScript,
     note: '<code class="font-mono text-sm">new _lottie({ target, src, play, loop, speed, trigger, renderer, events })</code>. <code class="font-mono text-sm">play</code>: <code class="font-mono text-sm">inview</code> (default), <code class="font-mono text-sm">hover</code>, <code class="font-mono text-sm">click</code>, <code class="font-mono text-sm">none</code> (for scroll, with <code class="font-mono text-sm">seek()</code>). <code class="font-mono text-sm">ready</code> resolves with the lottie-web animation, also on <code class="font-mono text-sm">animation</code>. Methods: <code class="font-mono text-sm">seek(progress)</code>, <code class="font-mono text-sm">toggle(on)</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">ready</code>, <code class="font-mono text-sm">complete</code>, <code class="font-mono text-sm">toggle</code>. Reduced motion keeps in view and hover on a still frame.'
 }) }}

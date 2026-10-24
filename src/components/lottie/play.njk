@@ -29,7 +29,11 @@ title: Lottie view, hover and click | Anthony Toolkits
         </div>
         <div class="grid gap-6 md:grid-cols-2">
             <div class="{{ card }}">
-                <div class="js-lottie-spinner size-28" data-lottie="/assets/lottie/spinner.json"></div>
+                <div class="flex gap-4">
+                    {% for emoji in ['party', 'rocket', 'fire'] %}
+                    <div class="js-lottie-loop size-20 md:size-24" data-lottie="/assets/lottie/emoji-{{ emoji }}.json"></div>
+                    {% endfor %}
+                </div>
                 <p class="text-gray-600"><code class="font-mono text-sm">loop: true</code>, paused while off screen.</p>
             </div>
             <div class="{{ card }}">
@@ -67,6 +71,16 @@ title: Lottie view, hover and click | Anthony Toolkits
                 </div>
             </a>
             {% endfor %}
+        </div>
+        <div class="flex flex-col gap-4 rounded-3xl bg-white p-6 md:flex-row md:items-center md:justify-between md:px-12">
+            <p class="text-lg font-semibold">How was this post?</p>
+            <div class="flex gap-2">
+                {% for emoji in ['heart', 'joy', 'wow', 'thumbs-up'] %}
+                <button class="js-lottie-reaction flex size-14 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-gray-100" type="button" aria-label="{{ emoji | replace('-', ' ') }}">
+                    <span class="js-lottie-reaction-icon block size-10" data-lottie="/assets/lottie/emoji-{{ emoji }}.json"></span>
+                </button>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </section>
@@ -135,7 +149,7 @@ title: Lottie view, hover and click | Anthony Toolkits
         // src/assets/js/utils/_lottie.js
 
 // in view: a loop, defaults: play: 'inview', loop: false, speed: 1
-new _lottie({ target: document.querySelector('.js-lottie-spinner'), loop: true });
+document.querySelectorAll('.js-lottie-loop').forEach((target) => new _lottie({ target, loop: true }));
 
 // in view: once, replayed through lottie-web's own animation
 const _check = new _lottie({ target: document.querySelector('.js-lottie-check') });
@@ -144,6 +158,9 @@ document.querySelector('.js-lottie-replay').addEventListener('click', async () =
 // hover: the whole button or card is the trigger
 document.querySelectorAll('.js-lottie-button').forEach((trigger) => {
     new _lottie({ target: trigger.querySelector('.js-lottie-arrow'), play: 'hover', trigger, speed: 1.5 });
+});
+document.querySelectorAll('.js-lottie-reaction').forEach((trigger) => {
+    new _lottie({ target: trigger.querySelector('.js-lottie-reaction-icon'), play: 'hover', trigger });
 });
 
 // click: isOn is the state after each click
@@ -189,7 +206,7 @@ document.querySelectorAll('.js-lottie-button').forEach((link) => link.addEventLi
 
 {{ scriptUsage({
     markup: markup,
-    markupNote: 'Lottie colors are baked into the file. One color icons can follow the text with <code class="font-mono text-sm">[&_path]:stroke-current</code> (or <code class="font-mono text-sm">fill-current</code>).',
+    markupNote: 'Lottie colors are baked into the file. One color icons can follow the text with <code class="font-mono text-sm">[&_path]:stroke-current</code> (or <code class="font-mono text-sm">fill-current</code>). Emoji from <a class="underline underline-offset-2" href="https://googlefonts.github.io/noto-emoji-animation/" target="_blank" rel="noopener">Noto Emoji Animation</a> by Google, <a class="underline underline-offset-2" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.',
     code: pageScript,
     note: '<code class="font-mono text-sm">ready</code> resolves with lottie-web\'s animation, for anything the modes don\'t cover: <code class="font-mono text-sm">goToAndPlay</code>, <code class="font-mono text-sm">playSegments</code>, <code class="font-mono text-sm">setSpeed</code>. <code class="font-mono text-sm">toggle(on)</code> sets a click toggle from code, e.g. closing the menu when a link is picked.'
 }) }}
