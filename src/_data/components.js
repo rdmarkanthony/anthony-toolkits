@@ -75,6 +75,7 @@ export default [
         category: "Forms",
         items: [
             { label: "Form validation", url: "/components/form-validation/", description: "Checks fields as people type, with events to show errors your own way.", utils: "_formValidation", ready: true },
+            { label: "Range slider", url: "/components/range-slider/", description: "A styled range input with one thumb or two, still a native input.", utils: "_rangeSlider", ready: true },
             { label: "Search suggestion", url: "/components/search-suggestion/", description: "Suggestions below a search input as you type, with keyboard support.", utils: "_autocomplete", ready: true },
             { label: "Select box", url: "/components/select-box/", description: "A styled dropdown for a native select, with search and keyboard support.", utils: "_selectBox", ready: true },
         ],

@@ -1,0 +1,123 @@
+---
+title: Range slider | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_rangeSlider', title: 'Range slider', description: 'A styled range input, one thumb or two for a min and max. The inputs stay native, so keyboard, forms and change events work as usual. The track and fill are your own elements.' }) }}
+
+{% set track = 'absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-gray-200' %}
+{% set fill = 'range-fill top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-gray-950' %}
+{% set sizes = ['1', '2 to 10', '11 to 50', '51 to 200', '200+'] %}
+
+{% set markup %}{% raw %}
+<div class="js-range range-slider [--thumb-size:1.5rem]">
+    <!-- your own track and fill, .range-fill spans --start to --end -->
+    <div class="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-gray-200"></div>
+    <div class="range-fill top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-gray-950"></div>
+
+    <!-- one input, or two for a min and a max -->
+    <input class="range-input" name="min" type="range" min="0" max="1000" step="10" value="200" aria-label="Min price" />
+    <input class="range-input" name="max" type="range" min="0" max="1000" step="10" value="750" aria-label="Max price" />
+
+    <!-- optional: follows a thumb, .range-at-start or .range-at-end -->
+    <span class="js-range-value range-at-end bottom-full mb-2"></span>
+</div>
+{% endraw %}{% endset %}
+
+{# demos: one thumb, two thumbs, steps #}
+<section class="px-4 py-16">
+    <div class="mx-auto grid max-w-295 gap-6 md:grid-cols-3">
+        <div class="flex flex-col gap-10 rounded-3xl border border-gray-200 p-6 md:p-8">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight">One thumb</h2>
+                <p class="mt-2 text-gray-600">The value rides above the thumb.</p>
+            </div>
+            <div class="js-range-volume range-slider mt-6 text-gray-950 [--thumb-size:1.5rem]">
+                <div class="{{ track }}"></div>
+                <div class="{{ fill }}"></div>
+                <input class="range-input" name="volume" type="range" min="0" max="100" value="40" aria-label="Volume" />
+                <span class="js-range-value range-at-end bottom-full mb-2 rounded-md bg-gray-950 px-2 py-0.5 font-mono text-xs text-white"></span>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-10 rounded-3xl border border-gray-200 p-6 md:p-8">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight">Min and max</h2>
+                <p class="mt-2 text-gray-600">Two thumbs, kept $50 apart. Press the track to move the nearest one.</p>
+            </div>
+            <div class="flex flex-col gap-5">
+                <div class="js-range-price range-slider text-gray-950 [--thumb-size:1.5rem]">
+                    <div class="{{ track }}"></div>
+                    <div class="{{ fill }}"></div>
+                    <input class="range-input" name="min_price" type="range" min="0" max="1000" step="10" value="200" aria-label="Min price" />
+                    <input class="range-input" name="max_price" type="range" min="0" max="1000" step="10" value="750" aria-label="Max price" />
+                </div>
+                <p class="flex justify-between text-lg font-semibold"><span class="js-price-value"></span><span class="js-price-value"></span></p>
+                <p class="font-mono text-sm text-gray-500">last event: <span class="js-price-event">-</span></p>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-10 rounded-3xl border border-gray-200 p-6 md:p-8">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight">Steps</h2>
+                <p class="mt-2 text-gray-600">Team size: <span class="js-size-value font-semibold text-gray-950"></span></p>
+            </div>
+            <div class="js-range-size range-slider mb-8 text-indigo-600 [--thumb-size:1.75rem]">
+                <div class="{{ track | replace('h-1.5', 'h-2') }}"></div>
+                <div class="{{ fill | replace('h-1.5', 'h-2') | replace('bg-gray-950', 'bg-indigo-600') }}"></div>
+                {% for size in sizes %}
+                <span class="absolute top-full mt-3 -translate-x-1/2 text-xs whitespace-nowrap text-gray-500" style="left: calc(var(--thumb-size) / 2 + (100% - var(--thumb-size)) * {{ loop.index0 / (sizes | length - 1) }})">{{ size }}</span>
+                {% endfor %}
+                <input class="range-input" name="team_size" type="range" min="0" max="{{ sizes | length - 1 }}" value="2" aria-label="Team size" />
+            </div>
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // CSS
+        // src/assets/css/components/range-slider.css
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_rangeSlider.js
+
+// one thumb, defaults: gap: 0, format: (value) => value
+new _rangeSlider({
+    target: document.querySelector('.js-range-volume'),
+    format: (value) => `${value}%`,
+});
+
+// min and max, the values shown outside the slider
+const _priceEvent = document.querySelector('.js-price-event');
+new _rangeSlider({
+    target: document.querySelector('.js-range-price'),
+    gap: 50,
+    format: (value) => `$${value.toLocaleString()}`,
+    outputs: document.querySelectorAll('.js-price-value'),
+    events: {
+        // input while dragging, change once let go
+        change: ({ values }) => (_priceEvent.textContent = `change, ${values.join(' to ')}`),
+    },
+});
+
+// steps, the value is a label's index
+const _sizes = ['1', '2 to 10', '11 to 50', '51 to 200', '200+'];
+new _rangeSlider({
+    target: document.querySelector('.js-range-size'),
+    outputs: document.querySelectorAll('.js-size-value'),
+    format: (value) => `${_sizes[value]} people`,
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The util sets <code class="font-mono text-sm">--start</code> and <code class="font-mono text-sm">--end</code> (0 to 1) on the slider. <code class="font-mono text-sm">.range-fill</code>, <code class="font-mono text-sm">.range-at-start</code> and <code class="font-mono text-sm">.range-at-end</code> use them, lined up with the thumb. Size the thumb with <code class="font-mono text-sm">--thumb-size</code>, color it with the text color or <code class="font-mono text-sm">--thumb-color</code>.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _rangeSlider({ target, gap, format, outputs, events })</code>. <code class="font-mono text-sm">values</code> gives the numbers. Methods: <code class="font-mono text-sm">set(values)</code>, <code class="font-mono text-sm">update()</code> after changing an input yourself, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">input</code> while it moves, <code class="font-mono text-sm">change</code> when let go. A form reset puts the look back too.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

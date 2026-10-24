@@ -36,6 +36,7 @@ import { _lightbox } from "./utils/_lightbox";
 import { _lazyLoad } from "./utils/_lazyLoad";
 import { _selectBox } from "./utils/_selectBox";
 import { _formValidation } from "./utils/_formValidation";
+import { _rangeSlider } from "./utils/_rangeSlider";
 import { _videoPlayer } from "./utils/_videoPlayer";
 import { _plyr } from "./utils/_plyr";
 import { _youtubePlayer } from "./utils/_youtubePlayer";
@@ -89,6 +90,7 @@ Object.assign(window, {
     _lazyLoad,
     _selectBox,
     _formValidation,
+    _rangeSlider,
     _videoPlayer,
     _plyr,
     _youtubePlayer,
