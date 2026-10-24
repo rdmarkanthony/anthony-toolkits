@@ -4,7 +4,7 @@ title: Countdown timer | Anthony Toolkits
 
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
 
-{{ pageIntro({ label: '_countdownTimer · _rollingNumber', title: 'Countdown timer', description: 'Counts down to a date and time in a set time zone, updating every second. The second timer rolls its digits with the rolling number util.' }) }}
+{{ pageIntro({ label: '_countdownTimer · _rollingDigit', title: 'Countdown timer', description: 'Counts down to a date and time in a set time zone, updating every second. The second timer rolls its digits with the rolling digit util.' }) }}
 
 {% macro countdown() %}
 <div class="js-countdown-timer flex flex-col gap-4 text-center">
@@ -40,7 +40,7 @@ title: Countdown timer | Anthony Toolkits
         // src/assets/js/utils/_event.js (optional, for rolling digits)
         // src/assets/js/utils/_emitter.js
         // src/assets/js/utils/_countdownTimer.js
-        // src/assets/js/utils/_rollingNumber.js (optional, for rolling digits)
+        // src/assets/js/utils/_rollingDigit.js (optional, for rolling digits)
     // CSS
         // flatpickr/dist/flatpickr.min.css (optional, for the date picker)
 
@@ -62,7 +62,7 @@ const _updateCountdown = (dateTime) => {
         const _animated = index === 1; // the second one rolls its digits
         const _rolling = Object.fromEntries(_units.map((unit) => [unit, []]));
 
-        // one _rollingNumber per digit
+        // one _rollingDigit per digit
         const _createDigits = (unit, value) => {
             _el[unit].innerHTML = '';
             _rolling[unit] = value.split('').map((digit, index) => {
@@ -74,7 +74,7 @@ const _updateCountdown = (dateTime) => {
                 if (unit === 'hours' && index === 0) _max = 2;
                 if ((unit === 'minutes' || unit === 'seconds') && index === 0) _max = 5;
 
-                return new _rollingNumber({ target: _div, startNumber: _max + 1, maxNumber: _max, duration: 250 });
+                return new _rollingDigit({ target: _div, startNumber: _max + 1, maxNumber: _max, duration: 250 });
             });
         };
 

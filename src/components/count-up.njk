@@ -1,15 +1,15 @@
 ---
-title: Animated number | Anthony Toolkits
+title: Count up | Anthony Toolkits
 ---
 
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
 
-{{ pageIntro({ label: '_animatedNumber · _inview', title: 'Animated number', description: 'Counts from one number to another, formatted with commas and optional decimals. Here it counts up when it scrolls into view, then to any number you enter.' }) }}
+{{ pageIntro({ label: '_countUp · _inview', title: 'Count up', description: 'Counts from one number to another, formatted with commas and optional decimals. Here it counts up when it scrolls into view, then to any number you enter.' }) }}
 
 {# demo #}
 <section class="px-4 py-16">
-    <div class="js-animated-number mx-auto flex max-w-295 flex-col gap-6">
-        <p class="js-animated-number-label text-6xl font-bold tracking-tight tabular-nums md:text-8xl">0</p>
+    <div class="js-count-up mx-auto flex max-w-295 flex-col gap-6">
+        <p class="js-count-up-label text-6xl font-bold tracking-tight tabular-nums md:text-8xl">0</p>
         <form class="flex max-w-md gap-2">
             <label class="grow">
                 <span class="sr-only">Number</span>
@@ -23,11 +23,11 @@ title: Animated number | Anthony Toolkits
 {% set pageScript %}{% raw %}
 // Requirements
     // JS
-        // src/assets/js/utils/_animatedNumber.js
+        // src/assets/js/utils/_countUp.js
         // src/assets/js/utils/_inview.js (optional, to start in view)
 
-const _wrap = document.querySelector('.js-animated-number');
-const _label = _wrap.querySelector('.js-animated-number-label');
+const _wrap = document.querySelector('.js-count-up');
+const _label = _wrap.querySelector('.js-count-up-label');
 const _input = _wrap.querySelector('input');
 let _instance = null;
 
@@ -49,7 +49,7 @@ _wrap.querySelector('form').addEventListener('submit', (e) => {
     const _value = parseFloat(_cleanNumber(_input.value));
     if (isNaN(_value) || _instance) return;
 
-    _instance = new _animatedNumber({
+    _instance = new _countUp({
         target: _label,
         from: parseFloat(_cleanNumber(_label.innerText)) || 0,
         to: _value,
@@ -64,14 +64,14 @@ new _inview({
     target: _label,
     delay: 500,
     callback: () => {
-        new _animatedNumber({ target: _label, from: 0, to: 1234567890, duration: 2000 });
+        new _countUp({ target: _label, from: 0, to: 1234567890, duration: 2000 });
     },
 });
 {% endraw %}{% endset %}
 
 {{ scriptUsage({
     code: pageScript,
-    note: '<code class="font-mono text-sm">new _animatedNumber({ target, from, to, decimals, duration, callback })</code>, the duration in ms. A new count on the same target stops the one running.'
+    note: '<code class="font-mono text-sm">new _countUp({ target, from, to, decimals, duration, callback })</code>, the duration in ms. A new count on the same target stops the one running.'
 }) }}
 
 {% footerscript %}

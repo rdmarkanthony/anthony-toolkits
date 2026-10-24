@@ -1,6 +1,6 @@
-export class _animatedNumber {
+export class _countUp {
     constructor(props) {
-        if (!window._animatedNumberList) window._animatedNumberList = [];
+        if (!window._countUpList) window._countUpList = [];
 
         this.target = props.target ?? null;
 
@@ -24,10 +24,10 @@ export class _animatedNumber {
     }
 
     init(callback) {
-        window._animatedNumberList.forEach((instance) => {
+        window._countUpList.forEach((instance) => {
             if (instance.target === this.target) instance.stop();
         });
-        window._animatedNumberList.push(this);
+        window._countUpList.push(this);
 
         this.animate(callback);
     }
@@ -65,8 +65,8 @@ export class _animatedNumber {
 
         this.animating = false;
 
-        const _index = window._animatedNumberList.indexOf(this);
-        if (_index > -1) window._animatedNumberList.splice(_index, 1);
+        const _index = window._countUpList.indexOf(this);
+        if (_index > -1) window._countUpList.splice(_index, 1);
     }
 
     updateText(value) {

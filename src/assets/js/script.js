@@ -15,8 +15,8 @@ import { _autocomplete } from "./utils/_autocomplete";
 import { _inview } from "./utils/_inview";
 import { _splitText } from "./utils/_splitText";
 import { _animate } from "./utils/_animate";
-import { _animatedNumber } from "./utils/_animatedNumber";
-import { _rollingNumber } from "./utils/_rollingNumber";
+import { _countUp } from "./utils/_countUp";
+import { _rollingDigit } from "./utils/_rollingDigit";
 import { _typing } from "./utils/_typing";
 import { _scrambleText } from "./utils/_scrambleText";
 import { _textRoll } from "./utils/_textRoll";
@@ -73,8 +73,8 @@ Object.assign(window, {
     _inview,
     _splitText,
     _animate,
-    _animatedNumber,
-    _rollingNumber,
+    _countUp,
+    _rollingDigit,
     _typing,
     _scrambleText,
     _textRoll,
