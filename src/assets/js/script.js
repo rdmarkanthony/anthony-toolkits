@@ -32,6 +32,7 @@ import { _accordion } from "./utils/_accordion";
 import { _header } from "./utils/_header";
 import { _scrollSpy } from "./utils/_scrollSpy";
 import { _scrollProgress } from "./utils/_scrollProgress";
+import { _share } from "./utils/_share";
 import { _groupHeight } from "./utils/_groupHeight";
 import { _lightbox } from "./utils/_lightbox";
 import { _lazyLoad } from "./utils/_lazyLoad";
@@ -87,6 +88,7 @@ Object.assign(window, {
     _header,
     _scrollSpy,
     _scrollProgress,
+    _share,
     _groupHeight,
     _lightbox,
     _lazyLoad,

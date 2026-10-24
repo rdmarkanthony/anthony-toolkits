@@ -87,6 +87,7 @@ export default [
             { label: "Countdown timer", url: "/components/countdown-timer/", description: "Countdown to a date and time.", utils: "_countdownTimer · _rollingNumber", ready: true },
             { label: "Google Map", url: "/components/google-map/", description: "Markers, popups and a custom theme, with a location list that flies to each place.", utils: "_googleMap", ready: true },
             { label: "QR code", url: "/components/qr-code/", description: "QR codes for links or Wi-Fi, saved as PNG or SVG.", utils: "_qrCode", ready: true },
+            { label: "Share", url: "/components/share/", description: "Share links, a copy link button and the phone share sheet.", utils: "_share", ready: true },
         ],
     },
     {

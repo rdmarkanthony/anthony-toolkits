@@ -1,0 +1,149 @@
+---
+title: Share | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_share', title: 'Share', description: 'Share links for X, Facebook, LinkedIn, WhatsApp and more, a copy link button, and the phone share sheet. The buttons are yours, the util fills in the links.' }) }}
+
+{% from "demos/sns-icons.njk" import snsIcon %}
+
+{% set networks = [['x', 'X'], ['facebook', 'Facebook'], ['linkedin', 'LinkedIn'], ['whatsapp', 'WhatsApp'], ['email', 'Email']] %}
+{% set circle = 'flex size-11 cursor-pointer items-center justify-center rounded-full bg-gray-950 text-white transition-colors hover:bg-gray-700' %}
+{% set ghost = 'flex size-9 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-gray-100' %}
+{% set row = 'flex h-12 cursor-pointer items-center gap-3 rounded-2xl px-4 font-medium transition-colors hover:bg-gray-100' %}
+{% set shareIcon = '<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5" /><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" /></svg>' %}
+
+{% set markup %}{% raw %}
+<!-- url and title: data-share-url / -title, or the page's own -->
+<div class="js-share" data-share-url="https://example.com/post" data-share-title="A post">
+    <a class="rounded-full bg-black text-white" data-share="x" aria-label="Share on X"><svg>...</svg></a>
+    <a data-share="facebook" aria-label="Share on Facebook"><svg>...</svg></a>
+    <a data-share="email" aria-label="Share by email"><svg>...</svg></a>
+
+    <!-- data-copied for 2s -->
+    <button type="button" data-share="copy" aria-label="Copy link">
+        <svg class="in-data-copied:hidden">link</svg>
+        <svg class="hidden in-data-copied:block">check</svg>
+    </button>
+
+    <!-- the share sheet, or this popover where there's none -->
+    <button type="button" data-share="native" popovertarget="share-menu">Share</button>
+    <div id="share-menu" popover>...</div>
+</div>
+{% endraw %}{% endset %}
+
+{# demo: a share bar under a post, the page's own link #}
+<section class="px-4 py-16">
+    <div class="mx-auto grid max-w-295 gap-10 lg:grid-cols-[1fr_32rem]">
+        <div class="flex flex-col gap-4">
+            <h2 class="text-3xl font-bold tracking-tight">Share bar</h2>
+            <p class="max-w-md text-gray-600">Shares this page. The networks open in a small window with <code class="font-mono text-sm">popup: true</code>, email opens your mail app.</p>
+            <p class="font-mono text-sm text-gray-500">last event: <span class="js-share-event">-</span></p>
+        </div>
+        <article class="flex flex-col gap-6 rounded-3xl border border-gray-200 p-6 md:p-8">
+            <div class="aspect-video rounded-2xl bg-gray-100"></div>
+            <div>
+                <p class="font-mono text-xs tracking-wide text-gray-500 uppercase">Journal</p>
+                <h3 class="mt-2 text-2xl font-bold tracking-tight">Designing for the scroll</h3>
+                <p class="mt-2 text-gray-600">Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero est illo eius laudantium.</p>
+            </div>
+            <div class="js-share-bar flex flex-wrap items-center gap-2 border-t border-gray-200 pt-6">
+                <p class="mr-2 text-sm font-medium text-gray-500">Share</p>
+                {% for network in networks %}<a class="{{ circle }}" data-share="{{ network[0] }}" aria-label="Share on {{ network[1] }}">{{ snsIcon(network[0], 'size-[1.125rem]') }}</a>{% endfor %}
+                <button class="{{ circle }}" type="button" data-share="copy" aria-label="Copy link">
+                    {{ snsIcon('link', 'size-5 in-data-copied:hidden') }}{{ snsIcon('check', 'size-5 hidden in-data-copied:block') }}
+                </button>
+            </div>
+        </article>
+    </div>
+</section>
+
+{# demo: one share button, the share sheet or a menu #}
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto grid max-w-295 items-center gap-10 lg:grid-cols-[1fr_32rem]">
+        <div class="flex flex-col gap-4">
+            <h2 class="text-3xl font-bold tracking-tight">One share button</h2>
+            <p class="max-w-md text-gray-600">Opens the share sheet of the phone or browser. Where there's none, it opens this menu, a native popover with no script of its own.</p>
+        </div>
+        <div class="js-share-button flex justify-center rounded-3xl bg-white p-10">
+            <button class="inline-flex h-12 cursor-pointer items-center gap-2 rounded-full bg-gray-950 px-6 font-medium text-white transition-colors hover:bg-gray-700" type="button" data-share="native" popovertarget="share-menu">{{ shareIcon | safe }}Share</button>
+            <div id="share-menu" class="m-auto w-[min(22rem,calc(100%-2rem))] rounded-3xl bg-white p-4 shadow-2xl backdrop:bg-gray-950/40" popover>
+                <div class="mb-2 flex items-center justify-between pl-4">
+                    <p class="text-lg font-bold tracking-tight">Share this page</p>
+                    <button class="{{ ghost }}" type="button" popovertarget="share-menu" popovertargetaction="hide" aria-label="Close">
+                        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+                    </button>
+                </div>
+                <div class="flex flex-col">
+                    {% for network in networks %}<a class="{{ row }}" data-share="{{ network[0] }}">{{ snsIcon(network[0], 'size-5') }}{{ network[1] }}</a>{% endfor %}
+                    <button class="{{ row }}" type="button" data-share="copy">
+                        <span class="contents in-data-copied:hidden">{{ snsIcon('link', 'size-5') }}Copy link</span>
+                        <span class="hidden in-data-copied:contents">{{ snsIcon('check', 'size-5') }}Copied</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# demo: each card shares its own link #}
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="text-3xl font-bold tracking-tight">Each card its own link</h2>
+            <p class="mt-2 max-w-2xl text-gray-600">Every card is its own <code class="font-mono text-sm">_share</code>, with <code class="font-mono text-sm">data-share-url</code> and <code class="font-mono text-sm">data-share-title</code>.</p>
+        </div>
+        <div class="grid gap-6 md:grid-cols-3">
+            {% for work in ['Ember', 'Lagoon', 'Meadow'] %}
+            <div class="js-share-card flex flex-col gap-4 rounded-3xl border border-gray-200 p-6" data-share-url="https://example.com/work/{{ work | lower }}" data-share-title="{{ work }}, a case study">
+                <div class="aspect-4/3 rounded-2xl bg-gray-100"></div>
+                <div class="flex items-center justify-between gap-4">
+                    <p class="text-lg font-semibold">{{ work }}</p>
+                    <div class="flex">
+                        <a class="{{ ghost }}" data-share="x" aria-label="Share on X">{{ snsIcon('x') }}</a>
+                        <a class="{{ ghost }}" data-share="linkedin" aria-label="Share on LinkedIn">{{ snsIcon('linkedin') }}</a>
+                        <button class="{{ ghost }} data-copied:bg-gray-950 data-copied:text-white" type="button" data-share="copy" aria-label="Copy link">
+                            {{ snsIcon('link', 'size-[1.125rem] in-data-copied:hidden') }}{{ snsIcon('check', 'size-[1.125rem] hidden in-data-copied:block') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_share.js
+
+const _event = document.querySelector('.js-share-event');
+const events = {
+    share: ({ network }) => (_event.textContent = `share, ${network}`),
+    copy: ({ data }) => (_event.textContent = `copy, ${data.url}`),
+    error: ({ error }) => (_event.textContent = `error, ${error.message}`),
+};
+
+// share bar, this page, defaults: popup: false (a new tab)
+new _share({ target: document.querySelector('.js-share-bar'), popup: true, events });
+
+// one button, the share sheet or the popover
+new _share({ target: document.querySelector('.js-share-button'), events });
+
+// cards, each with its own data-share-url and data-share-title
+document.querySelectorAll('.js-share-card').forEach((target) => new _share({ target, events }));
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Networks: <code class="font-mono text-sm">x</code>, <code class="font-mono text-sm">facebook</code>, <code class="font-mono text-sm">linkedin</code>, <code class="font-mono text-sm">whatsapp</code>, <code class="font-mono text-sm">telegram</code>, <code class="font-mono text-sm">threads</code>, <code class="font-mono text-sm">reddit</code>, <code class="font-mono text-sm">line</code>, <code class="font-mono text-sm">email</code>. Add your own to <code class="font-mono text-sm">_share.networks</code>. The demo icons are from Bootstrap Icons (MIT). Style the copied state with <code class="font-mono text-sm">data-copied:</code> or <code class="font-mono text-sm">in-data-copied:</code>.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _share({ target, url, title, text, popup, events })</code>. <code class="font-mono text-sm">data</code> gives the url, title and text in use. Methods: <code class="font-mono text-sm">refresh()</code> after the url changes, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">share</code> (with <code class="font-mono text-sm">network</code>), <code class="font-mono text-sm">copy</code>, <code class="font-mono text-sm">error</code>.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
