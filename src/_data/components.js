@@ -37,6 +37,7 @@ export default [
             { label: "Blobs", url: "/components/three-background/blobs/", description: "Big soft colors with grain that glide to new colors.", utils: "_threeBlobs", ready: true },
             { label: "Glow", url: "/components/three-background/glow/", description: "One soft glow that follows the mouse, over film grain.", utils: "_threeGlow", ready: true },
             { label: "Particles", url: "/components/three-background/particles/", description: "Dots that drift and move away from the mouse.", utils: "_threeParticles", ready: true },
+            { label: "Grain text", url: "/components/three-background/text/", description: "Words made of grains in every row, the mouse pushes them.", utils: "_threeText", ready: true },
         ],
     },
     {

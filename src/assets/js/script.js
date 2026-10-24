@@ -24,6 +24,7 @@ import { _threeBackground } from "./utils/_threeBackground";
 import { _threeParticles } from "./utils/_threeParticles";
 import { _threeBlobs } from "./utils/_threeBlobs";
 import { _threeGlow } from "./utils/_threeGlow";
+import { _threeText } from "./utils/_threeText";
 import { _countdownTimer } from "./utils/_countdownTimer";
 import { _tabs } from "./utils/_tabs";
 import { _tooltip } from "./utils/_tooltip";
@@ -82,6 +83,7 @@ Object.assign(window, {
     _threeParticles,
     _threeBlobs,
     _threeGlow,
+    _threeText,
     _countdownTimer,
     _tabs,
     _tooltip,
