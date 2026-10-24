@@ -1,0 +1,155 @@
+---
+title: Scrollspy | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_scrollSpy · _event', title: 'Scrollspy', description: 'Marks the link of the section on screen. Just the skeleton: it builds no markup, so contents, tabs and dots are all your own, and it knows about the header.' }) }}
+
+{% set contents = [
+    { id: 'spy-intro', title: 'Introduction' },
+    { id: 'spy-setup', title: 'Setup' },
+    { id: 'spy-markup', title: 'Markup' },
+    { id: 'spy-styling', title: 'Styling' },
+    { id: 'spy-events', title: 'Events' }
+] %}
+{% set tabs = ['Overview', 'Features', 'Specs', 'Reviews', 'Support'] %}
+{% set chapters = [
+    { id: 'spy-arrival', title: 'Arrival', theme: 'light', bg: 'bg-white' },
+    { id: 'spy-living', title: 'Living', theme: 'dark', bg: 'bg-gray-950 text-white' },
+    { id: 'spy-garden', title: 'Garden', theme: 'light', bg: 'bg-stone-100' },
+    { id: 'spy-views', title: 'Views', theme: 'dark', bg: 'bg-slate-800 text-white' }
+] %}
+{% set lorem = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero est illo eius laudantium laborum earum culpa corporis vel deleniti. Quia nemo porro, voluptatum dolores facere amet sequi minima.' %}
+
+{% set markup %}{% raw %}
+<!-- any links to #ids, the current one gets aria-current="true" -->
+<nav class="js-scroll-spy">
+    <a class="aria-current:font-bold" href="#intro">Intro</a>
+    <a class="aria-current:font-bold" href="#setup">Setup</a>
+</nav>
+
+<section id="intro">...</section>
+<section id="setup">...</section>
+{% endraw %}{% endset %}
+
+{# demo: table of contents beside an article #}
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-10">
+        <h2 class="text-3xl font-bold tracking-tight">Table of contents</h2>
+        <div class="grid gap-10 lg:grid-cols-[14rem_1fr]">
+            <nav class="js-spy-contents self-start lg:sticky lg:top-[calc(var(--header-height,0px)+2rem)]" aria-label="Contents">
+                <p class="mb-3 font-mono text-xs tracking-wide text-gray-500 uppercase">On this page</p>
+                <ul class="flex flex-col border-l border-gray-200">
+                    {% for item in contents %}
+                    <li><a class="-ml-px block border-l-2 border-transparent py-1.5 pl-4 text-gray-500 transition-colors hover:text-gray-950 aria-current:border-gray-950 aria-current:font-medium aria-current:text-gray-950" href="#{{ item.id }}">{{ item.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </nav>
+            <article class="flex max-w-2xl flex-col gap-12">
+                {% for item in contents %}
+                <div id="{{ item.id }}" class="flex flex-col gap-4">
+                    <h3 class="text-2xl font-bold tracking-tight">{{ item.title }}</h3>
+                    {% for i in range(0, 3) %}<p class="text-gray-600">{{ lorem }}</p>{% endfor %}
+                </div>
+                {% endfor %}
+            </article>
+        </div>
+    </div>
+</section>
+
+{# demo: sticky tabs below the header #}
+<section class="bg-gray-50 py-16">
+    <h2 class="mx-auto mb-6 max-w-295 px-4 text-3xl font-bold tracking-tight">Sticky tabs</h2>
+    <nav class="js-spy-tabs sticky top-(--header-height) z-10 flex gap-2 overflow-x-auto border-y border-gray-200 bg-white/90 px-4 py-3 backdrop-blur [scrollbar-width:none]" aria-label="Product">
+        {% for tab in tabs %}
+        <a class="shrink-0 rounded-full px-4 py-1.5 text-sm font-medium text-gray-600 transition-colors hover:text-gray-950 aria-current:bg-gray-950 aria-current:text-white" href="#spy-{{ tab | lower }}">{{ tab }}</a>
+        {% endfor %}
+    </nav>
+    <div class="mx-auto flex max-w-295 flex-col px-4">
+        {% for tab in tabs %}
+        <div id="spy-{{ tab | lower }}" class="flex min-h-[60vh] flex-col gap-4 border-b border-gray-200 py-12 last:border-b-0">
+            <h3 class="text-2xl font-bold tracking-tight">{{ tab }}</h3>
+            <p class="max-w-2xl text-gray-600">{{ lorem }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{# demo: dots on the side, only while you're in their sections #}
+<section>
+    <div class="mx-auto max-w-295 px-4 py-16">
+        <h2 class="text-3xl font-bold tracking-tight">Side dots</h2>
+        <p class="mt-2 max-w-2xl text-gray-600">Fixed on the right, shown only inside these chapters, light on the dark ones. Hover a dot for its label.</p>
+    </div>
+    <nav class="js-spy-dots group/dots pointer-events-none fixed top-1/2 right-3 z-30 flex -translate-y-1/2 flex-col opacity-0 transition-opacity duration-300 data-active:pointer-events-auto data-active:opacity-100 md:right-5" data-theme="light" aria-label="Chapters">
+        {% for chapter in chapters %}
+        <a class="group relative flex size-6 items-center justify-center" href="#{{ chapter.id }}">
+            <span class="size-2.5 rounded-full bg-gray-300 transition-[background-color,scale] duration-300 group-hover:scale-125 group-aria-current:scale-125 group-aria-current:bg-gray-950 group-data-[theme=dark]/dots:bg-white/30 group-data-[theme=dark]/dots:group-aria-current:bg-white"></span>
+            <span class="pointer-events-none absolute right-full mr-2 rounded-full bg-gray-950 px-2.5 py-0.5 text-xs whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-100 group-data-[theme=dark]/dots:bg-white group-data-[theme=dark]/dots:text-gray-950">{{ chapter.title }}</span>
+        </a>
+        {% endfor %}
+    </nav>
+    {% for chapter in chapters %}
+    <div id="{{ chapter.id }}" class="flex min-h-svh items-center px-4 {{ chapter.bg }}" data-theme="{{ chapter.theme }}">
+        <div class="mx-auto w-full max-w-295">
+            <p class="font-mono text-sm opacity-60">0{{ loop.index }}</p>
+            <h3 class="text-5xl font-bold tracking-tight md:text-7xl">{{ chapter.title }}</h3>
+        </div>
+    </div>
+    {% endfor %}
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_scrollSpy.js
+        // optional, the glide on click: src/assets/js/utils/_tween.js, src/assets/js/utils/_autoScroll.js
+
+// table of contents, defaults: line: 0.25 (a quarter down the screen below the header)
+new _scrollSpy({ target: document.querySelector('.js-spy-contents') });
+
+// tabs, the current one stays in view on small screens
+const _tabs = document.querySelector('.js-spy-tabs');
+new _scrollSpy({
+    target: _tabs,
+    events: {
+        change: ({ link }) => link && _tabs.scrollTo({ left: link.offsetLeft - (_tabs.clientWidth - link.offsetWidth) / 2, behavior: 'smooth' }),
+    },
+});
+
+// dots, the section's data-theme picks their color
+const _dots = document.querySelector('.js-spy-dots');
+new _scrollSpy({
+    target: _dots,
+    line: 0.5,
+    events: {
+        change: ({ section }) => section && (_dots.dataset.theme = section.dataset.theme),
+    },
+});
+
+// optional: glide instead of jump, below the header (and the tabs)
+document.querySelectorAll('.js-spy-contents, .js-spy-tabs, .js-spy-dots').forEach((nav) => {
+    nav.addEventListener('click', (e) => {
+        const _link = e.target.closest('a[href^="#"]');
+        if (!_link) return;
+        e.preventDefault();
+
+        const _header = parseFloat(getComputedStyle(document.body).getPropertyValue('--header-height')) || 0;
+        _autoScroll({ target: document.querySelector(_link.hash), offset: nav === _tabs ? _header + _tabs.offsetHeight : _header });
+    });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Style the current link with <code class="font-mono text-sm">aria-current:</code>, and the nav with <code class="font-mono text-sm">data-active:</code> while one of its sections is on screen.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _scrollSpy({ target, line, events })</code>. A section counts once its top passes the line, <code class="font-mono text-sm">line</code> of the screen below the header (<code class="font-mono text-sm">--header-offset</code> from _header, else <code class="font-mono text-sm">--header-height</code>). At the very bottom the last section on screen wins. Methods: <code class="font-mono text-sm">refresh()</code> after links change, <code class="font-mono text-sm">destroy()</code>. Event: <code class="font-mono text-sm">change</code>, with <code class="font-mono text-sm">index</code>, <code class="font-mono text-sm">link</code> and <code class="font-mono text-sm">section</code> (-1 and null when none).'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

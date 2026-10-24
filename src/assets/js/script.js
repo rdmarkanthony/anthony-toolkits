@@ -30,6 +30,7 @@ import { _tooltip } from "./utils/_tooltip";
 import { _hoverIndicator } from "./utils/_hoverIndicator";
 import { _accordion } from "./utils/_accordion";
 import { _header } from "./utils/_header";
+import { _scrollSpy } from "./utils/_scrollSpy";
 import { _groupHeight } from "./utils/_groupHeight";
 import { _lightbox } from "./utils/_lightbox";
 import { _lazyLoad } from "./utils/_lazyLoad";
@@ -81,6 +82,7 @@ Object.assign(window, {
     _hoverIndicator,
     _accordion,
     _header,
+    _scrollSpy,
     _groupHeight,
     _lightbox,
     _lazyLoad,
