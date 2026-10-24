@@ -1,10 +1,11 @@
 // Requirements
     // JS
         // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_event.js
         // src/assets/js/utils/_header.js
 
-const _event = document.querySelector('.js-header-event');
-const _log = (name) => () => (_event.textContent = name);
+const _label = document.querySelector('.js-header-event');
+const _log = (name) => () => (_label.textContent = name);
 
 new _header({
     target: document.querySelector('.js-header'),

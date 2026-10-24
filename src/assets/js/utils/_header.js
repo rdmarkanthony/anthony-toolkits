@@ -1,4 +1,5 @@
 import { _emitter } from "./_emitter";
+import { _event } from "./_event";
 
 // usage: new _header({ target, menu, offset, tolerance, breakpoint, events })
 // at the top target scrolls with the page (absolute), past offset (default its height) it gets data-fixed + data-hidden, scroll up removes data-hidden
@@ -33,28 +34,14 @@ export class _header extends _emitter {
 
     init() {
         const { signal } = this.abort;
-        let _ticking = false;
 
         this.lastY = window.scrollY;
-        this.check();
+        this._onCheck = () => this.check();
+        _event.scroll(this._onCheck);
 
         // its own height, or something above it opening or closing
-        this.resize = new ResizeObserver(() => this.check());
-        this.resize.observe(this.target);
-        this.resize.observe(document.body);
-
-        window.addEventListener(
-            "scroll",
-            () => {
-                if (_ticking) return;
-                _ticking = true;
-                requestAnimationFrame(() => {
-                    _ticking = false;
-                    this.check();
-                });
-            },
-            { passive: true, signal }
-        );
+        _event.observeResize(this._onCheck, this.target);
+        _event.observeResize(this._onCheck, document.body);
 
         // keyboard users tabbing into it
         this.target.addEventListener("focusin", () => this.target.querySelector(":focus-visible") && this.show(), { signal });
@@ -86,7 +73,7 @@ export class _header extends _emitter {
         const _height = this.target.offsetHeight;
 
         // where it sits in the page, below anything above it
-        if (!this.isFixed) this.top = this.target.getBoundingClientRect().top + _y;
+        if (!this.isFixed) this.top = this.pageTop();
         const _offset = this.top + (this.offset ?? _height);
 
         // a shown fixed header stays until its own spot, so it doesn't jump
@@ -101,9 +88,16 @@ export class _header extends _emitter {
         this.vars();
     }
 
+    // offsetTop, so a slide still running doesn't count
+    pageTop() {
+        let _top = 0;
+        for (let _element = this.target; _element; _element = _element.offsetParent) _top += _element.offsetTop;
+        return _top;
+    }
+
     vars() {
         const _height = this.target.offsetHeight;
-        const _offset = this.isFixed ? (this.isHidden ? 0 : _height) : Math.max(0, Math.round(this.target.getBoundingClientRect().bottom));
+        const _offset = this.isFixed ? (this.isHidden ? 0 : _height) : Math.max(0, Math.round(this.top + _height - window.scrollY));
 
         // only on change, it runs on every scroll frame
         if (_height !== this.height) document.body.style.setProperty("--header-height", `${_height}px`);
@@ -222,7 +216,9 @@ export class _header extends _emitter {
     destroy() {
         this.close();
         this.abort.abort();
-        this.resize?.disconnect();
+        _event.offScroll(this._onCheck);
+        _event.offObserveResize(this._onCheck, this.target);
+        _event.offObserveResize(this._onCheck, document.body);
         document.body.style.removeProperty("--header-height");
         document.body.style.removeProperty("--header-offset");
         this.height = this.visible = null;

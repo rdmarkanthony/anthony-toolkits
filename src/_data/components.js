@@ -64,7 +64,7 @@ export default [
             { label: "Breakpoints", url: "/components/breakpoints/", description: "The responsive breakpoints, shown live as you resize.", utils: "Tailwind @theme", ready: true },
             { label: "Fluid sizing", url: "/components/fluid-sizing/", description: "Tailwind sizes that scale with their section width, using cqw.", utils: "fluid · cqw", ready: true },
             { label: "Group height", url: "/components/group-height/", description: "Equalize heights across grouped elements.", utils: "_groupHeight", ready: true },
-            { label: "Header", url: "/components/header/", description: "Hides on scroll down, shows on scroll up, with a mobile menu that locks the page.", utils: "_header", ready: true },
+            { label: "Header", url: "/components/header/", description: "Hides on scroll down, shows on scroll up, with a mobile menu that locks the page.", utils: "_header · _event", ready: true },
             { label: "Hover indicator", url: "/components/hover-indicator/", description: "A background or line that slides to the hovered or selected item.", utils: "_hoverIndicator", ready: true },
             { label: "Scroll progress", url: "/components/scroll-progress/", description: "How far down the page or an article you are, plus a back to top button.", utils: "_scrollProgress · _event", ready: true },
             { label: "Scrollspy", url: "/components/scrollspy/", description: "Marks the link of the section on screen, for contents, tabs or dots.", utils: "_scrollSpy · _event", ready: true },

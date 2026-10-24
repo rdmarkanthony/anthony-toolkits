@@ -120,11 +120,11 @@ title: Share | Anthony Toolkits
         // src/assets/js/utils/_emitter.js
         // src/assets/js/utils/_share.js
 
-const _event = document.querySelector('.js-share-event');
+const _label = document.querySelector('.js-share-event');
 const events = {
-    share: ({ network }) => (_event.textContent = `share, ${network}`),
-    copy: ({ data }) => (_event.textContent = `copy, ${data.url}`),
-    error: ({ error }) => (_event.textContent = `error, ${error.message}`),
+    share: ({ network }) => (_label.textContent = `share, ${network}`),
+    copy: ({ data }) => (_label.textContent = `copy, ${data.url}`),
+    error: ({ error }) => (_label.textContent = `error, ${error.message}`),
 };
 
 // share bar, this page, defaults: popup: false (a new tab)

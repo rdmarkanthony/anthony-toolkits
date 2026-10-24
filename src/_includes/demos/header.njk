@@ -2,16 +2,16 @@
     the _header demo pages, shown in iframes on /components/header/
     usage: {% from "demos/header.njk" import demoHeader, demoHero, demoGrid, demoEvent %}
 #}
-{# no top-0 while absolute, so it sits below anything above it #}
 {% macro demoHeader() %}
 {% set ease = 'ease-[cubic-bezier(0.16,1,0.3,1)]' %}
 {% set links = ['Work', 'Services', 'About', 'Journal', 'Contact'] %}
+<!-- no top-0 while absolute, so it sits below anything above it -->
 <header class="js-header absolute inset-x-0 z-40 text-white transition-[translate,background-color,color,box-shadow] duration-500 {{ ease }} data-fixed:fixed data-fixed:top-0 data-fixed:bg-white data-fixed:text-gray-950 data-fixed:shadow-sm data-hidden:-translate-y-full">
     <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-5 md:h-20 md:px-8">
         <a class="text-xl font-bold tracking-tight" href="#">Studio.</a>
         <nav class="hidden lg:block">
             <ul class="flex items-center gap-8 text-sm font-medium">
-                {% for link in links | slice(0, 4) %}<li><a class="opacity-70 transition-opacity hover:opacity-100" href="#">{{ link }}</a></li>{% endfor %}
+                {% for link in links.slice(0, 4) %}<li><a class="opacity-70 transition-opacity hover:opacity-100" href="#">{{ link }}</a></li>{% endfor %}
             </ul>
         </nav>
         <a class="hidden rounded-full border border-current px-4 py-2 text-sm font-medium lg:inline-block" href="#">Contact</a>
@@ -21,6 +21,7 @@
     </div>
 </header>
 
+<!-- the menu, outside the header: a backdrop-blur on the header would trap it -->
 <div class="js-header-menu group/menu invisible fixed inset-0 z-50 outline-none transition-[visibility] delay-500 duration-0 data-open:visible data-open:delay-0 lg:hidden">
     <div class="js-header-menu-close absolute inset-0 bg-gray-950/40 opacity-0 transition-opacity duration-500 group-data-open/menu:opacity-100"></div>
     <div class="absolute inset-y-0 right-0 flex w-[85%] max-w-sm translate-x-full flex-col bg-white px-6 pb-8 transition-transform duration-500 {{ ease }} group-data-open/menu:translate-x-0" role="dialog" aria-modal="true" aria-label="Menu">
