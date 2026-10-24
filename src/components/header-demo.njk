@@ -1,0 +1,17 @@
+---
+title: Header demo | Anthony Toolkits
+permalink: /components/header/demo/
+bare: true
+---
+
+{# the header page shows this in iframes, so it scrolls a real window #}
+{% from "demos/header.njk" import demoHeader, demoHero, demoGrid, demoEvent %}
+
+{{ demoHeader() }}
+{{ demoHero('Scroll down, then back up a little.') }}
+{{ demoGrid() }}
+{{ demoEvent() }}
+
+{% footerscript %}
+<script type="module">{% include "demos/header-script.js" %}</script>
+{% endfooterscript %}

@@ -29,6 +29,7 @@ import { _tabs } from "./utils/_tabs";
 import { _tooltip } from "./utils/_tooltip";
 import { _hoverIndicator } from "./utils/_hoverIndicator";
 import { _accordion } from "./utils/_accordion";
+import { _header } from "./utils/_header";
 import { _groupHeight } from "./utils/_groupHeight";
 import { _lightbox } from "./utils/_lightbox";
 import { _lazyLoad } from "./utils/_lazyLoad";
@@ -79,6 +80,7 @@ Object.assign(window, {
     _tooltip,
     _hoverIndicator,
     _accordion,
+    _header,
     _groupHeight,
     _lightbox,
     _lazyLoad,
@@ -106,12 +108,13 @@ Object.assign(window, {
 });
 
 // set before the page scripts measure
-const _header = document.querySelector(".header-content");
+const _headerContent = document.querySelector(".header-content");
 const _footer = document.querySelector(".footer-content");
 
+// skipped on bare demo pages, so a demo _header keeps its own
 _event.resize(() => {
-    document.body.style.setProperty("--header-height", `${_header?.offsetHeight ?? 0}px`);
-    document.body.style.setProperty("--footer-height", `${_footer?.offsetHeight ?? 0}px`);
+    if (_headerContent) document.body.style.setProperty("--header-height", `${_headerContent.offsetHeight}px`);
+    if (_footer) document.body.style.setProperty("--footer-height", `${_footer.offsetHeight}px`);
 });
 
 // before the page scripts read the hash
@@ -181,7 +184,7 @@ document.querySelectorAll("[data-search]").forEach((form) => {
 // sliding menu below lg, the page is inert while open
 const _menu = document.querySelector("[data-mobile-menu]");
 const _menuButton = document.querySelector("[data-mobile-menu-open]");
-const _pageParts = [_header, document.querySelector(".main-content"), _footer].filter(Boolean);
+const _pageParts = [_headerContent, document.querySelector(".main-content"), _footer].filter(Boolean);
 
 const _toggleMenu = (open) => {
     if (!_menu || open === _menu.hasAttribute("data-open")) return;

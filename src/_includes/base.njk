@@ -27,12 +27,17 @@
     {% getBundle "headerscript" %}
 </head>
 <body class="bg-kit-bg font-sans text-kit-text{% if bodyClass %} {{ bodyClass }}{% endif %}">
+    {# bare: no site header/footer, for demos shown in an iframe #}
+    {% if bare %}
+    {{ content | safe }}
+    {% else %}
     {{ header({ site: site, url: page.url, components: components, starterKit: starterKit }) }}
     <div class="main-content min-h-[calc(100vh-var(--header-height,0rem)-var(--footer-height,0rem))]">
         {{ content | safe }}
     </div>
     {% getBundle "popup" %}
     {{ footer({ site: site, starterKit: starterKit }) }}
+    {% endif %}
 
     <script src="/assets/js/script.js" type="module"></script>
     {% getBundle "footerscript" %}

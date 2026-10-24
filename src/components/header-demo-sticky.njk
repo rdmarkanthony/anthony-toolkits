@@ -1,0 +1,26 @@
+---
+title: Header demo, sticky | Anthony Toolkits
+permalink: /components/header/demo/sticky/
+bare: true
+---
+
+{% from "demos/header.njk" import demoHeader, demoHero, demoGrid, demoEvent %}
+
+{{ demoHeader() }}
+{{ demoHero('The filters stick below the header.') }}
+
+{# --header-offset is 0 while the header is hidden, its height while shown #}
+<div class="sticky top-(--header-offset) z-30 border-b border-gray-200 bg-white/90 backdrop-blur transition-[top] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+    <div class="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-5 py-3 md:px-8">
+        {% for filter in ['All', 'Branding', 'Web', 'Motion', 'Print'] %}
+        <button class="shrink-0 cursor-pointer rounded-full border px-4 py-1.5 text-sm font-medium transition-colors {{ 'border-gray-950 bg-gray-950 text-white' if loop.first else 'border-gray-200 hover:border-gray-950' }}" type="button">{{ filter }}</button>
+        {% endfor %}
+    </div>
+</div>
+
+{{ demoGrid() }}
+{{ demoEvent() }}
+
+{% footerscript %}
+<script type="module">{% include "demos/header-script.js" %}</script>
+{% endfooterscript %}
