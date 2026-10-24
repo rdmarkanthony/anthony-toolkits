@@ -66,6 +66,7 @@ export default [
             { label: "Group height", url: "/components/group-height/", description: "Equalize heights across grouped elements.", utils: "_groupHeight", ready: true },
             { label: "Header", url: "/components/header/", description: "Hides on scroll down, shows on scroll up, with a mobile menu that locks the page.", utils: "_header", ready: true },
             { label: "Hover indicator", url: "/components/hover-indicator/", description: "A background or line that slides to the hovered or selected item.", utils: "_hoverIndicator", ready: true },
+            { label: "Scroll progress", url: "/components/scroll-progress/", description: "How far down the page or an article you are, plus a back to top button.", utils: "_scrollProgress · _event", ready: true },
             { label: "Scrollspy", url: "/components/scrollspy/", description: "Marks the link of the section on screen, for contents, tabs or dots.", utils: "_scrollSpy · _event", ready: true },
             { label: "Tabs", url: "/components/tabs/", description: "Links that switch between content panels, nestable.", utils: "_tabs", ready: true },
             { label: "Tooltip", url: "/components/tooltip/", description: "A small label on hover or focus, or a quick message instead of alert().", utils: "_tooltip", ready: true },
