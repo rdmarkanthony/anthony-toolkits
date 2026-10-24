@@ -1,0 +1,65 @@
+---
+title: Reveal | Three.js background | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Three.js background', url: '/components/three-background/' }, label: '_threeReveal · _threeBackground', title: 'Reveal', description: 'Move the mouse to paint a trail that shows the color photo. It fades back on its own.' }) }}
+
+{# demo: gray to color behind a hero #}
+<section class="px-4 pb-4">
+    <div class="mx-auto max-w-295">
+        <div class="js-reveal-hero flex min-h-[80vh] flex-col justify-between gap-16 overflow-hidden rounded-3xl bg-gray-950 p-8 text-white md:p-12">
+            <p class="font-mono text-sm text-gray-400">Move your mouse here</p>
+            <div class="max-w-xl">
+                <h2 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">Lorem ipsum dolor sit</h2>
+                <p class="max-w-md text-lg text-gray-300">Consectetur adipisicing elit. Libero est illo eius laudantium laborum, quis nostrud exercitation.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# demo: bigger and slower #}
+<section class="px-4 pt-12 pb-16">
+    <div class="mx-auto grid max-w-295 gap-4 md:grid-cols-2">
+        <div class="js-reveal-slow aspect-3/2 overflow-hidden rounded-3xl bg-gray-950"></div>
+        <div class="flex flex-col justify-center gap-2 rounded-3xl border border-gray-200 p-8">
+            <h2 class="text-3xl font-bold tracking-tight">Bigger and slower</h2>
+            <p class="max-w-sm text-gray-600">A bigger brush, a softer edge and a slower fade, half gray on top.</p>
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_inview.js
+        // src/assets/js/utils/_threeBackground.js
+        // src/assets/js/utils/_threeReveal.js
+    // Packages
+        // three
+
+// gray on top, the same photo in color under the trail
+new _threeBackground({
+    target: document.querySelector('.js-reveal-hero'),
+    // defaults: reveal: the same image, gray: 1, radius: 90, fade: 1.2, soft: 0.25
+    effect: _threeReveal({ image: '/assets/img/sample-image.webp' }),
+});
+
+// bigger and slower
+new _threeBackground({
+    target: document.querySelector('.js-reveal-slow'),
+    effect: _threeReveal({ image: '/assets/img/sample-image.webp', gray: 0.6, radius: 150, fade: 3, soft: 0.4 }),
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: 'Options: <code class="font-mono text-sm">reveal</code> a second image, <code class="font-mono text-sm">gray</code> 0 to keep the top one in color, <code class="font-mono text-sm">radius</code> the brush in px, <code class="font-mono text-sm">fade</code> in seconds, <code class="font-mono text-sm">soft</code> the edge. On phones it paints while dragging. Markup and the base are on the <a class="underline" href="/components/three-background/">overview</a>.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

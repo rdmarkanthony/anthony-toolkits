@@ -11,12 +11,13 @@ title: Three.js background | Anthony Toolkits
     { url: '/components/three-background/blobs/', title: 'Blobs', text: 'Big soft colors with grain that glide to new colors.', utils: '_threeBlobs' },
     { url: '/components/three-background/glow/', title: 'Glow', text: 'One soft glow that follows the mouse, over film grain.', utils: '_threeGlow' },
     { url: '/components/three-background/particles/', title: 'Particles', text: 'Dots that drift and move away from the mouse.', utils: '_threeParticles' },
+    { url: '/components/three-background/reveal/', title: 'Reveal', text: 'The mouse paints a trail that shows the color photo.', utils: '_threeReveal' },
     { url: '/components/three-background/text/', title: 'Grain text', text: 'Words made of grains in every row, the mouse pushes them.', utils: '_threeText' }
 ] %}
 <section id="demos" class="px-4 pb-16">
     <div class="mx-auto max-w-295">
         <h2 class="mb-8 text-3xl font-bold tracking-tight">Effects</h2>
-        <div class="grid gap-6 md:grid-cols-2">
+        <div class="grid gap-6 md:grid-cols-3">
             {% for effect in effects %}
             <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="{{ effect.url }}">
                 {% if effect.title == 'Particles' %}
@@ -30,6 +31,12 @@ title: Three.js background | Anthony Toolkits
                 {# preview: a word filled with dots #}
                 <div class="relative flex aspect-4/3 items-center justify-center overflow-hidden bg-gray-950">
                     <span class="bg-[radial-gradient(circle,white_1px,transparent_1.5px)] bg-size-[5px_5px] bg-clip-text text-8xl font-black tracking-tight text-transparent">Aa</span>
+                </div>
+                {% elif effect.title == 'Reveal' %}
+                {# preview: gray photo with a color stroke #}
+                <div class="relative aspect-4/3 overflow-hidden">
+                    <img class="absolute inset-0 size-full object-cover grayscale" src="/assets/img/sample-image.webp" alt="" width="2400" height="1600" loading="lazy" />
+                    <img class="absolute inset-0 size-full object-cover [clip-path:ellipse(30%_20%_at_45%_50%)]" src="/assets/img/sample-image.webp" alt="" width="2400" height="1600" loading="lazy" />
                 </div>
                 {% elif effect.title == 'Blobs' %}
                 {# preview: soft colors with grain #}
