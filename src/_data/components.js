@@ -27,6 +27,7 @@ export default [
             { label: "Split hover", url: "/components/text-effects/split/", description: "The word splits at the middle, the halves slide apart and a copy opens.", utils: "CSS only", ready: true },
             { label: "Text roll", url: "/components/text-effects/roll/", description: "Link and button text that rolls up on hover, a copy coming in from below.", utils: "_textRoll", ready: true },
             { label: "Typing animation", url: "/components/text-effects/typing/", description: "Types and erases lines, with styled parts and a steady cursor.", utils: "_typing", ready: true },
+            { label: "Weight hover", url: "/components/text-effects/weight/", description: "Letters near the mouse get bolder, a wave that follows the cursor.", utils: "_weightHover", ready: true },
         ],
     },
     {

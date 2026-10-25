@@ -1,0 +1,86 @@
+---
+title: Weight hover | Text effects | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Text effects', url: '/components/text-effects/' }, label: '_weightHover', title: 'Weight hover', description: 'Letters near the mouse get bolder and ease back as it moves on, a wave that follows the cursor. Needs a variable font with a weight axis.' }) }}
+
+{# demo: a light heading #}
+<section class="px-4 pb-4">
+    <div class="mx-auto max-w-295">
+        <div class="flex min-h-96 flex-col justify-between gap-10 rounded-3xl bg-gray-100 p-8 md:p-12">
+            <p class="font-mono text-sm text-gray-500">Heading, 300 to 900</p>
+            <h2 class="js-weight-hover max-w-4xl text-5xl leading-[1.05] font-light tracking-tight md:text-8xl">Move the mouse across this line</h2>
+        </div>
+    </div>
+</section>
+
+{# demo: one huge word, thin, a wide radius #}
+<section class="px-4 pb-16">
+    <div class="mx-auto grid max-w-295 gap-4 md:grid-cols-[2fr_1fr]">
+        <div class="flex min-h-96 flex-col justify-between gap-10 overflow-hidden rounded-3xl bg-gray-950 p-8 text-white md:p-12">
+            <p class="font-mono text-sm text-white/60">Thin to black, radius 320</p>
+            <p class="js-weight-hover-wide text-7xl leading-none font-thin tracking-tight uppercase md:text-[9rem]">Studio</p>
+        </div>
+        {# demo: a menu, subtle and close #}
+        <div class="flex flex-col justify-between gap-10 rounded-3xl border border-gray-200 p-8">
+            <p class="font-mono text-sm text-gray-500">Menu, 400 to 700, radius 60</p>
+            <nav class="flex flex-col items-start gap-2 text-4xl tracking-tight">
+                <a class="js-weight-hover-menu" href="#">Work</a>
+                <a class="js-weight-hover-menu" href="#">About</a>
+                <a class="js-weight-hover-menu" href="#">Journal</a>
+                <a class="js-weight-hover-menu" href="#">Contact</a>
+            </nav>
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- a variable font, its own weight is where the letters rest -->
+<h2 class="js-weight-hover font-light">Move the mouse across this line</h2>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // split-type (npm)
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_weightHover.js
+    // Font
+        // a variable font with a weight axis, here DM Sans 100..1000 from Google Fonts
+
+new _weightHover({
+    target: document.querySelector('.js-weight-hover'),
+    // defaults: min: the text's own weight, max: 900, radius: 200, ease: 0.15
+});
+
+// thin to black, felt from further away
+new _weightHover({ target: document.querySelector('.js-weight-hover-wide'), max: 1000, radius: 320 });
+
+// a menu: subtle and close
+document.querySelectorAll('.js-weight-hover-menu').forEach((target) => {
+    new _weightHover({
+        target,
+        min: 400,
+        max: 700,
+        radius: 60,
+        events: {
+            // enter: () => console.log('enter'),
+            // leave: () => console.log('leave'),
+        },
+    });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The letters are split with split-type, screen readers still get the text. The target gets <code class="font-mono text-sm">[data-active]</code> while the mouse is near.',
+    code: pageScript,
+    note: 'Options: <code class="font-mono text-sm">target</code>, <code class="font-mono text-sm">min</code>, <code class="font-mono text-sm">max</code>, <code class="font-mono text-sm">radius</code> (px around each letter), <code class="font-mono text-sm">ease</code>. Methods: <code class="font-mono text-sm">measure()</code> after the layout moves, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">enter</code>, <code class="font-mono text-sm">leave</code>. Mouse only, touch and reduced motion keep the text as it is. Bolder letters are wider, so keep wrapping text loose.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
