@@ -9,7 +9,7 @@ title: Glow | Three.js background | Anthony Toolkits
 {# demo: glow follows the cursor, light and dark #}
 <section class="px-4 pb-16">
     <div class="mx-auto max-w-295">
-        <div class="js-three-glow flex min-h-[80vh] flex-col justify-between gap-16 overflow-hidden rounded-3xl p-8 text-white transition-colors duration-700 data-[theme=light]:text-gray-950 md:p-12" data-theme="dark">
+        <div class="js-three-glow flex min-h-[80vh] flex-col justify-between gap-16 overflow-hidden rounded-3xl p-8 text-gray-950 transition-colors duration-700 data-[theme=dark]:text-white md:p-12" data-theme="light">
             <div class="flex flex-wrap items-center justify-between gap-4">
                 <p class="font-mono text-sm opacity-60">Move your mouse here</p>
                 <button class="js-glow-theme cursor-pointer rounded-full border border-current/30 px-4 py-2 font-medium" type="button">Light / dark</button>
@@ -41,12 +41,12 @@ const _themes = {
 const _target = document.querySelector('.js-three-glow');
 const _glow = _threeGlow({
     // defaults: rest: [0.7, 0.45], radius: 0.25, blur: 0.08, mirror: 0.6, grain: 0.28, follow: 1.2
-    ..._themes.dark,
+    ..._themes.light,
 });
 new _threeBackground({ target: _target, effect: _glow });
 
 document.querySelector('.js-glow-theme').addEventListener('click', () => {
-    const _theme = _target.dataset.theme === 'dark' ? 'light' : 'dark';
+    const _theme = _target.dataset.theme === 'light' ? 'dark' : 'light';
     _target.dataset.theme = _theme;
     _glow.set(_themes[_theme]);
 });
