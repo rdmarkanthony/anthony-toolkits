@@ -395,6 +395,51 @@ const _samples = {
         return _comp("plane", 400, 240, 100, [_plane, _trail]);
     },
 
+    // two parts: 0-24 the bell pops in, 24-120 it rings then rests, the part to loop
+    bell: () => {
+        // drawn from its hook, so it swings from the top
+        const _body = [
+            [-26, 42],
+            [-20, 36],
+            [-18, 20],
+            [-14, 8],
+            [-6, 1],
+            [0, 0],
+            [6, 1],
+            [14, 8],
+            [18, 20],
+            [20, 36],
+            [26, 42],
+        ];
+        return _comp("bell", 100, 100, 120, [
+            _layer(
+                1,
+                [_group([_path(_body, true), _fill()]), _group([_ellipse(8, [0, -3]), _fill()]), _group([_ellipse(12, [0, 48]), _fill()])],
+                120,
+                [50, 24],
+                "bell",
+                {
+                    s: _anim([
+                        [0, [0, 0, 100]],
+                        [14, [112, 112, 100]],
+                        [24, [100, 100, 100]],
+                    ]),
+                    r: _anim(
+                        [
+                            [24, 0],
+                            [30, 16],
+                            [36, -14],
+                            [42, 10],
+                            [48, -6],
+                            [54, 0],
+                        ],
+                        _easeInOut
+                    ),
+                }
+            ),
+        ]);
+    },
+
     // like: an outline heart, forward fills it with a pop and a burst of dots, back unlikes
     heart: () => {
         const _red = [0.94, 0.27, 0.35, 1];
