@@ -2,9 +2,22 @@
     page transitions for _pageTransition.js
     your own: animate anything under [data-page-leave="name"] and [data-page-enter="name"]
     --page-x, --page-y: the click on screen, --page-scroll: the scroll then, --page-cover: the cover color
+    --page-layer-1 to --page-layer-3: the rings and squares, outside in
 */
 /* blinds: one progress drives all five bars */
 @property --page-blinds {
+    syntax: "<number>";
+    inherits: false;
+    initial-value: 0;
+}
+/* rings: one progress drives all three rings */
+@property --page-rings {
+    syntax: "<number>";
+    inherits: false;
+    initial-value: 0;
+}
+/* squares: the same for the squares */
+@property --page-squares {
     syntax: "<number>";
     inherits: false;
     initial-value: 0;
@@ -159,6 +172,74 @@
         [data-page-enter="blob"]::after {
             animation: page-blob-out 0.8s 0.05s cubic-bezier(0.65, 0, 0.35, 1) both;
         }
+
+        /* rings and squares: the colors, outside in */
+        :is([data-page-leave="rings"], [data-page-enter="rings"], [data-page-leave="squares"], [data-page-enter="squares"])::after {
+            --layer-1: var(--page-layer-1, #111113);
+            --layer-2: var(--page-layer-2, #a1a1aa);
+            --layer-3: var(--page-layer-3, #fff);
+        }
+
+        /* rings: three circles grow from the click one after another, then ripple out on the next page */
+        :is([data-page-leave="rings"], [data-page-enter="rings"])::after {
+            --ring: circle at var(--page-x, 50%) var(--page-y, 50%);
+            --ring-p: calc(var(--page-rings) * 1.4);
+            opacity: 1;
+        }
+        /* the last on top, so each one shows as a band */
+        [data-page-leave="rings"]::after {
+            background:
+                radial-gradient(var(--ring), var(--layer-3) calc(clamp(0, var(--ring-p) - 0.4, 1) * 150vmax), transparent calc(clamp(0, var(--ring-p) - 0.4, 1) * 150vmax + 1px)),
+                radial-gradient(var(--ring), var(--layer-2) calc(clamp(0, var(--ring-p) - 0.2, 1) * 150vmax), transparent calc(clamp(0, var(--ring-p) - 0.2, 1) * 150vmax + 1px)),
+                radial-gradient(var(--ring), var(--layer-1) calc(clamp(0, var(--ring-p), 1) * 150vmax), transparent calc(clamp(0, var(--ring-p), 1) * 150vmax + 1px));
+            animation: page-rings-in 1.4s cubic-bezier(0.45, 0, 0.55, 1) both;
+        }
+        /* starts on the last color, the rings come back in and a hole opens the page */
+        [data-page-enter="rings"]::after {
+            --hole: calc(clamp(0, var(--ring-p) - 0.4, 1) * 150vmax);
+            background:
+                radial-gradient(var(--ring), var(--layer-1) calc(clamp(0, var(--ring-p) - 0.2, 1) * 150vmax), transparent calc(clamp(0, var(--ring-p) - 0.2, 1) * 150vmax + 1px)),
+                radial-gradient(var(--ring), var(--layer-2) calc(clamp(0, var(--ring-p), 1) * 150vmax), transparent calc(clamp(0, var(--ring-p), 1) * 150vmax + 1px)),
+                var(--layer-3);
+            mask: radial-gradient(var(--ring), transparent var(--hole), #000 calc(var(--hole) + 1px));
+            animation: page-rings-in 1.4s 0.05s cubic-bezier(0.45, 0, 0.55, 1) both;
+        }
+
+        /* squares: three squares grow from the click and turn, then ripple out on the next page */
+        :is([data-page-leave="squares"], [data-page-enter="squares"])::after {
+            --square-p: calc(var(--page-squares) * 1.4);
+            --square-1: calc(clamp(0, var(--square-p), 1) * 100%);
+            --square-2: calc(clamp(0, var(--square-p) - 0.2, 1) * 100%);
+            --square-3: calc(clamp(0, var(--square-p) - 0.4, 1) * 100%);
+            inset: auto;
+            top: var(--page-y, 50%);
+            left: var(--page-x, 50%);
+            /* small and scaled up like blob, a 300vmax layer is slow to paint */
+            width: 50vmax;
+            height: 50vmax;
+            margin: -25vmax 0 0 -25vmax;
+            scale: 6;
+            opacity: 1;
+        }
+        /* the last on top, so each one shows as a band */
+        [data-page-leave="squares"]::after {
+            background:
+                linear-gradient(var(--layer-3) 0 0) center / var(--square-3) var(--square-3) no-repeat,
+                linear-gradient(var(--layer-2) 0 0) center / var(--square-2) var(--square-2) no-repeat,
+                linear-gradient(var(--layer-1) 0 0) center / var(--square-1) var(--square-1) no-repeat;
+            animation: page-squares-in 1.4s cubic-bezier(0.45, 0, 0.55, 1) both;
+        }
+        /* starts on the last color, the squares come back in and a hole opens the page */
+        [data-page-enter="squares"]::after {
+            background:
+                linear-gradient(var(--layer-1) 0 0) center / var(--square-2) var(--square-2) no-repeat,
+                linear-gradient(var(--layer-2) 0 0) center / var(--square-1) var(--square-1) no-repeat,
+                var(--layer-3);
+            mask:
+                linear-gradient(#000 0 0) center / var(--square-3) var(--square-3) no-repeat exclude,
+                linear-gradient(#000 0 0);
+            animation: page-squares-out 1.4s 0.05s cubic-bezier(0.45, 0, 0.55, 1) both;
+        }
     }
 
     @keyframes page-fade-out {
@@ -214,6 +295,25 @@
     @keyframes page-blinds-out {
         from {
             --page-blinds: 1;
+        }
+    }
+    @keyframes page-rings-in {
+        to {
+            --page-rings: 1;
+        }
+    }
+    @keyframes page-squares-in {
+        from {
+            rotate: -90deg;
+        }
+        to {
+            --page-squares: 1;
+        }
+    }
+    @keyframes page-squares-out {
+        to {
+            rotate: 90deg;
+            --page-squares: 1;
         }
     }
     /* --side: -1 the left half, 1 the right */

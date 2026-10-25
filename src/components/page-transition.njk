@@ -12,6 +12,11 @@ title: Page transition | Anthony Toolkits
 /* the cover for circle and slide, white by default */
 :root {
     --page-cover: #111113;
+
+    /* rings and squares, outside in, the last one covers the page */
+    --page-layer-1: #1e3a8a;
+    --page-layer-2: #60a5fa;
+    --page-layer-3: #eff6ff;
 }
 
 /* your own: a blue cover, up from the bottom */
@@ -50,6 +55,8 @@ title: Page transition | Anthony Toolkits
     { name: 'curtain', text: 'Two halves close, then open on the next page.' },
     { name: 'zoom', text: 'The page shrinks back to the click, the next grows in.' },
     { name: 'blob', text: 'A wobbly shape grows from where you click.' },
+    { name: 'rings', text: 'Colored rings grow from the click, then ripple out.' },
+    { name: 'squares', text: 'Colored squares grow and turn, then ripple out.' },
     { name: 'wipe', text: 'Your own, from the CSS below.' }
 ] %}
 
@@ -133,7 +140,7 @@ if (_arrived) document.querySelector('.js-arrived').textContent = `Opened with $
     markup: pageMarkup,
     markupNote: 'The head line passes the name to the next page, so it starts hidden with no flash. Leave the value empty for fade.',
     css: wipeCSS,
-    cssNote: 'fade, circle, slide, blinds, curtain, zoom and blob are in page-transition.css. For your own, animate anything under <code class="font-mono text-sm">[data-page-leave]</code> and <code class="font-mono text-sm">[data-page-enter]</code>. The page opens once the leave animation ends.',
+    cssNote: 'fade, circle, slide, blinds, curtain, zoom, blob, rings and squares are in page-transition.css. Change the ring and square colors with <code class="font-mono text-sm">--page-layer-1</code> to <code class="font-mono text-sm">--page-layer-3</code>. For your own, animate anything under <code class="font-mono text-sm">[data-page-leave]</code> and <code class="font-mono text-sm">[data-page-enter]</code>. The page opens once the leave animation ends.',
     code: pageScript,
     note: 'A click from the keyboard grows the circle from the link. With reduced motion there\'s no animation, the page just opens.'
 }) }}
