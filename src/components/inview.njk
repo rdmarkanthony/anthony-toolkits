@@ -43,15 +43,17 @@ title: Inview | Anthony Toolkits
     // JS
         // src/assets/js/utils/_inview.js
 
-// marks the card and its pill while in view
+// marks the card while in view, style it with data-visible
 const _mark = (instance) => {
-    const _card = instance.target;
-    const _status = document.querySelector(`.js-inview-status[data-for="${_card.id}"]`);
-    const _name = _status.textContent.split(':')[0];
+    instance.target.toggleAttribute('data-visible', instance.visible);
 
-    _card.toggleAttribute('data-visible', instance.visible);
+    // demo-start
+    // its pill on the page
+    const _status = document.querySelector(`.js-inview-status[data-for="${instance.target.id}"]`);
+    const _name = _status.textContent.split(':')[0];
     _status.toggleAttribute('data-visible', instance.visible);
     _status.textContent = `${_name}: ${instance.visible ? 'in view' : 'out of view'}`;
+    // demo-end
 };
 
 const _cards = document.querySelectorAll('.js-inview-card');

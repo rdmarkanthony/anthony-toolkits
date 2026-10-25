@@ -45,7 +45,7 @@ title: Auto scroll | Anthony Toolkits
         // src/assets/js/utils/_autoScroll.js
         // src/assets/js/utils/_tween.js
 
-const _status = document.querySelector('.js-auto-scroll-status');
+const _status = document.querySelector('.js-auto-scroll-status'); // demo
 
 // the links still work without js, this only makes them smooth
 document.querySelectorAll('.js-auto-scroll').forEach((link) => {
@@ -57,9 +57,8 @@ document.querySelectorAll('.js-auto-scroll').forEach((link) => {
             speed: link.dataset.speed ? Number(link.dataset.speed) : undefined,
             ease: link.dataset.ease,
             offset: link.dataset.offset ? Number(link.dataset.offset) : undefined,
-            callback: ({ target, direction, y }) => {
-                _status.textContent = `Scrolled ${direction} to #${target.id}, at ${y}px.`;
-            },
+            // callback: ({ target, direction, y }) => console.log(direction, target, y),
+            callback: ({ target, direction, y }) => (_status.textContent = `Scrolled ${direction} to #${target.id}, at ${y}px.`), // demo
         });
     });
 });

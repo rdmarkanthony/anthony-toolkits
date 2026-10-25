@@ -124,9 +124,9 @@ document.querySelector('.js-page-code').addEventListener('click', () => {
     _pageTransition.leave('?via=code', 'circle');
 });
 
-// how this page was opened
-const _arrived = document.documentElement.dataset.pageEnter;
-if (_arrived) document.querySelector('.js-arrived').textContent = `Opened with ${_arrived}.`;
+// the look this page was opened with is on document.documentElement.dataset.pageEnter
+const _arrived = document.documentElement.dataset.pageEnter; // demo
+if (_arrived) document.querySelector('.js-arrived').textContent = `Opened with ${_arrived}.`; // demo
 {% endraw %}{% endset %}
 
 {{ scriptUsage({

@@ -107,29 +107,31 @@ _lazyLoad();
 
 // "lazyload" fires when done, e.detail.error if it failed
 const _gallery = document.querySelector('.js-lazy-gallery');
-const _counter = document.querySelector('.js-lazy-counter');
+const _counter = document.querySelector('.js-lazy-counter'); // demo
 
-_gallery.addEventListener('lazyload', () => {
+_gallery.addEventListener('lazyload', (e) => {
+    // console.log(e.target, e.detail?.error);
+    // demo-start
     const _loaded = _gallery.querySelectorAll('.is-loaded').length;
     const _failed = _gallery.querySelectorAll('.is-error').length;
-
     _counter.textContent = `${_loaded} loaded${_failed ? `, ${_failed} failed` : ''}`;
+    // demo-end
 });
 
 // load everything inside target first, then show it
 const _reveal = document.querySelector('.js-lazy-reveal');
-const _status = document.querySelector('.js-lazy-reveal-status');
+const _status = document.querySelector('.js-lazy-reveal-status'); // demo
 const _frames = document.querySelector('.js-lazy-frames');
 
 _reveal.addEventListener('click', async () => {
     _reveal.disabled = true;
-    _status.textContent = 'Loading...';
+    _status.textContent = 'Loading...'; // demo
+    const _started = performance.now(); // demo
 
-    const _started = performance.now();
-    const _elements = await _lazyLoad({ target: _frames });
-
+    // resolves with the elements once all have loaded
+    await _lazyLoad({ target: _frames });
     _frames.classList.add('is-shown');
-    _status.textContent = `${_elements.length} frames loaded in ${Math.round(performance.now() - _started)}ms, then shown.`;
+    _status.textContent = `${_frames.querySelectorAll('.is-loaded').length} frames loaded in ${Math.round(performance.now() - _started)}ms, then shown.`; // demo
 });
 {% endraw %}{% endset %}
 
