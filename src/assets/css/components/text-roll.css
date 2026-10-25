@@ -1,6 +1,7 @@
 /*
     text roll for _textRoll.js
     on hover or focus, the text rolls up and a copy rolls in from below
+    with stagger, each .char rolls a little after the one before
     mouse only, reduced motion keeps it still
 */
 @layer components {
@@ -13,13 +14,20 @@
             vertical-align: top;
             overflow: hidden;
         }
-        .text-roll > span {
+        .text-roll > span,
+        .text-roll .char {
             display: block;
             text-shadow: 0 var(--roll) currentColor;
             transition: translate 0.7s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        [data-text-roll]:hover .text-roll > span,
-        [data-text-roll]:focus-visible .text-roll > span {
+        .text-roll .char {
+            display: inline-block;
+            transition-delay: calc(var(--char) * var(--stagger));
+        }
+        [data-text-roll]:hover .text-roll > span:not(:has(.char)),
+        [data-text-roll]:focus-visible .text-roll > span:not(:has(.char)),
+        [data-text-roll]:hover .text-roll .char,
+        [data-text-roll]:focus-visible .text-roll .char {
             translate: 0 calc(var(--roll) * -1);
         }
     }
