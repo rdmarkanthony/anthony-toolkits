@@ -63,51 +63,6 @@
             animation: page-slide-out 0.6s cubic-bezier(0.65, 0, 0.35, 1) both;
         }
 
-        /* clouds: they gather until the screen is white, the next page flies through them */
-        :is([data-page-leave="clouds"], [data-page-enter="clouds"])::before,
-        :is([data-page-leave="clouds"], [data-page-enter="clouds"])::after {
-            --cloud-1: url("/assets/img/clouds/cloud-1.webp") no-repeat;
-            --cloud-2: url("/assets/img/clouds/cloud-2.webp") no-repeat;
-            --cloud-3: url("/assets/img/clouds/cloud-3.webp") no-repeat;
-            content: "";
-            position: fixed;
-            inset: -5vmax;
-            z-index: 2147483647;
-            opacity: 1;
-            pointer-events: none;
-        }
-        /* the back clouds, white fills behind them */
-        :is([data-page-leave="clouds"], [data-page-enter="clouds"])::before {
-            background:
-                var(--cloud-2) 0 0 / 80vmax auto,
-                var(--cloud-3) 100% 0 / 60vmax auto,
-                var(--cloud-1) 0 100% / 70vmax auto,
-                var(--cloud-2) 100% 100% / 80vmax auto,
-                var(--cloud-1) 50% 25% / 70vmax auto,
-                var(--cloud-3) 45% 75% / 60vmax auto;
-        }
-        /* the front clouds, none in the middle so it opens up */
-        :is([data-page-leave="clouds"], [data-page-enter="clouds"])::after {
-            background:
-                var(--cloud-1) 15% 15% / 70vmax auto,
-                var(--cloud-3) 90% 30% / 60vmax auto,
-                var(--cloud-2) 0 65% / 80vmax auto,
-                var(--cloud-1) 85% 95% / 70vmax auto,
-                var(--cloud-3) 35% 105% / 60vmax auto;
-        }
-        [data-page-leave="clouds"]::before {
-            animation: page-clouds-back-in 1.1s cubic-bezier(0.3, 0, 0.2, 1) both;
-        }
-        [data-page-leave="clouds"]::after {
-            animation: page-clouds-in 1.1s cubic-bezier(0.3, 0, 0.2, 1) both;
-        }
-        [data-page-enter="clouds"]::before {
-            animation: page-clouds-back-out 1.2s cubic-bezier(0.5, 0, 0.3, 1) both;
-        }
-        [data-page-enter="clouds"]::after {
-            animation: page-clouds-out 1.2s cubic-bezier(0.5, 0, 0.3, 1) both;
-        }
-
         /* blinds: five bars drop in one after another, then lift off */
         :is([data-page-leave="blinds"], [data-page-enter="blinds"])::after {
             --bar: linear-gradient(var(--page-cover, #fff) 0 0) no-repeat;
@@ -153,18 +108,6 @@
         [data-page-enter="curtain"]::before,
         [data-page-enter="curtain"]::after {
             animation: page-curtain-open 0.8s 0.1s cubic-bezier(0.7, 0, 0.25, 1) both;
-        }
-
-        /* pixels: squares fill in a random order, then clear, frames from tools/make-pixels.js */
-        :is([data-page-leave="pixels"], [data-page-enter="pixels"])::after {
-            opacity: 1;
-            mask: url("/assets/img/page-pixels.svg#p0") center / 100vmax 100vmax no-repeat;
-        }
-        [data-page-leave="pixels"]::after {
-            animation: page-pixels 0.6s linear both;
-        }
-        [data-page-enter="pixels"]::after {
-            animation: page-pixels 0.6s 0.1s linear reverse both;
         }
 
         /* zoom: the page shrinks back to the click, the next grows into place */
@@ -263,45 +206,6 @@
             translate: -100% 0;
         }
     }
-    @keyframes page-clouds-in {
-        from {
-            opacity: 0;
-            scale: 1.6;
-        }
-        50% {
-            opacity: 1;
-        }
-    }
-    @keyframes page-clouds-back-in {
-        from {
-            opacity: 0;
-            scale: 1.3;
-        }
-        50% {
-            background-color: #fff0;
-        }
-        to {
-            background-color: #fff;
-        }
-    }
-    @keyframes page-clouds-out {
-        to {
-            opacity: 0;
-            scale: 2;
-        }
-    }
-    @keyframes page-clouds-back-out {
-        from {
-            background-color: #fff;
-        }
-        40% {
-            background-color: #fff0;
-        }
-        to {
-            opacity: 0;
-            scale: 1.5;
-        }
-    }
     @keyframes page-blinds-in {
         to {
             --page-blinds: 1;
@@ -321,41 +225,6 @@
     @keyframes page-curtain-open {
         to {
             translate: calc(var(--side) * 100%) 0;
-        }
-    }
-    @keyframes page-pixels {
-        0% {
-            mask-image: url("/assets/img/page-pixels.svg#p0");
-        }
-        10% {
-            mask-image: url("/assets/img/page-pixels.svg#p1");
-        }
-        20% {
-            mask-image: url("/assets/img/page-pixels.svg#p2");
-        }
-        30% {
-            mask-image: url("/assets/img/page-pixels.svg#p3");
-        }
-        40% {
-            mask-image: url("/assets/img/page-pixels.svg#p4");
-        }
-        50% {
-            mask-image: url("/assets/img/page-pixels.svg#p5");
-        }
-        60% {
-            mask-image: url("/assets/img/page-pixels.svg#p6");
-        }
-        70% {
-            mask-image: url("/assets/img/page-pixels.svg#p7");
-        }
-        80% {
-            mask-image: url("/assets/img/page-pixels.svg#p8");
-        }
-        90% {
-            mask-image: url("/assets/img/page-pixels.svg#p9");
-        }
-        100% {
-            mask-image: url("/assets/img/page-pixels.svg#p10");
         }
     }
     @keyframes page-zoom-out {
