@@ -1,0 +1,60 @@
+/*
+    split hover, css only
+    hover or focus the parent and the word splits at the middle, the halves slide apart and a copy opens between them
+    <a href="#"><span class="split-hover" data-text="Work"><span>Work</span></span></a>, one line, --split-color for the copy
+    .split-hover-trigger on any parent splits the ones inside it, e.g. a card
+    mouse only, reduced motion keeps it still
+*/
+@layer components {
+    .split-hover {
+        position: relative;
+        display: inline-block;
+        padding-block: 0.1em;
+        margin-block: -0.1em;
+        vertical-align: top;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    /* the halves, screen readers skip them */
+    .split-hover::before,
+    .split-hover::after {
+        content: attr(data-text);
+        content: attr(data-text) / "";
+        position: absolute;
+        inset: 0;
+        padding-block: inherit;
+    }
+    .split-hover::before {
+        clip-path: inset(0 0 50% 0);
+    }
+    .split-hover::after {
+        clip-path: inset(50% 0 0 0);
+    }
+    .split-hover > span {
+        display: block;
+        color: var(--split-color, currentColor);
+        clip-path: inset(50% 0 50% 0);
+    }
+
+    @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+        .split-hover::before,
+        .split-hover::after,
+        .split-hover > span {
+            transition:
+                translate 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                clip-path 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        :is(:hover, :focus-visible) > .split-hover::before,
+        .split-hover-trigger:is(:hover, :focus-visible) .split-hover::before {
+            translate: 0 -50%;
+        }
+        :is(:hover, :focus-visible) > .split-hover::after,
+        .split-hover-trigger:is(:hover, :focus-visible) .split-hover::after {
+            translate: 0 50%;
+        }
+        :is(:hover, :focus-visible) > .split-hover > span,
+        .split-hover-trigger:is(:hover, :focus-visible) .split-hover > span {
+            clip-path: inset(-0.1em 0 -0.1em 0);
+        }
+    }
+}

@@ -1,0 +1,129 @@
+---
+title: Split hover | Text effects | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Text effects', url: '/components/text-effects/' }, label: 'split-hover.css', title: 'Split hover', description: 'Hover a link and its word splits at the middle, the halves slide apart and a copy opens between them. CSS only.' }) }}
+
+{# demo: nav, buttons and big type #}
+<section class="px-4 pb-4">
+    <div class="mx-auto grid max-w-295 gap-4 md:grid-cols-2">
+        <div class="flex min-h-72 flex-col justify-between gap-10 rounded-3xl bg-gray-950 p-8 text-white">
+            <h2 class="text-3xl font-bold tracking-tight">Nav</h2>
+            <nav class="flex flex-wrap gap-x-8 gap-y-3 text-lg [--split-color:var(--color-emerald-400)]">
+                {% for item in ['About', 'Work', 'Journal', 'Contact'] %}
+                <a href="#"><span class="split-hover" data-text="{{ item }}"><span>{{ item }}</span></span></a>
+                {% endfor %}
+            </nav>
+        </div>
+        <div class="flex min-h-72 flex-col justify-between gap-10 rounded-3xl bg-gray-100 p-8">
+            <h2 class="text-3xl font-bold tracking-tight">Buttons</h2>
+            <div class="flex flex-wrap gap-3">
+                <a class="rounded-full bg-gray-950 px-6 py-3 font-medium text-white" href="#"><span class="split-hover" data-text="Get started"><span>Get started</span></span></a>
+                <a class="rounded-full border border-gray-950 px-6 py-3 font-medium [--split-color:var(--color-rose-500)]" href="#"><span class="split-hover" data-text="Learn more"><span>Learn more</span></span></a>
+            </div>
+        </div>
+        <div class="flex flex-col gap-6 rounded-3xl border border-gray-200 p-8 md:col-span-2 md:p-12">
+            <p class="text-gray-600">Big type</p>
+            <a class="self-start text-5xl font-bold tracking-tight md:text-8xl [--split-color:var(--color-indigo-500)]" href="#"><span class="split-hover" data-text="Let's talk"><span>Let's talk</span></span></a>
+            <a class="self-start text-2xl font-medium md:text-4xl" href="#"><span class="split-hover" data-text="hello@studio.com"><span>hello@studio.com</span></span></a>
+        </div>
+    </div>
+</section>
+
+{# demo: the whole card splits its title #}
+<section class="px-4 pb-16">
+    <div class="mx-auto grid max-w-295 gap-4 md:grid-cols-3">
+        {% for card in [{ name: 'Lumen', type: 'Branding', photo: 1 }, { name: 'Northwind', type: 'Website', photo: 3 }, { name: 'Oakline', type: 'App', photo: 5 }] %}
+        <a class="split-hover-trigger group flex flex-col gap-4 [--split-color:var(--color-emerald-600)]" href="#">
+            <div class="aspect-4/3 overflow-hidden rounded-3xl"><img class="size-full object-cover transition-transform duration-700 group-hover:scale-105" src="/assets/img/gallery/photo-{{ card.photo }}.webp" alt="" loading="lazy" /></div>
+            <div class="flex items-baseline justify-between gap-4">
+                <h3 class="text-3xl font-bold tracking-tight"><span class="split-hover" data-text="{{ card.name }}"><span>{{ card.name }}</span></span></h3>
+                <p class="text-gray-500">{{ card.type }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- the parent's hover or focus splits it, data-text = the text -->
+<a href="#"><span class="split-hover" data-text="Work"><span>Work</span></span></a>
+
+<!-- a whole card splits its title with .split-hover-trigger -->
+<a class="split-hover-trigger" href="#">
+    <img src="project.webp" alt="" />
+    <h3><span class="split-hover" data-text="Lumen"><span>Lumen</span></span></h3>
+</a>
+
+<!-- the copy's color -->
+<a class="[--split-color:var(--color-emerald-400)]" href="#">
+    <span class="split-hover" data-text="Work"><span>Work</span></span>
+</a>
+{% endraw %}{% endset %}
+
+{% set pageCss %}{% raw %}/* style.css */
+@import "./components/split-hover.css";
+
+/* split-hover.css */
+@layer components {
+    .split-hover {
+        position: relative;
+        display: inline-block;
+        padding-block: 0.1em;
+        margin-block: -0.1em;
+        vertical-align: top;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    /* the halves, screen readers skip them */
+    .split-hover::before,
+    .split-hover::after {
+        content: attr(data-text);
+        content: attr(data-text) / "";
+        position: absolute;
+        inset: 0;
+        padding-block: inherit;
+    }
+    .split-hover::before {
+        clip-path: inset(0 0 50% 0);
+    }
+    .split-hover::after {
+        clip-path: inset(50% 0 0 0);
+    }
+    .split-hover > span {
+        display: block;
+        color: var(--split-color, currentColor);
+        clip-path: inset(50% 0 50% 0);
+    }
+
+    @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+        .split-hover::before,
+        .split-hover::after,
+        .split-hover > span {
+            transition:
+                translate 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                clip-path 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        :is(:hover, :focus-visible) > .split-hover::before,
+        .split-hover-trigger:is(:hover, :focus-visible) .split-hover::before {
+            translate: 0 -50%;
+        }
+        :is(:hover, :focus-visible) > .split-hover::after,
+        .split-hover-trigger:is(:hover, :focus-visible) .split-hover::after {
+            translate: 0 50%;
+        }
+        :is(:hover, :focus-visible) > .split-hover > span,
+        .split-hover-trigger:is(:hover, :focus-visible) .split-hover > span {
+            clip-path: inset(-0.1em 0 -0.1em 0);
+        }
+    }
+}{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Put <code class="font-mono text-sm">.split-hover</code> on a span inside the link or button, so padding stays outside. One line of text.',
+    css: pageCss,
+    cssNote: 'No script. Copy <code class="font-mono text-sm">src/assets/css/components/split-hover.css</code>. Touch screens and reduced motion show the word as it is.'
+}) }}
