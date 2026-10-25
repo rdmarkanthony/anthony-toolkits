@@ -20,6 +20,7 @@ export default [
         category: "Text effects",
         url: "/components/text-effects/",
         items: [
+            { label: "Line reveal", url: "/components/text-effects/line-reveal/", description: "Heading lines slide up from behind a mask as they come into view.", utils: "_lineReveal · _inview", ready: true },
             { label: "Scramble text", url: "/components/text-effects/scramble/", description: "Letters flip through random characters, then settle into the text.", utils: "_scrambleText", ready: true },
             { label: "Text roll", url: "/components/text-effects/roll/", description: "Link and button text that rolls up on hover, a copy coming in from below.", utils: "_textRoll", ready: true },
             { label: "Typing animation", url: "/components/text-effects/typing/", description: "Types and erases lines, with styled parts and a steady cursor.", utils: "_typing", ready: true },
