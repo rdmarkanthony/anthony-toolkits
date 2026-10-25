@@ -183,6 +183,39 @@
             transform-origin: 50% 50vh;
             animation: page-zoom-in 0.6s 0.05s cubic-bezier(0.25, 1, 0.5, 1) backwards;
         }
+
+        /* blob: two shapes spin opposite ways as they grow, so the edge wobbles */
+        :is([data-page-leave="blob"], [data-page-enter="blob"])::before,
+        :is([data-page-leave="blob"], [data-page-enter="blob"])::after {
+            --spin: 120deg;
+            content: "";
+            position: fixed;
+            inset: auto;
+            top: var(--page-y, 50%);
+            left: var(--page-x, 50%);
+            /* small and scaled up, a 400vmax mask is slow to draw the first time */
+            width: 50vmax;
+            height: 50vmax;
+            margin: -25vmax 0 0 -25vmax;
+            scale: 8;
+            z-index: 2147483647;
+            opacity: 1;
+            pointer-events: none;
+            background-color: var(--page-cover, #fff);
+            mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><path d='M100 4C117 4 137 32 152 48C168 64 192 83 192 100C192 117 165 133 149 149C134 166 117 197 100 198C83 199 60 171 45 155C30 139 9 118 10 100C11 82 34 65 49 49C64 33 83 4 100 4Z'/></svg>") center / 100% no-repeat;
+        }
+        :is([data-page-leave="blob"], [data-page-enter="blob"])::after {
+            --spin: -90deg;
+            mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><path d='M100 20C119 18 151 14 162 26C174 37 168 67 171 87C174 108 189 133 181 147C174 161 145 164 126 171C107 179 81 199 66 193C52 187 49 153 39 135C30 117 7 100 8 84C10 68 32 48 47 37C63 27 81 22 100 20Z'/></svg>");
+        }
+        [data-page-leave="blob"]::before,
+        [data-page-leave="blob"]::after {
+            animation: page-blob-in 0.9s cubic-bezier(0.65, 0, 0.35, 1) both;
+        }
+        [data-page-enter="blob"]::before,
+        [data-page-enter="blob"]::after {
+            animation: page-blob-out 0.8s 0.05s cubic-bezier(0.65, 0, 0.35, 1) both;
+        }
     }
 
     @keyframes page-fade-out {
@@ -341,6 +374,19 @@
         from,
         to {
             background-color: var(--page-cover, #fff);
+        }
+    }
+    /* --spin: how far each shape turns */
+    @keyframes page-blob-in {
+        from {
+            scale: 0;
+            rotate: calc(var(--spin) * -1);
+        }
+    }
+    @keyframes page-blob-out {
+        to {
+            scale: 0;
+            rotate: var(--spin);
         }
     }
     @keyframes page-push {
