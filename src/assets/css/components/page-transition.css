@@ -3,6 +3,13 @@
     your own: animate anything under [data-page-leave="name"] and [data-page-enter="name"]
     --page-x, --page-y: the click, --page-cover: the cover color
 */
+/* blinds: one progress drives all five bars */
+@property --page-blinds {
+    syntax: "<number>";
+    inherits: false;
+    initial-value: 0;
+}
+
 @layer components {
     /* no sideways scroll as a cover moves in */
     [data-page-leave] {
@@ -100,6 +107,28 @@
         [data-page-enter="clouds"]::after {
             animation: page-clouds-out 1.2s cubic-bezier(0.5, 0, 0.3, 1) both;
         }
+
+        /* blinds: five bars drop in one after another, then lift off */
+        :is([data-page-leave="blinds"], [data-page-enter="blinds"])::after {
+            --bar: linear-gradient(var(--page-cover, #fff) 0 0) no-repeat;
+            --bar-w: calc(20% + 1px);
+            --bar-h: calc(var(--page-blinds) * 160%);
+            opacity: 1;
+            background:
+                var(--bar) 0 0 / var(--bar-w) clamp(0%, var(--bar-h), 100%),
+                var(--bar) 25% 0 / var(--bar-w) clamp(0%, var(--bar-h) - 15%, 100%),
+                var(--bar) 50% 0 / var(--bar-w) clamp(0%, var(--bar-h) - 30%, 100%),
+                var(--bar) 75% 0 / var(--bar-w) clamp(0%, var(--bar-h) - 45%, 100%),
+                var(--bar) 100% 0 / var(--bar-w) clamp(0%, var(--bar-h) - 60%, 100%);
+        }
+        [data-page-leave="blinds"]::after {
+            animation: page-blinds-in 0.8s cubic-bezier(0.65, 0, 0.35, 1) both;
+        }
+        /* flipped, so the first bar lifts first */
+        [data-page-enter="blinds"]::after {
+            scale: -1 1;
+            animation: page-blinds-out 0.8s cubic-bezier(0.65, 0, 0.35, 1) both;
+        }
     }
 
     @keyframes page-fade-out {
@@ -184,6 +213,16 @@
         to {
             opacity: 0;
             scale: 1.5;
+        }
+    }
+    @keyframes page-blinds-in {
+        to {
+            --page-blinds: 1;
+        }
+    }
+    @keyframes page-blinds-out {
+        from {
+            --page-blinds: 1;
         }
     }
     @keyframes page-push {
