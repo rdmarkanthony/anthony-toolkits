@@ -1,0 +1,46 @@
+---
+title: Text effects | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/component-page.njk" import pageIntro %}
+
+{{ pageIntro({ title: 'Text effects', description: 'Text effects for links, buttons, menus and headings, each with its own script. Hover a card to try it. Each demo shows its markup and script, ready to copy.' }) }}
+
+{% set demos = [
+    { url: '/components/text-effects/roll/', title: 'Text roll', text: 'Link and button text that rolls up on hover, a copy coming in from below.', utils: '_textRoll', id: 'roll', word: "Let's talk", class: 'bg-gray-950 text-white' },
+    { url: '/components/text-effects/scramble/', title: 'Scramble text', text: 'Letters flip through random characters, then settle into the text.', utils: '_scrambleText', id: 'scramble', word: 'GET STARTED', class: 'bg-gray-50 font-mono' },
+    { url: '/components/text-effects/typing/', title: 'Typing animation', text: 'Types and erases lines, with styled parts and a steady cursor.', utils: '_typing', id: 'typing', word: 'Hello', class: 'bg-gray-100' }
+] %}
+<section id="demos" class="px-4 pb-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-8 text-3xl font-bold tracking-tight">Demos</h2>
+        <div class="grid gap-6 md:grid-cols-3">
+            {% for demo in demos %}
+            <a class="js-{{ demo.id }}-card group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="{{ demo.url }}">
+                <div class="flex aspect-4/3 items-center justify-center px-6 {{ demo.class }}">
+                    <p class="js-{{ demo.id }}-preview text-4xl font-bold tracking-tight">{{ demo.word }}</p>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">{{ demo.title }}</h3>
+                    <p class="mb-6 flex-1 text-gray-600">{{ demo.text }}</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">{{ demo.utils }}</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% footerscript %}
+<script type="module">
+// demo only: each card plays its effect on hover, typing loops on its own
+_textRoll('.js-roll-preview');
+document.querySelector('.js-roll-card').dataset.textRoll = '';
+
+new _scrambleText({ target: document.querySelector('.js-scramble-preview'), trigger: document.querySelector('.js-scramble-card') });
+
+new _typing({ target: document.querySelector('.js-typing-preview'), lines: ['Hello', 'Bonjour', 'Hola', 'Ciao'], loop: true, pause: 1500 });
+</script>
+{% endfooterscript %}

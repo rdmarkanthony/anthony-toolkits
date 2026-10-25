@@ -3,6 +3,11 @@
         "public": "public",
         "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
         "cleanUrls": true,
-        "redirects": [{ "source": "/components/lazy-load{,/**}", "destination": "/components/lazyload/", "type": 301 }]
+        "redirects": [
+            { "source": "/components/lazy-load{,/**}", "destination": "/components/lazyload/", "type": 301 },
+            { "source": "/components/text-roll{,/**}", "destination": "/components/text-effects/roll/", "type": 301 },
+            { "source": "/components/scramble-text{,/**}", "destination": "/components/text-effects/scramble/", "type": 301 },
+            { "source": "/components/typing-animation{,/**}", "destination": "/components/text-effects/typing/", "type": 301 }
+        ]
     }
 }
