@@ -84,19 +84,23 @@ document.querySelectorAll('.js-magnetic').forEach((target) => new _magnetic({ ta
 document.querySelectorAll('.js-magnetic-nav a').forEach((target) => new _magnetic({ target, strength: 0.2, radius: 16 }));
 
 // the big one, felt from further away
-const _label = document.querySelector('.js-magnetic-event');
+const _label = document.querySelector('.js-magnetic-event'); // demo
 new _magnetic({
     target: document.querySelector('.js-magnetic-cta'),
     strength: 0.25,
     radius: 120,
     events: {
-        enter: () => (_label.textContent = 'enter'),
-        leave: () => (_label.textContent = 'leave'),
+        // enter: () => console.log('enter'),
+        // leave: () => console.log('leave'),
+        enter: () => (_label.textContent = 'enter'), // demo
+        leave: () => (_label.textContent = 'leave'), // demo
     },
 });
 
-// demo links go nowhere
+// demo-start
+// the links go nowhere
 document.querySelectorAll('.js-magnetic, .js-magnetic-nav a, .js-magnetic-cta').forEach((link) => link.addEventListener('click', (e) => e.preventDefault()));
+// demo-end
 {% endraw %}{% endset %}
 
 {{ scriptUsage({

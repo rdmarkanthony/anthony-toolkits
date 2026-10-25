@@ -90,7 +90,7 @@ new _rangeSlider({
 });
 
 // min and max, the values shown outside the slider
-const _priceEvent = document.querySelector('.js-price-event');
+const _priceEvent = document.querySelector('.js-price-event'); // demo
 new _rangeSlider({
     target: document.querySelector('.js-range-price'),
     gap: 50,
@@ -98,7 +98,8 @@ new _rangeSlider({
     outputs: document.querySelectorAll('.js-price-value'),
     events: {
         // input while dragging, change once let go
-        change: ({ values }) => (_priceEvent.textContent = `change, ${values.join(' to ')}`),
+        // change: ({ values }) => console.log(values),
+        change: ({ values }) => (_priceEvent.textContent = `change, ${values.join(' to ')}`), // demo
     },
 });
 

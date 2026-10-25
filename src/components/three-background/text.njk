@@ -70,7 +70,7 @@ new _threeBackground({
     target: document.querySelector('.js-text-light'),
     effect: _text,
 });
-window._text = _text; // for trying it in the console
+window._text = _text; // demo
 
 document.querySelectorAll('.js-text-set').forEach((button) => button.addEventListener('click', () => _text.set(button.dataset.text)));
 document.querySelector('.js-text-burst').addEventListener('click', () => _text.burst());

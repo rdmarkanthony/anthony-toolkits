@@ -186,7 +186,7 @@ title: Hover indicator | Anthony Toolkits
         // src/assets/js/utils/_hoverIndicator.js
         // src/assets/js/utils/_tabs.js, for the tabs
 
-const _log = document.querySelector('.js-hover-event');
+const _log = document.querySelector('.js-hover-event'); // demo
 
 // tabs: the selected tab only
 document.querySelectorAll('.js-hover-tabs').forEach((target) => {
@@ -202,11 +202,13 @@ document.querySelectorAll('.js-hover-menu').forEach((target) => {
         active: '[aria-current="page"]',
         events: {
             // instance.item is the item it's on, or null
-            change: (instance) => (_log.textContent = `change, ${instance.item?.textContent.trim() ?? 'none'}`),
+            // change: (instance) => console.log(instance.item),
+            change: (instance) => (_log.textContent = `change, ${instance.item?.textContent.trim() ?? 'none'}`), // demo
         },
     });
 
-    // demo only: a click selects the link
+    // demo-start
+    // a click selects the link, the links go nowhere
     target.addEventListener('click', (e) => {
         const _link = e.target.closest('a');
         if (!_link) return;
@@ -215,6 +217,7 @@ document.querySelectorAll('.js-hover-menu').forEach((target) => {
         target.querySelector('[aria-current]')?.removeAttribute('aria-current');
         _link.setAttribute('aria-current', 'page');
     });
+    // demo-end
 });
 
 // tiles: hover only
@@ -222,17 +225,16 @@ new _hoverIndicator({ target: document.querySelector('.js-hover-tiles') });
 
 // radio: follows the checked one
 const _radio = document.querySelector('.js-hover-radio');
-const _radioValue = document.querySelector('.js-radio-value');
-const _showRadio = () => (_radioValue.textContent = `size: ${_radio.querySelector(':checked').value}`);
+const _radioValue = document.querySelector('.js-radio-value'); // demo
+const _showRadio = () => (_radioValue.textContent = `size: ${_radio.querySelector(':checked').value}`); // demo
 
 new _hoverIndicator({ target: _radio, items: 'label', active: ':has(:checked)', hover: false });
-_radio.addEventListener('change', _showRadio);
-_showRadio();
+_radio.addEventListener('change', _showRadio); // demo
+_showRadio(); // demo
 
 // switches: the knob follows the checkbox
-const _values = document.querySelector('.js-switch-values');
-const _showValues = () => (_values.textContent = [...document.querySelectorAll('.js-hover-switch input')].map((input) => `${input.name}: ${input.checked}`).join(', '));
-
+const _values = document.querySelector('.js-switch-values'); // demo
+const _showValues = () => (_values.textContent = [...document.querySelectorAll('.js-hover-switch input')].map((input) => `${input.name}: ${input.checked}`).join(', ')); // demo
 document.querySelectorAll('.js-hover-switch').forEach((target) => {
     new _hoverIndicator({
         target,
@@ -241,9 +243,9 @@ document.querySelectorAll('.js-hover-switch').forEach((target) => {
         hover: false,
     });
 
-    target.querySelector('input').addEventListener('change', _showValues);
+    target.querySelector('input').addEventListener('change', _showValues); // demo
 });
-_showValues();
+_showValues(); // demo
 {% endraw %}{% endset %}
 
 {{ scriptUsage({

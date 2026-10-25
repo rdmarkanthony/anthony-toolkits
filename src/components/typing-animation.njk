@@ -76,18 +76,22 @@ new _typing({
 });
 
 // methods and events
-const _log = document.querySelector('.js-typing-log');
+const _log = document.querySelector('.js-typing-log'); // demo
 const _control = new _typing({
     target: document.querySelector('.js-typing-control'),
     lines: ['Press a button', 'Second line', 'Last line'],
     autoplay: false,
     events: {
-        type: (instance) => (_log.textContent = `type, line ${instance.index}`),
-        erase: () => (_log.textContent = 'erase'),
+        // type: (instance) => console.log('type', instance.index),
+        // erase: () => console.log('erase'),
+        type: (instance) => (_log.textContent = `type, line ${instance.index}`), // demo
+        erase: () => (_log.textContent = 'erase'), // demo
     },
 });
-_control.on('complete', () => (_log.textContent = 'complete'));
-window._control = _control; // for trying it in the console
+// more listeners with on()
+// _control.on('complete', () => console.log('complete'));
+_control.on('complete', () => (_log.textContent = 'complete')); // demo
+window._control = _control; // demo
 
 document.querySelector('.js-typing-play').addEventListener('click', () => _control.play());
 document.querySelector('.js-typing-type').addEventListener('click', () => _control.type('Something new'));

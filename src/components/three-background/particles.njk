@@ -61,17 +61,20 @@ new _threeBackground({
 });
 
 // methods and events
-const _log = document.querySelector('.js-three-log');
+const _log = document.querySelector('.js-three-log'); // demo
 const _light = new _threeBackground({
     target: document.querySelector('.js-three-light'),
     effect: _threeParticles({ color: ['#7dd3fc', '#fcd34d', '#fda4af'], count: 120, size: 7, parallax: 0 }),
     events: {
-        ready: () => (_log.textContent = 'ready'),
-        play: () => (_log.textContent = 'play'),
-        pause: (instance) => (_log.textContent = `pause, at ${instance.time.toFixed(1)}s`),
+        // ready: () => console.log('ready'),
+        // play: () => console.log('play'),
+        // pause: (instance) => console.log('pause', instance.time),
+        ready: () => (_log.textContent = 'ready'), // demo
+        play: () => (_log.textContent = 'play'), // demo
+        pause: (instance) => (_log.textContent = `pause, at ${instance.time.toFixed(1)}s`), // demo
     },
 });
-window._light = _light; // for trying it in the console
+window._light = _light; // demo
 
 document.querySelector('.js-three-pause').addEventListener('click', () => _light.pause());
 document.querySelector('.js-three-play').addEventListener('click', () => _light.play());

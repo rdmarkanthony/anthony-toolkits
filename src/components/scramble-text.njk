@@ -98,19 +98,23 @@ new _scrambleText({
 }).play();
 
 // methods and events
-const _log = document.querySelector('.js-scramble-log');
+const _log = document.querySelector('.js-scramble-log'); // demo
 const _control = new _scrambleText({
     target: document.querySelector('.js-scramble-control'),
     hover: false,
     duration: 1500,
     events: {
-        start: () => (_log.textContent = 'start'),
+        // start: () => console.log('start'),
         // instance.progress goes 0 to 1
-        update: (instance) => (_log.textContent = `update, ${Math.round(instance.progress * 100)}%`),
+        // update: (instance) => console.log(instance.progress),
+        start: () => (_log.textContent = 'start'), // demo
+        update: (instance) => (_log.textContent = `update, ${Math.round(instance.progress * 100)}%`), // demo
     },
 });
-_control.on('complete', () => (_log.textContent = 'complete'));
-window._control = _control; // for trying it in the console
+// more listeners with on()
+// _control.on('complete', () => console.log('complete'));
+_control.on('complete', () => (_log.textContent = 'complete')); // demo
+window._control = _control; // demo
 
 document.querySelector('.js-scramble-play').addEventListener('click', () => _control.play());
 document.querySelector('.js-scramble-new').addEventListener('click', () => _control.play(_control.text === 'New text' ? 'Press play' : 'New text'));
