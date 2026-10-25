@@ -1,0 +1,70 @@
+---
+title: Blur reveal | Text effects | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Text effects', url: '/components/text-effects/' }, label: '_animate · _splitText', title: 'Blur reveal', description: 'Words come in from blurred to sharp as a title scrolls into view, one after another. A keyframe for <a class="underline underline-offset-2" href="/components/animate/">Animate</a>, no script of its own.' }) }}
+
+{# demo: a title word by word, then the text as a whole #}
+<section class="px-4 pb-4">
+    <div class="mx-auto max-w-295">
+        <div class="flex min-h-96 flex-col justify-between gap-10 rounded-3xl bg-gray-100 p-8 md:p-12">
+            <p class="font-mono text-sm text-gray-500">Title, then the text</p>
+            <div>
+                <h2 class="js-splittext mb-6 max-w-4xl text-5xl leading-[1.05] font-bold tracking-tight md:text-7xl" data-animate="blurIn">Quiet websites for busy people</h2>
+                <p class="max-w-xl text-lg text-gray-600" data-animate="blurIn,0.8,1.2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero est illo eius laudantium, earum culpa corporis.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# demo: a dark hero, slower #}
+<section class="px-4 pb-16">
+    <div class="mx-auto max-w-295">
+        <div class="flex min-h-[28rem] flex-col justify-between gap-10 rounded-3xl bg-gray-950 p-8 text-white md:p-12">
+            <p class="font-mono text-sm text-white/60">Hero, after a pause</p>
+            <h2 class="js-splittext max-w-5xl text-6xl leading-none font-light tracking-tight md:text-9xl" data-animate="blurIn,0.4">Made with care, built to last</h2>
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- in <head> -->
+<script>document.documentElement.classList.add("js-animate");</script>
+
+<!-- a title, word by word -->
+<h2 class="js-splittext" data-animate="blurIn">Quiet websites for busy people</h2>
+
+<!-- any element as a whole: data-animate="blurIn,delay,duration", in seconds -->
+<p data-animate="blurIn,0.8,1.2">...</p>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // split-type
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_inview.js
+        // src/assets/js/utils/_splitText.js
+        // src/assets/js/utils/_animate.js
+    // HTML
+        // document.documentElement.classList.add("js-animate") in <head>
+    // CSS
+        // animate.css
+        // src/assets/css/components/data-animate.css (the blurIn keyframe)
+
+// once per page, the same call as Animate
+new _animate();
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'On a <code class="font-mono text-sm">.js-splittext</code> title the words blur in one after another, on anything else the element blurs in as a whole.',
+    code: pageScript,
+    note: 'If the page already runs <code class="font-mono text-sm">new _animate()</code>, only the markup is needed. Once the last word is in, the split is reverted and the title is plain text again.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

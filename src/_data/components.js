@@ -20,6 +20,7 @@ export default [
         category: "Text effects",
         url: "/components/text-effects/",
         items: [
+            { label: "Blur reveal", url: "/components/text-effects/blur/", description: "Words come in from blurred to sharp as a title scrolls into view.", utils: "_animate · _splitText", ready: true },
             { label: "Highlight", url: "/components/text-effects/highlight/", description: "A marker color grows behind a few words as they come into view.", utils: "_animate · _inview", ready: true },
             { label: "Hover marquee", url: "/components/text-effects/marquee/", description: "A link whose label turns into an endless row while hovered.", utils: "_horizontalLoop · GSAP", ready: true },
             { label: "Line reveal", url: "/components/animate/#split-text", description: "Title words slide up from behind each line's mask as they come into view.", utils: "_animate · _splitText", ready: true },
