@@ -42,6 +42,25 @@
     animation-name: fadeInDownSmall;
 }
 
+/* a marker grows behind the words, line by line: <mark class="highlight" data-animate="highlight"> */
+.highlight {
+    color: inherit;
+    background: linear-gradient(var(--highlight-color, #fde68a), var(--highlight-color, #fde68a)) no-repeat 0 100% / 100% var(--highlight-height, 100%);
+}
+@keyframes highlight {
+    0% {
+        opacity: 1;
+        background-size: 0% var(--highlight-height, 100%);
+    }
+    100% {
+        opacity: 1;
+        background-size: 100% var(--highlight-height, 100%);
+    }
+}
+.animate__highlight {
+    animation-name: highlight;
+}
+
 @keyframes pullUp {
     0% {
         transform: translateY(calc(102% + 0.25em));

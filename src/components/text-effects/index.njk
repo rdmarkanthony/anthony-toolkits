@@ -8,6 +8,7 @@ title: Text effects | Anthony Toolkits
 {{ pageIntro({ title: 'Text effects', description: 'Text effects for links, buttons, menus and headings, each with its own script. Hover a card to try it. Each demo shows its markup and script, ready to copy.' }) }}
 
 {% set demos = [
+    { url: '/components/text-effects/highlight/', title: 'Highlight', text: 'A marker color grows behind a few words as they come into view.', utils: '_animate · _inview', id: 'highlight', word: 'Make it <mark class="highlight">pop</mark>', class: 'bg-gray-100' },
     { url: '/components/text-effects/marquee/', title: 'Hover marquee', text: 'A link whose label turns into an endless row while hovered.', utils: '_horizontalLoop · GSAP', id: 'marquee', word: '<span class="flex shrink-0 items-center gap-4 pr-4 whitespace-nowrap">Hover me<span class="size-2.5 rounded-full bg-emerald-400"></span></span>', class: 'bg-gray-950 text-white', previewClass: 'flex w-full' },
     { url: '/components/animate/#split-text', title: 'Line reveal', text: "Title words slide up from behind each line's mask, part of Animate.", utils: '_animate · _splitText', id: 'line-reveal', word: 'Lines that<br />slide up', class: 'bg-gray-100' },
     { url: '/components/text-effects/scramble/', title: 'Scramble text', text: 'Letters flip through random characters, then settle into the text.', utils: '_scrambleText', id: 'scramble', word: 'GET STARTED', class: 'bg-gray-50 font-mono' },
@@ -53,6 +54,16 @@ document.querySelector('.js-line-reveal-card').addEventListener('pointerenter', 
     _lines.offsetWidth;
     _lines.classList.add('js-splittext-animated');
 });
+
+// highlight: the keyframe from data-animate.css, played again on each hover
+const _mark = document.querySelector('.js-highlight-preview mark');
+const _highlight = () => {
+    _mark.classList.remove('animate__animated', 'animate__highlight');
+    _mark.offsetWidth;
+    _mark.classList.add('animate__animated', 'animate__highlight');
+};
+_highlight();
+document.querySelector('.js-highlight-card').addEventListener('pointerenter', _highlight);
 
 // marquee runs while the card is hovered
 const _marquee = new _horizontalLoop({ target: document.querySelector('.js-marquee-preview'), paused: true, draggable: false });

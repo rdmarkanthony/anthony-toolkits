@@ -1,0 +1,83 @@
+---
+title: Highlight | Text effects | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Text effects', url: '/components/text-effects/' }, label: '_animate · _inview', title: 'Highlight', description: 'A marker color grows behind a few words as they come into view, line by line when they wrap. A keyframe for <a class="underline underline-offset-2" href="/components/animate/">Animate</a>, no script of its own.' }) }}
+
+{# demo: a marker in a paragraph #}
+<section class="px-4 pb-4">
+    <div class="mx-auto grid max-w-295 gap-4 md:grid-cols-2">
+        <div class="flex min-h-72 flex-col justify-between gap-10 rounded-3xl bg-gray-100 p-8">
+            <p class="font-mono text-sm text-gray-500">Marker</p>
+            <p class="text-3xl leading-snug font-medium tracking-tight">We help small teams ship websites that are <mark class="highlight" data-animate="highlight">fast, calm and easy to use</mark>, without the agency fuss.</p>
+        </div>
+        <div class="flex min-h-72 flex-col justify-between gap-10 rounded-3xl bg-gray-950 p-8 text-white">
+            <p class="font-mono text-sm text-white/60">Underline band</p>
+            <p class="text-3xl leading-snug font-medium tracking-tight">Every project starts with <mark class="highlight [--highlight-color:var(--color-emerald-600)] [--highlight-height:30%]" data-animate="highlight">one honest conversation</mark> about what matters most.</p>
+        </div>
+    </div>
+</section>
+
+{# demo: a long one wraps, the marker goes line by line #}
+<section class="px-4 pb-4">
+    <div class="mx-auto max-w-295">
+        <div class="rounded-3xl border border-gray-200 p-8 md:p-12">
+            <p class="mb-8 font-mono text-sm text-gray-500">Over a few lines, slower</p>
+            <h2 class="max-w-4xl text-5xl leading-[1.15] font-bold tracking-tight md:text-7xl">Good design is quiet, <mark class="highlight [--highlight-color:var(--color-sky-200)]" data-animate="highlight,0.2,1.6">it lets the work speak for itself</mark></h2>
+        </div>
+    </div>
+</section>
+
+{# demo: one after another, each with its own delay #}
+<section class="px-4 pb-16">
+    <div class="mx-auto max-w-295">
+        <div class="rounded-3xl bg-gray-100 p-8 md:p-12">
+            <p class="mb-8 font-mono text-sm text-gray-500">One after another</p>
+            <p class="max-w-3xl text-3xl leading-snug font-medium tracking-tight md:text-4xl">Plan it <mark class="highlight [--highlight-color:var(--color-rose-200)]" data-animate="highlight,0.2">together</mark>, build it <mark class="highlight [--highlight-color:var(--color-amber-200)]" data-animate="highlight,0.8">carefully</mark>, then launch it <mark class="highlight [--highlight-color:var(--color-emerald-200)]" data-animate="highlight,1.4">with confidence</mark>.</p>
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- in <head> -->
+<script>document.documentElement.classList.add("js-animate");</script>
+
+<p>Websites that are <mark class="highlight" data-animate="highlight">fast and calm</mark>.</p>
+
+<!-- data-animate="highlight,delay,duration", in seconds -->
+<mark class="highlight" data-animate="highlight,0.2,1.6">a long one</mark>
+
+<!-- the color, and a band at the bottom instead of the full line -->
+<mark class="highlight [--highlight-color:var(--color-emerald-600)] [--highlight-height:30%]" data-animate="highlight">...</mark>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // split-type
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_inview.js
+        // src/assets/js/utils/_splitText.js
+        // src/assets/js/utils/_animate.js
+    // HTML
+        // document.documentElement.classList.add("js-animate") in <head>
+    // CSS
+        // animate.css
+        // src/assets/css/components/data-animate.css (.highlight and its keyframe)
+
+// once per page, the same call as Animate
+new _animate();
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The marker is the background of the inline <code class="font-mono text-sm">mark</code>, so it runs on across wrapped lines. <code class="font-mono text-sm">--highlight-color</code> and <code class="font-mono text-sm">--highlight-height</code> change its look.',
+    code: pageScript,
+    note: 'If the page already runs <code class="font-mono text-sm">new _animate()</code>, only the markup and the CSS are needed. Once it plays, the classes are cleaned off and the marker stays as plain CSS.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
