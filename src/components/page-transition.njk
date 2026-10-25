@@ -49,6 +49,7 @@ title: Page transition | Anthony Toolkits
     { name: 'clouds', text: 'Clouds fill the screen, the next page flies through.' },
     { name: 'blinds', text: 'Bars drop in one by one, then lift off.' },
     { name: 'curtain', text: 'Two halves close, then open on the next page.' },
+    { name: 'pixels', text: 'Squares fill in a random order, then clear.' },
     { name: 'wipe', text: 'Your own, from the CSS below.' }
 ] %}
 
@@ -115,8 +116,9 @@ title: Page transition | Anthony Toolkits
         // src/assets/js/utils/_pageTransition.js
     // CSS
         // src/assets/css/components/page-transition.css
-    // IMG, clouds only
+    // IMG, clouds and pixels only
         // src/assets/img/clouds/
+        // src/assets/img/page-pixels.svg
 
 _pageTransition.init();
 
@@ -134,7 +136,7 @@ if (_arrived) document.querySelector('.js-arrived').textContent = `Opened with $
     markup: pageMarkup,
     markupNote: 'The head line passes the name to the next page, so it starts hidden with no flash. Leave the value empty for fade.',
     css: wipeCSS,
-    cssNote: 'fade, circle, slide, clouds, blinds and curtain are in page-transition.css. For your own, animate anything under <code class="font-mono text-sm">[data-page-leave]</code> and <code class="font-mono text-sm">[data-page-enter]</code>. The page opens once the leave animation ends.',
+    cssNote: 'fade, circle, slide, clouds, blinds, curtain and pixels are in page-transition.css. For your own, animate anything under <code class="font-mono text-sm">[data-page-leave]</code> and <code class="font-mono text-sm">[data-page-enter]</code>. The page opens once the leave animation ends.',
     code: pageScript,
     note: 'A click from the keyboard grows the circle from the link. With reduced motion there\'s no animation, the page just opens.'
 }) }}
