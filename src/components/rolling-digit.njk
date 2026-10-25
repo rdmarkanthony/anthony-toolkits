@@ -4,19 +4,55 @@ title: Rolling digit | Anthony Toolkits
 
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
 
-{{ pageIntro({ label: '_rollingDigit · _inview', title: 'Rolling digit', description: 'Odometer-style digits that roll to the next value. One instance per digit, so any number of digits, commas and decimal points can roll at once.' }) }}
+{{ pageIntro({ label: '_rollingDigit · _inview', title: 'Rolling digit', description: 'Odometer digits that roll to a new value. One instance per digit, a small helper rolls a whole number, commas and dots too.' }) }}
 
-{# demo #}
-<section class="px-4 py-16">
-    <div class="js-rolling-digit mx-auto flex max-w-295 flex-col gap-6">
-        <div class="js-rolling-digit-label flex text-6xl font-bold tracking-tight md:text-8xl">0</div>
-        <form class="flex max-w-md gap-2">
-            <label class="grow">
-                <span class="sr-only">Number</span>
-                <input class="h-12 w-full rounded-md border border-gray-300 px-3 focus:border-gray-950 focus:outline-none" type="text" inputmode="decimal" placeholder="Enter a number" autocomplete="off" />
-            </label>
-            <button class="h-12 min-w-24 rounded-md bg-gray-950 px-4 font-medium text-white transition-colors hover:bg-gray-700" type="submit">Go</button>
-        </form>
+{% set heading = 'text-3xl font-bold tracking-tight' %}
+{% set step = 'flex size-11 cursor-pointer items-center justify-center rounded-full border border-gray-300 text-xl transition-colors hover:border-gray-950 disabled:cursor-default disabled:opacity-40' %}
+
+{% set markup %}{% raw %}
+<!-- the html holds the number, so it reads right without js -->
+<p class="js-rolling-digit inline-flex tabular-nums">12,480</p>
+
+<!-- a cart total, rolled from the script -->
+<button class="js-cart-less" type="button" aria-label="Less">−</button>
+<span class="js-cart-amount">1</span>
+<button class="js-cart-more" type="button" aria-label="More">+</button>
+<p>$<span class="js-cart-total inline-flex tabular-nums">249.00</span></p>
+{% endraw %}{% endset %}
+
+{# demo: a stat, rolled once on screen #}
+<section id="stat" class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="{{ heading }}">On screen</h2>
+            <p class="mt-2 max-w-2xl text-gray-600">Shows zeros, then rolls to the number the first time it comes on screen.</p>
+        </div>
+        <div class="flex flex-col gap-2 rounded-3xl bg-gray-50 p-8 md:p-12">
+            <p class="js-rolling-digit inline-flex text-6xl font-bold tracking-tight tabular-nums md:text-8xl">12,480</p>
+            <p class="text-gray-600">Downloads this month</p>
+        </div>
+    </div>
+</section>
+
+{# demo: a cart total #}
+<section id="cart" class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="{{ heading }}">Cart total</h2>
+            <p class="mt-2 max-w-2xl text-gray-600">The total rolls each time the amount changes. Digits are added and hidden as the number grows and shrinks.</p>
+        </div>
+        <div class="flex flex-col gap-6 rounded-3xl bg-white p-8 md:flex-row md:items-center md:justify-between md:p-12">
+            <div>
+                <p class="text-lg font-semibold">Wireless headphones</p>
+                <p class="text-gray-600">$249.00 each</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <button class="js-cart-less {{ step }}" type="button" aria-label="Less">−</button>
+                <span class="js-cart-amount w-6 text-center text-lg font-semibold tabular-nums">1</span>
+                <button class="js-cart-more {{ step }}" type="button" aria-label="More">+</button>
+            </div>
+            <p class="flex items-baseline gap-1 text-4xl font-bold tracking-tight">$<span class="js-cart-total inline-flex tabular-nums">249.00</span></p>
+        </div>
     </div>
 </section>
 
@@ -26,74 +62,59 @@ title: Rolling digit | Anthony Toolkits
         // src/assets/js/utils/_emitter.js
         // src/assets/js/utils/_event.js
         // src/assets/js/utils/_rollingDigit.js
-        // src/assets/js/utils/_inview.js (optional, to start in view)
+        // src/assets/js/utils/_inview.js (to start on screen)
 
-const _wrap = document.querySelector('.js-rolling-digit');
-const _label = _wrap.querySelector('.js-rolling-digit-label');
-const _input = _wrap.querySelector('input');
+// rolls a whole number: one _rollingDigit per character, numeric: false rolls commas and dots too
+const _digits = new WeakMap();
+const _roll = (target, text) => {
+    if (!_digits.has(target)) {
+        target.textContent = '';
+        _digits.set(target, []);
+    }
+    const _list = _digits.get(target);
+    const _characters = text.split('');
 
-const _cleanNumber = (value) => value.replace(/,/g, '').replace(/[^0-9.]/g, '');
-
-// one _rollingDigit per character
-const _digits = [];
-let _rolling = false;
-
-const _update = (value) => {
-    if (_rolling) return;
-    _rolling = true;
-
-    const _characters = value.toLocaleString('en-US', value % 1 !== 0 ? { minimumFractionDigits: 2, maximumFractionDigits: 2 } : {}).split('');
-
-    // hide the extra digits
-    _digits.forEach((digit, index) => {
-        digit.target.style.display = index >= _characters.length ? 'none' : 'block';
-    });
-
-    // add digits when needed, numeric: false rolls commas too
-    _characters.forEach((character, index) => {
-        if (_digits[index]) return;
-
+    // add digits as the number grows, hide the extras as it shrinks
+    while (_list.length < _characters.length) {
         const _div = document.createElement('div');
-        _label.appendChild(_div);
-        _digits.push(new _rollingDigit({ target: _div, numeric: false }));
-    });
+        target.append(_div);
+        _list.push(new _rollingDigit({ target: _div, numeric: false }));
+    }
+    _list.forEach((digit, index) => (digit.target.hidden = index >= _characters.length));
 
-    // roll each digit, free again once all have landed
-    const _rolls = _characters.map((character, index) => _digits[index].roll({ from: _digits[index].currentNumber, to: character, duration: 1000 }));
-    Promise.all(_rolls).then(() => (_rolling = false));
+    // resolves once every digit has landed
+    return Promise.all(_characters.map((character, index) => _list[index].roll({ to: character, duration: 1000 })));
 };
 
-// only numbers, one decimal point and 2 decimals, with commas
-_input.addEventListener('input', () => {
-    const _parts = _cleanNumber(_input.value).split('.');
-    const _integer = _parts[0] ? Number(_parts[0]).toLocaleString() : '';
-    const _decimal = _parts.length > 1 ? '.' + _parts.slice(1).join('').slice(0, 2) : '';
-
-    _input.value = _integer + _decimal;
+// on screen: zeros first, then the number from the html
+document.querySelectorAll('.js-rolling-digit').forEach((target) => {
+    const _text = target.textContent.trim();
+    _roll(target, _text.replace(/\d/g, '0'));
+    new _inview({ target, callback: () => _roll(target, _text) });
 });
 
-// roll to the entered number
-_wrap.querySelector('form').addEventListener('submit', (e) => {
-    e.preventDefault();
+// cart total: rolls when the amount changes
+const _price = 249;
+const _amount = document.querySelector('.js-cart-amount');
+const _total = document.querySelector('.js-cart-total');
+const _less = document.querySelector('.js-cart-less');
+const _more = document.querySelector('.js-cart-more');
 
-    const _value = parseFloat(_cleanNumber(_input.value));
-    if (!isNaN(_value)) _update(_value);
-});
-
-// roll when it scrolls into view
-new _inview({
-    target: _label,
-    delay: 500,
-    callback: () => {
-        _label.innerHTML = '';
-        _update(123456789.1);
-    },
-});
+const _setAmount = (amount) => {
+    _amount.textContent = amount;
+    _less.disabled = amount <= 1;
+    _more.disabled = amount >= 20;
+    _roll(_total, (_price * amount).toLocaleString('en-US', { minimumFractionDigits: 2 }));
+};
+_less.addEventListener('click', () => _setAmount(Number(_amount.textContent) - 1));
+_more.addEventListener('click', () => _setAmount(Number(_amount.textContent) + 1));
+_setAmount(1);
 {% endraw %}{% endset %}
 
 {{ scriptUsage({
+    markup: markup,
     code: pageScript,
-    note: '<code class="font-mono text-sm">new _rollingDigit({ target, numeric, maxNumber, startNumber, duration })</code> makes one digit, <code class="font-mono text-sm">roll({ from, to, duration })</code> moves it and returns a promise for when it lands. Durations in ms. Event: <code class="font-mono text-sm">change</code> once a digit lands.'
+    note: '<code class="font-mono text-sm">new _rollingDigit({ target, numeric, maxNumber, startNumber, duration })</code> makes one digit, <code class="font-mono text-sm">roll({ from, to, duration })</code> moves it and returns a promise for when it lands. Durations in ms. Event: <code class="font-mono text-sm">change</code> once a digit lands. The countdown timer uses it with <code class="font-mono text-sm">maxNumber</code> for 0 to 5 digits.'
 }) }}
 
 {% footerscript %}

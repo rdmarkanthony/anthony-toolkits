@@ -45,40 +45,42 @@ title: Events | Anthony Toolkits
         // src/assets/js/utils/_event.js
 
 // resize: state is init, ready, resize, or after (300ms later)
-const _size = document.querySelector('.js-event-size');
-const _state = document.querySelector('.js-event-state');
-
+const _size = document.querySelector('.js-event-size'); // demo
+const _state = document.querySelector('.js-event-state'); // demo
 _event.resize((state) => {
-    _state.textContent = state;
-    _size.textContent = `${window.innerWidth} × ${window.innerHeight}`;
+    // console.log(state, window.innerWidth, window.innerHeight);
+    _state.textContent = state; // demo
+    _size.textContent = `${window.innerWidth} × ${window.innerHeight}`; // demo
 });
 
 // scroll: once per frame at most
-const _scroll = document.querySelector('.js-event-scroll');
+const _scroll = document.querySelector('.js-event-scroll'); // demo
 const _progress = document.querySelector('.js-event-progress');
 
 _event.scroll(() => {
     const _max = document.documentElement.scrollHeight - window.innerHeight;
 
-    _scroll.textContent = Math.round(window.scrollY);
+    _scroll.textContent = Math.round(window.scrollY); // demo
     _progress.style.transform = `scaleX(${_max ? window.scrollY / _max : 0})`;
 });
 
 // element size: when the element itself resizes
 const _box = document.querySelector('.js-event-box');
-const _boxSize = document.querySelector('.js-event-box-size');
+const _boxSize = document.querySelector('.js-event-box-size'); // demo
 
 _event.observeResize(() => {
-    _boxSize.textContent = `${_box.offsetWidth} × ${_box.offsetHeight}`;
+    // console.log(_box.offsetWidth, _box.offsetHeight);
+    _boxSize.textContent = `${_box.offsetWidth} × ${_box.offsetHeight}`; // demo
 }, _box);
 
 // dispatch: a CustomEvent with detail, listen with addEventListener
 const _button = document.querySelector('.js-event-dispatch');
-const _received = document.querySelector('.js-event-received');
+const _received = document.querySelector('.js-event-received'); // demo
 let _count = 0;
 
 _button.addEventListener('toolkit:ping', (e) => {
-    _received.textContent = `Received "toolkit:ping", detail: ${JSON.stringify(e.detail)}`;
+    // console.log(e.detail);
+    _received.textContent = `Received "toolkit:ping", detail: ${JSON.stringify(e.detail)}`; // demo
 });
 
 _button.addEventListener('click', () => {

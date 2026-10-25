@@ -8,15 +8,22 @@ export default [
         category: "Animation",
         items: [
             { label: "Animate", url: "/components/animate/", description: "Animate.css effects triggered in view.", utils: "_animate · _inview · _splitText", ready: true, starter: true, favorite: true },
-            { label: "Count up", url: "/components/count-up/", description: "Count up to a value on scroll.", utils: "_countUp · _inview", ready: true },
+            { label: "Count up", url: "/components/count-up/", description: "Stats that count up on screen, prices that count to a new value.", utils: "_countUp · _inview", ready: true },
             { label: "Cursor bubble", url: "/components/cursor-bubble/", description: "A dot that trails the mouse, grows over big type and shows labels.", utils: "_cursorBubble", ready: true },
             { label: "Magnetic button", url: "/components/magnetic-button/", description: "Buttons and links that lean toward the mouse as it comes near.", utils: "_magnetic", ready: true },
             { label: "Page transition", url: "/components/page-transition/", description: "An animation as a link leaves the page and as the next one shows, safe with the back button.", utils: "_pageTransition", ready: true, favorite: true },
-            { label: "Rolling digit", url: "/components/rolling-digit/", description: "Odometer-style rolling digits.", utils: "_rollingDigit · _inview", ready: true },
-            { label: "Scramble text", url: "/components/scramble-text/", description: "Letters flip through random characters, then settle into the text.", utils: "_scrambleText", ready: true },
-            { label: "Text roll", url: "/components/text-roll/", description: "Link and button text that rolls up on hover, a copy coming in from below.", utils: "_textRoll", ready: true },
+            { label: "Rolling digit", url: "/components/rolling-digit/", description: "Odometer digits for a stat on screen or a cart total.", utils: "_rollingDigit · _inview", ready: true },
             { label: "Theme scroller", url: "/components/theme-scroller/", description: "The page or header takes the theme of the section on screen.", utils: "_themeScroller", ready: true, favorite: true },
-            { label: "Typing animation", url: "/components/typing-animation/", description: "Types and erases lines, with styled parts and a steady cursor.", utils: "_typing", ready: true },
+        ],
+    },
+    {
+        category: "Text effects",
+        url: "/components/text-effects/",
+        items: [
+            { label: "Line reveal", url: "/components/text-effects/line-reveal/", description: "Heading lines slide up from behind a mask as they come into view.", utils: "_lineReveal · _inview", ready: true },
+            { label: "Scramble text", url: "/components/text-effects/scramble/", description: "Letters flip through random characters, then settle into the text.", utils: "_scrambleText", ready: true },
+            { label: "Text roll", url: "/components/text-effects/roll/", description: "Link and button text that rolls up on hover, a copy coming in from below.", utils: "_textRoll", ready: true },
+            { label: "Typing animation", url: "/components/text-effects/typing/", description: "Types and erases lines, with styled parts and a steady cursor.", utils: "_typing", ready: true },
         ],
     },
     {
@@ -46,8 +53,8 @@ export default [
         category: "Lottie",
         url: "/components/lottie/",
         items: [
-            { label: "Lottie view, hover and click", url: "/components/lottie/play/", description: "Plays on screen, on hover, or on click as a toggle, plus a send button.", utils: "_lottie · lottie-web", ready: true },
-            { label: "Lottie loading", url: "/components/lottie/loading/", description: "A gentle loader for a fetch, then a menu of foods comes in.", utils: "_lottie · _inview · lottie-web", ready: true },
+            { label: "Lottie basic", url: "/components/lottie/basic/", description: "Options, your own controls, an intro then a loop, emoji in text.", utils: "_lottie · lottie-web", ready: true },
+            { label: "Lottie hover and click", url: "/components/lottie/play/", description: "Emoji on hover, and click toggles: a like, a menu, video play and mute.", utils: "_lottie · lottie-web", ready: true },
             { label: "Lottie scroll", url: "/components/lottie/scroll/", description: "The frames follow the scroll, pinned or as it passes.", utils: "_lottie · _parallaxScroller · lottie-web", ready: true },
         ],
     },

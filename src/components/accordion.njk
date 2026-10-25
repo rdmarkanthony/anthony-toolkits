@@ -89,7 +89,7 @@ title: Accordion | Anthony Toolkits
         // src/assets/js/utils/_emitter.js
         // src/assets/js/utils/_accordion.js
 
-const _event = document.querySelector('.js-accordion-event');
+const _event = document.querySelector('.js-accordion-event'); // demo
 
 document.querySelectorAll('.js-accordion').forEach((target) => {
     const _many = target.classList.contains('js-accordion-many');
@@ -101,8 +101,10 @@ document.querySelectorAll('.js-accordion').forEach((target) => {
         openFirst: !_many && !target.closest('.js-accordion-set'),
         events: {
             // after the animation, instance.item is the set
-            open: (instance) => (_event.textContent = `open, ${instance.item.querySelector('button').textContent.trim()}`),
-            close: (instance) => (_event.textContent = `close, ${instance.item.querySelector('button').textContent.trim()}`),
+            // open: (instance) => console.log('open', instance.item),
+            // close: (instance) => console.log('close', instance.item),
+            open: (instance) => (_event.textContent = `open, ${instance.item.querySelector('button').textContent.trim()}`), // demo
+            close: (instance) => (_event.textContent = `close, ${instance.item.querySelector('button').textContent.trim()}`), // demo
         },
     });
 });

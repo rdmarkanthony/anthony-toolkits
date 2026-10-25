@@ -29,6 +29,7 @@
     {% set pageScript %}{% raw %}// Requirements ... new _tabs({ target });{% endraw %}{% endset %}
     {{ scriptUsage({ code: pageScript, note: '...' }) }}
     optional: markup, markupNote, css, cssNote, more: [{ title, note, code, lang }]
+    page-only lines stay out of the shown code: end a line with // demo, or wrap lines in // demo-start and // demo-end
     run it too: {% footerscript %}<script type="module">{{ pageScript | safe }}</script>{% endfooterscript %}
 #}
 {% macro scriptUsage(props) -%}
@@ -66,7 +67,7 @@
                     <p class="text-kit-muted">{{ props.note | safe }}</p>
                     {%- endif %}
                 </div>
-                {{ codeBlock(props.code, 'js') }}
+                {{ codeBlock(props.code | hideDemo, 'js') }}
             </div>
             {%- endif %}
             {% for block in props.more -%}
@@ -77,7 +78,7 @@
                     <p class="text-kit-muted">{{ block.note | safe }}</p>
                     {%- endif %}
                 </div>
-                {{ codeBlock(block.code, block.lang or 'js') }}
+                {{ codeBlock(block.code | hideDemo, block.lang or 'js') }}
             </div>
             {%- endfor %}
         </div>

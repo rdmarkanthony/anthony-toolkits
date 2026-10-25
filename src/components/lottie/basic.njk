@@ -1,0 +1,176 @@
+---
+title: Lottie basic | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Lottie', url: '/components/lottie/' }, label: '_lottie · lottie-web', title: 'Basic', description: 'Put a lottie on the page, set how it plays, and control it from your own script.' }) }}
+
+{% set card = 'flex flex-col items-center gap-6 rounded-3xl border border-gray-200 bg-white p-10 text-center' %}
+{% set heading = 'text-3xl font-bold tracking-tight' %}
+{% set control = 'inline-flex h-11 cursor-pointer items-center rounded-full border border-gray-300 px-5 font-medium transition-colors hover:border-gray-950' %}
+
+{% set markup %}{% raw %}
+<!-- the animation is drawn inside, give it a size -->
+<div class="js-lottie size-24" data-lottie="/assets/lottie/check.json"></div>
+
+<!-- or no data-lottie, the path goes in the script as src -->
+<div class="js-lottie-src size-24"></div>
+
+<!-- in text: sized and lined up with the font -->
+<h2>Made with <span class="js-lottie-inline inline-block size-[1.2em] align-[-0.25em]" data-lottie="/assets/lottie/emoji-heart.json" role="img" aria-label="love"></span> in Manila</h2>
+{% endraw %}{% endset %}
+
+{# demo: the options #}
+<section id="options" class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="{{ heading }}">Options</h2>
+            <p class="mt-2 max-w-2xl text-gray-600">Each card is one line of the script below.</p>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <div class="{{ card }}">
+                <div class="js-lottie size-24" data-lottie="/assets/lottie/check.json"></div>
+                <p class="text-gray-600"><b class="block font-semibold text-gray-950">Default</b>Plays once on screen, stays on the last frame.</p>
+            </div>
+            <div class="{{ card }}">
+                <div class="js-lottie-loop size-24" data-lottie="/assets/lottie/emoji-party.json"></div>
+                <p class="text-gray-600"><b class="block font-semibold text-gray-950">loop: true</b>Loops, pauses while off screen.</p>
+            </div>
+            <div class="{{ card }}">
+                <div class="flex h-24 items-center gap-4">
+                    {% for speed in ['0.5', '2'] %}
+                    <div class="js-lottie-speed size-16" data-lottie="/assets/lottie/spinner.json" data-speed="{{ speed }}"></div>
+                    {% endfor %}
+                </div>
+                <p class="text-gray-600"><b class="block font-semibold text-gray-950">speed: 0.5, 2</b>Slower or faster, 1 is normal.</p>
+            </div>
+            <div class="{{ card }}">
+                <div class="js-lottie-src size-24"></div>
+                <p class="text-gray-600"><b class="block font-semibold text-gray-950">src</b>The path in the script, not in the markup.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# demo: your own controls #}
+<section id="controls" class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="{{ heading }}">Your own controls</h2>
+            <p class="mt-2 max-w-2xl text-gray-600"><code class="font-mono text-sm">play: 'none'</code> never plays by itself. Play, pause and drag it from your script.</p>
+        </div>
+        <div class="flex flex-col items-center gap-8 rounded-3xl bg-white px-6 py-12">
+            <div class="js-lottie-player aspect-5/3 w-full max-w-md" data-lottie="/assets/lottie/plane.json"></div>
+            <input class="js-lottie-range w-full max-w-md accent-gray-950" type="range" min="0" max="100" value="0" aria-label="Progress" />
+            <div class="flex flex-wrap items-center justify-center gap-3">
+                <button class="js-lottie-play {{ control }}" type="button">Play</button>
+                <button class="js-lottie-pause {{ control }}" type="button">Pause</button>
+                <button class="js-lottie-stop {{ control }}" type="button">Stop</button>
+            </div>
+            <p class="font-mono text-sm text-gray-500">complete: <span class="js-lottie-status">-</span></p>
+        </div>
+    </div>
+</section>
+
+{# demo: intro, then a loop #}
+<section id="segments" class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="{{ heading }}">Intro, then a loop</h2>
+            <p class="mt-2 max-w-2xl text-gray-600">One file, two parts. The pop in (frames 0 to 24) plays once on screen, then the ring (24 to 120) loops.</p>
+        </div>
+        <div class="flex flex-col items-center gap-6 rounded-3xl border border-gray-200 px-6 py-12">
+            <button class="relative flex size-24 cursor-pointer items-center justify-center rounded-full bg-gray-50 transition-colors hover:bg-gray-100" type="button" aria-label="3 notifications">
+                <span class="js-lottie-bell block size-16" data-lottie="/assets/lottie/bell.json"></span>
+                <span class="absolute top-4 right-4 flex size-6 items-center justify-center rounded-full bg-red-500 text-xs font-semibold text-white">3</span>
+            </button>
+            <button class="js-lottie-bell-replay {{ control }}" type="button">Replay</button>
+        </div>
+    </div>
+</section>
+
+{# demo: emoji in text #}
+<section id="in-text" class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="{{ heading }}">Emoji in text</h2>
+            <p class="mt-2 max-w-2xl text-gray-600">Sized in <code class="font-mono text-sm">em</code>, so it follows the font size. <code class="font-mono text-sm">role="img"</code> and a label read it out.</p>
+        </div>
+        <div class="flex flex-col gap-6 rounded-3xl bg-white px-6 py-12 md:px-12">
+            <p class="text-4xl font-bold tracking-tight md:text-6xl">Made with <span class="js-lottie-inline inline-block size-[1.2em] align-[-0.25em]" data-lottie="/assets/lottie/emoji-heart.json" role="img" aria-label="love"></span> in Manila</p>
+            <p class="text-lg text-gray-600">Ready when you are. Let's ship it <span class="js-lottie-inline inline-block size-[1.4em] align-[-0.35em]" data-lottie="/assets/lottie/emoji-rocket.json" role="img" aria-label="rocket"></span></p>
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // lottie-web (npm, its own chunk, loaded when needed)
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_lottie.js
+        // src/assets/js/utils/_inview.js (intro, then a loop)
+
+// default: plays once on screen
+new _lottie({ target: document.querySelector('.js-lottie') });
+
+// loops, paused while off screen
+new _lottie({ target: document.querySelector('.js-lottie-loop'), loop: true });
+
+// 1 is normal speed
+document.querySelectorAll('.js-lottie-speed').forEach((target) => new _lottie({ target, loop: true, speed: Number(target.dataset.speed) }));
+
+// the path as src, no data-lottie
+new _lottie({ target: document.querySelector('.js-lottie-src'), src: '/assets/lottie/check.json' });
+
+// your own controls: ready gives lottie-web's animation
+const _range = document.querySelector('.js-lottie-range');
+const _status = document.querySelector('.js-lottie-status');
+const _player = new _lottie({
+    target: document.querySelector('.js-lottie-player'),
+    play: 'none',
+    events: { complete: () => (_status.textContent = 'yes') },
+});
+
+document.querySelector('.js-lottie-play').addEventListener('click', async () => {
+    const _animation = await _player.ready;
+    _status.textContent = '-';
+    // from the start again once it has ended
+    if (_animation.currentFrame >= _animation.totalFrames - 1) _animation.goToAndStop(0, true);
+    _animation.play();
+});
+document.querySelector('.js-lottie-pause').addEventListener('click', async () => (await _player.ready).pause());
+document.querySelector('.js-lottie-stop').addEventListener('click', async () => (await _player.ready).stop());
+
+// seek: 0 is the first frame, 1 the last
+_range.addEventListener('input', () => _player.seek(_range.value / 100));
+_player.ready.then((animation) => {
+    animation.addEventListener('enterFrame', () => (_range.value = (animation.currentFrame / (animation.totalFrames - 1)) * 100));
+});
+
+// intro, then a loop: with loop on, the last part repeats
+const _bell = new _lottie({ target: document.querySelector('.js-lottie-bell'), play: 'none' });
+_bell.ready.then((animation) => {
+    if (_bell.reduce) return animation.goToAndStop(24, true);
+
+    const _ring = () => animation.playSegments([[0, 24], [24, 120]], true);
+    animation.setLoop(true);
+    new _inview({ target: _bell.target, callback: _ring });
+    document.querySelector('.js-lottie-bell-replay').addEventListener('click', _ring);
+});
+
+// in text, a loop like any other
+document.querySelectorAll('.js-lottie-inline').forEach((target) => new _lottie({ target, loop: true }));
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Export a .json from After Effects with Bodymovin, or download one from a Lottie library. The emoji are from <a class="underline underline-offset-2" href="https://googlefonts.github.io/noto-emoji-animation/" target="_blank" rel="noopener">Noto Emoji Animation</a> by Google, <a class="underline underline-offset-2" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _lottie({ target, src, play, loop, speed, trigger, renderer, events })</code>. lottie-web loads once the first lottie nears the screen. <code class="font-mono text-sm">ready</code> resolves with lottie-web\'s animation: <code class="font-mono text-sm">play()</code>, <code class="font-mono text-sm">pause()</code>, <code class="font-mono text-sm">stop()</code>, <code class="font-mono text-sm">goToAndPlay()</code>, <code class="font-mono text-sm">playSegments()</code>. <code class="font-mono text-sm">renderer: \'canvas\'</code> for big, busy files. <code class="font-mono text-sm">destroy()</code> when its element is removed, e.g. content swapped by a page transition. Reduced motion shows a still frame.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

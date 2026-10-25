@@ -7,7 +7,7 @@ title: Three.js background | Anthony Toolkits
 
 {{ pageIntro({ label: '_threeBackground · three.js', title: 'Three.js background', description: 'A 3D canvas behind any section. It only runs while on screen. Pick an effect below, or write your own.' }) }}
 
-{% set effects = [
+{% set demos = [
     { url: '/components/three-background/blobs/', title: 'Blobs', text: 'Big soft colors with grain that glide to new colors.', utils: '_threeBlobs' },
     { url: '/components/three-background/glow/', title: 'Glow', text: 'One soft glow that follows the mouse, over film grain.', utils: '_threeGlow' },
     { url: '/components/three-background/particles/', title: 'Particles', text: 'Dots that drift and move away from the mouse.', utils: '_threeParticles' },
@@ -16,29 +16,29 @@ title: Three.js background | Anthony Toolkits
 ] %}
 <section id="demos" class="px-4 pb-16">
     <div class="mx-auto max-w-295">
-        <h2 class="mb-8 text-3xl font-bold tracking-tight">Effects</h2>
+        <h2 class="mb-8 text-3xl font-bold tracking-tight">Demos</h2>
         <div class="grid gap-6 md:grid-cols-3">
-            {% for effect in effects %}
-            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="{{ effect.url }}">
-                {% if effect.title == 'Particles' %}
+            {% for demo in demos %}
+            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="{{ demo.url }}">
+                {% if demo.title == 'Particles' %}
                 {# preview: dots on dark #}
                 <div class="relative aspect-4/3 overflow-hidden bg-gray-950">
                     {% for i in range(1, 41) %}
                     <span class="absolute size-1 rounded-full bg-white" style="left: {{ (i * 37) % 100 }}%; top: {{ (i * 61) % 100 }}%; opacity: {{ 0.3 + (i % 3) * 0.2 }}"></span>
                     {% endfor %}
                 </div>
-                {% elif effect.title == 'Grain text' %}
+                {% elif demo.title == 'Grain text' %}
                 {# preview: a word filled with dots #}
                 <div class="relative flex aspect-4/3 items-center justify-center overflow-hidden bg-gray-950">
                     <span class="bg-[radial-gradient(circle,white_1px,transparent_1.5px)] bg-size-[5px_5px] bg-clip-text text-8xl font-black tracking-tight text-transparent">Aa</span>
                 </div>
-                {% elif effect.title == 'Reveal' %}
+                {% elif demo.title == 'Reveal' %}
                 {# preview: gray photo with a color stroke #}
                 <div class="relative aspect-4/3 overflow-hidden">
                     <img class="absolute inset-0 size-full object-cover grayscale" src="/assets/img/sample-image.webp" alt="" width="2400" height="1600" loading="lazy" />
                     <img class="absolute inset-0 size-full object-cover [clip-path:ellipse(30%_20%_at_45%_50%)]" src="/assets/img/sample-image.webp" alt="" width="2400" height="1600" loading="lazy" />
                 </div>
-                {% elif effect.title == 'Blobs' %}
+                {% elif demo.title == 'Blobs' %}
                 {# preview: soft colors with grain #}
                 <div class="relative aspect-4/3 overflow-hidden bg-[#b8a797]">
                     <span class="absolute -top-1/4 -right-1/6 size-48 rounded-full bg-[#ddc4b8] blur-3xl"></span>
@@ -52,9 +52,9 @@ title: Three.js background | Anthony Toolkits
                 </div>
                 {% endif %}
                 <div class="flex flex-1 flex-col p-6">
-                    <h3 class="mb-2 text-xl font-semibold">{{ effect.title }}</h3>
-                    <p class="mb-6 flex-1 text-gray-600">{{ effect.text }}</p>
-                    <p class="mb-4 font-mono text-xs text-gray-500">{{ effect.utils }}</p>
+                    <h3 class="mb-2 text-xl font-semibold">{{ demo.title }}</h3>
+                    <p class="mb-6 flex-1 text-gray-600">{{ demo.text }}</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">{{ demo.utils }}</p>
                     <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
                 </div>
             </a>

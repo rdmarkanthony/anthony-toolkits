@@ -5,7 +5,7 @@ const _importLottie = () => import("lottie-web");
 
 // usage: new _lottie({ target, src, play, loop, speed, trigger, renderer, events })
 // src or target data-lottie="/path.json", the animation is drawn inside target
-// play: "inview" (default, plays on screen, pauses off), "hover" (forward on enter, back on leave), "click" (toggles forward and back), "none" (yours, through seek() or instance.animation)
+// play: "inview" (default, plays on screen, pauses off), "hover" (forward on enter, back on leave, with loop: loops while hovered), "click" (toggles forward and back), "none" (yours, through seek() or instance.animation)
 // trigger: the element for hover and click (default target), reduced motion keeps inview and hover still
 // scroll: play "none" and seek(progress) from _parallaxScroller's update
 export class _lottie extends _emitter {
@@ -84,16 +84,18 @@ export class _lottie extends _emitter {
         }
 
         if (this.play === "hover" && !this.reduce) {
-            _on("pointerenter", () => this.direction(1));
-            _on("pointerleave", () => this.direction(-1));
-            _on("focusin", () => this.direction(1));
-            _on("focusout", () => this.direction(-1));
+            const _hover = (on) => (this.loop ? this.hoverLoop(on) : this.direction(on ? 1 : -1));
+            _on("pointerenter", () => _hover(true));
+            _on("pointerleave", () => _hover(false));
+            _on("focusin", () => _hover(true));
+            _on("focusout", () => _hover(false));
         }
 
         if (this.play === "click") _on("click", () => this.toggle());
 
-        // a seek from before it loaded
+        // a seek or toggle from before it loaded
         if (this.progress !== null) this.seek(this.progress);
+        if (this.isOn) this.animation.goToAndStop(this.animation.totalFrames - 1, true);
     }
 
     // plays toward the end, or back to the start
@@ -102,8 +104,15 @@ export class _lottie extends _emitter {
         this.animation.play();
     }
 
+    // loops while hovered, on leave it ends the round it is in
+    hoverLoop(on) {
+        this.animation.setLoop(on);
+        if (on && this.animation.isPaused) this.animation.goToAndPlay(0, true);
+    }
+
     toggle(on = !this.isOn) {
         this.isOn = on;
+        if (!this.isLoaded) return this.emit("toggle");
         if (this.reduce) this.animation.goToAndStop(on ? this.animation.totalFrames - 1 : 0, true);
         else this.direction(on ? 1 : -1);
         this.emit("toggle");
