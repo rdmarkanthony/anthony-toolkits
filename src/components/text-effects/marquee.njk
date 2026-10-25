@@ -1,0 +1,146 @@
+---
+title: Hover marquee | Text effects | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Text effects', url: '/components/text-effects/' }, label: '_horizontalLoop · GSAP', title: 'Hover marquee', description: 'Hover a link and an endless row of its label slides in from the side the mouse comes from, then leaves the way the mouse goes. The loop slider util with a short page script.' }) }}
+
+{# demo: a big menu, every other row runs right #}
+{% set menu = ['Work', 'Studio', 'Journal', 'Contact'] %}
+<section class="px-4 pb-4">
+    <div class="mx-auto max-w-295">
+        <nav class="rounded-3xl bg-gray-950 px-4 py-8 text-white md:px-8 md:py-12">
+            {% for item in menu %}
+            <a class="js-hover-marquee relative block overflow-hidden border-t border-white/15 last:border-b" href="#" {% if loop.index0 % 2 %}data-direction="right"{% endif %}>
+                <span class="js-hover-marquee-label block py-4 text-5xl font-bold tracking-tight md:text-7xl">{{ item }}</span>
+                <span class="js-hover-marquee-cover absolute inset-0 translate-y-full bg-emerald-400 text-gray-950" aria-hidden="true">
+                    <span class="js-hover-marquee-track flex h-full items-center">
+                        <span class="flex shrink-0 items-center gap-6 pr-6 text-5xl font-bold tracking-tight whitespace-nowrap md:text-7xl">{{ item }}<span class="size-3 rounded-full bg-gray-950 md:size-4"></span></span>
+                    </span>
+                </span>
+            </a>
+            {% endfor %}
+        </nav>
+    </div>
+</section>
+
+{# demo: a project list, a photo between the names #}
+{% set projects = [
+    { name: 'Lumen', type: 'Branding', photo: 1 },
+    { name: 'Northwind', type: 'Website', photo: 3 },
+    { name: 'Oakline', type: 'App', photo: 5 }
+] %}
+<section class="px-4 pb-16">
+    <div class="mx-auto max-w-295">
+        <div class="rounded-3xl bg-gray-100 px-4 py-8 md:px-8 md:py-12">
+            {% for project in projects %}
+            <a class="js-hover-marquee relative block overflow-hidden border-t border-gray-300 last:border-b" href="#">
+                <span class="js-hover-marquee-label flex items-baseline justify-between gap-4 py-5">
+                    <span class="text-4xl font-bold tracking-tight md:text-6xl">{{ project.name }}</span>
+                    <span class="text-gray-500">{{ project.type }}</span>
+                </span>
+                <span class="js-hover-marquee-cover absolute inset-0 translate-y-full bg-gray-950 text-white" aria-hidden="true">
+                    <span class="js-hover-marquee-track flex h-full items-center">
+                        <span class="flex shrink-0 items-center gap-6 pr-6 text-4xl font-bold tracking-tight whitespace-nowrap md:text-6xl">
+                            {{ project.name }}
+                            <img class="h-[0.9em] w-[1.6em] rounded-full object-cover" src="/assets/img/gallery/photo-{{ project.photo }}-thumb.webp" alt="" />
+                            <span class="font-normal text-white/60">{{ project.type }}</span>
+                            <img class="h-[0.9em] w-[1.6em] rounded-full object-cover" src="/assets/img/gallery/photo-{{ project.photo + 1 }}-thumb.webp" alt="" />
+                        </span>
+                    </span>
+                </span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- overflow-hidden hides the cover until hover -->
+<a class="js-hover-marquee relative block overflow-hidden" href="#">
+    <span class="js-hover-marquee-label block">Work</span>
+
+    <!-- the cover waits below, a copy for the eye only -->
+    <span class="js-hover-marquee-cover absolute inset-0 translate-y-full" aria-hidden="true">
+        <!-- the row: its children are the items, copied to fill it -->
+        <span class="js-hover-marquee-track flex h-full items-center">
+            <span class="shrink-0 pr-6 whitespace-nowrap">Work ·</span>
+        </span>
+    </span>
+</a>
+
+<!-- data-direction="right" runs it the other way -->
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_horizontalLoop.js
+    // Package
+        // pnpm add gsap
+
+// the cover comes in from the side the mouse enters, and leaves by the side it leaves
+const _reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const _timing = { duration: 700, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' };
+
+// from its spot if it's still moving, so a quick back and forth doesn't jump
+const _slide = (el, from, to) => {
+    const _moving = el.getAnimations().some((animation) => animation.playState === 'running');
+    const _from = _moving ? getComputedStyle(el).translate : from;
+    el.getAnimations().forEach((animation) => animation.cancel());
+    el.animate({ translate: [_from, to] }, _timing);
+};
+
+// top or bottom, the nearest edge, keyboard comes from below
+const _edge = (e, link) => {
+    if (e.clientY === undefined) return 1;
+    const _rect = link.getBoundingClientRect();
+    return e.clientY < _rect.top + _rect.height / 2 ? -1 : 1;
+};
+
+document.querySelectorAll('.js-hover-marquee').forEach((link) => {
+    const _label = link.querySelector('.js-hover-marquee-label');
+    const _cover = link.querySelector('.js-hover-marquee-cover');
+    const _loop = new _horizontalLoop({
+        target: link.querySelector('.js-hover-marquee-track'),
+        paused: true,
+        draggable: false,
+        // speed: 1 is 100px a second
+    });
+    if (link.dataset.direction) _loop.setDirection(link.dataset.direction);
+
+    const _enter = (e) => {
+        if (_reduce) return;
+        const _side = _edge(e, link) * 100;
+        _slide(_cover, `0 ${_side}%`, '0 0');
+        _slide(_label, '0 0', `0 ${-_side}%`);
+        _loop.play();
+    };
+    const _leave = (e) => {
+        if (_reduce) return;
+        const _side = _edge(e, link) * 100;
+        _slide(_cover, '0 0', `0 ${_side}%`);
+        _slide(_label, `0 ${-_side}%`, '0 0');
+        _loop.pause();
+    };
+
+    link.addEventListener('pointerenter', _enter);
+    link.addEventListener('pointerleave', _leave);
+    link.addEventListener('focusin', (e) => link.matches(':focus-visible') && _enter(e));
+    link.addEventListener('focusout', _leave);
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The row is the <a class="underline underline-offset-2" href="/components/sliders/loop/">loop slider</a>, paused, with no drag. The label and cover slide with WAAPI, from the edge nearest the mouse.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">play()</code> and <code class="font-mono text-sm">pause()</code> start and stop the row, <code class="font-mono text-sm">setDirection(\'right\')</code> turns it. It picks up where it stopped, and pauses itself off screen. Reduced motion keeps the label.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

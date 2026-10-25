@@ -42,6 +42,40 @@
     animation-name: fadeInDownSmall;
 }
 
+/* a marker grows behind the words, line by line: <mark class="highlight" data-animate="highlight"> */
+.highlight {
+    color: inherit;
+    background: linear-gradient(var(--highlight-color, #fde68a), var(--highlight-color, #fde68a)) no-repeat 0 100% / 100% var(--highlight-height, 100%);
+}
+@keyframes highlight {
+    0% {
+        opacity: 1;
+        background-size: 0% var(--highlight-height, 100%);
+    }
+    100% {
+        opacity: 1;
+        background-size: 100% var(--highlight-height, 100%);
+    }
+}
+.animate__highlight {
+    animation-name: highlight;
+}
+
+/* from blurred to sharp: data-animate="blurIn", on a .js-splittext title word by word */
+@keyframes blurIn {
+    0% {
+        opacity: 0;
+        filter: blur(12px);
+    }
+    100% {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+.animate__blurIn {
+    animation-name: blurIn;
+}
+
 @keyframes pullUp {
     0% {
         transform: translateY(calc(102% + 0.25em));
@@ -84,6 +118,18 @@
 }
 .js-splittext-animated.pullDown .word {
     animation-name: pullDown;
+}
+/* the blur needs room past the line, the words wait in place */
+.js-splittext.blurIn .line-parent {
+    overflow: visible;
+}
+.js-splittext-animate.blurIn .word {
+    opacity: 0;
+    transform: none;
+}
+.js-splittext-animated.blurIn .word {
+    animation-duration: 0.9s;
+    animation-name: blurIn;
 }
 .js-splittext-animated .word .emoji {
     animation-duration: 1s;

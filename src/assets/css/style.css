@@ -15,7 +15,9 @@
 @import "./components/parallax.css";
 @import "./components/page-transition.css";
 @import "./components/text-roll.css";
+@import "./components/split-hover.css";
 @import "./components/typing.css";
+@import "./components/text-reveal.css";
 @import "./components/range-slider.css";
 
 /*

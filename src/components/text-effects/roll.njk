@@ -37,8 +37,54 @@ title: Text roll | Text effects | Anthony Toolkits
     </div>
 </section>
 
+{# demo: letter by letter #}
+<section class="px-4 pb-4">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-8 text-3xl font-bold tracking-tight">Letter by letter</h2>
+        <div class="grid gap-4 md:grid-cols-[2fr_1fr]">
+            <nav class="flex flex-col items-start gap-1 rounded-3xl bg-gray-950 p-8 text-5xl font-bold tracking-tight text-white md:p-12 md:text-7xl">
+                <a class="js-text-roll-letters" href="#">Work</a>
+                <a class="js-text-roll-letters" href="#">Studio</a>
+                <a class="js-text-roll-letters" href="#">Contact</a>
+            </nav>
+            <div class="flex flex-col justify-between gap-10 rounded-3xl bg-gray-100 p-8">
+                <p class="text-gray-600">Buttons, a slower stagger</p>
+                <div class="flex flex-wrap gap-3">
+                    <button class="js-text-roll-slow cursor-pointer rounded-full bg-gray-950 px-6 py-3 font-medium text-white" type="button">Get started</button>
+                    <a class="js-text-roll-slow rounded-full border border-gray-950 px-6 py-3 font-medium" href="#">Learn more</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# demo: letter flip #}
+<section class="px-4 pb-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-8 text-3xl font-bold tracking-tight">Letter flip</h2>
+        <div class="grid gap-4 md:grid-cols-[1fr_2fr]">
+            <div class="flex flex-col justify-between gap-10 rounded-3xl bg-amber-100 p-8">
+                <p class="text-amber-900/70">Buttons</p>
+                <div class="flex flex-wrap gap-3">
+                    <button class="js-text-roll-flip cursor-pointer rounded-full bg-gray-950 px-6 py-3 font-medium text-white" type="button">Get started</button>
+                    <a class="js-text-roll-flip rounded-full border border-gray-950 px-6 py-3 font-medium" href="#">Learn more</a>
+                </div>
+            </div>
+            <nav class="flex flex-col items-start gap-1 rounded-3xl border border-gray-200 p-8 text-5xl font-bold tracking-tight md:p-12 md:text-7xl">
+                <a class="js-text-roll-flip" href="#">Projects</a>
+                <a class="js-text-roll-flip" href="#">Services</a>
+                <a class="js-text-roll-flip" href="#">Say hello</a>
+            </nav>
+        </div>
+    </div>
+</section>
+
 {% set markup %}{% raw %}
 <a class="js-text-roll" href="#">About</a>
+
+<!-- letter by letter, or a flip -->
+<a class="js-text-roll-letters" href="#">Work</a>
+<a class="js-text-roll-flip" href="#">Projects</a>
 
 <!-- after _textRoll(), svgs are left alone -->
 <a href="#" data-text-roll>
@@ -49,21 +95,29 @@ title: Text roll | Text effects | Anthony Toolkits
 {% set pageScript %}{% raw %}
 // Requirements
     // JS
+        // split-type (npm)
         // src/assets/js/utils/_textRoll.js
     // CSS
         // src/assets/css/components/text-roll.css
 
 _textRoll('.js-text-roll');
 
+// letter by letter, ms per letter
+_textRoll('.js-text-roll-letters', { stagger: 20 });
+_textRoll('.js-text-roll-slow', { stagger: 40 });
+
+// each letter turns over like a cube
+_textRoll('.js-text-roll-flip', { flip: true, stagger: 30 });
+
 // or any selector, and only inside a part of the page
-// _textRoll('footer a, .button-primary', document.querySelector('.js-popup'));
+// _textRoll('footer a, .button-primary', { root: document.querySelector('.js-popup') });
 {% endraw %}{% endset %}
 
 {{ scriptUsage({
     markup: markup,
     markupNote: 'Each text gets wrapped in <code class="font-mono text-sm">.text-roll</code>, the target gets <code class="font-mono text-sm">[data-text-roll]</code>. Running it twice skips what is already wrapped.',
     code: pageScript,
-    note: '<code class="font-mono text-sm">_textRoll(selector, root)</code>. It rolls on hover and keyboard focus. Touch screens and reduced motion keep the text still.'
+    note: '<code class="font-mono text-sm">_textRoll(selector, { root, stagger, flip })</code>. <code class="font-mono text-sm">stagger</code> rolls each letter after the one before, <code class="font-mono text-sm">flip</code> turns each letter over instead, split with split-type, screen readers still get the word. It rolls on hover and keyboard focus. Touch screens and reduced motion keep the text still.'
 }) }}
 
 {% footerscript %}

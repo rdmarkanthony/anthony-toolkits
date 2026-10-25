@@ -146,6 +146,7 @@ export class _animate {
                 "visible",
                 () => {
                     if (this.keyframeOf(_item).includes("Down")) _item.classList.add("pullDown");
+                    if (this.keyframeOf(_item) === "blurIn") _item.classList.add("blurIn");
 
                     _item.classList.add("js-splittext-animated");
                     _item.style.setProperty("--pullup-delay", window.getComputedStyle(_item).animationDelay);
@@ -159,7 +160,7 @@ export class _animate {
                         _item.removeEventListener("animationend", _onEnd);
                         _splittext.destroy();
 
-                        _item.classList.remove("js-splittext-animate", "js-splittext-animated", "pullDown");
+                        _item.classList.remove("js-splittext-animate", "js-splittext-animated", "pullDown", "blurIn");
                         _item.style.setProperty("--pullup-delay", "");
                     };
 
