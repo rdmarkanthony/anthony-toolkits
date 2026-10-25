@@ -1,0 +1,16 @@
+/*
+    gradient text for the text reveal script
+    the words start as --text-reveal-dim and fade to clear, showing the gradient behind them
+    --text-reveal-dim must be solid, a see-through one shows the gradient early
+*/
+@layer components {
+    .text-reveal-gradient {
+        --text-reveal-from: #f43f5e;
+        --text-reveal-to: #7c3aed;
+        --text-reveal-dim: #e5e5e5;
+        background-image: linear-gradient(120deg, var(--text-reveal-from), var(--text-reveal-to));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+}

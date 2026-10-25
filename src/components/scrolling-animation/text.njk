@@ -23,9 +23,41 @@ title: Text | Scrolling Animation | Anthony Toolkits
     </div>
 </section>
 
+{# demo: gradient #}
+<section class="px-4 py-[40vh]">
+    <div class="mx-auto max-w-295">
+        <p class="js-text-reveal text-reveal-gradient max-w-5xl text-3xl leading-[1.25] font-semibold tracking-tight md:text-5xl">Add one class and the words turn into a gradient. The colors are CSS variables, so each brand can set its own.</p>
+    </div>
+</section>
+
+{# demo: gradient, own colors on a dark background #}
+<section class="bg-black px-4 py-[40vh]">
+    <div class="mx-auto max-w-295">
+        <p class="js-text-reveal text-reveal-gradient max-w-5xl text-3xl leading-[1.25] font-semibold tracking-tight [--text-reveal-dim:#262626] [--text-reveal-from:#22d3ee] [--text-reveal-to:#a3e635] md:text-5xl">On a dark background, set a dark dim color and pick your own gradient.</p>
+    </div>
+</section>
+
 {% set markup %}{% raw %}
 <!-- plain text, the script wraps each word in a span -->
 <p class="js-text-reveal text-5xl">Good motion follows the reader...</p>
+
+<!-- gradient, the variables are optional -->
+<p class="js-text-reveal text-reveal-gradient text-5xl" style="--text-reveal-from: #22d3ee; --text-reveal-to: #a3e635; --text-reveal-dim: #262626">Add one class...</p>
+{% endraw %}{% endset %}
+
+{% set pageCss %}{% raw %}/* style.css */
+@import "./components/text-reveal.css";
+
+/* text-reveal.css */
+.text-reveal-gradient {
+    --text-reveal-from: #f43f5e;
+    --text-reveal-to: #7c3aed;
+    --text-reveal-dim: #e5e5e5;
+    background-image: linear-gradient(120deg, var(--text-reveal-from), var(--text-reveal-to));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
 {% endraw %}{% endset %}
 
 {% set pageScript %}{% raw %}
@@ -34,6 +66,8 @@ title: Text | Scrolling Animation | Anthony Toolkits
         // src/assets/js/utils/_event.js
         // src/assets/js/utils/_emitter.js
         // src/assets/js/utils/_parallax.js
+    // CSS, gradient only
+        // src/assets/css/components/text-reveal.css
 
 document.querySelectorAll('.js-text-reveal').forEach((target) => {
     new _parallaxScroller({
@@ -45,10 +79,13 @@ document.querySelectorAll('.js-text-reveal').forEach((target) => {
                 const _words = [...target.children];
                 const _total = 1 + (_words.length - 1) * 0.1;
 
+                // gradient text fades the word's color to clear, the rest fade their opacity
+                const _keyframes = target.matches('.text-reveal-gradient') ? { color: ['var(--text-reveal-dim)', 'transparent'] } : { opacity: [0.15, 1] };
+
                 // each word fades over 1, the next starts 0.1 later
                 _words.forEach((word, index) => {
                     const _start = index * 0.1;
-                    scroller.animate(word, { opacity: [0.15, 1] }, [`${(_start / _total) * 100}%`, `${((_start + 1) / _total) * 100}%`]);
+                    scroller.animate(word, _keyframes, [`${(_start / _total) * 100}%`, `${((_start + 1) / _total) * 100}%`]);
                 });
             },
             // top at mid screen to bottom at mid screen
@@ -64,6 +101,8 @@ document.querySelectorAll('.js-text-reveal').forEach((target) => {
 {{ scriptUsage({
     markup: markup,
     markupNote: 'Plain text with a <code class="font-mono text-sm">js-</code> class. Inner tags like <code class="font-mono text-sm">&lt;strong&gt;</code> are dropped when the words are wrapped.',
+    css: pageCss,
+    cssNote: 'Gradient only. The words sit over the gradient in a solid dim color, the script fades that color to clear. Change the three variables in the file or on one element.',
     code: pageScript,
     note: 'Just <code class="font-mono text-sm">_parallaxScroller</code>. <code class="font-mono text-sm">resize</code> sets the range from the text top to its bottom at the middle of the screen, and <code class="font-mono text-sm">animate()</code> fades each word over its own part of it, so it stays smooth on phones.'
 }) }}
