@@ -1,11 +1,16 @@
+import { _emitter } from "./_emitter";
+import { _event } from "./_event";
+
 // scroll-snap card row, a mouse drags it
-// usage: new _snapSlider({ target }), target holds .js-snap-track (the scroller, cards inside)
+// usage: new _snapSlider({ target, events }), target holds .js-snap-track (the scroller, cards inside)
 // optional .js-snap-prev/.js-snap-next; duration (ms), ease for the glide
-// cards get --offset (-1 to 1) and --near (1 to 0) for css
+// cards get --offset (-1 to 1) and --near (1 to 0) for css; events update (on scroll), change (slider.current)
 const _easeOut = (t) => 1 - Math.pow(1 - t, 4);
 
-export class _snapSlider {
+export class _snapSlider extends _emitter {
     constructor(props) {
+        super(props.events);
+
         this.target = props.target ?? null;
         this.duration = props.duration ?? 800;
         this.ease = props.ease ?? _easeOut;
@@ -14,6 +19,7 @@ export class _snapSlider {
         this.frame = null;
         this.drag = null;
         this.dragged = false;
+        this.current = null;
 
         if (this.target) this.init();
     }
@@ -25,6 +31,7 @@ export class _snapSlider {
 
         this.handlers = {
             scroll: () => this.update(),
+            resize: () => this.update(),
             stop: () => this.stop(),
             down: (e) => this.down(e),
             move: (e) => this.move(e),
@@ -51,8 +58,9 @@ export class _snapSlider {
         this.el.prev?.addEventListener("click", this.handlers.prev);
         this.el.next?.addEventListener("click", this.handlers.next);
 
-        this.observer = new ResizeObserver(this.handlers.scroll);
-        this.observer.observe(_track);
+        // the row, and cards that change size
+        this.observed = [_track, ..._track.children];
+        this.observed.forEach((item) => _event.observeResize(this.handlers.resize, item));
     }
 
     // scroll positions that put each card at the snap spot
@@ -92,6 +100,14 @@ export class _snapSlider {
             item.style.setProperty("--offset", _offsets[i].toFixed(4));
             item.style.setProperty("--near", (1 - Math.abs(_offsets[i])).toFixed(4));
         });
+
+        this.emit("update");
+
+        const _index = this.index;
+        if (_index !== this.current) {
+            this.current = _index;
+            this.emit("change");
+        }
     }
 
     prev() {
@@ -190,7 +206,7 @@ export class _snapSlider {
         const _track = this.el.track;
         if (this.drag) this.up();
         this.stop();
-        this.observer?.disconnect();
+        this.observed.forEach((item) => _event.offObserveResize(this.handlers.resize, item));
 
         _track.removeEventListener("scroll", this.handlers.scroll);
         _track.removeEventListener("wheel", this.handlers.stop);

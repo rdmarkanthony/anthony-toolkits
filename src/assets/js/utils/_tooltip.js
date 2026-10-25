@@ -1,3 +1,5 @@
+import { _event } from "./_event";
+
 // usage: _tooltip.init(), then data-tooltip="Text" shows on hover and focus
 // data-tooltip-content="#id" opens a <template> on click, until a click outside, Escape or [data-tooltip-close]
 // data-tooltip-place="bottom" | "left" | "right", data-tooltip-anchor=".card" (closest), data-tooltip-class="..."
@@ -71,9 +73,10 @@ const _create = () => {
 
     document.body.append(_el, _live);
 
+    // capture: scrolling inside any box moves it too, _event.scroll is the page only
     const update = () => _tooltip.target && _position();
     window.addEventListener("scroll", update, { capture: true, passive: true });
-    window.addEventListener("resize", update, { passive: true });
+    _event.resize(update);
 };
 
 export const _tooltip = {

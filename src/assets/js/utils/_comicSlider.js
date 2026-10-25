@@ -3,6 +3,7 @@
 // frame: { page, top, left, right, bottom, mobile } in % of the page
 // options: duration (s), ease, mobile, events: change; optional .js-comic-prev/next
 import { _emitter } from "./_emitter";
+import { _event } from "./_event";
 import { _tween } from "./_tween";
 
 // power1.out, for the page fade
@@ -93,8 +94,7 @@ export class _comicSlider extends _emitter {
         this.el.stage.addEventListener("pointerup", this.handlers.up);
 
         // resize may switch to or from mobile frames
-        this.observer = new ResizeObserver(() => this.refresh());
-        this.observer.observe(this.el.stage);
+        this.offResize = _event.observeResize(() => this.refresh(), this.el.stage);
 
         this.show(this.index, { duration: 0 });
         return this;
@@ -208,7 +208,7 @@ export class _comicSlider extends _emitter {
 
     destroy() {
         if (!this.target) return;
-        this.observer?.disconnect();
+        this.offResize?.();
         if (this.handlers) {
             this.el.prev?.removeEventListener("click", this.handlers.prev);
             this.el.next?.removeEventListener("click", this.handlers.next);

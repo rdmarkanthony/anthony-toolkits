@@ -155,11 +155,18 @@ title: Snap slider | Sliders | Anthony Toolkits
 // Requirements
     // JS
         // src/assets/js/utils/_snapSlider.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_event.js
 
 document.querySelectorAll('.js-snap-slider').forEach((target) => {
-    const _slider = new _snapSlider({ target });
+    const _slider = new _snapSlider({
+        target,
+        events: {
+            // change: (slider) => console.log(slider.current),
+        },
+    });
 
-    // _slider.show(2), _slider.index; glide options: { target, duration: 600, ease: (t) => t }
+    // _slider.show(2), _slider.index, _slider.on('update', fn); glide options: { target, duration: 600, ease: (t) => t }
 });
 {% endraw %}{% endset %}
 
@@ -167,7 +174,7 @@ document.querySelectorAll('.js-snap-slider').forEach((target) => {
     markup: markup,
     markupNote: 'The track is a normal scroller with Tailwind scroll snap, so touch and trackpad scrolling are the browser\'s own. The card width is set by its class. Each card gets <code class="font-mono text-sm">--offset</code> (-1 to 1, 0 in place) and <code class="font-mono text-sm">--near</code> (1 in place, 0 a card away) for parallax.',
     code: pageScript,
-    note: 'Adds mouse dragging and the buttons, both glide to a card with a slow ease out. No library.'
+    note: 'Adds mouse dragging and the buttons, both glide to a card with a slow ease out. Events: <code class="font-mono text-sm">update</code> as it scrolls, <code class="font-mono text-sm">change</code> when another card snaps in. No library.'
 }) }}
 
 {% footerscript %}

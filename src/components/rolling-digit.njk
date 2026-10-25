@@ -23,6 +23,7 @@ title: Rolling digit | Anthony Toolkits
 {% set pageScript %}{% raw %}
 // Requirements
     // JS
+        // src/assets/js/utils/_emitter.js
         // src/assets/js/utils/_event.js
         // src/assets/js/utils/_rollingDigit.js
         // src/assets/js/utils/_inview.js (optional, to start in view)
@@ -57,17 +58,9 @@ const _update = (value) => {
         _digits.push(new _rollingDigit({ target: _div, numeric: false }));
     });
 
-    // roll each digit
-    _characters.forEach((character, index) => {
-        const _digit = _digits[index];
-
-        _digit.roll({
-            from: _digit.currentNumber,
-            to: character,
-            duration: 1000,
-            callback: () => (_rolling = false),
-        });
-    });
+    // roll each digit, free again once all have landed
+    const _rolls = _characters.map((character, index) => _digits[index].roll({ from: _digits[index].currentNumber, to: character, duration: 1000 }));
+    Promise.all(_rolls).then(() => (_rolling = false));
 };
 
 // only numbers, one decimal point and 2 decimals, with commas
@@ -100,7 +93,7 @@ new _inview({
 
 {{ scriptUsage({
     code: pageScript,
-    note: '<code class="font-mono text-sm">new _rollingDigit({ target, numeric, maxNumber, startNumber, duration })</code> makes one digit, <code class="font-mono text-sm">roll({ from, to, duration, callback })</code> moves it. Durations in ms.'
+    note: '<code class="font-mono text-sm">new _rollingDigit({ target, numeric, maxNumber, startNumber, duration })</code> makes one digit, <code class="font-mono text-sm">roll({ from, to, duration })</code> moves it and returns a promise for when it lands. Durations in ms. Event: <code class="font-mono text-sm">change</code> once a digit lands.'
 }) }}
 
 {% footerscript %}

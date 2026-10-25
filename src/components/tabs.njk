@@ -84,12 +84,18 @@ title: Tabs | Anthony Toolkits
 {% set pageScript %}{% raw %}
 // Requirements
     // JS
+        // src/assets/js/utils/_emitter.js
         // src/assets/js/utils/_tabs.js
 
 document.querySelectorAll('.js-tabs').forEach((target) => {
-    const _tabGroup = new _tabs({ target });
+    const _tabGroup = new _tabs({
+        target,
+        events: {
+            // change: (tabs) => console.log(tabs.active, tabs.contents[tabs.active]),
+        },
+    });
 
-    // _tabGroup.show(index) switches from a script
+    // _tabGroup.show(index) switches from a script, _tabGroup.on('change', fn) listens later
 });
 {% endraw %}{% endset %}
 
