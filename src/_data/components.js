@@ -20,6 +20,7 @@ export default [
         category: "Text effects",
         url: "/components/text-effects/",
         items: [
+            { label: "Hover marquee", url: "/components/text-effects/marquee/", description: "A link whose label turns into an endless row while hovered.", utils: "_horizontalLoop · GSAP", ready: true },
             { label: "Line reveal", url: "/components/animate/#split-text", description: "Title words slide up from behind each line's mask as they come into view.", utils: "_animate · _splitText", ready: true },
             { label: "Scramble text", url: "/components/text-effects/scramble/", description: "Letters flip through random characters, then settle into the text.", utils: "_scrambleText", ready: true },
             { label: "Text roll", url: "/components/text-effects/roll/", description: "Link and button text that rolls up on hover, a copy coming in from below.", utils: "_textRoll", ready: true },
