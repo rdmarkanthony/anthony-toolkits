@@ -34,10 +34,13 @@ const _transform = ({ p, a, s, r, o } = {}) => ({
 // shapes, then its styles, the transform goes last
 const _group = (items, transform) => ({ ty: "gr", nm: "g", it: [...items, _transform(transform)], np: items.length });
 
-const _path = (points, closed = false) => {
+// straight edges, also a keyframe value for paths that morph
+const _shape = (points, closed = false) => {
     const _zero = points.map(() => [0, 0]);
-    return { ty: "sh", d: 1, ks: _static({ i: _zero, o: _zero, v: points, c: closed }) };
+    return { i: _zero, o: _zero, v: points, c: closed };
 };
+
+const _path = (points, closed = false) => ({ ty: "sh", d: 1, ks: _static(_shape(points, closed)) });
 
 const _ellipse = (size, p = [0, 0]) => ({ ty: "el", d: 1, p: _static(p), s: _static([size, size]) });
 
@@ -182,56 +185,6 @@ const _samples = {
             });
         });
         return _comp("menu", 100, 100, 30, [_layer(1, _lines, 30, [50, 50], "lines")]);
-    },
-
-    // the arrow leaves to the right and a new one comes in from the left
-    arrow: () => {
-        const _arrow = (p, o) =>
-            _group(
-                [
-                    _path([
-                        [-18, 0],
-                        [18, 0],
-                    ]),
-                    _path([
-                        [4, -14],
-                        [18, 0],
-                        [4, 14],
-                    ]),
-                    _stroke(7),
-                ],
-                { p, o }
-            );
-        return _comp("arrow", 100, 100, 30, [
-            _layer(
-                1,
-                [
-                    _arrow(
-                        _anim([
-                            [0, [0, 0]],
-                            [16, [60, 0]],
-                        ]),
-                        _anim([
-                            [0, 100],
-                            [12, 0],
-                        ])
-                    ),
-                    _arrow(
-                        _anim([
-                            [10, [-60, 0]],
-                            [30, [0, 0]],
-                        ]),
-                        _anim([
-                            [10, 0],
-                            [22, 100],
-                        ])
-                    ),
-                ],
-                30,
-                [50, 50],
-                "arrows"
-            ),
-        ]);
     },
 
     // the ground draws, the sun rises and grows, the rays turn in, 100 frames for scroll
@@ -440,6 +393,190 @@ const _samples = {
         );
 
         return _comp("plane", 400, 240, 100, [_plane, _trail]);
+    },
+
+    // like: an outline heart, forward fills it with a pop and a burst of dots, back unlikes
+    heart: () => {
+        const _red = [0.94, 0.27, 0.35, 1];
+
+        // the classic heart curve, centered
+        const _curve = Array.from({ length: 64 }, (_, index) => {
+            const t = (index / 64) * Math.PI * 2;
+            return [16 * Math.sin(t) ** 3, -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t))];
+        });
+        const _ys = _curve.map(([, y]) => y);
+        const _middle = (Math.min(..._ys) + Math.max(..._ys)) / 2;
+        const _heart = _curve.map(([x, y]) => [x * 2, (y - _middle) * 2]);
+
+        const _dots = Array.from({ length: 8 }, (_, index) => {
+            const _angle = ((index * 45 + 22.5) * Math.PI) / 180;
+            const [x, y] = [Math.cos(_angle), Math.sin(_angle)];
+            return _group([_ellipse(8), _fill(_red)], {
+                p: _anim([
+                    [10, [x * 36, y * 36]],
+                    [30, [x * 54, y * 54]],
+                ]),
+                o: _anim([
+                    [9, 0],
+                    [10, 100],
+                    [30, 0],
+                ]),
+                s: _anim([
+                    [10, [100, 100]],
+                    [30, [30, 30]],
+                ]),
+            });
+        });
+
+        return _comp("heart", 120, 120, 36, [
+            _layer(1, _dots, 36, [60, 60], "burst"),
+            _layer(
+                2,
+                [
+                    _group([_path(_heart, true), _fill(_red)], {
+                        s: _anim([
+                            [4, [0, 0]],
+                            [16, [118, 118]],
+                            [24, [94, 94]],
+                            [30, [100, 100]],
+                        ]),
+                    }),
+                ],
+                36,
+                [60, 60],
+                "fill"
+            ),
+            _layer(
+                3,
+                [
+                    _group([_path(_heart, true), _stroke(6)], {
+                        o: _anim([
+                            [6, 100],
+                            [14, 0],
+                        ]),
+                    }),
+                ],
+                36,
+                [60, 60],
+                "outline"
+            ),
+        ]);
+    },
+
+    // play to pause: the triangle's two halves morph into the two bars
+    play: () => {
+        const _morph = (from, to) => ({
+            ty: "sh",
+            d: 1,
+            ks: _anim(
+                [
+                    [0, _shape(from, true)],
+                    [18, _shape(to, true)],
+                ],
+                _easeInOut
+            ),
+        });
+        const _left = _morph(
+            [
+                [-18, -24],
+                [2, -12],
+                [2, 12],
+                [-18, 24],
+            ],
+            [
+                [-18, -24],
+                [-6, -24],
+                [-6, 24],
+                [-18, 24],
+            ]
+        );
+        const _right = _morph(
+            [
+                [2, -12],
+                [22, 0],
+                [22, 0],
+                [2, 12],
+            ],
+            [
+                [6, -24],
+                [18, -24],
+                [18, 24],
+                [6, 24],
+            ]
+        );
+        return _comp("play", 100, 100, 20, [_layer(1, [_group([_left, _right, _fill()])], 20, [50, 50], "icon")]);
+    },
+
+    // sound to muted: the waves shrink away, an X draws in
+    sound: () => {
+        const _wave = (size) => _group([_ellipse(size, [-2, 0]), _trim({ s: _static(12.5), e: _static(37.5) }), _stroke(6)]);
+        const _line = (points, start) =>
+            _group([
+                _path(points),
+                _trim({
+                    e: _anim([
+                        [start, 0],
+                        [start + 12, 100],
+                    ]),
+                }),
+                _stroke(6),
+            ]);
+        return _comp("sound", 100, 100, 26, [
+            _layer(
+                1,
+                [
+                    _group([_wave(28), _wave(52)], {
+                        o: _anim([
+                            [0, 100],
+                            [10, 0],
+                        ]),
+                        s: _anim([
+                            [0, [100, 100]],
+                            [10, [70, 70]],
+                        ]),
+                    }),
+                    _line(
+                        [
+                            [10, -10],
+                            [30, 10],
+                        ],
+                        8
+                    ),
+                    _line(
+                        [
+                            [10, 10],
+                            [30, -10],
+                        ],
+                        12
+                    ),
+                ],
+                26,
+                [50, 50],
+                "marks"
+            ),
+            _layer(
+                2,
+                [
+                    _group([
+                        _path(
+                            [
+                                [-30, -10],
+                                [-18, -10],
+                                [-2, -24],
+                                [-2, 24],
+                                [-18, 10],
+                                [-30, 10],
+                            ],
+                            true
+                        ),
+                        _fill(),
+                    ]),
+                ],
+                26,
+                [50, 50],
+                "speaker"
+            ),
+        ]);
     },
 };
 

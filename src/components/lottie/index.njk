@@ -8,21 +8,19 @@ title: Lottie | Anthony Toolkits
 {{ pageIntro({ label: '_lottie · lottie-web', title: 'Lottie', description: 'Lottie animations that play on screen, on hover, on click or with the scroll. One util, the play mode is an option. lottie-web loads only when the first one nears the screen.' }) }}
 
 {% set samples = [
-    { url: '/components/lottie/play/#in-view', title: 'In view', text: 'Plays on screen and pauses when it leaves. A one-off plays once.', file: 'emoji-party' },
-    { url: '/components/lottie/play/#hover', title: 'Hover', text: 'Plays forward on hover and back when the mouse leaves.', file: 'arrow' },
-    { url: '/components/lottie/play/#click', title: 'Click', text: 'Toggles forward and back, like a menu button turning into an X.', file: 'menu' },
-    { url: '/components/lottie/play/#send', title: 'Send button', text: 'A paper plane flies off on click, then comes back.', file: 'plane' },
-    { url: '/components/lottie/loading/', title: 'Loading', text: 'A cook shows while a fetch is slow, then the foods come in.', file: 'emoji-cooking' },
-    { url: '/components/lottie/scroll/', title: 'Scroll', text: 'The frames follow the scroll with _parallaxScroller, pinned or as it passes.', file: 'sunrise' }
+    { url: '/components/lottie/basic/', title: 'Basic', text: 'Put one on the page, set loop and speed, control it from your script.', file: 'emoji-party' },
+    { url: '/components/lottie/play/#hover', title: 'Hover', text: 'Emoji that loop while their card or button is hovered.', file: 'emoji-rocket' },
+    { url: '/components/lottie/play/#click', title: 'Click', text: 'Toggles that do the work: a like, a menu, video play and mute.', file: 'heart' },
+    { url: '/components/lottie/scroll/', title: 'Scroll', text: 'The frames follow the scroll, pinned or as it passes.', file: 'sunrise' }
 ] %}
 <section id="demos" class="px-4 pb-16">
     <div class="mx-auto max-w-295">
         <h2 class="mb-8 text-3xl font-bold tracking-tight">Samples</h2>
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {% for sample in samples %}
             <a class="js-lottie-card group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="{{ sample.url }}">
                 <div class="flex aspect-4/3 items-center justify-center bg-gray-50">
-                    <div class="js-lottie-preview {{ 'w-3/4' if sample.file in ['sunrise', 'plane'] else 'size-24' }}" data-lottie="/assets/lottie/{{ sample.file }}.json"></div>
+                    <div class="js-lottie-preview {{ 'w-3/4' if sample.file == 'sunrise' else 'size-24' }}" data-lottie="/assets/lottie/{{ sample.file }}.json"></div>
                 </div>
                 <div class="flex flex-1 flex-col p-6">
                     <h3 class="mb-2 text-xl font-semibold">{{ sample.title }}</h3>
@@ -47,10 +45,23 @@ title: Lottie | Anthony Toolkits
         // src/assets/js/utils/_emitter.js
         // src/assets/js/utils/_lottie.js
 
-// the cards play on hover, the scroll one follows the mouse across it
+// plays once on screen
+new _lottie({ target: document.querySelector('.js-lottie') });
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Export a .json from After Effects with Bodymovin, or download one from a Lottie library. The emoji are from <a class="underline underline-offset-2" href="https://googlefonts.github.io/noto-emoji-animation/" target="_blank" rel="noopener">Noto Emoji Animation</a> by Google, <a class="underline underline-offset-2" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>, the rest are our own.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _lottie({ target, src, play, loop, speed, trigger, renderer, events })</code>. <code class="font-mono text-sm">play</code>: <code class="font-mono text-sm">inview</code> (default), <code class="font-mono text-sm">hover</code> (with <code class="font-mono text-sm">loop</code>, loops while hovered), <code class="font-mono text-sm">click</code>, <code class="font-mono text-sm">none</code> (yours, through <code class="font-mono text-sm">ready</code> or <code class="font-mono text-sm">seek()</code>). <code class="font-mono text-sm">ready</code> resolves with the lottie-web animation, also on <code class="font-mono text-sm">animation</code>. Methods: <code class="font-mono text-sm">seek(progress)</code>, <code class="font-mono text-sm">toggle(on)</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">ready</code>, <code class="font-mono text-sm">complete</code>, <code class="font-mono text-sm">toggle</code>. Reduced motion keeps in view and hover on a still frame.'
+}) }}
+
+{% footerscript %}
+<script type="module">
+// demo only: the cards play on hover, emoji loop, the scroll one follows the mouse across it
 document.querySelectorAll('.js-lottie-card').forEach((card) => {
     const target = card.querySelector('.js-lottie-preview');
-    if (!target.dataset.lottie.includes('sunrise')) return new _lottie({ target, play: 'hover', trigger: card });
+    if (!target.dataset.lottie.includes('sunrise')) return new _lottie({ target, play: 'hover', trigger: card, loop: target.dataset.lottie.includes('emoji') });
 
     const _sunrise = new _lottie({ target, play: 'none' });
     _sunrise.seek(0.9);
@@ -60,15 +71,5 @@ document.querySelectorAll('.js-lottie-card').forEach((card) => {
     });
     card.addEventListener('pointerleave', () => _sunrise.seek(0.9));
 });
-{% endraw %}{% endset %}
-
-{{ scriptUsage({
-    markup: markup,
-    markupNote: 'Export from After Effects with Bodymovin, or download a .json from a Lottie library. The emoji are from <a class="underline underline-offset-2" href="https://googlefonts.github.io/noto-emoji-animation/" target="_blank" rel="noopener">Noto Emoji Animation</a> by Google, <a class="underline underline-offset-2" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>, the rest are our own.',
-    code: pageScript,
-    note: '<code class="font-mono text-sm">new _lottie({ target, src, play, loop, speed, trigger, renderer, events })</code>. <code class="font-mono text-sm">play</code>: <code class="font-mono text-sm">inview</code> (default), <code class="font-mono text-sm">hover</code>, <code class="font-mono text-sm">click</code>, <code class="font-mono text-sm">none</code> (for scroll, with <code class="font-mono text-sm">seek()</code>). <code class="font-mono text-sm">ready</code> resolves with the lottie-web animation, also on <code class="font-mono text-sm">animation</code>. Methods: <code class="font-mono text-sm">seek(progress)</code>, <code class="font-mono text-sm">toggle(on)</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">ready</code>, <code class="font-mono text-sm">complete</code>, <code class="font-mono text-sm">toggle</code>. Reduced motion keeps in view and hover on a still frame.'
-}) }}
-
-{% footerscript %}
-<script type="module">{{ pageScript | safe }}</script>
+</script>
 {% endfooterscript %}
