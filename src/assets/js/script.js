@@ -56,6 +56,7 @@ import { _googleMap } from "./utils/_googleMap";
 import { _qrCode } from "./utils/_qrCode";
 import { _peekSlider } from "./utils/_peekSlider";
 import { _snapSlider } from "./utils/_snapSlider";
+import { _scrollbarSlider } from "./utils/_scrollbarSlider";
 import { _horizontalLoop } from "./utils/_horizontalLoop";
 import { _comicSlider } from "./utils/_comicSlider";
 
@@ -121,6 +122,7 @@ Object.assign(window, {
     _qrCode,
     _peekSlider,
     _snapSlider,
+    _scrollbarSlider,
     _horizontalLoop,
     _comicSlider,
 });

@@ -1,0 +1,142 @@
+---
+title: Scrollbar slider | Sliders | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Sliders', url: '/components/sliders/' }, label: '_scrollbarSlider', title: 'Scrollbar slider', description: 'A card row that scrolls freely, no snap. Drag the bar below it, use the arrows, or swipe. No library.' }) }}
+
+{% set cards = [
+    { title: 'Lorem ipsum dolor sit amet.', text: 'Consectetur adipisicing elit. Libero est illo eius laudantium, laborum earum culpa.', image: true },
+    { title: 'Consectetur adipisicing elit.', text: 'Corporis vel deleniti ipsam mollitia, quo unde architecto velit.', class: 'bg-sky-200' },
+    { title: 'Libero est illo eius.', text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit laudantium.', class: 'bg-gray-950' },
+    { title: 'Laborum earum culpa corporis.', text: 'Vel deleniti ipsam mollitia quo unde. Architecto velit lorem ipsum.', image: 'scale-150 object-[30%_20%]' },
+    { title: 'Vel deleniti ipsam mollitia.', text: 'Libero est illo eius laudantium, laborum earum culpa corporis.', class: 'bg-amber-100' },
+    { title: 'Quo unde architecto velit.', text: 'Consectetur adipisicing elit. Lorem ipsum dolor sit amet.', class: 'bg-rose-200' },
+    { title: 'Lorem ipsum dolor sit amet.', text: 'Earum culpa corporis vel deleniti ipsam mollitia quo unde.', image: 'scale-175 object-[50%_80%]' }
+] %}
+{% set track = 'js-scrollbar-track flex cursor-grab gap-4 overflow-x-auto px-[max(1rem,calc((100%_-_73.75rem)/2))] py-2 [scrollbar-width:none] data-dragging:cursor-grabbing md:gap-6 [&::-webkit-scrollbar]:hidden' %}
+{% set thumb = 'absolute top-1/2 left-0 h-1 w-[calc(var(--thumb-size,1)*100%)] -translate-y-1/2 translate-x-[calc(var(--progress,0)*(100%/var(--thumb-size,1)_-_100%))] rounded-full bg-gray-950 transition-[height] duration-300 group-hover/bar:h-1.5 group-data-dragging/bar:h-1.5' %}
+
+{# demo: arrows over the images, a bar under the row #}
+<section class="bg-gray-50 py-16">
+    <h2 class="mx-auto mb-8 max-w-295 px-4 text-3xl font-bold tracking-tight [box-sizing:content-box]">Cards with arrows</h2>
+    <div class="js-scrollbar-slider group relative [--card:min(80vw,22rem)] lg:[--card:26rem]">
+        <ul class="{{ track }}" tabindex="0" aria-label="Cards">
+            {% for card in cards %}
+            <li class="w-(--card) shrink-0 select-none">
+                <div class="relative mb-6 aspect-square overflow-hidden rounded-3xl {{ card.class }}">
+                    {% if card.image %}<img class="size-full object-cover {{ card.image if card.image != true }}" src="/assets/img/sample-image.webp" alt="" loading="lazy" />{% endif %}
+                </div>
+                <h3 class="mb-3 text-2xl leading-tight font-semibold tracking-tight">{{ card.title }}</h3>
+                <p class="text-gray-600">{{ card.text }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+        {# on the image middle, shown on hover with a mouse #}
+        {% set arrow = 'absolute top-[calc(var(--card)/2+0.5rem)] grid size-12 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white text-xl text-gray-900 shadow-md transition-[opacity,background-color] duration-300 hover:bg-gray-100 focus-visible:opacity-100 disabled:pointer-events-none disabled:opacity-0! pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100' %}
+        <button class="js-scrollbar-prev left-4 md:left-6 {{ arrow }}" type="button" disabled aria-label="Previous card">{{ angle('left') }}</button>
+        <button class="js-scrollbar-next right-4 md:right-6 {{ arrow }}" type="button" aria-label="Next card">{{ angle('right') }}</button>
+        <div class="mt-10 px-4">
+            <div class="js-scrollbar-bar group/bar invisible relative mx-auto h-6 max-w-md cursor-pointer touch-none group-data-scrollable:visible" aria-hidden="true">
+                <div class="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-gray-300"></div>
+                <div class="{{ thumb }}"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% set tiles = [
+    { width: 'w-72 md:w-96', title: 'Lorem ipsum dolor sit amet.', image: true },
+    { width: 'w-56', title: 'Consectetur.', class: 'bg-gray-950 text-white' },
+    { width: 'w-64 md:w-80', title: 'Libero est illo eius.', class: 'bg-gray-100' },
+    { width: 'w-56', title: 'Laborum.', class: 'bg-sky-100' },
+    { width: 'w-80 md:w-[28rem]', title: 'Earum culpa corporis vel deleniti.', image: 'scale-150 object-[70%_60%]' },
+    { width: 'w-64', title: 'Ipsam mollitia.', class: 'bg-amber-50' },
+    { width: 'w-56', title: 'Quo unde.', class: 'bg-gray-950 text-white' },
+    { width: 'w-72 md:w-96', title: 'Architecto velit lorem.', class: 'bg-rose-100' }
+] %}
+{% set button = 'grid size-9 shrink-0 cursor-pointer place-items-center rounded-full bg-gray-200 text-lg text-gray-700 transition-colors duration-300 hover:bg-gray-300 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-gray-200' %}
+
+{# demo: any card width, buttons next to the bar #}
+<section class="py-16">
+    <h2 class="mx-auto mb-8 max-w-295 px-4 text-3xl font-bold tracking-tight [box-sizing:content-box]">Mixed widths</h2>
+    <div class="js-scrollbar-slider group">
+        <ul class="{{ track }}" tabindex="0" aria-label="Tiles">
+            {% for tile in tiles %}
+            <li class="relative flex h-80 shrink-0 flex-col justify-end overflow-hidden rounded-2xl p-6 select-none {{ tile.width }} {{ tile.class or 'bg-gray-950 text-white' }}">
+                {% if tile.image %}
+                <img class="absolute inset-0 size-full object-cover {{ tile.image if tile.image != true }}" src="/assets/img/sample-image.webp" alt="" loading="lazy" />
+                <div class="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/60 to-transparent"></div>
+                {% endif %}
+                <p class="relative mb-1 text-sm font-semibold opacity-70">0{{ loop.index }}</p>
+                <h3 class="relative text-xl leading-tight font-semibold tracking-tight">{{ tile.title }}</h3>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="mt-6 px-4">
+            <div class="mx-auto flex max-w-295 items-center gap-6">
+                <div class="js-scrollbar-bar group/bar relative h-6 flex-1 cursor-pointer touch-none" aria-hidden="true">
+                    <div class="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-gray-200"></div>
+                    <div class="{{ thumb }}"></div>
+                </div>
+                <div class="flex gap-3">
+                    <button class="js-scrollbar-prev {{ button }}" type="button" disabled aria-label="Previous tile">{{ angle('left') }}</button>
+                    <button class="js-scrollbar-next {{ button }}" type="button" aria-label="Next tile">{{ angle('right') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<div class="js-scrollbar-slider group relative [--card:min(80vw,22rem)]">
+    <!-- the padding lines the first card up with the column -->
+    <ul class="js-scrollbar-track flex cursor-grab gap-4 overflow-x-auto px-[max(1rem,calc((100%_-_73.75rem)/2))] [scrollbar-width:none] data-dragging:cursor-grabbing [&::-webkit-scrollbar]:hidden" tabindex="0" aria-label="Cards">
+        <li class="w-(--card) shrink-0 select-none">...</li>
+        <li class="w-(--card) shrink-0 select-none">...</li>
+    </ul>
+
+    <!-- optional arrows, disabled at the ends -->
+    <button class="js-scrollbar-prev absolute top-[calc(var(--card)/2)] left-4 disabled:opacity-0 pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100" type="button" disabled aria-label="Previous card">...</button>
+    <button class="js-scrollbar-next absolute top-[calc(var(--card)/2)] right-4 ..." type="button" aria-label="Next card">...</button>
+
+    <!-- optional bar: the thumb is css only, sized by --thumb-size and moved by --progress -->
+    <div class="js-scrollbar-bar group/bar invisible relative h-6 cursor-pointer touch-none group-data-scrollable:visible" aria-hidden="true">
+        <div class="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 bg-gray-300"></div>
+        <div class="absolute top-1/2 left-0 h-1 w-[calc(var(--thumb-size,1)*100%)] -translate-y-1/2 translate-x-[calc(var(--progress,0)*(100%/var(--thumb-size,1)_-_100%))] bg-gray-950 group-hover/bar:h-1.5"></div>
+    </div>
+</div>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_scrollbarSlider.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_event.js
+
+document.querySelectorAll('.js-scrollbar-slider').forEach((target) => {
+    const _slider = new _scrollbarSlider({
+        target,
+        events: {
+            // change: (slider) => console.log(slider.current),
+            // update: (slider) => console.log(slider.progress),
+        },
+    });
+
+    // _slider.show(2), _slider.index, _slider.on('change', fn); glide options: { target, duration: 600, ease: (t) => t }
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The track is a normal scroller with no snap, so touch and trackpad scrolling are the browser\'s own. The slider gets <code class="font-mono text-sm">--progress</code> (0 to 1), <code class="font-mono text-sm">--thumb-size</code> (how much of the row is in view, 0 to 1) and <code class="font-mono text-sm">data-scrollable</code> while the row overflows.',
+    code: pageScript,
+    note: 'Adds mouse dragging with a throw, the bar (drag the thumb or press anywhere on it) and the arrows, which glide one card. Events: <code class="font-mono text-sm">update</code> as it scrolls, <code class="font-mono text-sm">change</code> when the card at the start changes. No library.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
