@@ -152,6 +152,32 @@ document.addEventListener("click", (e) => {
 });
 if (location.hash === "#components-directory") new _lightbox({ target: "#components-directory" });
 
+// favorite stars on the home cards and the directory, pop in on screen, loop while their link is hovered
+// the noto star starts and ends as a spark, so it rests on a full frame
+const _starRest = 70;
+document.querySelectorAll(".js-favorite").forEach((target) => {
+    const _star = new _lottie({ target, play: "none" });
+    const _link = target.closest("a");
+
+    _star.ready.then((animation) => {
+        if (_star.reduce) return animation.goToAndStop(_starRest, true);
+        // segments change totalFrames, so the full length is kept
+        const _end = animation.totalFrames;
+        new _inview({ target, callback: () => animation.playSegments([0, _starRest], true) });
+
+        _link.addEventListener("pointerenter", () => {
+            animation.setLoop(true);
+            animation.playSegments([0, _end], true);
+        });
+        // ends the loop it is in, then plays up to the full star
+        _link.addEventListener("pointerleave", () => {
+            const _frame = Math.floor(animation.firstFrame + animation.currentFrame);
+            animation.setLoop(false);
+            animation.playSegments([[_frame, _end], [0, _starRest]], true);
+        });
+    });
+});
+
 // starter kit popup, from the header links or /#starter-kit
 document.addEventListener("click", (e) => {
     if (!e.target.closest("[data-starter-open]")) return;

@@ -71,6 +71,7 @@
                     <li>
                         <a class="flex items-center gap-2 py-1 transition-colors duration-300 hover:text-kit-accent {{ 'text-kit-accent' if active }}" href="{{ item.url }}"{% if active %} aria-current="page"{% endif %}>
                             <span class="size-1.5 shrink-0 rounded-full bg-kit-accent {{ 'scale-100' if active else 'scale-0' }}" aria-hidden="true"></span>{{ item.label }}
+                            {% if item.favorite %}<span class="js-favorite -my-1 block size-6 shrink-0" role="img" aria-label="Favorite" data-lottie="/assets/lottie/emoji-glowing-star.json"></span>{% endif %}
                         </a>
                     </li>
                     {% endif %}{% endfor %}
