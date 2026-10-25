@@ -7,7 +7,7 @@ title: Lottie | Anthony Toolkits
 
 {{ pageIntro({ label: '_lottie · lottie-web', title: 'Lottie', description: 'Lottie animations that play on screen, on hover, on click or with the scroll. One util, the play mode is an option. lottie-web loads only when the first one nears the screen.' }) }}
 
-{% set samples = [
+{% set demos = [
     { url: '/components/lottie/basic/', title: 'Basic', text: 'Options, your own controls, an intro then a loop, emoji in text.', file: 'emoji-party' },
     { url: '/components/lottie/play/#hover', title: 'Hover', text: 'Emoji that loop while their card or button is hovered.', file: 'emoji-rocket' },
     { url: '/components/lottie/play/#click', title: 'Click', text: 'Toggles that do the work: a like, a menu, video play and mute.', file: 'heart' },
@@ -15,16 +15,16 @@ title: Lottie | Anthony Toolkits
 ] %}
 <section id="demos" class="px-4 pb-16">
     <div class="mx-auto max-w-295">
-        <h2 class="mb-8 text-3xl font-bold tracking-tight">Samples</h2>
+        <h2 class="mb-8 text-3xl font-bold tracking-tight">Demos</h2>
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {% for sample in samples %}
-            <a class="js-lottie-card group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="{{ sample.url }}">
+            {% for demo in demos %}
+            <a class="js-lottie-card group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="{{ demo.url }}">
                 <div class="flex aspect-4/3 items-center justify-center bg-gray-50">
-                    <div class="js-lottie-preview {{ 'w-3/4' if sample.file == 'sunrise' else 'size-24' }}" data-lottie="/assets/lottie/{{ sample.file }}.json"></div>
+                    <div class="js-lottie-preview {{ 'w-3/4' if demo.file == 'sunrise' else 'size-24' }}" data-lottie="/assets/lottie/{{ demo.file }}.json"></div>
                 </div>
                 <div class="flex flex-1 flex-col p-6">
-                    <h3 class="mb-2 text-xl font-semibold">{{ sample.title }}</h3>
-                    <p class="mb-6 flex-1 text-gray-600">{{ sample.text }}</p>
+                    <h3 class="mb-2 text-xl font-semibold">{{ demo.title }}</h3>
+                    <p class="mb-6 flex-1 text-gray-600">{{ demo.text }}</p>
                     <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
                 </div>
             </a>
