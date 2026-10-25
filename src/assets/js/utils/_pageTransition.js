@@ -58,8 +58,11 @@ export const _pageTransition = {
 
         const _before = new Set(document.getAnimations());
 
-        _root.style.setProperty("--page-x", point ? `${point.x}px` : "50%");
-        _root.style.setProperty("--page-y", point ? `${point.y}px` : "50%");
+        // no point: the middle of the screen
+        const _point = point ?? { x: innerWidth / 2, y: innerHeight / 2 };
+        _root.style.setProperty("--page-x", `${_point.x}px`);
+        _root.style.setProperty("--page-y", `${_point.y}px`);
+        _root.style.setProperty("--page-scroll", `${scrollY}px`);
         delete _root.dataset.pageEnter;
         _root.dataset.pageLeave = name;
 

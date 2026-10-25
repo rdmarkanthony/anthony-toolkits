@@ -1,7 +1,7 @@
 /*
     page transitions for _pageTransition.js
     your own: animate anything under [data-page-leave="name"] and [data-page-enter="name"]
-    --page-x, --page-y: the click, --page-cover: the cover color
+    --page-x, --page-y: the click on screen, --page-scroll: the scroll then, --page-cover: the cover color
 */
 /* blinds: one progress drives all five bars */
 @property --page-blinds {
@@ -166,6 +166,23 @@
         [data-page-enter="pixels"]::after {
             animation: page-pixels 0.6s 0.1s linear reverse both;
         }
+
+        /* zoom: the page shrinks back to the click, the next grows into place */
+        [data-page-leave="zoom"] {
+            animation: page-zoom-cover 0.5s both;
+        }
+        [data-page-leave="zoom"] body {
+            transform-origin: var(--page-x) calc(var(--page-y) + var(--page-scroll));
+            animation: page-zoom-out 0.5s cubic-bezier(0.5, 0, 0.75, 0) both;
+        }
+        /* backwards only, a transform left on body would move fixed elements */
+        [data-page-enter="zoom"] {
+            animation: page-zoom-cover 0.6s 0.05s backwards;
+        }
+        [data-page-enter="zoom"] body {
+            transform-origin: 50% 50vh;
+            animation: page-zoom-in 0.6s 0.05s cubic-bezier(0.25, 1, 0.5, 1) backwards;
+        }
     }
 
     @keyframes page-fade-out {
@@ -306,6 +323,24 @@
         }
         100% {
             mask-image: url("/assets/img/page-pixels.svg#p10");
+        }
+    }
+    @keyframes page-zoom-out {
+        to {
+            opacity: 0;
+            scale: 0.85;
+        }
+    }
+    @keyframes page-zoom-in {
+        from {
+            opacity: 0;
+            scale: 0.92;
+        }
+    }
+    @keyframes page-zoom-cover {
+        from,
+        to {
+            background-color: var(--page-cover, #fff);
         }
     }
     @keyframes page-push {
