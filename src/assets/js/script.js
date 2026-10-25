@@ -37,6 +37,7 @@ import { _scrollProgress } from "./utils/_scrollProgress";
 import { _share } from "./utils/_share";
 import { _groupHeight } from "./utils/_groupHeight";
 import { _lightbox } from "./utils/_lightbox";
+import { _lightboxGallery } from "./utils/_lightboxGallery";
 import { _lazyLoad } from "./utils/_lazyLoad";
 import { _selectBox } from "./utils/_selectBox";
 import { _formValidation } from "./utils/_formValidation";
@@ -98,6 +99,7 @@ Object.assign(window, {
     _share,
     _groupHeight,
     _lightbox,
+    _lightboxGallery,
     _lazyLoad,
     _selectBox,
     _formValidation,

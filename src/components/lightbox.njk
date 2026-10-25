@@ -4,7 +4,7 @@ title: Lightbox | Anthony Toolkits
 
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
 
-{{ pageIntro({ label: '_lightbox', title: 'Lightbox', description: 'Opens any element on the page in a popup, and puts it back on close. Lightboxes replace each other, while modals open on top of the current one.' }) }}
+{{ pageIntro({ label: '_lightbox', title: 'Lightbox', description: 'Opens any element on the page in a popup, and puts it back on close. Lightboxes replace each other, while modals open on top of the current one. Image links open as a gallery.' }) }}
 
 {% set button = 'inline-block rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700' %}
 {% set link = 'link-underline font-medium hover:text-gray-600' %}
@@ -93,6 +93,50 @@ title: Lightbox | Anthony Toolkits
     </div>
 </section>
 
+{% set photos = [
+    { alt: 'Bird of paradise flower among leaves.' },
+    { alt: 'The flower, a tall crop.' },
+    { alt: 'Leaves above the flower.' },
+    { alt: 'The petals up close.' },
+    { alt: 'Orange petals and leaves.' },
+    { alt: 'The flower, a wide crop.' }
+] %}
+{% set product = ['0000', '0012', '0025', '0037'] %}
+
+{# demo: image links grouped by data-lightbox-gallery #}
+<section class="border-t border-gray-200 px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-2 text-3xl font-bold tracking-tight">Image gallery</h2>
+        <p class="mb-10 max-w-2xl text-gray-600">Each link's href is the image. Links with the same <code class="font-mono text-sm">data-lightbox-gallery</code> open as one gallery, from the one clicked. Swipe, drag, use the arrows or arrow keys, or pick a thumbnail.</p>
+        <div class="grid gap-12 lg:grid-cols-2">
+            <div>
+                <h3 class="mb-4 text-xl font-semibold">Photos</h3>
+                <div class="grid grid-cols-3 gap-2">
+                    {% for photo in photos %}
+                    <a class="group block aspect-square overflow-hidden rounded-xl bg-gray-950" href="/assets/img/gallery/photo-{{ loop.index }}.webp" data-lightbox-gallery="photos" data-caption="{{ photo.alt }}">
+                        <img class="size-full object-cover transition-transform duration-500 group-hover:scale-105" src="/assets/img/gallery/photo-{{ loop.index }}-thumb.webp" alt="{{ photo.alt }}" loading="lazy" />
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div>
+                <h3 class="mb-4 text-xl font-semibold">Product</h3>
+                <div class="grid grid-cols-3 gap-2">
+                    {% for frame in product %}
+                    <a class="group block overflow-hidden rounded-xl bg-gray-100 {{ 'col-span-3 aspect-4/3' if loop.first else 'aspect-square' }}" href="/assets/img/headphone/large_{{ frame }}.jpg" data-lightbox-gallery="product" data-thumb="/assets/img/headphone/small_{{ frame }}.webp">
+                        <img class="size-full object-cover transition-transform duration-500 group-hover:scale-105" src="/assets/img/headphone/small_{{ frame }}.webp" alt="Headphones, view {{ loop.index }}" loading="lazy" />
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="mt-10 flex flex-col gap-3 md:flex-row">
+            <a class="{{ button }}" href="/assets/img/sample-image.webp" data-lightbox-gallery>One image, no group</a>
+            <button class="js-gallery-script {{ button }} cursor-pointer" type="button">Open from a script</button>
+        </div>
+    </div>
+</section>
+
 {% set markup %}{% raw %}
 <a href="#my-lightbox" data-lightbox>Open</a>
 <!-- data-lightbox="modal" opens on top of the current lightbox -->
@@ -146,13 +190,51 @@ if (location.hash.length > 1) {
 }
 {% endraw %}{% endset %}
 
+{% set galleryMarkup %}{% raw %}
+<!-- href is the image, the same data-lightbox-gallery value makes one gallery -->
+<a href="/img/photo-1.jpg" data-lightbox-gallery="photos" data-caption="Shown under the image">
+    <img src="/img/photo-1-small.jpg" alt="..." />
+</a>
+<!-- data-thumb sets the thumbnail, else the link's img -->
+<a href="/img/photo-2.jpg" data-lightbox-gallery="photos" data-thumb="/img/photo-2-thumb.jpg">...</a>
+<!-- no value: opens on its own -->
+<a href="/img/poster.jpg" data-lightbox-gallery>Open</a>
+{% endraw %}{% endset %}
+
+{% set galleryScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_lightbox.js
+        // src/assets/js/utils/_snapSlider.js
+        // src/assets/js/utils/_lightboxGallery.js
+
+// one for the page, any [data-lightbox-gallery] link opens it
+const _gallery = new _lightboxGallery({
+    events: {
+        // change: (gallery) => console.log(gallery.index, gallery.items[gallery.index]),
+    },
+});
+
+// from a script: links or { src, thumb, caption, alt }, and the index to start at
+document.querySelector('.js-gallery-script').addEventListener('click', () => {
+    _gallery.open(document.querySelectorAll('[data-lightbox-gallery="product"]'), 2);
+});
+{% endraw %}{% endset %}
+
 {{ scriptUsage({
     markup: markup,
     markupNote: 'The content is moved into the lightbox while it\'s open, and back to its place on close. Visiting the page with a lightbox\'s hash in the url (e.g. <code class="font-mono text-sm">/page/#my-lightbox</code>) opens it on load.',
     code: pageScript,
-    note: '<code class="font-mono text-sm">lightbox.hide()</code> closes it with the animation, <code class="font-mono text-sm">lightbox.destroy()</code> removes it at once. Every lightbox fires <code class="font-mono text-sm">lightboxReady</code> on <code class="font-mono text-sm">window</code> when it opens, with the lightbox as <code class="font-mono text-sm">e.detail</code>, for scripts that didn\'t open it.'
+    note: '<code class="font-mono text-sm">lightbox.hide()</code> closes it with the animation, <code class="font-mono text-sm">lightbox.destroy()</code> removes it at once. Every lightbox fires <code class="font-mono text-sm">lightboxReady</code> on <code class="font-mono text-sm">window</code> when it opens, with the lightbox as <code class="font-mono text-sm">e.detail</code>, for scripts that didn\'t open it.',
+    more: [
+        { title: 'Gallery markup', note: 'Links to images, like Fancybox. The images load as they come near, the thumbnails use the small images already on the page.', code: galleryMarkup, lang: 'html' },
+        { title: 'Gallery script', note: '<code class="font-mono text-sm">new _lightboxGallery({ attribute, thumbs, modal, animation, classes, events })</code>. Methods: <code class="font-mono text-sm">open(links, index)</code>, <code class="font-mono text-sm">close()</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">open</code>, <code class="font-mono text-sm">change</code>, <code class="font-mono text-sm">close</code>. The look is in <code class="font-mono text-sm">_lightboxGallery.classes</code>.', code: galleryScript }
+    ]
 }) }}
 
 {% footerscript %}
 <script type="module">{{ pageScript | safe }}</script>
+<script type="module">{{ galleryScript | safe }}</script>
 {% endfooterscript %}
