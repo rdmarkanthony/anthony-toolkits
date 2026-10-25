@@ -129,6 +129,31 @@
             scale: -1 1;
             animation: page-blinds-out 0.8s cubic-bezier(0.65, 0, 0.35, 1) both;
         }
+
+        /* curtain: two halves close from the sides, then open */
+        :is([data-page-leave="curtain"], [data-page-enter="curtain"])::before,
+        :is([data-page-leave="curtain"], [data-page-enter="curtain"])::after {
+            --side: -1;
+            content: "";
+            position: fixed;
+            inset: 0 calc(50% - 1px) 0 0;
+            z-index: 2147483647;
+            opacity: 1;
+            pointer-events: none;
+            background-color: var(--page-cover, #fff);
+        }
+        :is([data-page-leave="curtain"], [data-page-enter="curtain"])::after {
+            --side: 1;
+            inset: 0 0 0 calc(50% - 1px);
+        }
+        [data-page-leave="curtain"]::before,
+        [data-page-leave="curtain"]::after {
+            animation: page-curtain-close 0.7s cubic-bezier(0.7, 0, 0.25, 1) both;
+        }
+        [data-page-enter="curtain"]::before,
+        [data-page-enter="curtain"]::after {
+            animation: page-curtain-open 0.8s 0.1s cubic-bezier(0.7, 0, 0.25, 1) both;
+        }
     }
 
     @keyframes page-fade-out {
@@ -223,6 +248,17 @@
     @keyframes page-blinds-out {
         from {
             --page-blinds: 1;
+        }
+    }
+    /* --side: -1 the left half, 1 the right */
+    @keyframes page-curtain-close {
+        from {
+            translate: calc(var(--side) * 100%) 0;
+        }
+    }
+    @keyframes page-curtain-open {
+        to {
+            translate: calc(var(--side) * 100%) 0;
         }
     }
     @keyframes page-push {
