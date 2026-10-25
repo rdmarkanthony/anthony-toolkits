@@ -1,4 +1,5 @@
 import { _emitter } from "./_emitter";
+import { _hoverIndicator } from "./_hoverIndicator";
 import { _lightbox } from "./_lightbox";
 import { _snapSlider } from "./_snapSlider";
 
@@ -31,8 +32,10 @@ export class _lightboxGallery extends _emitter {
         prev: "left-4 xl:left-6",
         next: "right-4 xl:right-6",
         // centered while they fit, scrolls when they don't
-        thumbs: "flex shrink-0 gap-2 overflow-x-auto px-4 pt-1 pb-4 [scrollbar-width:none] *:first:ml-auto *:last:mr-auto xl:pb-6 [&::-webkit-scrollbar]:hidden",
-        thumb: "size-14 shrink-0 cursor-pointer overflow-hidden rounded-md opacity-40 ring-white transition-opacity hover:opacity-80 aria-current:opacity-100 aria-current:ring-2 md:size-16",
+        thumbs: "flex shrink-0 gap-2 overflow-x-auto px-4 pt-1 pb-4 [scrollbar-width:none] xl:pb-6 [&::-webkit-scrollbar]:hidden [&>button:first-of-type]:ml-auto [&>button:last-of-type]:mr-auto",
+        thumb: "size-14 shrink-0 cursor-pointer overflow-hidden rounded-md opacity-40 transition-opacity hover:opacity-80 aria-current:opacity-100 md:size-16",
+        // a _hoverIndicator ring: on the current thumbnail, follows the mouse over the others
+        indicator: "absolute top-0 left-0 z-10 h-(--h) w-(--w) translate-x-(--x) translate-y-(--y) rounded-md ring-2 ring-white ring-inset duration-300 ease-out",
     };
 
     constructor(props = {}) {
@@ -49,6 +52,7 @@ export class _lightboxGallery extends _emitter {
         this.el = {};
         this.lightbox = null;
         this.slider = null;
+        this.indicator = null;
 
         this.init();
     }
@@ -110,6 +114,7 @@ export class _lightboxGallery extends _emitter {
         this.el.track.scrollLeft = _slides[_index].offsetLeft - _slides[0].offsetLeft;
 
         this.slider = new _snapSlider({ target: this.el.root, events: { change: (slider) => this.change(slider.current) } });
+        if (this.el.thumbs) this.indicator = new _hoverIndicator({ target: this.el.thumbs, items: "button", active: "[aria-current]" });
 
         document.addEventListener("keydown", this.onKeydown);
         this.el.root.focus({ preventScroll: true });
@@ -153,6 +158,7 @@ export class _lightboxGallery extends _emitter {
 
         if (_many && this.thumbs) {
             const _thumbs = _el("div", this.classes.thumbs);
+            _thumbs.append(_el("span", `js-hover-indicator ${this.classes.indicator}`));
             this.items.forEach((item, i) => {
                 const _thumb = _el("button", this.classes.thumb, { type: "button", "aria-label": `Show image ${i + 1}` });
                 _thumb.append(_el("img", "size-full object-cover", { src: item.thumb, alt: "", draggable: "false" }));
@@ -179,7 +185,7 @@ export class _lightboxGallery extends _emitter {
         if (this.el.counter) this.el.counter.textContent = `${index + 1} / ${this.items.length}`;
 
         if (this.el.thumbs) {
-            const _thumbs = [...this.el.thumbs.children];
+            const _thumbs = [...this.el.thumbs.querySelectorAll("button")];
             _thumbs.forEach((thumb, i) => (i === index ? thumb.setAttribute("aria-current", "true") : thumb.removeAttribute("aria-current")));
 
             const _active = _thumbs[index];
@@ -194,11 +200,13 @@ export class _lightboxGallery extends _emitter {
     }
 
     cleanup() {
+        this.indicator?.destroy();
         this.slider?.destroy();
         document.removeEventListener("keydown", this.onKeydown);
         this.trigger?.focus?.({ preventScroll: true });
 
         this.slider = null;
+        this.indicator = null;
         this.lightbox = null;
         this.el = {};
         this.emit("close");

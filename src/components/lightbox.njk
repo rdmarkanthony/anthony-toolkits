@@ -323,6 +323,7 @@ document.querySelectorAll('[data-lightbox-video]').forEach((trigger) => {
         // src/assets/js/utils/_emitter.js
         // src/assets/js/utils/_lightbox.js
         // src/assets/js/utils/_snapSlider.js
+        // src/assets/js/utils/_hoverIndicator.js
         // src/assets/js/utils/_lightboxGallery.js
 
 // one for the page, any [data-lightbox-gallery] link opens it
@@ -344,7 +345,7 @@ document.querySelector('.js-gallery-script').addEventListener('click', () => {
     code: pageScript,
     note: '<code class="font-mono text-sm">lightbox.hide()</code> closes it with the animation, <code class="font-mono text-sm">lightbox.destroy()</code> removes it at once. Every lightbox fires <code class="font-mono text-sm">lightboxReady</code> on <code class="font-mono text-sm">window</code> when it opens, with the lightbox as <code class="font-mono text-sm">e.detail</code>, for scripts that didn\'t open it.',
     more: [
-        { title: 'Gallery markup', note: 'Links to images, like Fancybox. The images load as they come near, the thumbnails use the small images already on the page.', code: galleryMarkup, lang: 'html' },
+        { title: 'Gallery markup', note: 'Links to images, like Fancybox. The images load as they come near, the thumbnails use the small images already on the page. A <code class="font-mono text-sm">_hoverIndicator</code> ring marks the current thumbnail and follows the mouse.', code: galleryMarkup, lang: 'html' },
         { title: 'Gallery script', note: '<code class="font-mono text-sm">new _lightboxGallery({ attribute, thumbs, modal, animation, classes, events })</code>. Methods: <code class="font-mono text-sm">open(links, index)</code>, <code class="font-mono text-sm">close()</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">open</code>, <code class="font-mono text-sm">change</code>, <code class="font-mono text-sm">close</code>. The look is in <code class="font-mono text-sm">_lightboxGallery.classes</code>.', code: galleryScript },
         { title: 'Video markup', note: 'Any link or card works. The circle and dim are CSS (the link needs <code class="font-mono text-sm">group</code>), the script slides the two <code class="font-mono text-sm">data-play-icon</code> icons so they always move forward.', code: videoMarkup, lang: 'html' },
         { title: 'Video script', note: 'MP4 plays in <code class="font-mono text-sm">_videoPlayer</code> with Plyr, YouTube in <code class="font-mono text-sm">_youtubePlayer</code> with its own controls. Both start playing once open, a phone may wait for a tap.', code: videoScript }
