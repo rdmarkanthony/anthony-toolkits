@@ -47,6 +47,7 @@ export default [
         url: "/components/lottie/",
         items: [
             { label: "Lottie view, hover and click", url: "/components/lottie/play/", description: "Plays on screen, on hover, or on click as a toggle, plus a send button.", utils: "_lottie · lottie-web", ready: true },
+            { label: "Lottie loading", url: "/components/lottie/loading/", description: "A gentle loader for a fetch, then a menu of foods comes in.", utils: "_lottie · _inview · lottie-web", ready: true },
             { label: "Lottie scroll", url: "/components/lottie/scroll/", description: "The frames follow the scroll, pinned or as it passes.", utils: "_lottie · _parallaxScroller · lottie-web", ready: true },
         ],
     },
