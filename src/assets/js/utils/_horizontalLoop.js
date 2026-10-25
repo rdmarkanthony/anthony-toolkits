@@ -1,9 +1,10 @@
 // endless row: a marquee or draggable, items wrap forever
 // usage: new _horizontalLoop({ target }), its children are the items
-// options: speed (1 = 100px a second), paused, center, snap, draggable, pauseOnHover, scroll, onChange(item, index)
+// options: speed (1 = 100px a second), paused, center, snap, draggable, pauseOnHover, scroll, events: change (loop.active, loop.items[loop.active])
 // scroll: page scroll moves it, 1 = as far as the page, minus goes right
 // play(), pause(), next(), previous(), toIndex(i), move(px), setDirection("left" | "right"), destroy()
 import { gsap } from "gsap";
+import { _emitter } from "./_emitter";
 import { _event } from "./_event";
 
 const _wrapProgress = gsap.utils.wrap(0, 1);
@@ -16,8 +17,10 @@ const _scrollTimeline = () => "ScrollTimeline" in window && CSS.supports("animat
 // draggable and inertia, loaded on first use
 const _importDraggable = () => Promise.all([import("gsap/Draggable"), import("gsap/InertiaPlugin")]);
 
-export class _horizontalLoop {
-    constructor({ target, speed = 1, paused = false, center = false, snap = true, draggable = true, pauseOnHover = false, scroll = 0, onChange = null }) {
+export class _horizontalLoop extends _emitter {
+    constructor({ target, speed = 1, paused = false, center = false, snap = true, draggable = true, pauseOnHover = false, scroll = 0, events }) {
+        super(events);
+
         this.target = target ?? null;
         this.speed = speed * 100;
         this.factor = scroll;
@@ -26,7 +29,6 @@ export class _horizontalLoop {
         this.center = center;
         this.snap = snap;
         this.pauseOnHover = pauseOnHover;
-        this.onChange = onChange;
 
         // reduced motion keeps a marquee still, dragging still works
         this.playing = !paused && !matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -42,7 +44,7 @@ export class _horizontalLoop {
         this.widths = [];
         this.totalWidth = 0;
         this.index = 0;
-        this.changedIndex = -1;
+        this.active = -1;
         this.dirty = false;
         this.draggedAt = 0;
         this.draggable = null;
@@ -102,10 +104,11 @@ export class _horizontalLoop {
         }
 
         // the row or an item changed width
-        this.resizeObserver = new ResizeObserver(() => {
+        this.onResize = () => {
             cancelAnimationFrame(this.frame);
             this.frame = requestAnimationFrame(() => this.refresh());
-        });
+        };
+        this.observed = [];
         this.observe();
 
         this.viewObserver = new IntersectionObserver(([entry]) => this.hold("view", !entry.isIntersecting));
@@ -272,8 +275,14 @@ export class _horizontalLoop {
     }
 
     observe() {
-        this.resizeObserver.disconnect();
-        [this.target, ...this.items].forEach((el) => this.resizeObserver.observe(el));
+        this.unobserve();
+        this.observed = [this.target, ...this.items];
+        this.observed.forEach((el) => _event.observeResize(this.onResize, el));
+    }
+
+    unobserve() {
+        this.observed.forEach((el) => _event.offObserveResize(this.onResize, el));
+        this.observed = [];
     }
 
     // the item whose stop is closest to the time
@@ -305,11 +314,10 @@ export class _horizontalLoop {
     }
 
     changed() {
-        if (!this.onChange) return;
         const _index = this.closest();
-        if (_index === this.changedIndex) return;
-        this.changedIndex = _index;
-        this.onChange(this.items[_index], _index);
+        if (_index === this.active) return;
+        this.active = _index;
+        this.emit("change");
     }
 
     // glides the shortest way round, vars are gsap tween vars
@@ -481,7 +489,7 @@ export class _horizontalLoop {
         this.target.removeEventListener("focusin", this.handlers.focus);
         this.target.removeEventListener("pointerenter", this.handlers.enter);
         this.target.removeEventListener("pointerleave", this.handlers.leave);
-        this.resizeObserver.disconnect();
+        this.unobserve();
         this.viewObserver.disconnect();
         this.unsubscribe.forEach((off) => off());
         this.unsubscribe = [];

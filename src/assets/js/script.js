@@ -37,6 +37,7 @@ import { _scrollProgress } from "./utils/_scrollProgress";
 import { _share } from "./utils/_share";
 import { _groupHeight } from "./utils/_groupHeight";
 import { _lightbox } from "./utils/_lightbox";
+import { _lightboxGallery } from "./utils/_lightboxGallery";
 import { _lazyLoad } from "./utils/_lazyLoad";
 import { _selectBox } from "./utils/_selectBox";
 import { _formValidation } from "./utils/_formValidation";
@@ -56,6 +57,7 @@ import { _googleMap } from "./utils/_googleMap";
 import { _qrCode } from "./utils/_qrCode";
 import { _peekSlider } from "./utils/_peekSlider";
 import { _snapSlider } from "./utils/_snapSlider";
+import { _scrollbarSlider } from "./utils/_scrollbarSlider";
 import { _horizontalLoop } from "./utils/_horizontalLoop";
 import { _comicSlider } from "./utils/_comicSlider";
 
@@ -97,6 +99,7 @@ Object.assign(window, {
     _share,
     _groupHeight,
     _lightbox,
+    _lightboxGallery,
     _lazyLoad,
     _selectBox,
     _formValidation,
@@ -121,6 +124,7 @@ Object.assign(window, {
     _qrCode,
     _peekSlider,
     _snapSlider,
+    _scrollbarSlider,
     _horizontalLoop,
     _comicSlider,
 });

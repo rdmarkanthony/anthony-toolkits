@@ -25,6 +25,24 @@ title: Sliders | Anthony Toolkits
                     <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
                 </div>
             </a>
+            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/lightbox/#image-gallery">
+                {# preview: a dark full screen image, thumbnails below #}
+                <div class="flex aspect-4/3 flex-col items-center justify-center gap-3 overflow-hidden bg-gray-950 px-6">
+                    <div class="aspect-3/2 w-3/5 overflow-hidden rounded-md"><img class="size-full object-cover" src="/assets/img/gallery/photo-1-thumb.webp" alt="" loading="lazy" /></div>
+                    <div class="flex gap-1.5">
+                        <div class="size-6 overflow-hidden rounded-sm ring-2 ring-white"><img class="size-full object-cover" src="/assets/img/gallery/photo-1-thumb.webp" alt="" loading="lazy" /></div>
+                        <div class="size-6 overflow-hidden rounded-sm opacity-40"><img class="size-full object-cover" src="/assets/img/gallery/photo-2-thumb.webp" alt="" loading="lazy" /></div>
+                        <div class="size-6 overflow-hidden rounded-sm opacity-40"><img class="size-full object-cover" src="/assets/img/gallery/photo-3-thumb.webp" alt="" loading="lazy" /></div>
+                        <div class="size-6 overflow-hidden rounded-sm opacity-40"><img class="size-full object-cover" src="/assets/img/gallery/photo-4-thumb.webp" alt="" loading="lazy" /></div>
+                    </div>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">Lightbox gallery</h3>
+                    <p class="mb-6 flex-1 text-gray-600">Image links open full screen as a gallery, with thumbnails and swipe.</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">_lightboxGallery · _lightbox</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
             <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/sliders/loop/">
                 {# preview: a word marquee over a card row #}
                 <div class="flex aspect-4/3 flex-col justify-center gap-3 overflow-hidden bg-gray-50">
@@ -56,6 +74,24 @@ title: Sliders | Anthony Toolkits
                     <h3 class="mb-2 text-xl font-semibold">Peek slider</h3>
                     <p class="mb-6 flex-1 text-gray-600">A carousel of 1 to 3 cards, the next one peeks at the edge.</p>
                     <p class="mb-4 font-mono text-xs text-gray-500">_peekSlider · Swiper</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
+            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/sliders/scrollbar/">
+                {# preview: square cards with an arrow, a bar below #}
+                <div class="relative flex aspect-4/3 flex-col justify-center gap-5 overflow-hidden bg-gray-50 pl-6">
+                    <div class="flex gap-2">
+                        <div class="aspect-square w-1/3 shrink-0 overflow-hidden rounded-xl bg-gray-950"><img class="size-full object-cover" src="/assets/img/sample-image.webp" alt="" loading="lazy" /></div>
+                        <div class="aspect-square w-1/3 shrink-0 rounded-xl bg-sky-200"></div>
+                        <div class="aspect-square w-1/3 shrink-0 rounded-xl bg-amber-100"></div>
+                    </div>
+                    <span class="absolute top-[38%] right-4 grid size-7 place-items-center rounded-full bg-white text-sm shadow-md">{{ angle('right') }}</span>
+                    <div class="relative mx-auto h-1 w-1/2 -translate-x-3 rounded-full bg-gray-300"><div class="absolute inset-y-0 left-0 w-2/5 rounded-full bg-gray-950"></div></div>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">Scrollbar slider</h3>
+                    <p class="mb-6 flex-1 text-gray-600">A free-scrolling card row with a bar to drag and arrows over the cards.</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">_scrollbarSlider</p>
                     <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
                 </div>
             </a>

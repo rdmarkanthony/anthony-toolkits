@@ -1,10 +1,16 @@
+import { _emitter } from "./_emitter";
 import { _event } from "./_event";
 
+// one digit that rolls to the next value
+// usage: new _rollingDigit({ target, numeric, maxNumber, startNumber, duration, events }), then roll({ from, to, duration })
+// roll() returns a promise for when it lands; events: change (digit.currentNumber, once it lands)
 // power1.inOut
 const _ease = "cubic-bezier(0.455, 0.03, 0.515, 0.955)";
 
-export class _rollingDigit {
+export class _rollingDigit extends _emitter {
     constructor(props) {
+        super(props.events);
+
         this.target = props.target ?? null;
 
         this.el = {
@@ -45,7 +51,7 @@ export class _rollingDigit {
         }
 
         this.resize("init");
-        _event.resize((state) => {
+        this.offResize = _event.resize((state) => {
             if (state !== "init") this.resize();
         });
 
@@ -77,13 +83,17 @@ export class _rollingDigit {
         }
 
         if (this.numeric && this.currentNumber === 0 && _from === 0 && parseFloat(_to) === this.maxNumber - 1) _from = this.el.numbers.length - 1; // for countdowns
-        if (_from === _to) return;
+        if (_from === _to) return Promise.resolve(this);
 
-        this.tween(_from * this.height, _to * this.height, _duration, () => {
-            this.currentNumber = parseFloat(_to);
-
-            if (props.callback) props.callback(this);
-        });
+        // a newer roll cancels this one, it settles without a change
+        const _landed = this.tween(_from * this.height, _to * this.height, _duration).finished.then(
+            () => {
+                this.currentNumber = parseFloat(_to);
+                this.emit("change");
+                return this;
+            },
+            () => this
+        );
 
         if (!this.numeric) {
             const _width = (index) => `${this.el.numbers[index].querySelector("span").offsetWidth}px`;
@@ -93,6 +103,8 @@ export class _rollingDigit {
             this.target.style.width = _width(_to);
             this.widthAnimation = this.target.animate({ width: [_width(_from), _width(_to)] }, { duration: _duration * 0.5, delay: _duration * 0.5, easing: _ease, fill: "backwards" });
         }
+
+        return _landed;
     }
 
     resize(status) {
@@ -119,10 +131,17 @@ export class _rollingDigit {
     }
 
     // move the digits strip, durations in ms
-    tween(from, to, duration, onComplete) {
+    tween(from, to, duration) {
         this.animation?.cancel();
         this.el.main.style.transform = `translate3d(0, -${to}px, 0)`;
         this.animation = this.el.main.animate({ transform: [`translate3d(0, -${from}px, 0)`, `translate3d(0, -${to}px, 0)`] }, { duration, easing: _ease });
-        if (onComplete) this.animation.onfinish = onComplete;
+        return this.animation;
+    }
+
+    destroy() {
+        this.offResize?.();
+        this.animation?.cancel();
+        this.widthAnimation?.cancel();
+        this.el.main.remove();
     }
 }

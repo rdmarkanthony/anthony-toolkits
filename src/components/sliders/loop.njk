@@ -98,6 +98,7 @@ title: Loop slider | Sliders | Anthony Toolkits
 {% set pageScript %}{% raw %}
 // Requirements
     // JS
+        // src/assets/js/utils/_emitter.js
         // src/assets/js/utils/_event.js
         // src/assets/js/utils/_horizontalLoop.js
     // Package
@@ -127,7 +128,7 @@ _event.scroll(() => {
     markup: markup,
     markupNote: 'The items keep their own width, the script only moves them. Too few to fill the row get cloned, the clones are hidden from screen readers.',
     code: pageScript,
-    note: 'Built on <a class="underline" href="https://gsap.com/docs/v3/HelperFunctions/helpers/seamlessLoop/" target="_blank" rel="noopener">GSAP\'s horizontal loop helper</a>. <code class="font-mono text-sm">scroll</code> ties a row to the page scroll, 1 is as far as the page, minus goes right. The browser moves it in step with the scroll, so it stays smooth on phones. <code class="font-mono text-sm">move(px)</code> shifts a row by hand, plus is left. Draggable and Inertia load only on pages that drag. Off screen, it pauses itself.'
+    note: 'Built on <a class="underline" href="https://gsap.com/docs/v3/HelperFunctions/helpers/seamlessLoop/" target="_blank" rel="noopener">GSAP\'s horizontal loop helper</a>. <code class="font-mono text-sm">scroll</code> ties a row to the page scroll, 1 is as far as the page, minus goes right. The browser moves it in step with the scroll, so it stays smooth on phones. <code class="font-mono text-sm">move(px)</code> shifts a row by hand, plus is left. Draggable and Inertia load only on pages that drag. Off screen, it pauses itself. Event: <code class="font-mono text-sm">change</code> when another item reaches the stop (<code class="font-mono text-sm">loop.active</code>).'
 }) }}
 
 {% footerscript %}

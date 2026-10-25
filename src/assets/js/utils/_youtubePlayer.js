@@ -65,10 +65,14 @@ export class _youtubePlayer extends _emitter {
 
         this.emit("afterInit");
 
+        // the api is already loaded, e.g. a player made in a lightbox later
+        if (window.YT?.loaded) this.generate();
+
         if (this.debug) console.log("_youtubePlayer", this);
     }
 
     generate() {
+        if (!this.el || this.player) return; // destroyed, or already made
         this.emit("beforeReady");
 
         this.player = new YT.Player(this.el.player, {
@@ -130,7 +134,7 @@ export class _youtubePlayer extends _emitter {
         if (this.stretch) {
             if (getComputedStyle(this.target).overflow === "visible") this.target.style.overflow = "hidden";
 
-            _event.resize(() => this.resize());
+            this.offResize = _event.resize(() => this.resize());
         }
 
         this.emit("afterReady");
@@ -178,6 +182,26 @@ export class _youtubePlayer extends _emitter {
 
     pause() {
         this.player?.pauseVideo?.();
+    }
+
+    destroy() {
+        if (!this.el) return;
+
+        clearTimeout(this.timers.reveal);
+        clearTimeout(this.timers.loop);
+        this.offResize?.();
+        this.offView?.();
+
+        // the api puts its placeholder back on destroy, remove both
+        this.player?.destroy?.();
+        this.el.player.remove();
+        this.target.querySelector(".js-yt-player")?.remove();
+
+        if (_players.includes(this)) _players.splice(_players.indexOf(this), 1);
+
+        this.emit("destroy");
+
+        this.el = null;
     }
 
     static pauseAll(currentPlayer) {

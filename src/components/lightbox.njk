@@ -4,7 +4,7 @@ title: Lightbox | Anthony Toolkits
 
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
 
-{{ pageIntro({ label: '_lightbox', title: 'Lightbox', description: 'Opens any element on the page in a popup, and puts it back on close. Lightboxes replace each other, while modals open on top of the current one.' }) }}
+{{ pageIntro({ label: '_lightbox', title: 'Lightbox', description: 'Opens any element on the page in a popup, and puts it back on close. Lightboxes replace each other, while modals open on top of the current one. Image links open as a gallery.' }) }}
 
 {% set button = 'inline-block rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700' %}
 {% set link = 'link-underline font-medium hover:text-gray-600' %}
@@ -93,6 +93,80 @@ title: Lightbox | Anthony Toolkits
     </div>
 </section>
 
+{% set photos = [
+    { alt: 'Bird of paradise flower among leaves.' },
+    { alt: 'The flower, a tall crop.' },
+    { alt: 'Leaves above the flower.' },
+    { alt: 'The petals up close.' },
+    { alt: 'Orange petals and leaves.' },
+    { alt: 'The flower, a wide crop.' }
+] %}
+{% set product = ['0000', '0012', '0025', '0037'] %}
+
+{# demo: image links grouped by data-lightbox-gallery #}
+<section id="image-gallery" class="scroll-mt-20 border-t border-gray-200 px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-2 text-3xl font-bold tracking-tight">Image gallery</h2>
+        <p class="mb-10 max-w-2xl text-gray-600">Each link's href is the image. Links with the same <code class="font-mono text-sm">data-lightbox-gallery</code> open as one gallery, from the one clicked. Swipe, drag, use the arrows or arrow keys, or pick a thumbnail.</p>
+        <div class="grid gap-12 lg:grid-cols-2">
+            <div>
+                <h3 class="mb-4 text-xl font-semibold">Photos</h3>
+                <div class="grid grid-cols-3 gap-2">
+                    {% for photo in photos %}
+                    <a class="group block aspect-square overflow-hidden rounded-xl bg-gray-950" href="/assets/img/gallery/photo-{{ loop.index }}.webp" data-lightbox-gallery="photos" data-caption="{{ photo.alt }}">
+                        <img class="size-full object-cover transition-transform duration-500 group-hover:scale-105" src="/assets/img/gallery/photo-{{ loop.index }}-thumb.webp" alt="{{ photo.alt }}" loading="lazy" />
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div>
+                <h3 class="mb-4 text-xl font-semibold">Product</h3>
+                <div class="grid grid-cols-3 gap-2">
+                    {% for frame in product %}
+                    <a class="group block overflow-hidden rounded-xl bg-gray-100 {{ 'col-span-3 aspect-4/3' if loop.first else 'aspect-square' }}" href="/assets/img/headphone/large_{{ frame }}.jpg" data-lightbox-gallery="product" data-thumb="/assets/img/headphone/small_{{ frame }}.webp">
+                        <img class="size-full object-cover transition-transform duration-500 group-hover:scale-105" src="/assets/img/headphone/small_{{ frame }}.webp" alt="Headphones, view {{ loop.index }}" loading="lazy" />
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="mt-10 flex flex-col gap-3 md:flex-row">
+            <a class="{{ button }}" href="/assets/img/sample-image.webp" data-lightbox-gallery>One image, no group</a>
+            <button class="js-gallery-script {{ button }} cursor-pointer" type="button">Open from a script</button>
+        </div>
+    </div>
+</section>
+
+{% set videos = [
+    { label: 'MP4, with Plyr', href: '/assets/video/sample-video.mp4', crop: '' },
+    { label: 'YouTube', href: 'https://www.youtube.com/watch?v=23atch1EPLM', crop: 'scale-150 object-[30%_20%]' }
+] %}
+
+{# demo: a video link opens a player in a lightbox #}
+<section id="video" class="scroll-mt-20 border-t border-gray-200 px-4 py-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-2 text-3xl font-bold tracking-tight">Video</h2>
+        <p class="mb-10 max-w-2xl text-gray-600">The link's href is the video, an MP4 or a YouTube link. The player is made when the lightbox opens and removed when it closes.</p>
+        <div class="grid gap-6 md:grid-cols-2">
+            {% for video in videos %}
+            <a class="group block" href="{{ video.href }}" data-lightbox-video>
+                <span class="relative mb-3 block aspect-video overflow-hidden rounded-2xl bg-gray-950">
+                    <img class="size-full object-cover {{ video.crop }}" src="/assets/img/sample-image.webp" alt="" loading="lazy" />
+                    {# the dim lifts on hover #}
+                    <span class="absolute inset-0 bg-black/40 transition-colors duration-500 group-hover:bg-black/10 group-focus-visible:bg-black/10"></span>
+                    {# the glass circle zooms on hover, the script slides the icons #}
+                    <span class="absolute top-1/2 left-1/2 grid size-16 -translate-1/2 place-items-center overflow-hidden rounded-full bg-white/80 text-gray-950 shadow-[0_10px_40px_rgb(0_0_0/0.35)] backdrop-blur-xl backdrop-saturate-150 transition-[background-color,scale] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-115 group-hover:bg-white/90 group-focus-visible:scale-115 motion-reduce:transition-none md:size-20">
+                        <svg class="col-start-1 row-start-1 size-8 md:size-10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-play-icon="rest"><path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86A1 1 0 0 0 8 5.14z" /></svg>
+                        <svg class="col-start-1 row-start-1 size-10 opacity-0 md:size-12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-play-icon="hover"><path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86A1 1 0 0 0 8 5.14z" /></svg>
+                    </span>
+                </span>
+                <span class="font-semibold">Play {{ video.label }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
 {% set markup %}{% raw %}
 <a href="#my-lightbox" data-lightbox>Open</a>
 <!-- data-lightbox="modal" opens on top of the current lightbox -->
@@ -146,13 +220,140 @@ if (location.hash.length > 1) {
 }
 {% endraw %}{% endset %}
 
+{% set galleryMarkup %}{% raw %}
+<!-- href is the image, the same data-lightbox-gallery value makes one gallery -->
+<a href="/img/photo-1.jpg" data-lightbox-gallery="photos" data-caption="Shown under the image">
+    <img src="/img/photo-1-small.jpg" alt="..." />
+</a>
+<!-- data-thumb sets the thumbnail, else the link's img -->
+<a href="/img/photo-2.jpg" data-lightbox-gallery="photos" data-thumb="/img/photo-2-thumb.jpg">...</a>
+<!-- no value: opens on its own -->
+<a href="/img/poster.jpg" data-lightbox-gallery>Open</a>
+{% endraw %}{% endset %}
+
+{% set videoMarkup %}{% raw %}
+<!-- href is the video: an mp4, or a youtube watch, youtu.be, shorts or embed link -->
+<a href="/assets/video/name.mp4" data-lightbox-video>
+    <img src="/assets/img/poster.webp" alt="" />
+    <span class="absolute inset-0 bg-black/40 transition-colors duration-500 group-hover:bg-black/10"></span>
+    <!-- glass circle that zooms on hover, the script slides the icons, the two share one grid cell -->
+    <span class="absolute top-1/2 left-1/2 grid size-20 -translate-1/2 place-items-center overflow-hidden rounded-full bg-white/80 text-gray-950 shadow-lg backdrop-blur-xl transition-[background-color,scale] duration-500 group-hover:scale-115 group-hover:bg-white/90">
+        <svg class="col-start-1 row-start-1 size-10" data-play-icon="rest">...</svg>
+        <svg class="col-start-1 row-start-1 size-12 opacity-0" data-play-icon="hover">...</svg>
+    </span>
+</a>
+<a href="https://www.youtube.com/watch?v=23atch1EPLM" data-lightbox-video>...</a>
+{% endraw %}{% endset %}
+
+{% set videoScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_lightbox.js
+        // src/assets/js/utils/_media.js
+        // src/assets/js/utils/_videoPlayer.js + plyr + src/assets/js/utils/_plyr.js, for mp4
+        // src/assets/js/utils/_youtubePlayer.js, for youtube
+    // CSS
+        // @import "plyr/dist/plyr.css";
+
+// the play icon always moves forward: the shown one slides out right, the other comes in from the left
+const _move = { duration: 500, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'both' };
+const _slide = (icon, into) => {
+    // from where it is now, mid-move too
+    const { translate, opacity } = getComputedStyle(icon);
+    const _shown = parseFloat(opacity) > 0.05;
+    icon.getAnimations().forEach((animation) => animation.cancel());
+
+    if (into) icon.animate([_shown ? { translate, opacity } : { translate: '-5rem 0', opacity: 0 }, { translate: '0 0', opacity: 1 }], { ..._move, delay: 100 });
+    else icon.animate([{ translate, opacity }, { translate: '5rem 0', opacity: 0 }], _move);
+};
+
+// the 11 character id from a youtube link
+const _youtubeId = (url) => url.match(/(?:youtu\.be\/|[?&]v=|shorts\/|embed\/)([\w-]{11})/)?.[1];
+
+document.querySelectorAll('[data-lightbox-video]').forEach((trigger) => {
+    const _rest = trigger.querySelector('[data-play-icon="rest"]');
+    const _hover = trigger.querySelector('[data-play-icon="hover"]');
+    if (_rest && _hover && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const _swap = (on) => {
+            _slide(on ? _rest : _hover, false);
+            _slide(on ? _hover : _rest, true);
+        };
+        trigger.addEventListener('pointerenter', () => _swap(true));
+        trigger.addEventListener('pointerleave', () => _swap(false));
+        trigger.addEventListener('focusin', () => _swap(true));
+        trigger.addEventListener('focusout', () => _swap(false));
+    }
+
+    trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const _href = trigger.getAttribute('href');
+        const _id = _youtubeId(_href);
+        // as big as the screen allows, at 16:9
+        const _box = document.createElement('div');
+        _box.className = 'relative mx-auto aspect-video w-[min(100%,calc((100dvh-5rem)*16/9))] overflow-hidden rounded-2xl bg-black xl:w-[min(100%,calc((100dvh-6.5rem)*16/9))]';
+        let _player = null;
+
+        new _lightbox({
+            target: _box,
+            events: {
+                afterShow: async () => {
+                    if (_id) {
+                        // youtube's own player
+                        _player = new _youtubePlayer({ target: _box, id: _id, events: { onReady: (player) => player.play() } });
+                    } else {
+                        _player = new _videoPlayer({ target: _box, src: _href });
+                        await _plyr(_player);
+                        _player.play();
+                    }
+                },
+                afterClose: () => _player?.destroy(),
+            },
+        });
+    });
+});
+{% endraw %}{% endset %}
+
+{% set galleryScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_lightbox.js
+        // src/assets/js/utils/_snapSlider.js
+        // src/assets/js/utils/_hoverIndicator.js
+        // src/assets/js/utils/_lightboxGallery.js
+
+// one for the page, any [data-lightbox-gallery] link opens it
+const _gallery = new _lightboxGallery({
+    events: {
+        // change: (gallery) => console.log(gallery.index, gallery.items[gallery.index]),
+    },
+});
+
+// from a script: links or { src, thumb, caption, alt }, and the index to start at
+document.querySelector('.js-gallery-script').addEventListener('click', () => {
+    _gallery.open(document.querySelectorAll('[data-lightbox-gallery="product"]'), 2);
+});
+{% endraw %}{% endset %}
+
 {{ scriptUsage({
     markup: markup,
     markupNote: 'The content is moved into the lightbox while it\'s open, and back to its place on close. Visiting the page with a lightbox\'s hash in the url (e.g. <code class="font-mono text-sm">/page/#my-lightbox</code>) opens it on load.',
     code: pageScript,
-    note: '<code class="font-mono text-sm">lightbox.hide()</code> closes it with the animation, <code class="font-mono text-sm">lightbox.destroy()</code> removes it at once. Every lightbox fires <code class="font-mono text-sm">lightboxReady</code> on <code class="font-mono text-sm">window</code> when it opens, with the lightbox as <code class="font-mono text-sm">e.detail</code>, for scripts that didn\'t open it.'
+    note: '<code class="font-mono text-sm">lightbox.hide()</code> closes it with the animation, <code class="font-mono text-sm">lightbox.destroy()</code> removes it at once. Every lightbox fires <code class="font-mono text-sm">lightboxReady</code> on <code class="font-mono text-sm">window</code> when it opens, with the lightbox as <code class="font-mono text-sm">e.detail</code>, for scripts that didn\'t open it.',
+    more: [
+        { title: 'Gallery markup', note: 'Links to images, like Fancybox. The images load as they come near, the thumbnails use the small images already on the page. A <code class="font-mono text-sm">_hoverIndicator</code> ring marks the current thumbnail and follows the mouse.', code: galleryMarkup, lang: 'html' },
+        { title: 'Gallery script', note: '<code class="font-mono text-sm">new _lightboxGallery({ attribute, thumbs, modal, animation, classes, events })</code>. Methods: <code class="font-mono text-sm">open(links, index)</code>, <code class="font-mono text-sm">close()</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">open</code>, <code class="font-mono text-sm">change</code>, <code class="font-mono text-sm">close</code>. The look is in <code class="font-mono text-sm">_lightboxGallery.classes</code>.', code: galleryScript },
+        { title: 'Video markup', note: 'Any link or card works. The circle and dim are CSS (the link needs <code class="font-mono text-sm">group</code>), the script slides the two <code class="font-mono text-sm">data-play-icon</code> icons so they always move forward.', code: videoMarkup, lang: 'html' },
+        { title: 'Video script', note: 'MP4 plays in <code class="font-mono text-sm">_videoPlayer</code> with Plyr, YouTube in <code class="font-mono text-sm">_youtubePlayer</code> with its own controls. Both start playing once open, a phone may wait for a tap.', code: videoScript }
+    ]
 }) }}
 
 {% footerscript %}
 <script type="module">{{ pageScript | safe }}</script>
+<script type="module">{{ galleryScript | safe }}</script>
+<script type="module">{{ videoScript | safe }}</script>
 {% endfooterscript %}

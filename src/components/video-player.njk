@@ -89,7 +89,7 @@ title: Video player | Anthony Toolkits
         <p class="mb-8 max-w-2xl text-gray-600">The player is made when the lightbox opens and destroyed when it closes, so nothing keeps loading in the background.</p>
         <a class="js-video-lightbox inline-flex rounded-full bg-gray-950 px-6 py-3 font-medium text-white transition-colors hover:bg-gray-700" href="#video-lightbox" data-src="{{ video }}">Play in a lightbox</a>
         <div class="hidden">
-            <div id="video-lightbox" class="relative mx-auto aspect-video w-full max-w-5xl overflow-hidden rounded-2xl bg-black"></div>
+            <div id="video-lightbox" class="relative mx-auto aspect-video w-[min(100%,calc((100dvh-5rem)*16/9))] overflow-hidden rounded-2xl bg-black xl:w-[min(100%,calc((100dvh-6.5rem)*16/9))]"></div>
         </div>
     </div>
 </section>

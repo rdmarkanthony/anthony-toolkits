@@ -1,6 +1,13 @@
-export class _countUp {
+import { _emitter } from "./_emitter";
+
+// counts the target's text from one number to another
+// usage: new _countUp({ target, from, to, decimals, duration, events }), a new count on the same target stops the running one
+// events: update (count.value, each step), complete
+const _running = new WeakMap();
+
+export class _countUp extends _emitter {
     constructor(props) {
-        if (!window._countUpList) window._countUpList = [];
+        super(props.events);
 
         this.target = props.target ?? null;
 
@@ -19,20 +26,19 @@ export class _countUp {
         this.intervalTime = this.duration / this.steps;
 
         this.animating = false;
+        this.value = this.number.from;
 
-        if (this.target) this.init(props.callback ?? null);
+        if (this.target) this.init();
     }
 
-    init(callback) {
-        window._countUpList.forEach((instance) => {
-            if (instance.target === this.target) instance.stop();
-        });
-        window._countUpList.push(this);
+    init() {
+        _running.get(this.target)?.stop();
+        _running.set(this.target, this);
 
-        this.animate(callback);
+        this.animate();
     }
 
-    animate(callback) {
+    animate() {
         this.animating = true;
 
         let _currentNumber = this.number.from;
@@ -53,8 +59,7 @@ export class _countUp {
                 this.stop();
 
                 this.updateText(this.number.to);
-
-                if (callback) callback(this);
+                this.emit("complete");
             }
         }, this.intervalTime);
     }
@@ -65,12 +70,14 @@ export class _countUp {
 
         this.animating = false;
 
-        const _index = window._countUpList.indexOf(this);
-        if (_index > -1) window._countUpList.splice(_index, 1);
+        if (_running.get(this.target) === this) _running.delete(this.target);
     }
 
     updateText(value) {
         if (!this.target) return;
+
+        this.value = parseFloat(value);
+        this.emit("update");
 
         this.target.innerText = parseFloat(value).toLocaleString("en-US", this.decimals ? { minimumFractionDigits: this.decimals, maximumFractionDigits: this.decimals } : {});
     }
