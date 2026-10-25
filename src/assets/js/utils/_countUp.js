@@ -53,7 +53,7 @@ export class _countUp extends _emitter {
             }
 
             _stepCount++;
-            this.updateText(Math.round(_currentNumber));
+            this.updateText(this.decimals ? _currentNumber : Math.round(_currentNumber));
 
             if (_stepCount >= this.steps) {
                 this.stop();

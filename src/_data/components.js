@@ -8,11 +8,11 @@ export default [
         category: "Animation",
         items: [
             { label: "Animate", url: "/components/animate/", description: "Animate.css effects triggered in view.", utils: "_animate · _inview · _splitText", ready: true, starter: true, favorite: true },
-            { label: "Count up", url: "/components/count-up/", description: "Count up to a value on scroll.", utils: "_countUp · _inview", ready: true },
+            { label: "Count up", url: "/components/count-up/", description: "Stats that count up on screen, prices that count to a new value.", utils: "_countUp · _inview", ready: true },
             { label: "Cursor bubble", url: "/components/cursor-bubble/", description: "A dot that trails the mouse, grows over big type and shows labels.", utils: "_cursorBubble", ready: true },
             { label: "Magnetic button", url: "/components/magnetic-button/", description: "Buttons and links that lean toward the mouse as it comes near.", utils: "_magnetic", ready: true },
             { label: "Page transition", url: "/components/page-transition/", description: "An animation as a link leaves the page and as the next one shows, safe with the back button.", utils: "_pageTransition", ready: true, favorite: true },
-            { label: "Rolling digit", url: "/components/rolling-digit/", description: "Odometer-style rolling digits.", utils: "_rollingDigit · _inview", ready: true },
+            { label: "Rolling digit", url: "/components/rolling-digit/", description: "Odometer digits for a stat on screen or a cart total.", utils: "_rollingDigit · _inview", ready: true },
             { label: "Scramble text", url: "/components/scramble-text/", description: "Letters flip through random characters, then settle into the text.", utils: "_scrambleText", ready: true },
             { label: "Text roll", url: "/components/text-roll/", description: "Link and button text that rolls up on hover, a copy coming in from below.", utils: "_textRoll", ready: true },
             { label: "Theme scroller", url: "/components/theme-scroller/", description: "The page or header takes the theme of the section on screen.", utils: "_themeScroller", ready: true, favorite: true },

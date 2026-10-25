@@ -4,19 +4,71 @@ title: Count up | Anthony Toolkits
 
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
 
-{{ pageIntro({ label: '_countUp · _inview', title: 'Count up', description: 'Counts from one number to another, formatted with commas and optional decimals. Here it counts up when it scrolls into view, then to any number you enter.' }) }}
+{{ pageIntro({ label: '_countUp · _inview', title: 'Count up', description: 'Counts a number from one value to another, with commas and optional decimals. For stats that count up on screen, or a price that changes.' }) }}
 
-{# demo #}
-<section class="px-4 py-16">
-    <div class="js-count-up mx-auto flex max-w-295 flex-col gap-6">
-        <p class="js-count-up-label text-6xl font-bold tracking-tight tabular-nums md:text-8xl">0</p>
-        <form class="flex max-w-md gap-2">
-            <label class="grow">
-                <span class="sr-only">Number</span>
-                <input class="h-12 w-full rounded-md border border-gray-300 px-3 focus:border-gray-950 focus:outline-none" type="text" inputmode="decimal" placeholder="Enter a number" autocomplete="off" />
+{% set heading = 'text-3xl font-bold tracking-tight' %}
+
+{% set markup %}{% raw %}
+<!-- the html holds the end number, so it reads right without js -->
+<p><span class="js-count-up tabular-nums">1,200</span>+ projects</p>
+<p><span class="js-count-up tabular-nums" data-decimals="1">4.9</span> rating</p>
+
+<!-- pricing: each price has both values -->
+<label><input class="js-billing" type="radio" name="billing" value="monthly" checked /> Monthly</label>
+<label><input class="js-billing" type="radio" name="billing" value="yearly" /> Yearly</label>
+<p>$<span class="js-price tabular-nums" data-monthly="19" data-yearly="190">19</span></p>
+{% endraw %}{% endset %}
+
+{# demo: stats, counted once on screen #}
+<section id="stats" class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="{{ heading }}">Stats</h2>
+            <p class="mt-2 max-w-2xl text-gray-600">Each one counts up from 0 the first time it comes on screen.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-6 rounded-3xl bg-gray-50 p-8 md:grid-cols-4 md:p-12">
+            {% for stat in [
+                { value: '1,200', after: '+', label: 'Projects' },
+                { value: '98', after: '%', label: 'Happy clients' },
+                { value: '15', after: '', label: 'Years' },
+                { value: '4.9', after: '/5', label: 'Rating', decimals: 1 }
+            ] %}
+            <div>
+                <p class="text-5xl font-bold tracking-tight md:text-6xl"><span class="js-count-up tabular-nums"{% if stat.decimals %} data-decimals="{{ stat.decimals }}"{% endif %}>{{ stat.value }}</span>{{ stat.after }}</p>
+                <p class="mt-2 text-gray-600">{{ stat.label }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# demo: pricing, monthly and yearly #}
+<section id="pricing" class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="{{ heading }}">Pricing</h2>
+            <p class="mt-2 max-w-2xl text-gray-600">Switching the billing counts each price from where it is to the new one.</p>
+        </div>
+        <div class="flex w-fit rounded-full bg-white p-1">
+            {% for period in ['monthly', 'yearly'] %}
+            <label class="cursor-pointer rounded-full px-5 py-2 font-medium text-gray-600 transition-colors has-checked:bg-gray-950 has-checked:text-white">
+                <input class="js-billing sr-only" type="radio" name="billing" value="{{ period }}"{% if loop.first %} checked{% endif %} />
+                {{ period | capitalize }}
             </label>
-            <button class="h-12 min-w-24 rounded-md bg-gray-950 px-4 font-medium text-white transition-colors hover:bg-gray-700" type="submit">Go</button>
-        </form>
+            {% endfor %}
+        </div>
+        <div class="grid gap-6 md:grid-cols-3">
+            {% for plan in [
+                { name: 'Starter', monthly: 19, yearly: 190 },
+                { name: 'Pro', monthly: 49, yearly: 490 },
+                { name: 'Team', monthly: 99, yearly: 990 }
+            ] %}
+            <div class="flex flex-col gap-4 rounded-3xl bg-white p-8">
+                <p class="text-lg font-semibold">{{ plan.name }}</p>
+                <p class="text-5xl font-bold tracking-tight">$<span class="js-price tabular-nums" data-monthly="{{ plan.monthly }}" data-yearly="{{ plan.yearly }}">{{ plan.monthly }}</span><span class="js-price-period text-lg font-medium text-gray-500">/mo</span></p>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 </section>
 
@@ -25,54 +77,39 @@ title: Count up | Anthony Toolkits
     // JS
         // src/assets/js/utils/_emitter.js
         // src/assets/js/utils/_countUp.js
-        // src/assets/js/utils/_inview.js (optional, to start in view)
+        // src/assets/js/utils/_inview.js (to start on screen)
 
-const _wrap = document.querySelector('.js-count-up');
-const _label = _wrap.querySelector('.js-count-up-label');
-const _input = _wrap.querySelector('input');
-let _instance = null;
+// stats: count from 0 to the number in the html, once on screen
+document.querySelectorAll('.js-count-up').forEach((target) => {
+    const _to = parseFloat(target.textContent.replace(/,/g, ''));
+    target.textContent = '0';
 
-const _cleanNumber = (value) => value.replace(/,/g, '').replace(/[^0-9.]/g, '');
-
-// only numbers, one decimal point and 2 decimals, with commas
-_input.addEventListener('input', () => {
-    const _parts = _cleanNumber(_input.value).split('.');
-    const _integer = _parts[0] ? Number(_parts[0]).toLocaleString() : '';
-    const _decimal = _parts.length > 1 ? '.' + _parts.slice(1).join('').slice(0, 2) : '';
-
-    _input.value = _integer + _decimal;
-});
-
-// count to the entered number
-_wrap.querySelector('form').addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const _value = parseFloat(_cleanNumber(_input.value));
-    if (isNaN(_value) || _instance) return;
-
-    _instance = new _countUp({
-        target: _label,
-        from: parseFloat(_cleanNumber(_label.innerText)) || 0,
-        to: _value,
-        decimals: _value % 1 !== 0 ? 2 : null,
-        duration: 500,
-        events: {
-            complete: () => (_instance = null),
-        },
+    new _inview({
+        target,
+        callback: () => new _countUp({ target, to: _to, decimals: Number(target.dataset.decimals) || null, duration: 2000 }),
     });
 });
 
-// count up when it scrolls into view
-new _inview({
-    target: _label,
-    delay: 500,
-    callback: () => {
-        new _countUp({ target: _label, from: 0, to: 1234567890, duration: 2000 });
-    },
+// pricing: from the price shown to the other billing's
+const _prices = document.querySelectorAll('.js-price');
+document.querySelectorAll('.js-billing').forEach((input) => {
+    input.addEventListener('change', () => {
+        _prices.forEach((target) => {
+            new _countUp({
+                target,
+                from: parseFloat(target.textContent.replace(/,/g, '')),
+                to: Number(target.dataset[input.value]),
+                duration: 400,
+                // events: { update: (count) => console.log(count.value), complete: () => console.log('done') },
+            });
+        });
+        document.querySelectorAll('.js-price-period').forEach((period) => (period.textContent = input.value === 'yearly' ? '/yr' : '/mo'));
+    });
 });
 {% endraw %}{% endset %}
 
 {{ scriptUsage({
+    markup: markup,
     code: pageScript,
     note: '<code class="font-mono text-sm">new _countUp({ target, from, to, decimals, duration, events })</code>, the duration in ms. A new count on the same target stops the one running. Events: <code class="font-mono text-sm">update</code> each step (<code class="font-mono text-sm">count.value</code>), <code class="font-mono text-sm">complete</code>.'
 }) }}
