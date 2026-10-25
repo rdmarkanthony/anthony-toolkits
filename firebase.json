@@ -7,7 +7,8 @@
             { "source": "/components/lazy-load{,/**}", "destination": "/components/lazyload/", "type": 301 },
             { "source": "/components/text-roll{,/**}", "destination": "/components/text-effects/roll/", "type": 301 },
             { "source": "/components/scramble-text{,/**}", "destination": "/components/text-effects/scramble/", "type": 301 },
-            { "source": "/components/typing-animation{,/**}", "destination": "/components/text-effects/typing/", "type": 301 }
+            { "source": "/components/typing-animation{,/**}", "destination": "/components/text-effects/typing/", "type": 301 },
+            { "source": "/components/text-effects/line-reveal{,/**}", "destination": "/components/animate/#split-text", "type": 301 }
         ]
     }
 }
