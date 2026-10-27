@@ -21,6 +21,7 @@ import { _typing } from "./utils/_typing";
 import { _scrambleText } from "./utils/_scrambleText";
 import { _textRoll } from "./utils/_textRoll";
 import { _weightHover } from "./utils/_weightHover";
+import { _weightPop } from "./utils/_weightPop";
 import { _threeBackground } from "./utils/_threeBackground";
 import { _threeParticles } from "./utils/_threeParticles";
 import { _threeBlobs } from "./utils/_threeBlobs";
@@ -50,6 +51,7 @@ import { _hlsVideo } from "./utils/_hlsVideo";
 import { _autoScroll, _autoScrollHash } from "./utils/_autoScroll";
 import { _parallax, _parallaxScroller, _parallaxOffset, _parallaxBackground, _parallaxFloating } from "./utils/_parallax";
 import { _canvasBanner } from "./utils/_canvasBanner";
+import { _smoothScroll } from "./utils/_smoothScroll";
 import { _themeScroller } from "./utils/_themeScroller";
 import { _cursorBubble } from "./utils/_cursorBubble";
 import { _magnetic } from "./utils/_magnetic";
@@ -61,6 +63,7 @@ import { _snapSlider } from "./utils/_snapSlider";
 import { _scrollbarSlider } from "./utils/_scrollbarSlider";
 import { _horizontalLoop } from "./utils/_horizontalLoop";
 import { _comicSlider } from "./utils/_comicSlider";
+import { _deckSlider } from "./utils/_deckSlider";
 
 // for the inline page scripts
 Object.assign(window, {
@@ -84,6 +87,7 @@ Object.assign(window, {
     _scrambleText,
     _textRoll,
     _weightHover,
+    _weightPop,
     _threeBackground,
     _threeParticles,
     _threeBlobs,
@@ -118,6 +122,7 @@ Object.assign(window, {
     _parallaxBackground,
     _parallaxFloating,
     _canvasBanner,
+    _smoothScroll,
     _themeScroller,
     _cursorBubble,
     _magnetic,
@@ -129,6 +134,7 @@ Object.assign(window, {
     _scrollbarSlider,
     _horizontalLoop,
     _comicSlider,
+    _deckSlider,
 });
 
 // set before the page scripts measure

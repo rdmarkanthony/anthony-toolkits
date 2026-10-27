@@ -6,7 +6,7 @@ title: Scrolling Animation | Anthony Toolkits
 {% from "components/atoms/code-block.njk" import codeBlock %}
 {% from "components/atoms/component-page.njk" import pageIntro %}
 
-{{ pageIntro({ title: 'Scrolling Animation', description: 'Animations that follow the scroll: video intros, image sequences, image expands, parallax backgrounds, stacking columns and text reveals. Each demo shows its markup and script, ready to use on any website.' }) }}
+{{ pageIntro({ title: 'Scrolling Animation', description: 'Animations that follow the scroll: video intros, image sequences, card stacks, horizontal scrolls, image expands, parallax backgrounds, smooth scroll, stacking columns, text reveals and text waves. Each demo shows its markup and script, ready to use on any website.' }) }}
 
 <section id="demos" class="px-4 py-16">
     <div class="mx-auto max-w-295">
@@ -35,6 +35,36 @@ title: Scrolling Animation | Anthony Toolkits
                     <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
                 </div>
             </a>
+            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/scrolling-animation/card-stack/">
+                {# preview: covered cards shrink back, a strip of each shows #}
+                <div class="relative aspect-4/3 overflow-hidden bg-white px-8 pt-8">
+                    <span class="absolute inset-x-12 top-8 h-full rounded-2xl bg-lime-200 brightness-75"></span>
+                    <span class="absolute inset-x-10 top-11 h-full rounded-2xl bg-teal-800 brightness-75"></span>
+                    <span class="absolute inset-x-8 top-14 h-full rounded-2xl bg-rose-200 p-5 text-4xl font-semibold text-rose-950/30">03</span>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">Card stack</h3>
+                    <p class="mb-6 flex-1 text-gray-600">Sticky cards slide over each other. Covered cards shrink back and dim.</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">_parallaxScroller</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
+            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/scrolling-animation/horizontal-scroll/">
+                {# preview: a panel mid-way, the layers out of step #}
+                <div class="relative aspect-4/3 overflow-hidden bg-stone-950">
+                    <p class="absolute -bottom-1 -left-4 text-7xl leading-none font-bold tracking-tighter text-white/10">Market</p>
+                    <img class="absolute top-[10%] left-[8%] h-[60%] w-[42%] rounded-xl object-cover" src="/assets/img/gallery/photo-1-thumb.webp" alt="" loading="lazy" />
+                    <span class="absolute top-[16%] left-[58%] h-2 w-[28%] rounded-full bg-white/70"></span>
+                    <span class="absolute top-[24%] left-[58%] h-1.5 w-[22%] rounded-full bg-white/30"></span>
+                    <img class="absolute top-[40%] left-[66%] aspect-3/4 w-[24%] rounded-lg object-cover" src="/assets/img/gallery/photo-2-thumb.webp" alt="" loading="lazy" />
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">Horizontal scroll</h3>
+                    <p class="mb-6 flex-1 text-gray-600">A pinned row moves sideways as you scroll down. Layers inside move faster or slower.</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">_parallaxScroller</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
             <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/scrolling-animation/image-expand/">
                 {# preview: the banner, and faintly the full screen it grows to #}
                 <div class="relative aspect-4/3 overflow-hidden bg-white">
@@ -57,6 +87,22 @@ title: Scrolling Animation | Anthony Toolkits
                     <h3 class="mb-2 text-xl font-semibold">Parallax background</h3>
                     <p class="mb-6 flex-1 text-gray-600">Backgrounds move slower than the page, with or without easing, plus a floating image.</p>
                     <p class="mb-4 font-mono text-xs text-gray-500">_parallaxBackground · _parallaxFloating</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
+            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/scrolling-animation/smooth-scroll/">
+                {# preview: dark columns out of step, a leaning word below #}
+                <div class="relative grid aspect-4/3 grid-cols-4 gap-2 overflow-hidden bg-stone-950 px-4">
+                    <span class="-mt-4 flex flex-col gap-2"><img class="aspect-3/4 rounded-lg object-cover" src="/assets/img/gallery/photo-1-thumb.webp" alt="" loading="lazy" /><img class="aspect-square rounded-lg object-cover" src="/assets/img/gallery/photo-4-thumb.webp" alt="" loading="lazy" /></span>
+                    <span class="mt-10 flex flex-col gap-2"><img class="aspect-4/5 rounded-lg object-cover" src="/assets/img/gallery/photo-5-thumb.webp" alt="" loading="lazy" /><img class="aspect-2/3 rounded-lg object-cover" src="/assets/img/gallery/photo-3-thumb.webp" alt="" loading="lazy" /></span>
+                    <span class="-mt-8 flex flex-col gap-2"><img class="aspect-2/3 rounded-lg object-cover" src="/assets/img/gallery/photo-6-thumb.webp" alt="" loading="lazy" /><img class="aspect-4/5 rounded-lg object-cover" src="/assets/img/gallery/photo-1-thumb.webp" alt="" loading="lazy" /></span>
+                    <span class="mt-6 flex flex-col gap-2"><img class="aspect-square rounded-lg object-cover" src="/assets/img/gallery/photo-2-thumb.webp" alt="" loading="lazy" /><img class="aspect-3/4 rounded-lg object-cover" src="/assets/img/gallery/photo-4-thumb.webp" alt="" loading="lazy" /></span>
+                    <p class="absolute inset-x-0 bottom-0 -skew-x-12 bg-stone-100 py-2 text-center text-3xl leading-none font-bold tracking-tighter whitespace-nowrap text-stone-950">Smooth <span class="text-orange-500">scroll</span></p>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">Smooth scroll</h3>
+                    <p class="mb-6 flex-1 text-gray-600">Lenis smooths the page scroll, the scroll animations follow it. Words lean with the scroll speed.</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">_smoothScroll · _parallaxScroller</p>
                     <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
                 </div>
             </a>
@@ -84,6 +130,18 @@ title: Scrolling Animation | Anthony Toolkits
                 <div class="flex flex-1 flex-col p-6">
                     <h3 class="mb-2 text-xl font-semibold">Text reveal</h3>
                     <p class="mb-6 flex-1 text-gray-600">Body text starts grey and turns dark word by word as it scrolls.</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">_parallaxScroller</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
+            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/scrolling-animation/text-wave/">
+                {# preview: the wave mid-way, done, popping, still dim #}
+                <div class="relative flex aspect-4/3 items-center justify-center overflow-hidden bg-stone-100 px-8">
+                    <p class="text-center font-display text-4xl leading-tight font-bold tracking-tight text-stone-950">Each letter <span class="inline-block rotate-[-3deg] scale-115 text-violet-600 [text-shadow:0.025em_0_currentColor,-0.025em_0_currentColor,0_0.025em_currentColor,0_-0.025em_currentColor]">p</span><span class="inline-block rotate-[4deg] scale-115 text-violet-600 [text-shadow:0.025em_0_currentColor,-0.025em_0_currentColor,0_0.025em_currentColor,0_-0.025em_currentColor]">o</span><span class="inline-block rotate-[-2deg] scale-115 text-violet-600 [text-shadow:0.025em_0_currentColor,-0.025em_0_currentColor,0_0.025em_currentColor,0_-0.025em_currentColor]">p</span><span class="text-stone-300">s, then settles</span></p>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">Text wave</h3>
+                    <p class="mb-6 flex-1 text-gray-600">The text pins and a wave runs through it. Each letter pops bold and tilted, then settles.</p>
                     <p class="mb-4 font-mono text-xs text-gray-500">_parallaxScroller</p>
                     <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
                 </div>

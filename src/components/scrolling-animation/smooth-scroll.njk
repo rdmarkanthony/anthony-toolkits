@@ -1,0 +1,189 @@
+---
+title: Smooth Scroll | Scrolling Animation | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Scrolling animation', url: '/components/scrolling-animation/' }, label: '_smoothScroll · _parallaxScroller', title: 'Smooth scroll', description: 'Lenis smooths the whole page scroll, and the scroll animations follow it. The columns slide against each other, the words lean with the scroll speed.' }) }}
+
+{# image: [photo, aspect, filter], or a tile: { text, label, tone, aspect } #}
+{% set columns = [
+    { speed: 140, tone: '', items: [
+        ['photo-1', 'aspect-3/4', ''],
+        { text: 'Eased', label: 'Lenis', tone: 'bg-orange-500 text-stone-950', aspect: 'aspect-square' },
+        ['photo-4', 'aspect-4/5', 'grayscale']
+    ] },
+    { speed: -140, tone: 'pt-24', items: [
+        ['photo-5', 'aspect-4/5', 'hue-rotate-180'],
+        ['photo-3', 'aspect-2/3', ''],
+        { text: '01', label: 'Columns', tone: 'bg-lime-300 text-stone-950', aspect: 'aspect-square' }
+    ] },
+    { speed: 140, tone: 'hidden md:flex', items: [
+        { text: 'Slide', label: 'Up', tone: 'bg-stone-800', aspect: 'aspect-square' },
+        ['photo-6', 'aspect-2/3', 'hue-rotate-90'],
+        ['photo-2', 'aspect-3/4', 'grayscale']
+    ] },
+    { speed: -140, tone: 'hidden md:flex pt-24', items: [
+        ['photo-2', 'aspect-square', 'hue-rotate-270'],
+        { text: '↓', label: 'Down', tone: 'bg-sky-300 text-stone-950', aspect: 'aspect-4/5' },
+        ['photo-1', 'aspect-3/4', '']
+    ] }
+] %}
+
+{% set rows = [
+    { direction: -1, words: ['Smooth', 'scroll'], images: ['photo-1', 'photo-4'], filters: ['', 'grayscale'], tone: '' },
+    { direction: 1, words: ['Lean', 'in'], images: ['photo-5', 'photo-3'], filters: ['hue-rotate-180', ''], tone: 'text-orange-500' },
+    { direction: -1, words: ['Scroll', 'faster'], images: ['photo-6', 'photo-2'], filters: ['hue-rotate-90', 'grayscale'], tone: '' }
+] %}
+
+{# demo #}
+<div class="relative">
+    <section id="smooth-gallery" class="scroll-mt-(--header-height) overflow-hidden bg-stone-950 pt-24 pb-12 text-white md:pt-40">
+        <div class="mx-auto max-w-295 px-4 text-center">
+            <p class="mb-4 text-sm font-medium text-orange-400">Parallax on a smooth scroll</p>
+            <h2 class="mx-auto max-w-4xl text-5xl leading-none font-semibold tracking-tight md:text-[--spacing(28)]">Every scroll, eased.</h2>
+        </div>
+        <div class="js-smooth-columns mx-auto mt-16 grid max-w-400 grid-cols-2 gap-3 px-3 md:mt-28 md:grid-cols-4 md:gap-5 md:px-5">
+            {% for column in columns %}
+            <div class="flex flex-col gap-3 md:gap-5 {{ column.tone }}" data-column-speed="{{ column.speed }}">
+                {% for item in column.items %}
+                {% if item.text %}
+                <div class="flex flex-col justify-between rounded-2xl p-4 md:rounded-3xl md:p-6 {{ item.tone }} {{ item.aspect }}">
+                    <p class="text-xs font-medium opacity-70 md:text-sm">{{ item.label }}</p>
+                    <p class="text-5xl leading-none font-semibold tracking-tighter md:text-[--spacing(20)]">{{ item.text }}</p>
+                </div>
+                {% else %}
+                <img class="w-full rounded-2xl object-cover md:rounded-3xl {{ item[1] }} {{ item[2] }}" src="/assets/img/gallery/{{ item[0] }}.webp" alt="" loading="lazy" />
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section id="smooth-marquee" class="js-smooth-velocity scroll-mt-(--header-height) overflow-hidden bg-stone-100 py-24 md:py-40">
+        <p class="mb-10 text-center text-sm font-medium text-stone-500 md:mb-16">Scroll fast, the words lean.</p>
+        {% for row in rows %}
+        <div class="text-[16vw] leading-[0.95] font-bold tracking-tighter whitespace-nowrap md:text-[11vw] {{ row.tone }}">
+            <div class="w-max [transform:skewX(var(--skew,0deg))]" data-marquee-direction="{{ row.direction }}">
+                {% for i in range(4) %}
+                {{ row.words[0] }}<img class="mx-[0.15em] inline-block h-[0.7em] w-[1.4em] rounded-full object-cover align-[-0.02em] {{ row.filters[0] }}" src="/assets/img/gallery/{{ row.images[0] }}-thumb.webp" alt="" loading="lazy" />{{ row.words[1] }}<img class="mx-[0.15em] inline-block h-[0.7em] w-[1.4em] rounded-full object-cover align-[-0.02em] {{ row.filters[1] }}" src="/assets/img/gallery/{{ row.images[1] }}-thumb.webp" alt="" loading="lazy" />
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+
+    {# demo controls, stay at the bottom of the screen while the demo is in view #}
+    <div class="sticky bottom-6 z-10 flex h-0 items-end justify-center">
+        <nav class="flex items-center gap-1 rounded-full bg-white/85 p-1.5 text-sm font-medium shadow-lg ring-1 ring-black/5 backdrop-blur">
+            <a class="rounded-full px-4 py-2 transition-colors hover:bg-black/5" href="#smooth-gallery">Gallery</a>
+            <a class="rounded-full px-4 py-2 transition-colors hover:bg-black/5" href="#smooth-marquee">Marquee</a>
+            <button class="js-smooth-pause w-20 cursor-pointer rounded-full bg-gray-950 px-4 py-2 text-white" type="button">Pause</button>
+        </nav>
+    </div>
+</div>
+
+{% set markup %}{% raw %}
+<!-- a link to a section glides there, scroll-mt keeps it below the header -->
+<a href="#smooth-gallery">Gallery</a>
+<button class="js-smooth-pause" type="button">Pause</button>
+
+<section id="smooth-gallery" class="scroll-mt-(--header-height) overflow-hidden">
+    <div class="js-smooth-columns grid grid-cols-4 gap-5">
+        <!-- px over the whole section, plus starts low and moves up, minus the other way -->
+        <div class="flex flex-col gap-5" data-column-speed="140">
+            <img class="aspect-3/4 w-full rounded-3xl object-cover" src="image.jpg" alt="" />
+        </div>
+        <div class="flex flex-col gap-5 pt-24" data-column-speed="-140">...</div>
+    </div>
+</section>
+
+<!-- the script sets --skew -->
+<section id="smooth-marquee" class="js-smooth-velocity scroll-mt-(--header-height) overflow-hidden">
+    <div class="text-[11vw] whitespace-nowrap">
+        <!-- -1 moves left, 1 moves right, repeat the words so it stays full -->
+        <div class="w-max [transform:skewX(var(--skew,0deg))]" data-marquee-direction="-1">
+            Smooth<img class="inline-block h-[0.7em] w-[1.4em] rounded-full object-cover" src="image.jpg" alt="" />scroll ...
+        </div>
+    </div>
+</section>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_smoothScroll.js
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_parallax.js
+    // CSS
+        // @import "lenis/dist/lenis.css";
+    // Package
+        // pnpm add lenis
+
+const _velocity = document.querySelectorAll('.js-smooth-velocity');
+
+// the whole page, once
+const smooth = new _smoothScroll({
+    events: {
+        // lean with the scroll speed, back to 0 as it stops
+        scroll(smooth) {
+            const _skew = Math.max(-12, Math.min(smooth.lenis.velocity * -0.3, 12));
+            _velocity.forEach((target) => target.style.setProperty('--skew', `${_skew.toFixed(2)}deg`));
+        },
+    },
+});
+
+// pause it while a popup or menu is open
+document.querySelectorAll('.js-smooth-pause').forEach((button) => {
+    let _paused = false;
+
+    button.addEventListener('click', () => {
+        _paused = !_paused;
+        _paused ? smooth.stop() : smooth.start();
+        button.textContent = _paused ? 'Play' : 'Pause';
+    });
+});
+
+// the columns, from the section entering the screen until it leaves
+document.querySelectorAll('.js-smooth-columns').forEach((target) => {
+    new _parallaxScroller({
+        target,
+        events: {
+            init(scroller) {
+                target.querySelectorAll('[data-column-speed]').forEach((column) => {
+                    const _speed = parseFloat(column.dataset.columnSpeed) || 0;
+                    scroller.animate(column, { translate: [`0 ${_speed}px`, `0 ${-_speed}px`] });
+                });
+            },
+        },
+    });
+});
+
+// the rows slide sideways, by a share of their own width
+document.querySelectorAll('.js-smooth-velocity').forEach((target) => {
+    new _parallaxScroller({
+        target,
+        events: {
+            init(scroller) {
+                target.querySelectorAll('[data-marquee-direction]').forEach((row) => {
+                    const _left = row.dataset.marqueeDirection === '-1';
+                    scroller.animate(row, { translate: _left ? ['-10% 0', '-40% 0'] : ['-40% 0', '-10% 0'] });
+                });
+            },
+        },
+    });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Section links, a pause button, and any scroll animation under it. Here columns with <code class="font-mono text-sm">data-column-speed</code>, and rows of words with <code class="font-mono text-sm">data-marquee-direction</code> that lean by <code class="font-mono text-sm">--skew</code>.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">_smoothScroll</code> loads Lenis on first use, one for the whole page. Lenis eases the real page scroll, so <code class="font-mono text-sm">_parallaxScroller</code> and the other scroll utils follow it as is. Its <code class="font-mono text-sm">scroll</code> event gives the scroll speed, <code class="font-mono text-sm">stop()</code> and <code class="font-mono text-sm">start()</code> pause it. With reduced motion turned on, Lenis is off and the page scrolls as normal.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

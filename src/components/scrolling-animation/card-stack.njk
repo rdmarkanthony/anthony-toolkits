@@ -1,0 +1,102 @@
+---
+title: Card Stack | Scrolling Animation | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Scrolling animation', url: '/components/scrolling-animation/' }, label: '_parallaxScroller', title: 'Card stack', description: 'Each card sticks a bit lower than the one before, and the next one slides over it. Covered cards shrink back and dim, so the stack has depth.' }) }}
+
+<p class="mx-auto -mt-4 mb-[20vh] flex max-w-295 animate-bounce items-center gap-1 px-4 text-sm font-medium [box-sizing:content-box]">Scroll down {{ angle('down') }}</p>
+
+{% set cards = [
+    { heading: 'Each card sticks', text: 'It stays below the header while the page scrolls.', tone: 'bg-lime-200', image: 'photo-1' },
+    { heading: 'The next one covers it', text: 'It slides up over the card before it.', tone: 'bg-teal-800 text-white', image: 'photo-2' },
+    { heading: 'Covered cards shrink', text: 'They shrink back and dim, a strip of each stays in view.', tone: 'bg-rose-200', image: 'photo-3' },
+    { heading: 'Last one in', text: 'Then the whole stack scrolls on.', tone: 'bg-indigo-950 text-white', image: 'photo-4' }
+] %}
+
+{# demo #}
+<div class="mx-auto max-w-295 px-4 [box-sizing:content-box]">
+    <ul class="js-card-stack flex flex-col gap-6 after:h-[30svh]">
+        {% for card in cards %}
+        <li class="sticky top-[calc(var(--header-height,0px)+--spacing(6)+var(--index,0)*--spacing(4))] grid h-[min(36rem,calc(100svh-var(--header-height,0px)-6rem))] origin-top grid-rows-[1fr_auto] gap-6 overflow-hidden rounded-3xl p-4 md:grid-cols-2 md:grid-rows-1 md:p-6 {{ card.tone }}">
+            <img class="size-full min-h-0 rounded-2xl object-cover md:order-last" src="/assets/img/gallery/{{ card.image }}.webp" alt="" loading="lazy" />
+            <div class="flex flex-col p-2 md:p-6">
+                <p class="mb-auto font-display text-[--spacing(16)] leading-none font-semibold opacity-20 md:text-[--spacing(32)]">{{ loop.index | pad(2) }}</p>
+                <h2 class="mt-4 mb-3 text-3xl font-semibold tracking-tight md:text-5xl">{{ card.heading }}</h2>
+                <p class="max-w-sm opacity-70 md:text-lg">{{ card.text }}</p>
+            </div>
+            <div class="js-card-stack-dim pointer-events-none absolute inset-0 bg-black opacity-0"></div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% set markup %}{% raw %}
+<!-- after: room for the last card to stick, the stack holds there a while -->
+<ul class="js-card-stack flex flex-col gap-6 after:h-[30svh]">
+    <!-- sticky, --index from the script sets each one a bit lower -->
+    <!-- origin-top keeps its top edge in place as it shrinks -->
+    <li class="sticky top-[calc(var(--header-height,0px)+--spacing(6)+var(--index,0)*--spacing(4))] h-[min(36rem,calc(100svh-var(--header-height,0px)-6rem))] origin-top overflow-hidden rounded-3xl bg-lime-200">
+        ...
+        <!-- dims it as the next one covers it -->
+        <div class="js-card-stack-dim pointer-events-none absolute inset-0 bg-black opacity-0"></div>
+    </li>
+</ul>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_parallax.js
+
+document.querySelectorAll('.js-card-stack').forEach((target) => {
+    new _parallaxScroller({
+        target,
+        events: {
+            init(scroller) {
+                scroller.el.list = [...target.children];
+                scroller.el.dims = scroller.el.list.map((item) => item.querySelector('.js-card-stack-dim'));
+
+                const _last = scroller.el.list.length - 1;
+
+                scroller.el.list.forEach((item, index) => {
+                    item.style.setProperty('--index', index);
+                    if (index === _last) return;
+
+                    // it shrinks back while the cards after it come in
+                    scroller.animate(item, { scale: [1, 1 - (_last - index) * 0.04] }, (scroller) => [scroller.stick[index], scroller.stick[_last]]);
+
+                    // and dims while the next one covers it
+                    scroller.animate(scroller.el.dims[index], { opacity: [0, 0.4] }, (scroller) => [scroller.stick[index], scroller.stick[index + 1]]);
+                });
+            },
+            resize(scroller) {
+                const _gap = parseFloat(getComputedStyle(target).rowGap) || 0;
+                let _top = _parallax.getOffset(target).top;
+
+                // when each card sticks, from its place in the list and its css top
+                scroller.stick = scroller.el.list.map((item) => {
+                    const _stick = _top - parseFloat(getComputedStyle(item).top);
+                    _top += item.offsetHeight + _gap;
+                    return _stick;
+                });
+            },
+        },
+    });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'A list of sticky cards with a background, so the next one covers them. An <code class="font-mono text-sm">after</code> on the list gives the last card room to stick. Each card sticks one step lower, from <code class="font-mono text-sm">--index</code>, change the step in its <code class="font-mono text-sm">top</code>.',
+    code: pageScript,
+    note: 'Just <code class="font-mono text-sm">_parallaxScroller</code>. The sticking is plain <code class="font-mono text-sm">position: sticky</code>. On resize the script works out the scroll position where each card sticks. <code class="font-mono text-sm">animate()</code> shrinks a card from when it sticks until the last one is in, and dims it while the next one covers it.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

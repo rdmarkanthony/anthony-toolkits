@@ -1,0 +1,117 @@
+---
+title: Deck slider | Sliders | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Sliders', url: '/components/sliders/' }, label: '_deckSlider', title: 'Deck slider', description: 'A stack of tilted cards. Click the top one and it flies off, then slides back in at the bottom. Drag it to throw it any way. No library.' }) }}
+
+{% set quotes = [
+    { quote: 'They turned a messy brief into something we were proud to launch.', name: 'Lorem Ipsum', initials: 'LI', role: 'Founder, Dolor Co.', class: 'bg-lime-200' },
+    { quote: 'Quick, kind and always one step ahead of us.', name: 'Amet Consect', initials: 'AC', role: 'Head of Brand, Elit', class: 'bg-sky-200' },
+    { quote: 'The site feels like us now, and our team loves using it.', name: 'Sed Tempor', initials: 'ST', role: 'COO, Incididunt', class: 'bg-rose-200' },
+    { quote: 'Every round of feedback came back better than we asked.', name: 'Magna Aliqua', initials: 'MA', role: 'Marketing Lead, Enim', class: 'bg-amber-100' },
+    { quote: 'Calm under tight deadlines, sharp on every detail.', name: 'Ut Labore', initials: 'UL', role: 'CEO, Veniam Studio', class: 'bg-violet-200' }
+] %}
+{% set button = 'grid size-12 cursor-pointer place-items-center rounded-full border border-gray-950 text-xl transition-colors duration-300 hover:bg-gray-950 hover:text-white' %}
+
+{# demo: testimonials #}
+<section class="overflow-x-clip bg-stone-100 px-4 py-24">
+    <div class="js-deck-slider mx-auto grid max-w-295 items-center gap-16 md:grid-cols-2">
+        <div>
+            <p class="mb-4 font-mono text-sm text-gray-500">Testimonials</p>
+            <h2 class="mb-6 text-5xl leading-none font-bold tracking-tight md:text-6xl">Kind words from kind people</h2>
+            <p class="mb-10 max-w-sm text-gray-600">Click the top card, or drag it off the stack.</p>
+            <div class="flex items-center gap-3">
+                <button class="js-deck-prev {{ button }}" type="button" aria-label="Previous quote">{{ angle('left') }}</button>
+                <button class="js-deck-next {{ button }}" type="button" aria-label="Next quote">{{ angle('right') }}</button>
+                <p class="js-deck-count ml-3 font-mono text-sm text-gray-500" aria-hidden="true">01 / 05</p>
+            </div>
+        </div>
+        <ul class="grid w-full max-w-md justify-self-center pt-6" aria-label="Quotes" aria-live="polite">
+            {% for item in quotes %}
+            <li class="js-deck-card flex min-h-96 cursor-pointer touch-pan-y flex-col justify-between gap-12 rounded-3xl p-8 shadow-[0_1px_2px_rgb(0_0_0/0.06),0_12px_32px_-12px_rgb(0_0_0/0.2)] transition-[rotate] duration-500 select-none [grid-area:1/1] rotate-(--deck-tilt) data-current:rotate-0 data-dragging:cursor-grabbing data-dragging:transition-none md:min-h-112 md:p-10 {{ item.class }}">
+                <p class="text-3xl leading-tight font-semibold tracking-tight md:text-4xl">“{{ item.quote }}”</p>
+                <div class="flex items-center gap-4">
+                    <span class="grid size-12 place-items-center rounded-full bg-gray-950 text-sm font-semibold text-white">{{ item.initials }}</span>
+                    <div>
+                        <p class="font-semibold">{{ item.name }}</p>
+                        <p class="text-sm text-gray-700">{{ item.role }}</p>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+{# demo: photos, no tilt, the cards behind peek out on top #}
+<section class="overflow-x-clip bg-gray-950 px-4 py-24 text-white">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-4 text-center text-3xl font-bold tracking-tight">No tilt, a stack</h2>
+        <p class="mb-16 text-center text-white/60">tilt: 0, the css moves the cards behind by --deck-depth. Flick one any way.</p>
+        <ul class="js-deck-slider js-deck-photos mx-auto grid max-w-sm" aria-label="Photos">
+            {% for photo in range(1, 7) %}
+            <li class="js-deck-card aspect-3/4 cursor-pointer touch-pan-y overflow-hidden rounded-2xl bg-gray-800 shadow-2xl ring-1 ring-white/25 transition-[rotate,translate,scale,filter] duration-500 select-none [grid-area:1/1] origin-top translate-y-[calc(min(var(--deck-depth),3)*-1.25rem)] scale-[calc(1-min(var(--deck-depth),3)*0.07)] brightness-[calc(1-min(var(--deck-depth),3)*0.15)] data-dragging:cursor-grabbing data-dragging:transition-none">
+                <img class="pointer-events-none size-full object-cover" src="/assets/img/gallery/photo-{{ photo }}.webp" alt="Photo {{ photo }}" loading="lazy" />
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<div class="js-deck-slider">
+    <!-- the cards share one grid cell, so the stack is as tall as the tallest card -->
+    <ul class="grid" aria-label="Quotes" aria-live="polite">
+        <!-- the tilt is css, the top card has data-current; no transition while it's dragged -->
+        <li class="js-deck-card [grid-area:1/1] rotate-(--deck-tilt) transition-[rotate] duration-500 data-current:rotate-0 data-dragging:transition-none touch-pan-y select-none">...</li>
+        <li class="js-deck-card ...">...</li>
+    </ul>
+
+    <!-- optional -->
+    <button class="js-deck-prev" type="button" aria-label="Previous quote">...</button>
+    <button class="js-deck-next" type="button" aria-label="Next quote">...</button>
+</div>
+
+<!-- no tilt: the cards behind move up and shrink by their depth, 3 deep at most -->
+<li class="js-deck-card [grid-area:1/1] origin-top translate-y-[calc(min(var(--deck-depth),3)*-1.25rem)] scale-[calc(1-min(var(--deck-depth),3)*0.07)] transition-[rotate,translate,scale] duration-500 ...">...</li>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_deckSlider.js
+
+const _pad = (number) => String(number).padStart(2, '0');
+
+document.querySelectorAll('.js-deck-slider').forEach((target) => {
+    const _count = target.querySelector('.js-deck-count');
+
+    new _deckSlider({
+        target,
+        // defaults: tilt: 8 (deg, the most a card leans), duration: 600 (ms, the trip back)
+        tilt: target.matches('.js-deck-photos') ? 0 : 8,
+        events: {
+            change(slider) {
+                if (_count) _count.textContent = `${_pad(slider.current + 1)} / ${_pad(slider.el.cards.length)}`;
+            },
+        },
+    });
+
+    // slider.next(), slider.prev(), slider.current (the top card's index)
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Cards with <code class="font-mono text-sm">js-deck-card</code>, stacked in one grid cell. Each gets <code class="font-mono text-sm">--deck-tilt</code> and <code class="font-mono text-sm">--deck-depth</code> (0 on top) for the css, the top one <code class="font-mono text-sm">data-current</code> and <code class="font-mono text-sm">data-dragging</code> while it is dragged. <code class="font-mono text-sm">touch-pan-y</code> lets a sideways swipe throw it and still scroll the page.',
+    code: pageScript,
+    note: 'A click throws the top card up and it slides back in at the bottom with a new tilt, leaning the other way from the card above it. A drag past a third of its width, or a quick flick, throws it the way it was dragged; a short drag springs back. Prev pulls the bottom card out from behind onto the top. The cards behind are inert, so screen readers and the keyboard only reach the top one. Events: <code class="font-mono text-sm">change</code>. Reduced motion swaps the cards with no trip. No library.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

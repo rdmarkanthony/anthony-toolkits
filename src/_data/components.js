@@ -29,6 +29,7 @@ export default [
             { label: "Text roll", url: "/components/text-effects/roll/", description: "Link and button text that rolls up on hover, a copy coming in from below.", utils: "_textRoll", ready: true },
             { label: "Typing animation", url: "/components/text-effects/typing/", description: "Types and erases lines, with styled parts and a steady cursor.", utils: "_typing", ready: true },
             { label: "Weight hover", url: "/components/text-effects/weight/", description: "Letters near the mouse get bolder, a wave that follows the cursor.", utils: "_weightHover", ready: true },
+            { label: "Weight pop", url: "/components/text-effects/weight-pop/", description: "On hover the letters pop bolder one after another, then settle back.", utils: "_weightPop", ready: true },
         ],
     },
     {
@@ -36,10 +37,14 @@ export default [
         url: "/components/scrolling-animation/",
         items: [
             { label: "Canvas image sequence", url: "/components/scrolling-animation/canvas/", description: "Scrub through image frames on a canvas as you scroll.", utils: "_canvasBanner · _parallaxScroller", ready: true },
+            { label: "Card stack", url: "/components/scrolling-animation/card-stack/", description: "Sticky cards slide over each other, covered ones shrink and dim.", utils: "_parallaxScroller", ready: true },
+            { label: "Horizontal scroll", url: "/components/scrolling-animation/horizontal-scroll/", description: "A pinned row moves sideways, layers inside move faster or slower.", utils: "_parallaxScroller", ready: true },
             { label: "Image expand", url: "/components/scrolling-animation/image-expand/", description: "A small banner grows to cover the screen, then a heading comes in.", utils: "_parallaxScroller", ready: true },
             { label: "Parallax background", url: "/components/scrolling-animation/background/", description: "Backgrounds and floating elements that move slower than the page.", utils: "_parallaxBackground · _parallaxFloating", ready: true, favorite: true },
+            { label: "Smooth scroll", url: "/components/scrolling-animation/smooth-scroll/", description: "Lenis smooths the page scroll, scroll animations follow it.", utils: "_smoothScroll · _parallaxScroller", ready: true },
             { label: "Stacking columns", url: "/components/scrolling-animation/stacking-columns/", description: "A pinned row where each column stays while the next slides over it.", utils: "_parallaxScroller", ready: true },
             { label: "Text reveal", url: "/components/scrolling-animation/text/", description: "Body text that turns from grey to dark word by word on scroll.", utils: "_parallaxScroller", ready: true },
+            { label: "Text wave", url: "/components/scrolling-animation/text-wave/", description: "A pinned paragraph where each letter pops bold, then settles, on scroll.", utils: "_parallaxScroller", ready: true },
             { label: "Video intro", url: "/components/scrolling-animation/video-intro/", description: "Sticky video whose cover fades in, then titles step in on scroll.", utils: "_parallaxScroller · _hlsVideo", ready: true },
         ],
     },
@@ -68,6 +73,7 @@ export default [
         url: "/components/sliders/",
         items: [
             { label: "Comic slider", url: "/components/sliders/comic/", description: "Goes through comic pages frame by frame, with a frame generator.", utils: "_comicSlider", ready: true },
+            { label: "Deck slider", url: "/components/sliders/deck/", description: "A stack of tilted cards, the top one is thrown off and slides back in at the bottom.", utils: "_deckSlider", ready: true },
             { label: "Lightbox gallery", url: "/components/lightbox/#image-gallery", description: "Image links open full screen as a gallery, with thumbnails and swipe.", utils: "_lightboxGallery · _lightbox", ready: true },
             { label: "Loop slider", url: "/components/sliders/loop/", description: "An endless row that moves on scroll, drag or as a marquee.", utils: "_horizontalLoop · GSAP", ready: true },
             { label: "Peek slider", url: "/components/sliders/peek/", description: "A carousel of 1 to 3 cards, with the next one peeking at the edge.", utils: "_peekSlider · Swiper", ready: true },
@@ -87,7 +93,7 @@ export default [
     {
         category: "Layout",
         items: [
-            { label: "Accordion", url: "/components/accordion/", description: "Titles that open and close their content in place, for FAQs.", utils: "_accordion", ready: true },
+            { label: "Accordion", url: "/components/accordion/", description: "Titles that open and close their content in place, for FAQs, also as chat bubbles.", utils: "_accordion", ready: true },
             { label: "Breakpoints", url: "/components/breakpoints/", description: "The responsive breakpoints, shown live as you resize.", utils: "Tailwind @theme", ready: true },
             { label: "Fluid sizing", url: "/components/fluid-sizing/", description: "Tailwind sizes that scale with their section width, using cqw.", utils: "fluid · cqw", ready: true, favorite: true },
             { label: "Group height", url: "/components/group-height/", description: "Equalize heights across grouped elements.", utils: "_groupHeight", ready: true },
