@@ -1,0 +1,61 @@
+/*
+    chat bubbles for _accordion.js, on the set: .chat-set, its title: .chat-question
+    the open question shrinks to --chat-width on the left, the answer bubble pops out of its corner on the right
+    then the text fades up; the colors and the corner are yours, from the markup
+*/
+@layer components {
+    .chat-question {
+        width: 100%;
+    }
+    .chat-set.active > .chat-question {
+        width: var(--chat-width, 75%);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .chat-question {
+            transition:
+                width 0.5s cubic-bezier(0.65, 0, 0.35, 1),
+                background-color 0.3s,
+                color 0.3s,
+                border-radius 0.3s;
+        }
+
+        /* open: the bubble, then the avatar, then the text */
+        .chat-set.active .chat-bubble {
+            animation: chat-pop 0.55s 0.05s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        .chat-set.active .chat-avatar {
+            animation: chat-pop 0.45s 0.15s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        .chat-set.active .chat-text {
+            animation: chat-text 0.4s 0.3s ease-out both;
+        }
+
+        /* closing: the text goes first, the bubble shrinks back into its corner */
+        .chat-set:not(.active) .chat-bubble,
+        .chat-set:not(.active) .chat-avatar {
+            animation: chat-out 0.3s 0.05s ease-in both;
+        }
+        .chat-set:not(.active) .chat-text {
+            animation: chat-out 0.15s ease-in both;
+        }
+    }
+
+    @keyframes chat-pop {
+        from {
+            scale: 0;
+        }
+    }
+    @keyframes chat-text {
+        from {
+            opacity: 0;
+            translate: 0 0.75rem;
+        }
+    }
+    @keyframes chat-out {
+        to {
+            scale: 0.4;
+            opacity: 0;
+        }
+    }
+}
