@@ -8,6 +8,12 @@ title: Page transition | Anthony Toolkits
 
 {% set headLine %}<script>try{const t=JSON.parse(sessionStorage.pageTransition);sessionStorage.removeItem("pageTransition");if(Date.now()-t.time<1e4)document.documentElement.dataset.pageEnter=t.name}catch{}</script>{% endset %}
 
+{# scribble and twirl's lines, the css shows the one that plays #}
+{% set scribbleSvg %}<svg class="page-scribble" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <path data-page-scribble="scribble" pathLength="1" d="M150 850C50 600 450 80 700 150C950 220 300 520 250 700C200 880 800 900 880 650C940 450 700 300 850 120"/>
+    <path data-page-scribble="twirl" pathLength="1" d="M520 520C440 600 330 540 360 440C390 340 560 330 600 430C650 560 480 720 300 700C100 680 60 420 180 260C320 80 760 60 860 240C960 420 820 760 620 860C480 930 260 920 140 860"/>
+</svg>{% endset %}
+
 {% set wipeCSS %}
 /* the cover for circle and slide, white by default */
 :root {
@@ -55,6 +61,8 @@ title: Page transition | Anthony Toolkits
     { name: 'curtain', text: 'Two halves close, then open on the next page.' },
     { name: 'zoom', text: 'The page shrinks back to the click, the next grows in.' },
     { name: 'blob', text: 'A wobbly shape grows from where you click.' },
+    { name: 'scribble', text: 'A line scribbles over the page and swells to cover it.' },
+    { name: 'twirl', text: 'A line curls out from the middle and swells to cover it.' },
     { name: 'rings', text: 'Colored rings grow from the click, then ripple out.' },
     { name: 'squares', text: 'Colored squares grow and turn, then ripple out.' },
     { name: 'wipe', text: 'Your own, from the CSS below.' }
@@ -106,6 +114,8 @@ title: Page transition | Anthony Toolkits
     </div>
 </section>
 
+{{ scribbleSvg | safe }}
+
 {% set pageMarkup %}<!-- in the <head> of every page, before the css shows anything -->
 {{ headLine }}
 
@@ -115,7 +125,10 @@ title: Page transition | Anthony Toolkits
 <nav data-page-transition="fade">
     <a href="/">Home</a>
     <a href="/menu/" data-page-transition="false">No transition</a>
-</nav>{% endset %}
+</nav>
+
+<!-- scribble and twirl only, in the <body> of every page, the css draws it -->
+{{ scribbleSvg }}{% endset %}
 
 {% set pageScript %}{% raw %}
 // Requirements
@@ -140,7 +153,7 @@ if (_arrived) document.querySelector('.js-arrived').textContent = `Opened with $
     markup: pageMarkup,
     markupNote: 'The head line passes the name to the next page, so it starts hidden with no flash. Leave the value empty for fade.',
     css: wipeCSS,
-    cssNote: 'fade, circle, slide, blinds, curtain, zoom, blob, rings and squares are in page-transition.css. Change the ring and square colors with <code class="font-mono text-sm">--page-layer-1</code> to <code class="font-mono text-sm">--page-layer-3</code>. For your own, animate anything under <code class="font-mono text-sm">[data-page-leave]</code> and <code class="font-mono text-sm">[data-page-enter]</code>. The page opens once the leave animation ends.',
+    cssNote: 'fade, circle, slide, blinds, curtain, zoom, blob, scribble, twirl, rings and squares are in page-transition.css. Change the ring and square colors with <code class="font-mono text-sm">--page-layer-1</code> to <code class="font-mono text-sm">--page-layer-3</code>. Scribble and twirl draw an svg line, so their svg goes in the body. For your own, animate anything under <code class="font-mono text-sm">[data-page-leave]</code> and <code class="font-mono text-sm">[data-page-enter]</code>. The page opens once the leave animation ends.',
     code: pageScript,
     note: 'A click from the keyboard grows the circle from the link. With reduced motion there\'s no animation, the page just opens.'
 }) }}

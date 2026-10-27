@@ -3,6 +3,7 @@
     your own: animate anything under [data-page-leave="name"] and [data-page-enter="name"]
     --page-x, --page-y: the click on screen, --page-scroll: the scroll then, --page-cover: the cover color
     --page-layer-1 to --page-layer-3: the rings and squares, outside in
+    scribble and twirl need their svg in the body of every page, see page-transition.njk
 */
 /* blinds: one progress drives all five bars */
 @property --page-blinds {
@@ -39,6 +40,26 @@
         background-color: var(--page-cover, #fff);
         opacity: 0;
         pointer-events: none;
+    }
+
+    /* scribble and twirl's svg, a line for each, hidden until a transition shows it */
+    .page-scribble {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483647;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    /* the path's pathLength is 1, so 1 is the whole line, 1300 covers its 1000 box */
+    .page-scribble path {
+        visibility: hidden;
+        stroke: var(--page-cover, #fff);
+        stroke-width: 1300;
+        stroke-dasharray: 1;
     }
 
     @media (prefers-reduced-motion: no-preference) {
@@ -171,6 +192,19 @@
         [data-page-enter="blob"]::before,
         [data-page-enter="blob"]::after {
             animation: page-blob-out 0.8s 0.05s cubic-bezier(0.65, 0, 0.35, 1) both;
+        }
+
+        /* scribble and twirl: a line draws over the page and swells until it covers it, backwards on the next one */
+        /* scribble sweeps across, twirl curls out from the middle */
+        [data-page-leave="scribble"] [data-page-scribble="scribble"],
+        [data-page-leave="twirl"] [data-page-scribble="twirl"] {
+            visibility: visible;
+            animation: page-scribble 1s cubic-bezier(0.45, 0, 0.55, 1) both;
+        }
+        [data-page-enter="scribble"] [data-page-scribble="scribble"],
+        [data-page-enter="twirl"] [data-page-scribble="twirl"] {
+            visibility: visible;
+            animation: page-scribble 0.9s 0.1s cubic-bezier(0.45, 0, 0.55, 1) reverse both;
         }
 
         /* rings and squares: the colors, outside in */
@@ -356,6 +390,13 @@
         to {
             scale: 0;
             rotate: var(--spin);
+        }
+    }
+    /* drawn from nothing, swelling as it goes */
+    @keyframes page-scribble {
+        from {
+            stroke-dashoffset: 1;
+            stroke-width: 0;
         }
     }
     @keyframes page-push {
