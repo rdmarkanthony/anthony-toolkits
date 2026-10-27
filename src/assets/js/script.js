@@ -50,6 +50,7 @@ import { _hlsVideo } from "./utils/_hlsVideo";
 import { _autoScroll, _autoScrollHash } from "./utils/_autoScroll";
 import { _parallax, _parallaxScroller, _parallaxOffset, _parallaxBackground, _parallaxFloating } from "./utils/_parallax";
 import { _canvasBanner } from "./utils/_canvasBanner";
+import { _smoothScroll } from "./utils/_smoothScroll";
 import { _themeScroller } from "./utils/_themeScroller";
 import { _cursorBubble } from "./utils/_cursorBubble";
 import { _magnetic } from "./utils/_magnetic";
@@ -118,6 +119,7 @@ Object.assign(window, {
     _parallaxBackground,
     _parallaxFloating,
     _canvasBanner,
+    _smoothScroll,
     _themeScroller,
     _cursorBubble,
     _magnetic,

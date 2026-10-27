@@ -6,7 +6,7 @@ title: Scrolling Animation | Anthony Toolkits
 {% from "components/atoms/code-block.njk" import codeBlock %}
 {% from "components/atoms/component-page.njk" import pageIntro %}
 
-{{ pageIntro({ title: 'Scrolling Animation', description: 'Animations that follow the scroll: video intros, image sequences, card stacks, horizontal scrolls, image expands, parallax backgrounds, stacking columns and text reveals. Each demo shows its markup and script, ready to use on any website.' }) }}
+{{ pageIntro({ title: 'Scrolling Animation', description: 'Animations that follow the scroll: video intros, image sequences, card stacks, horizontal scrolls, image expands, parallax backgrounds, smooth scroll, stacking columns and text reveals. Each demo shows its markup and script, ready to use on any website.' }) }}
 
 <section id="demos" class="px-4 py-16">
     <div class="mx-auto max-w-295">
@@ -87,6 +87,22 @@ title: Scrolling Animation | Anthony Toolkits
                     <h3 class="mb-2 text-xl font-semibold">Parallax background</h3>
                     <p class="mb-6 flex-1 text-gray-600">Backgrounds move slower than the page, with or without easing, plus a floating image.</p>
                     <p class="mb-4 font-mono text-xs text-gray-500">_parallaxBackground · _parallaxFloating</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
+                </div>
+            </a>
+            <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="/components/scrolling-animation/smooth-scroll/">
+                {# preview: dark columns out of step, a leaning word below #}
+                <div class="relative grid aspect-4/3 grid-cols-4 gap-2 overflow-hidden bg-stone-950 px-4">
+                    <span class="-mt-4 flex flex-col gap-2"><img class="aspect-3/4 rounded-lg object-cover" src="/assets/img/gallery/photo-1-thumb.webp" alt="" loading="lazy" /><img class="aspect-square rounded-lg object-cover" src="/assets/img/gallery/photo-4-thumb.webp" alt="" loading="lazy" /></span>
+                    <span class="mt-10 flex flex-col gap-2"><img class="aspect-4/5 rounded-lg object-cover" src="/assets/img/gallery/photo-5-thumb.webp" alt="" loading="lazy" /><img class="aspect-2/3 rounded-lg object-cover" src="/assets/img/gallery/photo-3-thumb.webp" alt="" loading="lazy" /></span>
+                    <span class="-mt-8 flex flex-col gap-2"><img class="aspect-2/3 rounded-lg object-cover" src="/assets/img/gallery/photo-6-thumb.webp" alt="" loading="lazy" /><img class="aspect-4/5 rounded-lg object-cover" src="/assets/img/gallery/photo-1-thumb.webp" alt="" loading="lazy" /></span>
+                    <span class="mt-6 flex flex-col gap-2"><img class="aspect-square rounded-lg object-cover" src="/assets/img/gallery/photo-2-thumb.webp" alt="" loading="lazy" /><img class="aspect-3/4 rounded-lg object-cover" src="/assets/img/gallery/photo-4-thumb.webp" alt="" loading="lazy" /></span>
+                    <p class="absolute inset-x-0 bottom-0 -skew-x-12 bg-stone-100 py-2 text-center text-3xl leading-none font-bold tracking-tighter whitespace-nowrap text-stone-950">Smooth <span class="text-orange-500">scroll</span></p>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">Smooth scroll</h3>
+                    <p class="mb-6 flex-1 text-gray-600">Lenis smooths the page scroll, the scroll animations follow it. Words lean with the scroll speed.</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">_smoothScroll · _parallaxScroller</p>
                     <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover:translate-x-0.5') }}</span>
                 </div>
             </a>

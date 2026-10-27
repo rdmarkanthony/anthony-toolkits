@@ -4,6 +4,7 @@
 @import "animate.css";
 @import "flatpickr/dist/flatpickr.min.css";
 @import "plyr/dist/plyr.css";
+@import "lenis/dist/lenis.css";
 /* in a layer, so Tailwind classes win over Swiper's */
 @import "swiper/css" layer(components);
 
