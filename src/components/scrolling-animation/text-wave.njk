@@ -1,0 +1,99 @@
+---
+title: Text Wave | Scrolling Animation | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Scrolling animation', url: '/components/scrolling-animation/' }, label: '_parallaxScroller', title: 'Text wave', description: 'The text pins, and a wave runs through it letter by letter. Each one pops bold and tilted in a bright color, then settles.' }) }}
+
+<p class="mx-auto -mt-4 mb-[20vh] flex max-w-295 animate-bounce items-center gap-1 px-4 text-sm font-medium [box-sizing:content-box]">Scroll down {{ angle('down') }}</p>
+
+{# demo #}
+<section class="js-text-wave relative h-[300svh] bg-stone-100">
+    <div class="sticky top-(--header-height) flex h-[calc(100svh-var(--header-height,0px))] items-center overflow-hidden px-4">
+        <p class="js-text-wave-text mx-auto max-w-295 text-center font-display text-[clamp(2.5rem,7vw,6.5rem)] leading-[1.02] font-bold tracking-tight text-stone-950 [--text-wave-dim:var(--color-stone-300)] [--text-wave-pop:var(--color-violet-600)]">We make small things with care. Each letter gets its moment, then steps back for the next one.</p>
+    </div>
+</section>
+
+{# demo: dark, own colors #}
+<section class="js-text-wave relative h-[220svh] bg-emerald-950">
+    <div class="sticky top-(--header-height) flex h-[calc(100svh-var(--header-height,0px))] items-center overflow-hidden px-4">
+        <p class="js-text-wave-text mx-auto max-w-4xl text-center font-display text-[clamp(2.5rem,7vw,6.5rem)] leading-[1.02] font-bold tracking-tight text-emerald-50 [--text-wave-dim:var(--color-emerald-800)] [--text-wave-pop:var(--color-lime-300)]">Scroll back up and the wave runs the other way.</p>
+    </div>
+</section>
+
+<div class="h-[30vh]"></div>
+
+{% set markup %}{% raw %}
+<!-- tall, the extra height is how long the text stays pinned -->
+<section class="js-text-wave relative h-[300svh]">
+    <div class="sticky top-(--header-height) flex h-[calc(100svh-var(--header-height,0px))] items-center">
+        <!-- plain text, it ends in its own color, the variables set the start and the pop -->
+        <p class="js-text-wave-text text-8xl text-stone-950 [--text-wave-dim:var(--color-stone-300)] [--text-wave-pop:var(--color-violet-600)]">We make small things with care...</p>
+    </div>
+</section>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_parallax.js
+
+// faux bold, a text-shadow outline in the letter's color, so the line doesn't move
+const _bold = ['0.025em 0', '-0.025em 0', '0 0.025em', '0 -0.025em'].map((offset) => `${offset} currentColor`).join(', ');
+
+document.querySelectorAll('.js-text-wave').forEach((target) => {
+    new _parallaxScroller({
+        target,
+        events: {
+            init(scroller) {
+                // words stay whole, each letter in a span, screen readers get the text
+                const _text = target.querySelector('.js-text-wave-text');
+                const _letters = _text.textContent.trim().replace(/\S+/g, (word) => `<span class="inline-block">${word.replace(/\S/g, '<span class="inline-block">$&</span>')}</span>`);
+                _text.innerHTML = `<span class="sr-only">${_text.textContent.trim()}</span><span aria-hidden="true">${_letters}</span>`;
+
+                // each letter waves over 1, the next starts a step later, all in the first 85%
+                // a bigger step pops fewer letters at once, 0.2 is about 5
+                const _step = 0.2;
+                const _list = [..._text.lastChild.querySelectorAll(':scope > span > span')];
+                const _total = 1 + (_list.length - 1) * _step;
+
+                _list.forEach((letter, index) => {
+                    const _start = index * _step;
+
+                    // dim, a bold tilted pop, then its own color
+                    scroller.animate(
+                        letter,
+                        [
+                            { color: 'var(--text-wave-dim)' },
+                            { color: 'var(--text-wave-pop)', scale: 1.12, rotate: `${Math.random() * 8 - 4}deg`, textShadow: _bold, offset: 0.5 },
+                            {},
+                        ],
+                        [`${(_start / _total) * 85}%`, `${((_start + 1) / _total) * 85}%`]
+                    );
+                });
+            },
+            // while the text is pinned, --header-height from script.js
+            resize(scroller) {
+                const _header = parseFloat(getComputedStyle(document.body).getPropertyValue('--header-height')) || 0;
+                scroller.offset.top = _parallax.getOffset(target).top - _header;
+                scroller.offset.bottom = _parallax.getOffset(target).bottom - _parallax.height();
+            },
+        },
+    });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'A tall section with a sticky, screen-high pin below the header. The text ends in its own color, <code class="font-mono text-sm">--text-wave-dim</code> and <code class="font-mono text-sm">--text-wave-pop</code> set where it starts and the pop.',
+    code: pageScript,
+    note: 'Just <code class="font-mono text-sm">_parallaxScroller</code>. <code class="font-mono text-sm">resize</code> sets the range to while the text is pinned. <code class="font-mono text-sm">animate()</code> runs three keyframes on each letter over its own part of it, dim, pop and its own color, a step apart, so about 5 letters move at once. A smaller <code class="font-mono text-sm">_step</code> moves more of them, like a wave of words. The bold is a text-shadow in the same color, so any font works and the line stays put.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

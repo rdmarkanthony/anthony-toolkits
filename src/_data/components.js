@@ -29,6 +29,7 @@ export default [
             { label: "Text roll", url: "/components/text-effects/roll/", description: "Link and button text that rolls up on hover, a copy coming in from below.", utils: "_textRoll", ready: true },
             { label: "Typing animation", url: "/components/text-effects/typing/", description: "Types and erases lines, with styled parts and a steady cursor.", utils: "_typing", ready: true },
             { label: "Weight hover", url: "/components/text-effects/weight/", description: "Letters near the mouse get bolder, a wave that follows the cursor.", utils: "_weightHover", ready: true },
+            { label: "Weight pop", url: "/components/text-effects/weight-pop/", description: "On hover the letters pop bolder one after another, then settle back.", utils: "_weightPop", ready: true },
         ],
     },
     {
@@ -43,6 +44,7 @@ export default [
             { label: "Smooth scroll", url: "/components/scrolling-animation/smooth-scroll/", description: "Lenis smooths the page scroll, scroll animations follow it.", utils: "_smoothScroll · _parallaxScroller", ready: true },
             { label: "Stacking columns", url: "/components/scrolling-animation/stacking-columns/", description: "A pinned row where each column stays while the next slides over it.", utils: "_parallaxScroller", ready: true },
             { label: "Text reveal", url: "/components/scrolling-animation/text/", description: "Body text that turns from grey to dark word by word on scroll.", utils: "_parallaxScroller", ready: true },
+            { label: "Text wave", url: "/components/scrolling-animation/text-wave/", description: "A pinned paragraph where each letter pops bold, then settles, on scroll.", utils: "_parallaxScroller", ready: true },
             { label: "Video intro", url: "/components/scrolling-animation/video-intro/", description: "Sticky video whose cover fades in, then titles step in on scroll.", utils: "_parallaxScroller · _hlsVideo", ready: true },
         ],
     },
