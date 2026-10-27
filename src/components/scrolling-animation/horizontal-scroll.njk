@@ -1,0 +1,112 @@
+---
+title: Horizontal Scroll | Scrolling Animation | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Scrolling animation', url: '/components/scrolling-animation/' }, label: '_parallaxScroller', title: 'Horizontal scroll', description: 'The section pins and its content moves sideways as you scroll down. Layers inside move faster or slower than the row, so the panels have depth.' }) }}
+
+<p class="mx-auto -mt-4 mb-[20vh] flex max-w-295 animate-bounce items-center gap-1 px-4 text-sm font-medium [box-sizing:content-box]">Scroll down {{ angle('down') }}</p>
+
+{% set panels = [
+    { word: 'Market', heading: 'Morning market', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.', image: 'photo-1', small: 'photo-2' },
+    { word: 'Studio', heading: 'Studio hours', text: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.', image: 'photo-3', small: 'photo-4' },
+    { word: 'Garden', heading: 'Late garden', text: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.', image: 'photo-5', small: 'photo-1' }
+] %}
+
+{# demo #}
+<section class="js-horizontal-scroll relative bg-stone-950 text-white">
+    <div class="js-horizontal-scroll-pin sticky top-(--header-height) h-[calc(100svh-var(--header-height,0px))] overflow-hidden">
+        <div class="js-horizontal-scroll-track flex h-full w-max">
+            <div class="flex h-full w-screen shrink-0 flex-col justify-center p-6 md:w-[60vw] md:p-16">
+                <h2 class="mb-4 text-5xl leading-none font-bold tracking-tight md:text-[--spacing(24)]">Scroll sideways</h2>
+                <p class="flex max-w-sm items-center gap-1 opacity-70 md:text-lg">Keep scrolling down {{ angle('right') }}</p>
+            </div>
+            {% for panel in panels %}
+            <article class="relative h-full w-[200vw] shrink-0 md:w-[120vw]">
+                <p class="absolute bottom-[2%] left-0 text-[24svh] leading-none font-bold tracking-tighter whitespace-nowrap text-white/10" data-horizontal-speed="-0.3">{{ panel.word }}</p>
+                <img class="absolute top-[8%] left-[4%] h-[62%] w-[40%] rounded-3xl object-cover" src="/assets/img/gallery/{{ panel.image }}.webp" alt="" loading="lazy" />
+                <div class="absolute top-[14%] left-[50%] w-[min(22rem,40%)]" data-horizontal-speed="0.15">
+                    <p class="mb-4 text-sm font-medium text-orange-400">{{ loop.index | pad(2) }}</p>
+                    <h3 class="mb-3 text-3xl font-semibold tracking-tight md:text-4xl">{{ panel.heading }}</h3>
+                    <p class="opacity-70">{{ panel.text }}</p>
+                </div>
+                <img class="absolute top-[42%] left-[70%] aspect-3/4 w-[22%] rounded-2xl object-cover" src="/assets/img/gallery/{{ panel.small }}.webp" alt="" loading="lazy" data-horizontal-speed="0.4" />
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- the script sets its height, the scroll length -->
+<section class="js-horizontal-scroll relative">
+    <div class="js-horizontal-scroll-pin sticky top-(--header-height) h-[calc(100svh-var(--header-height,0px))] overflow-hidden">
+        <div class="js-horizontal-scroll-track flex h-full w-max">
+            <article class="relative h-full w-[120vw] shrink-0">
+                <!-- no speed: moves with the row -->
+                <img class="absolute top-[8%] left-[4%] h-[62%] w-[40%]" src="image.jpg" alt="" />
+                <!-- plus is faster, minus is slower -->
+                <div class="absolute top-[14%] left-[50%]" data-horizontal-speed="0.15">...</div>
+                <p class="absolute bottom-[2%] left-0 whitespace-nowrap" data-horizontal-speed="-0.3">Market</p>
+            </article>
+        </div>
+    </div>
+</section>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_parallax.js
+
+document.querySelectorAll('.js-horizontal-scroll').forEach((target) => {
+    new _parallaxScroller({
+        target,
+        events: {
+            init(scroller) {
+                scroller.el.pin = target.querySelector('.js-horizontal-scroll-pin');
+                scroller.el.track = target.querySelector('.js-horizontal-scroll-track');
+                scroller.el.layers = [...target.querySelectorAll('[data-horizontal-speed]')];
+
+                // the row moves left over the whole range
+                scroller.animate(scroller.el.track, (scroller) => ({ translate: ['0 0', `${-scroller.distance}px 0`] }));
+
+                // a layer moves by its distance from the middle of the screen, times its speed
+                scroller.el.layers.forEach((layer) => {
+                    const _speed = parseFloat(layer.dataset.horizontalSpeed) || 0;
+
+                    scroller.animate(layer, (scroller) => {
+                        const _center = _parallax.getOffset(layer).left - _parallax.getOffset(scroller.el.track).left + (layer.offsetWidth - scroller.el.pin.offsetWidth) / 2;
+                        return { translate: [`${_center * _speed}px 0`, `${(_center - scroller.distance) * _speed}px 0`] };
+                    });
+                });
+            },
+            resize(scroller) {
+                // while the section is pinned, --header-height from script.js
+                const _header = parseFloat(getComputedStyle(document.body).getPropertyValue('--header-height')) || 0;
+                scroller.offset.top = _parallax.getOffset(target).top - _header;
+
+                // scroll down as far as the row moves, offsetWidth leaves out the moved layers
+                scroller.distance = scroller.el.track.offsetWidth - scroller.el.pin.offsetWidth;
+                target.style.height = `${scroller.el.pin.offsetHeight + scroller.distance}px`;
+                scroller.offset.bottom = scroller.offset.top + scroller.distance;
+            },
+        },
+    });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'A sticky, screen-high pin below the header with a wide row inside. Lay out each panel however you like, add <code class="font-mono text-sm">data-horizontal-speed</code> to the layers that should move faster or slower.',
+    code: pageScript,
+    note: 'Just <code class="font-mono text-sm">_parallaxScroller</code>. On resize the section gets tall enough to scroll the whole row in, one pixel down moves it one pixel left. <code class="font-mono text-sm">animate()</code> moves the row, and each layer by its distance from the middle of the screen times its speed, so it sits where you put it when it is in the middle.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
