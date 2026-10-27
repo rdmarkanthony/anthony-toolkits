@@ -21,6 +21,7 @@ import { _typing } from "./utils/_typing";
 import { _scrambleText } from "./utils/_scrambleText";
 import { _textRoll } from "./utils/_textRoll";
 import { _weightHover } from "./utils/_weightHover";
+import { _weightPop } from "./utils/_weightPop";
 import { _threeBackground } from "./utils/_threeBackground";
 import { _threeParticles } from "./utils/_threeParticles";
 import { _threeBlobs } from "./utils/_threeBlobs";
@@ -85,6 +86,7 @@ Object.assign(window, {
     _scrambleText,
     _textRoll,
     _weightHover,
+    _weightPop,
     _threeBackground,
     _threeParticles,
     _threeBlobs,

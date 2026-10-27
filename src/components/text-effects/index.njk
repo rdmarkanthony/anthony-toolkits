@@ -16,7 +16,8 @@ title: Text effects | Anthony Toolkits
     { url: '/components/text-effects/split/', title: 'Split hover', text: 'The word splits at the middle, the halves slide apart and a copy opens.', utils: 'CSS only', id: 'split', word: '<span class="split-hover" data-text="Split"><span>Split</span></span>', class: 'bg-gray-100 [--split-color:var(--color-rose-500)]', cardClass: 'split-hover-trigger' },
     { url: '/components/text-effects/roll/', title: 'Text roll', text: 'Link and button text that rolls up on hover, a copy coming in from below.', utils: '_textRoll', id: 'roll', word: "Let's talk", class: 'bg-gray-950 text-white' },
     { url: '/components/text-effects/typing/', title: 'Typing animation', text: 'Types and erases lines, with styled parts and a steady cursor.', utils: '_typing', id: 'typing', word: 'Hello', class: 'bg-gray-100' },
-    { url: '/components/text-effects/weight/', title: 'Weight hover', text: 'Letters near the mouse get bolder, a wave that follows the cursor.', utils: '_weightHover', id: 'weight', word: 'Weight', class: 'bg-gray-950 text-white', previewClass: 'text-7xl font-thin' }
+    { url: '/components/text-effects/weight/', title: 'Weight hover', text: 'Letters near the mouse get bolder, a wave that follows the cursor.', utils: '_weightHover', id: 'weight', word: 'Weight', class: 'bg-gray-950 text-white', previewClass: 'text-7xl font-thin' },
+    { url: '/components/text-effects/weight-pop/', title: 'Weight pop', text: 'On hover the letters pop bolder one after another, then settle back.', utils: '_weightPop', id: 'weight-pop', word: 'Say hello', class: 'bg-lime-300', previewClass: 'font-display text-6xl' }
 ] %}
 <section id="demos" class="px-4 pb-16">
     <div class="mx-auto max-w-295">
@@ -84,6 +85,9 @@ document.querySelector('.js-marquee-card').addEventListener('pointerleave', () =
 
 // weight hover, felt across the card
 new _weightHover({ target: document.querySelector('.js-weight-preview'), max: 1000, radius: 160 });
+
+// weight pop, plays as the card is hovered
+new _weightPop({ target: document.querySelector('.js-weight-pop-preview'), trigger: document.querySelector('.js-weight-pop-card'), tilt: 10, scale: 1.2 });
 
 new _typing({ target: document.querySelector('.js-typing-preview'), lines: ['Hello', 'Bonjour', 'Hola', 'Ciao'], loop: true, pause: 1500 });
 </script>
