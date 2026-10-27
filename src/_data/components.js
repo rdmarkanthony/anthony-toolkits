@@ -73,6 +73,7 @@ export default [
         url: "/components/sliders/",
         items: [
             { label: "Comic slider", url: "/components/sliders/comic/", description: "Goes through comic pages frame by frame, with a frame generator.", utils: "_comicSlider", ready: true },
+            { label: "Deck slider", url: "/components/sliders/deck/", description: "A stack of tilted cards, the top one is thrown off and slides back in at the bottom.", utils: "_deckSlider", ready: true },
             { label: "Lightbox gallery", url: "/components/lightbox/#image-gallery", description: "Image links open full screen as a gallery, with thumbnails and swipe.", utils: "_lightboxGallery · _lightbox", ready: true },
             { label: "Loop slider", url: "/components/sliders/loop/", description: "An endless row that moves on scroll, drag or as a marquee.", utils: "_horizontalLoop · GSAP", ready: true },
             { label: "Peek slider", url: "/components/sliders/peek/", description: "A carousel of 1 to 3 cards, with the next one peeking at the edge.", utils: "_peekSlider · Swiper", ready: true },

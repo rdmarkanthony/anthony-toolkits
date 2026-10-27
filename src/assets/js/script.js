@@ -63,6 +63,7 @@ import { _snapSlider } from "./utils/_snapSlider";
 import { _scrollbarSlider } from "./utils/_scrollbarSlider";
 import { _horizontalLoop } from "./utils/_horizontalLoop";
 import { _comicSlider } from "./utils/_comicSlider";
+import { _deckSlider } from "./utils/_deckSlider";
 
 // for the inline page scripts
 Object.assign(window, {
@@ -133,6 +134,7 @@ Object.assign(window, {
     _scrollbarSlider,
     _horizontalLoop,
     _comicSlider,
+    _deckSlider,
 });
 
 // set before the page scripts measure
