@@ -1,0 +1,172 @@
+---
+title: Background Wash | Scrolling Animation | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Scrolling animation', url: '/components/scrolling-animation/' }, label: '_parallaxScroller', title: 'Background wash', description: 'Each section has its own background. As the next one comes up, its color washes in from the bottom with a soft, cloudy edge.' }) }}
+
+<p class="mx-auto -mt-4 mb-[20vh] flex max-w-295 animate-bounce items-center gap-1 px-4 text-sm font-medium [box-sizing:content-box]">Scroll down {{ angle('down') }}</p>
+
+{% macro section(number, title, text, classes) -%}
+<section class="js-wash-section flex min-h-[105svh] items-center px-4 {{ classes }}">
+    <div class="mx-auto flex w-full max-w-295 flex-col gap-6">
+        <p class="font-mono text-sm opacity-60">{{ number }}</p>
+        <h2 class="max-w-4xl font-display text-[clamp(2.5rem,7vw,6.5rem)] leading-[1.02] font-bold tracking-tight">{{ title }}</h2>
+        <p class="max-w-xl text-lg opacity-80">{{ text }}</p>
+    </div>
+</section>
+{%- endmacro %}
+
+{# demo #}
+<div class="js-wash relative isolate overflow-clip">
+    <canvas class="js-wash-canvas sticky top-0 -z-10 -mb-[100lvh] block h-lvh w-full" aria-hidden="true"></canvas>
+    {{ section('01', 'Late at night', 'The first section sets the color. The canvas behind the page paints it.', 'bg-indigo-950 text-indigo-50') }}
+    {{ section('02', 'Morning light', 'Its top came up from the bottom of the screen, and the color rose with it.', 'bg-orange-50 text-stone-950') }}
+    {{ section('03', 'Out at sea', 'Scroll back up and it drains back down.', 'bg-teal-900 text-teal-50') }}
+</div>
+
+{# demo: a photo under the canvas, see-through colors dim it #}
+<div class="js-wash relative isolate overflow-clip">
+    <img class="sticky top-0 -z-20 -mb-[100lvh] block h-lvh w-full object-cover" src="/assets/img/sample-image.webp" alt="" />
+    <canvas class="js-wash-canvas sticky top-0 -z-10 -mb-[100lvh] block h-lvh w-full" aria-hidden="true"></canvas>
+    {{ section('01', 'Under a photo', 'This section is bg-black/50, so the canvas paints a dim layer over the photo.', 'bg-black/50 text-white') }}
+    {{ section('02', 'Then a color', 'A solid color washes over it, and the photo goes under.', 'bg-orange-50 text-stone-950') }}
+    {{ section('03', 'And back', 'A see-through color again, the photo shows back through the cloud.', 'bg-black/30 text-white') }}
+</div>
+
+<div class="h-[30vh]"></div>
+
+{% set markup %}{% raw %}
+<div class="js-wash relative isolate overflow-clip">
+    <!-- sticky behind the sections, the negative margin keeps it out of the flow, overflow-clip stops it at the end -->
+    <canvas class="js-wash-canvas sticky top-0 -z-10 -mb-[100lvh] block h-lvh w-full" aria-hidden="true"></canvas>
+
+    <!-- each section's own bg is its color, so it still works without the script -->
+    <section class="js-wash-section min-h-[105svh] bg-indigo-950 text-white">...</section>
+    <section class="js-wash-section min-h-[105svh] bg-orange-50 text-stone-950">...</section>
+    <section class="js-wash-section min-h-[105svh] bg-teal-900 text-white">...</section>
+</div>
+
+<!-- with a photo: sticky under the canvas, a see-through bg like bg-black/50 is its dim overlay -->
+<div class="js-wash relative isolate overflow-clip">
+    <img class="sticky top-0 -z-20 -mb-[100lvh] block h-lvh w-full object-cover" src="photo.webp" alt="" />
+    <canvas class="js-wash-canvas sticky top-0 -z-10 -mb-[100lvh] block h-lvh w-full" aria-hidden="true"></canvas>
+
+    <section class="js-wash-section min-h-[105svh] bg-black/50 text-white">...</section>
+    <section class="js-wash-section min-h-[105svh] bg-orange-50 text-stone-950">...</section>
+</div>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_parallax.js
+
+// edge: how soft the line is, wave: how much the noise bends it
+// length: how far up the screen the section's top moves while its color comes in
+const _edge = 0.4;
+const _wave = 0.5;
+const _length = 0.75;
+
+// any css color as [r, g, b, alpha 0 to 1]
+const _rgb = (color) => {
+    const _context = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+    _context.fillStyle = color;
+    _context.fillRect(0, 0, 1, 1);
+    const [_r, _g, _b, _a] = _context.getImageData(0, 0, 1, 1).data;
+    return [_r, _g, _b, _a / 255];
+};
+
+// smooth value noise, 0 to 1
+const _hash = (x, y) => {
+    const _n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
+    return _n - Math.floor(_n);
+};
+const _noise = (x, y) => {
+    const [_x, _y] = [Math.floor(x), Math.floor(y)];
+    const [_u, _v] = [x - _x, y - _y].map((t) => t * t * (3 - 2 * t));
+    const [_a, _b, _c, _d] = [_hash(_x, _y), _hash(_x + 1, _y), _hash(_x, _y + 1), _hash(_x + 1, _y + 1)];
+    return _a + (_b - _a) * _u + (_c - _a) * _v + (_a - _b - _c + _d) * _u * _v;
+};
+const _smooth = (min, max, value) => {
+    const _t = _parallax.clamp((value - min) / (max - min));
+    return _t * _t * (3 - 2 * _t);
+};
+
+document.querySelectorAll('.js-wash').forEach((target) => {
+    const _canvas = target.querySelector('.js-wash-canvas');
+    const _context = _canvas.getContext('2d');
+    const _sections = [...target.querySelectorAll('.js-wash-section')];
+
+    let _colors = [];
+    let _starts = [];
+    let _field = [];
+    let _image = null;
+    let _key = '';
+
+    // the "to" color rises from the bottom, progress 0 to 1
+    const _draw = (from, to, progress) => {
+        const _range = _wave * 0.5 + _edge;
+        const _line = -_range + (1 + _range * 2) * progress;
+
+        _field.forEach((noise, index) => {
+            const _height = 1 - (Math.floor(index / _canvas.width) + 0.5) / _canvas.height;
+            const _cover = 1 - _smooth(_line - _edge, _line + _edge, _height + (noise - 0.5) * _wave);
+
+            // mixed by their alpha, so a see-through color lets what's under the canvas show
+            const _alpha = from[3] + (to[3] - from[3]) * _cover;
+
+            for (let channel = 0; channel < 3; channel++) _image.data[index * 4 + channel] = _alpha && (from[channel] * from[3] * (1 - _cover) + to[channel] * to[3] * _cover) / _alpha;
+            _image.data[index * 4 + 3] = _alpha * 255;
+        });
+
+        _context.putImageData(_image, 0, 0);
+    };
+
+    new _parallaxScroller({
+        target,
+        events: {
+            init() {
+                // the canvas paints the colors, the sections go clear
+                _colors = _sections.map((section) => _rgb(getComputedStyle(section).backgroundColor));
+                _sections.forEach((section) => (section.style.backgroundColor = 'transparent'));
+            },
+            resize() {
+                // 32px high, the browser stretches it to the screen, that's the blur
+                _canvas.height = 32;
+                _canvas.width = Math.round((32 * _parallax.width()) / _parallax.height());
+                _image = _context.createImageData(_canvas.width, _canvas.height);
+                _field = Array.from({ length: _canvas.width * _canvas.height }, (_, index) => _noise(((index % _canvas.width) / 32) * 2.2, (Math.floor(index / _canvas.width) / 32) * 2.2));
+
+                // a wash starts as the section's top enters the bottom of the screen
+                _starts = _sections.map((section) => _parallax.getOffset(section).top - _parallax.height());
+                _key = '';
+            },
+            update() {
+                const _index = Math.max(_starts.findLastIndex((start, index) => index && _parallax.scrollTop() > start), 0);
+                const _progress = _index ? _parallax.clamp(_parallax.getRange(_starts[_index], _starts[_index] + _parallax.height() * _length)) : 1;
+
+                if (`${_index},${_progress}` === _key) return;
+                _key = `${_index},${_progress}`;
+
+                _draw(_colors[Math.max(_index - 1, 0)], _colors[_index], _progress);
+            },
+        },
+    });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'A sticky canvas behind the sections. Each section keeps its own background class, the script reads it, so without the script the page still has its colors. For a photo, put it sticky under the canvas and give its section a see-through bg like <code class="font-mono text-sm">bg-black/50</code>, that is the dim overlay.',
+    code: pageScript,
+    note: 'Just <code class="font-mono text-sm">_parallaxScroller</code>, no three.js. The canvas is only 32px high, and the browser stretches it to the screen, which blurs the edge into a soft cloud. Each wash starts when a section\'s top enters the bottom of the screen and ends when it is a quarter of the way down, <code class="font-mono text-sm">_length</code>. <code class="font-mono text-sm">_edge</code> sets how soft it is, <code class="font-mono text-sm">_wave</code> how much it bends.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
