@@ -36,6 +36,7 @@ export default [
         category: "Scrolling animation",
         url: "/components/scrolling-animation/",
         items: [
+            { label: "Background wash", url: "/components/scrolling-animation/background-wash/", description: "The next section's color rises from the bottom with a cloudy edge.", utils: "_parallaxScroller", ready: true },
             { label: "Canvas image sequence", url: "/components/scrolling-animation/canvas/", description: "Scrub through image frames on a canvas as you scroll.", utils: "_canvasBanner · _parallaxScroller", ready: true },
             { label: "Card stack", url: "/components/scrolling-animation/card-stack/", description: "Sticky cards slide over each other, covered ones shrink and dim.", utils: "_parallaxScroller", ready: true },
             { label: "Horizontal scroll", url: "/components/scrolling-animation/horizontal-scroll/", description: "A pinned row moves sideways, layers inside move faster or slower.", utils: "_parallaxScroller", ready: true },
