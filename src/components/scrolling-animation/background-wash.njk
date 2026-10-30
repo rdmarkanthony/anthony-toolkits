@@ -20,24 +20,42 @@ title: Background Wash | Scrolling Animation | Anthony Toolkits
 {%- endmacro %}
 
 {# demo #}
-<div class="js-wash relative isolate">
+<div class="js-wash relative isolate overflow-clip">
     <canvas class="js-wash-canvas sticky top-0 -z-10 -mb-[100lvh] block h-lvh w-full" aria-hidden="true"></canvas>
     {{ section('01', 'Late at night', 'The first section sets the color. The canvas behind the page paints it.', 'bg-indigo-950 text-indigo-50') }}
     {{ section('02', 'Morning light', 'Its top came up from the bottom of the screen, and the color rose with it.', 'bg-orange-50 text-stone-950') }}
     {{ section('03', 'Out at sea', 'Scroll back up and it drains back down.', 'bg-teal-900 text-teal-50') }}
 </div>
 
+{# demo: a photo under the canvas, see-through colors dim it #}
+<div class="js-wash relative isolate overflow-clip">
+    <img class="sticky top-0 -z-20 -mb-[100lvh] block h-lvh w-full object-cover" src="/assets/img/sample-image.webp" alt="" />
+    <canvas class="js-wash-canvas sticky top-0 -z-10 -mb-[100lvh] block h-lvh w-full" aria-hidden="true"></canvas>
+    {{ section('01', 'Under a photo', 'This section is bg-black/50, so the canvas paints a dim layer over the photo.', 'bg-black/50 text-white') }}
+    {{ section('02', 'Then a color', 'A solid color washes over it, and the photo goes under.', 'bg-orange-50 text-stone-950') }}
+    {{ section('03', 'And back', 'A see-through color again, the photo shows back through the cloud.', 'bg-black/30 text-white') }}
+</div>
+
 <div class="h-[30vh]"></div>
 
 {% set markup %}{% raw %}
-<div class="js-wash relative isolate">
-    <!-- sticky behind the sections, the negative margin keeps it out of the flow -->
+<div class="js-wash relative isolate overflow-clip">
+    <!-- sticky behind the sections, the negative margin keeps it out of the flow, overflow-clip stops it at the end -->
     <canvas class="js-wash-canvas sticky top-0 -z-10 -mb-[100lvh] block h-lvh w-full" aria-hidden="true"></canvas>
 
     <!-- each section's own bg is its color, so it still works without the script -->
     <section class="js-wash-section min-h-[105svh] bg-indigo-950 text-white">...</section>
     <section class="js-wash-section min-h-[105svh] bg-orange-50 text-stone-950">...</section>
     <section class="js-wash-section min-h-[105svh] bg-teal-900 text-white">...</section>
+</div>
+
+<!-- with a photo: sticky under the canvas, a see-through bg like bg-black/50 is its dim overlay -->
+<div class="js-wash relative isolate overflow-clip">
+    <img class="sticky top-0 -z-20 -mb-[100lvh] block h-lvh w-full object-cover" src="photo.webp" alt="" />
+    <canvas class="js-wash-canvas sticky top-0 -z-10 -mb-[100lvh] block h-lvh w-full" aria-hidden="true"></canvas>
+
+    <section class="js-wash-section min-h-[105svh] bg-black/50 text-white">...</section>
+    <section class="js-wash-section min-h-[105svh] bg-orange-50 text-stone-950">...</section>
 </div>
 {% endraw %}{% endset %}
 
@@ -54,12 +72,13 @@ const _edge = 0.4;
 const _wave = 0.5;
 const _length = 0.75;
 
-// any css color as [r, g, b]
+// any css color as [r, g, b, alpha 0 to 1]
 const _rgb = (color) => {
     const _context = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
     _context.fillStyle = color;
     _context.fillRect(0, 0, 1, 1);
-    return [..._context.getImageData(0, 0, 1, 1).data.slice(0, 3)];
+    const [_r, _g, _b, _a] = _context.getImageData(0, 0, 1, 1).data;
+    return [_r, _g, _b, _a / 255];
 };
 
 // smooth value noise, 0 to 1
@@ -98,8 +117,11 @@ document.querySelectorAll('.js-wash').forEach((target) => {
             const _height = 1 - (Math.floor(index / _canvas.width) + 0.5) / _canvas.height;
             const _cover = 1 - _smooth(_line - _edge, _line + _edge, _height + (noise - 0.5) * _wave);
 
-            for (let channel = 0; channel < 3; channel++) _image.data[index * 4 + channel] = from[channel] + (to[channel] - from[channel]) * _cover;
-            _image.data[index * 4 + 3] = 255;
+            // mixed by their alpha, so a see-through color lets what's under the canvas show
+            const _alpha = from[3] + (to[3] - from[3]) * _cover;
+
+            for (let channel = 0; channel < 3; channel++) _image.data[index * 4 + channel] = _alpha && (from[channel] * from[3] * (1 - _cover) + to[channel] * to[3] * _cover) / _alpha;
+            _image.data[index * 4 + 3] = _alpha * 255;
         });
 
         _context.putImageData(_image, 0, 0);
@@ -140,7 +162,7 @@ document.querySelectorAll('.js-wash').forEach((target) => {
 
 {{ scriptUsage({
     markup: markup,
-    markupNote: 'A sticky canvas behind the sections. Each section keeps its own background class, the script reads it, so without the script the page still has its colors.',
+    markupNote: 'A sticky canvas behind the sections. Each section keeps its own background class, the script reads it, so without the script the page still has its colors. For a photo, put it sticky under the canvas and give its section a see-through bg like <code class="font-mono text-sm">bg-black/50</code>, that is the dim overlay.',
     code: pageScript,
     note: 'Just <code class="font-mono text-sm">_parallaxScroller</code>, no three.js. The canvas is only 32px high, and the browser stretches it to the screen, which blurs the edge into a soft cloud. Each wash starts when a section\'s top enters the bottom of the screen and ends when it is a quarter of the way down, <code class="font-mono text-sm">_length</code>. <code class="font-mono text-sm">_edge</code> sets how soft it is, <code class="font-mono text-sm">_wave</code> how much it bends.'
 }) }}
