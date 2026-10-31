@@ -12,6 +12,7 @@ export default [
             { label: "Cursor bubble", url: "/components/cursor-bubble/", description: "A dot that trails the mouse, grows over big type and shows labels.", utils: "_cursorBubble", ready: true },
             { label: "Magnetic button", url: "/components/magnetic-button/", description: "Buttons and links that lean toward the mouse as it comes near.", utils: "_magnetic", ready: true },
             { label: "Page transition", url: "/components/page-transition/", description: "An animation as a link leaves the page and as the next one shows, safe with the back button.", utils: "_pageTransition", ready: true, favorite: true },
+            { label: "Preloader", url: "/components/preloader/", description: "Covers the page until it and its images are loaded, your own look, with a progress var.", utils: "_preloader · _load", ready: true },
             { label: "Rolling digit", url: "/components/rolling-digit/", description: "Odometer digits for a stat on screen or a cart total.", utils: "_rollingDigit · _inview", ready: true },
             { label: "Theme scroller", url: "/components/theme-scroller/", description: "The page or header takes the theme of the section on screen.", utils: "_themeScroller", ready: true, favorite: true },
         ],

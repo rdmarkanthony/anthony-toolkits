@@ -1,0 +1,64 @@
+---
+title: Preloader | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_preloader · _load', title: 'Preloader', description: 'Covers the page until it and its images or fonts are loaded. The look is your markup, the util gives it a <code class="font-mono text-base">--progress</code> var and plays the exit.' }) }}
+
+{% set button = 'shrink-0 rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700' %}
+
+{% set samples = [
+    { name: 'bar', title: 'A bar', text: 'The basic one. A bar fills, then it fades out.' },
+    { name: 'counter', title: 'A counter', text: 'The number from the progress event. It slides up and the page rises under it.' },
+    { name: 'bread', title: 'Jumping breads', text: 'Your own animation, the util only waits. A circle closes it.' }
+] %}
+
+{# demos: real page loads, in iframes #}
+{% for sample in samples %}
+<section class="px-4 py-16{% if loop.index0 % 2 %} bg-gray-50{% endif %}">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div class="flex items-end justify-between gap-6">
+            <div>
+                <h2 class="text-3xl font-bold tracking-tight">{{ sample.title }}</h2>
+                <p class="mt-2 text-gray-600">{{ sample.text }}</p>
+            </div>
+            <button class="{{ button }}" type="button" data-replay="{{ sample.name }}">Replay</button>
+        </div>
+        <iframe class="h-[32rem] w-full rounded-3xl border border-gray-200 bg-white" src="/components/preloader/demo/{{ sample.name }}/" title="Preloader demo, {{ sample.title }}" data-frame="{{ sample.name }}"></iframe>
+    </div>
+</section>
+{% endfor %}
+
+{% set barMarkup %}{% include "demos/preloader-bar.html" %}{% endset %}
+{% set barScript %}{% include "demos/preloader-bar.js" %}{% endset %}
+{% set counterMarkup %}{% include "demos/preloader-counter.html" %}{% endset %}
+{% set counterScript %}{% include "demos/preloader-counter.js" %}{% endset %}
+{% set breadMarkup %}{% include "demos/preloader-bread.html" %}{% endset %}
+{% set breadCSS %}{% include "demos/preloader-bread.css" %}{% endset %}
+{% set breadScript %}{% include "demos/preloader-bread.js" %}{% endset %}
+
+{{ scriptUsage({
+    markup: barMarkup,
+    markupNote: 'Put it first in the body so it shows before anything else. <code class="font-mono text-sm">--progress</code> goes from 0 to 1, e.g. <code class="font-mono text-sm">scale-x-(--progress)</code>.',
+    code: barScript,
+    note: '<code class="font-mono text-sm">new _preloader({ target, wait, min, timeout, leave, events })</code>. It waits for window load and every promise in <code class="font-mono text-sm">wait</code>, a failed one still counts. <code class="font-mono text-sm">min</code> ms keeps a fast page from flashing it, <code class="font-mono text-sm">timeout</code> lets the site in if something hangs. The page can\'t scroll while it shows. Events: <code class="font-mono text-sm">progress</code>, <code class="font-mono text-sm">leave</code>, <code class="font-mono text-sm">done</code>.',
+    more: [
+        { title: 'Counter markup', code: counterMarkup, lang: 'html' },
+        { title: 'Counter script', note: '<code class="font-mono text-sm">leave</code> returns an animation, the util waits for it. Start the page\'s own animations on the <code class="font-mono text-sm">leave</code> event.', code: counterScript },
+        { title: 'Breads markup', code: breadMarkup, lang: 'html' },
+        { title: 'Breads CSS', note: 'With reduced motion the breads stand still and the exit is skipped.', code: breadCSS, lang: 'css' },
+        { title: 'Breads script', code: breadScript }
+    ]
+}) }}
+
+{% set pageScript %}{% raw %}
+// replay reloads the iframe
+document.querySelectorAll('[data-replay]').forEach((button) => {
+    button.addEventListener('click', () => document.querySelector(`[data-frame="${button.dataset.replay}"]`).contentWindow.location.reload());
+});
+{% endraw %}{% endset %}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

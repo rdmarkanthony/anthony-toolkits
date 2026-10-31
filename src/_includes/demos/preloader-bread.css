@@ -1,0 +1,26 @@
+/* each bread jumps, squashes as it lands, its shadow shrinks while it's up */
+.preloader-bread svg {
+    transform-origin: 50% 100%;
+    animation: bread-jump 1s var(--delay, 0s) infinite;
+}
+.preloader-bread span {
+    animation: bread-shadow 1s var(--delay, 0s) infinite;
+}
+
+@keyframes bread-jump {
+    0%, 100% { translate: 0 0; scale: 1.15 0.85; animation-timing-function: cubic-bezier(0.2, 0.6, 0.4, 1); }
+    15% { translate: 0 0; scale: 0.95 1.05; animation-timing-function: cubic-bezier(0.2, 0.6, 0.4, 1); }
+    50% { translate: 0 -70%; scale: 1 1; animation-timing-function: cubic-bezier(0.6, 0, 0.8, 0.4); }
+    92% { translate: 0 0; scale: 1 1; }
+}
+@keyframes bread-shadow {
+    0%, 100% { scale: 1.15 1; opacity: 1; }
+    50% { scale: 0.5 1; opacity: 0.4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .preloader-bread svg,
+    .preloader-bread span {
+        animation: none;
+    }
+}
