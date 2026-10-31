@@ -1,0 +1,80 @@
+---
+title: Dot grid | Three.js background | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Three.js background', url: '/components/three-background/' }, label: '_threeDotGrid · _threeBackground', title: 'Dot grid', description: 'A still grid of dots. They show in noisy patches that drift slowly, and the mouse leaves a trail of lit dots.' }) }}
+
+{# demo: dot grid behind a hero #}
+<section class="px-4 pb-4">
+    <div class="mx-auto max-w-295">
+        <div class="js-dots-dark flex min-h-[80vh] flex-col justify-between gap-16 overflow-hidden rounded-3xl bg-gray-950 p-8 text-white md:p-12">
+            <p class="font-mono text-sm text-gray-400">Move your mouse here</p>
+            <div class="max-w-2xl">
+                <h2 class="mb-6 text-5xl font-bold tracking-tight md:text-7xl">Lorem ipsum dolor sit amet</h2>
+                <p class="max-w-lg text-lg text-gray-300">Consectetur adipisicing elit. Libero est illo eius laudantium laborum, quis nostrud exercitation.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# demo: round dots, set() changes the amount and color #}
+<section class="px-4 pt-12 pb-16">
+    <div class="mx-auto grid max-w-295 gap-4 md:grid-cols-2">
+        <div class="js-dots-light flex min-h-96 flex-col justify-end gap-2 overflow-hidden rounded-3xl bg-gray-50 p-8">
+            <h2 class="text-3xl font-bold tracking-tight">Round dots</h2>
+            <p class="max-w-sm text-gray-600">Bigger, round, a color. Lorem ipsum dolor sit amet consectetur.</p>
+        </div>
+        <div class="flex min-h-96 flex-col justify-between gap-6 rounded-3xl border border-gray-200 p-8">
+            <h2 class="text-3xl font-bold tracking-tight">set()</h2>
+            <div class="flex flex-wrap gap-3">
+                <button class="js-dots-amount cursor-pointer rounded-full bg-gray-100 px-5 py-2 font-medium" type="button" data-amount="0.2">amount: 0.2</button>
+                <button class="js-dots-amount cursor-pointer rounded-full bg-gray-100 px-5 py-2 font-medium" type="button" data-amount="0.5">amount: 0.5</button>
+                <button class="js-dots-amount cursor-pointer rounded-full bg-gray-100 px-5 py-2 font-medium" type="button" data-amount="0.9">amount: 0.9</button>
+                <button class="js-dots-color cursor-pointer rounded-full bg-gray-950 px-5 py-2 font-medium text-white" type="button">color</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_inview.js
+        // src/assets/js/utils/_threeBackground.js
+        // src/assets/js/utils/_threeDotGrid.js
+    // Packages
+        // three
+
+new _threeBackground({
+    target: document.querySelector('.js-dots-dark'),
+    // defaults: color: '#ffffff', gap: 12, size: 1.5, round: false, amount: 0.5, scale: 1, speed: 0.6, twinkle: 0, opacity: 0.8, radius: 90, fade: 1.2
+    effect: _threeDotGrid(),
+});
+
+// set() glides to a new amount or color
+const _dots = _threeDotGrid({ color: '#6366f1', gap: 18, size: 5, round: true, scale: 0.7, radius: 70 });
+new _threeBackground({ target: document.querySelector('.js-dots-light'), effect: _dots });
+
+document.querySelectorAll('.js-dots-amount').forEach((button) => {
+    button.addEventListener('click', () => _dots.set({ amount: Number(button.dataset.amount) }));
+});
+
+const _colors = ['#6366f1', '#f43f5e', '#10b981'];
+document.querySelector('.js-dots-color').addEventListener('click', () => {
+    _colors.push(_colors.shift());
+    _dots.set({ color: _colors[0] });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: '<code class="font-mono text-sm">set({ color, amount })</code> glides to them. <code class="font-mono text-sm">amount</code> is 0 to 1, <code class="font-mono text-sm">scale</code> makes the patches bigger, <code class="font-mono text-sm">radius</code> and <code class="font-mono text-sm">fade</code> set the mouse trail, <code class="font-mono text-sm">radius: 0</code> turns it off. <code class="font-mono text-sm">twinkle</code> makes the edges flicker, steps per second. Follows a mouse only, not touch. Markup and the base are on the <a class="underline" href="/components/three-background/">overview</a>.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

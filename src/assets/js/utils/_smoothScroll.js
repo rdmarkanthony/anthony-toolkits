@@ -23,8 +23,8 @@ export class _smoothScroll extends _emitter {
         const { default: Lenis } = await _importLenis();
         if (this.destroyed) return;
 
-        // Lenis runs its own frame loop
-        this.lenis = new Lenis({ autoRaf: true, ...this.options });
+        // Lenis runs its own frame loop, a long soft glide, a bit further per wheel tick
+        this.lenis = new Lenis({ autoRaf: true, duration: 1.6, wheelMultiplier: 1.25, ...this.options });
         this.lenis.on("scroll", () => this.emit("scroll"));
 
         document.addEventListener("click", this.onClick);

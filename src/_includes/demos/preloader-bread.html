@@ -1,0 +1,40 @@
+<!-- --delay staggers the jumps -->
+<div class="js-preloader fixed inset-0 z-50 flex flex-col items-center justify-center gap-10 bg-[#fdf1df] text-[#7a4416]">
+    <div class="flex items-end gap-4 md:gap-8">
+        <div class="preloader-bread flex flex-col items-center gap-3" style="--delay: 0s">
+            <svg class="w-20 md:w-24" viewBox="0 0 120 96" aria-hidden="true">
+                <path d="M12 84V52C12 22 36 10 60 10s48 12 48 42v32q0 6-6 6H18q-6 0-6-6Z" fill="#d98a3d" />
+                <path d="M12 52C12 22 36 10 60 10s48 12 48 42c0 8-12 10-48 10s-48-2-48-10Z" fill="#e9a457" />
+                <path d="m38 26 10 18m8-22 10 18m8-14 10 18" stroke="#c06f28" stroke-width="5" stroke-linecap="round" fill="none" />
+            </svg>
+            <span class="h-2 w-16 rounded-full bg-current/20"></span>
+        </div>
+        <div class="preloader-bread flex flex-col items-center gap-3" style="--delay: 0.15s">
+            <svg class="w-20 md:w-24" viewBox="0 0 120 96" aria-hidden="true">
+                <path d="M8 78c0-40 24-60 52-60s52 20 52 60q0 10-10 10H18Q8 88 8 78Z" fill="#c97a30" />
+                <path d="M8 72h104v6q0 10-10 10H18Q8 88 8 78Z" fill="#b0661f" />
+                <g fill="#fff1d2">
+                    <ellipse cx="40" cy="40" rx="4" ry="2.2" transform="rotate(-30 40 40)" />
+                    <ellipse cx="60" cy="32" rx="4" ry="2.2" />
+                    <ellipse cx="80" cy="40" rx="4" ry="2.2" transform="rotate(30 80 40)" />
+                    <ellipse cx="50" cy="52" rx="4" ry="2.2" transform="rotate(20 50 52)" />
+                    <ellipse cx="72" cy="54" rx="4" ry="2.2" transform="rotate(-20 72 54)" />
+                    <ellipse cx="30" cy="58" rx="4" ry="2.2" transform="rotate(-50 30 58)" />
+                    <ellipse cx="90" cy="58" rx="4" ry="2.2" transform="rotate(50 90 58)" />
+                </g>
+            </svg>
+            <span class="h-2 w-16 rounded-full bg-current/20"></span>
+        </div>
+        <div class="preloader-bread flex flex-col items-center gap-3" style="--delay: 0.3s">
+            <svg class="w-20 md:w-24" viewBox="0 0 120 96" aria-hidden="true">
+                <g transform="rotate(-14 60 52)">
+                    <rect x="6" y="34" width="108" height="36" rx="18" fill="#e2a050" />
+                    <path d="M22 42h76" stroke="#fff" stroke-opacity="0.3" stroke-width="4" stroke-linecap="round" />
+                    <path d="m28 60 12-16m10 16 12-16m10 16 12-16" stroke="#b8682a" stroke-width="5" stroke-linecap="round" fill="none" />
+                </g>
+            </svg>
+            <span class="h-2 w-16 rounded-full bg-current/20"></span>
+        </div>
+    </div>
+    <p class="font-display text-xl font-semibold">Baking <span class="js-preloader-count tabular-nums">0</span>%</p>
+</div>

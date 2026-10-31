@@ -1,0 +1,34 @@
+---
+title: Preloader demo | Anthony Toolkits
+pagination:
+    data: looks
+    size: 1
+    alias: look
+looks:
+    - { name: bar, image: photo-1, title: 'A bar' }
+    - { name: counter, image: photo-2, title: 'A counter' }
+    - { name: bread, image: photo-3, title: 'Jumping breads' }
+permalink: "/components/preloader/demo/{{ look.name }}/"
+bare: true
+---
+
+{# the preloader page shows these in iframes, the preloader needs a real page load #}
+{% if look.name == 'bread' %}
+{% styles %}<style>{% include "demos/preloader-bread.css" %}</style>{% endstyles %}
+{% endif %}
+
+{% include "demos/preloader-" + look.name + ".html" %}
+
+<main class="js-page grid min-h-svh place-items-center p-6">
+    <div class="grid w-full max-w-4xl items-center gap-8 sm:grid-cols-2">
+        <div>
+            <h1 class="font-display text-5xl font-semibold tracking-tight">{{ look.title }}</h1>
+            <p class="mt-4 text-gray-600">The page is loaded, the image too.</p>
+        </div>
+        <img class="aspect-4/5 w-full rounded-3xl object-cover" src="/assets/img/gallery/{{ look.image }}.webp" alt="Sample" />
+    </div>
+</main>
+
+{% footerscript %}
+<script type="module">{% include "demos/preloader-" + look.name + ".js" %}</script>
+{% endfooterscript %}

@@ -8,6 +8,7 @@ import { _enquire } from "./utils/_enquire";
 import { _device } from "./utils/_device";
 import { _load } from "./utils/_load";
 import { _pageTransition } from "./utils/_pageTransition";
+import { _preloader } from "./utils/_preloader";
 import { _emitter } from "./utils/_emitter";
 import { _filter } from "./utils/_filter";
 import { _urlVars } from "./utils/_urlVars";
@@ -28,6 +29,7 @@ import { _threeBlobs } from "./utils/_threeBlobs";
 import { _threeGlow } from "./utils/_threeGlow";
 import { _threeText } from "./utils/_threeText";
 import { _threeReveal } from "./utils/_threeReveal";
+import { _threeDotGrid } from "./utils/_threeDotGrid";
 import { _countdownTimer } from "./utils/_countdownTimer";
 import { _tabs } from "./utils/_tabs";
 import { _tooltip } from "./utils/_tooltip";
@@ -74,6 +76,7 @@ Object.assign(window, {
     _device,
     _load,
     _pageTransition,
+    _preloader,
     _emitter,
     _filter,
     _urlVars,
@@ -94,6 +97,7 @@ Object.assign(window, {
     _threeGlow,
     _threeText,
     _threeReveal,
+    _threeDotGrid,
     _countdownTimer,
     _tabs,
     _tooltip,
