@@ -1,4 +1,6 @@
 export default {
+    // link previews need absolute urls
+    url: "https://anthony-toolkits.web.app",
     name: "Anthony Toolkits",
     // header and footer wordmark
     shortName: "Toolkits",

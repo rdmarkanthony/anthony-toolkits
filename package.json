@@ -16,6 +16,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "format": "prettier --write .",
         "lottie": "node tools/make-lottie.js",
+        "og": "\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --hide-scrollbars --force-device-scale-factor=1 --window-size=1200,630 --virtual-time-budget=5000 --screenshot=\"$PWD/src/assets/img/og-image.png\" \"file://$PWD/tools/og-image.html\"",
         "preinstall": "npx only-allow pnpm"
     },
     "keywords": [],

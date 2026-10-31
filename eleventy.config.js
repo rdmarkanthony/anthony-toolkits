@@ -27,6 +27,9 @@ export default function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy("src/assets/video");
     eleventyConfig.addPassthroughCopy("src/assets/data");
     eleventyConfig.addPassthroughCopy("src/assets/lottie");
+    eleventyConfig.addPassthroughCopy("src/assets/favicon");
+    eleventyConfig.addPassthroughCopy("src/favicon.ico");
+    eleventyConfig.addPassthroughCopy("src/site.webmanifest");
 
     // zero-pad numbers
     eleventyConfig.addFilter("pad", (value, length = 2) => String(value).padStart(length, "0"));
