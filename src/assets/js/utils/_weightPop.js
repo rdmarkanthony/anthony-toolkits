@@ -28,7 +28,6 @@ export class _weightPop extends _emitter {
     }
 
     init() {
-        // screen readers get the text, not the letters
         this.html = this.target.innerHTML;
         this.label = document.createElement("span");
         // innerText keeps a <br> as a space
@@ -47,13 +46,11 @@ export class _weightPop extends _emitter {
         this.trigger.addEventListener("focusin", () => this.play(), _options);
     }
 
-    // a pop still going finishes first
     play() {
         if (this.animations.some((animation) => animation.playState === "running")) return;
 
         const _bold = [`${this.bold}em 0`, `-${this.bold}em 0`, `0 ${this.bold}em`, `0 -${this.bold}em`].map((offset) => `${offset} currentColor`).join(", ");
 
-        // a quick pop with a bit of overshoot, then a slower settle
         this.animations = this.letters.map((letter, index) =>
             letter.animate(
                 [

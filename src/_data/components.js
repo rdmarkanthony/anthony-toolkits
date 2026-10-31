@@ -1,8 +1,4 @@
-// component registry: drives the home page, header and footer
-// set `ready: true` once the component is migrated to src/components/
-// category `url`: overview page, `utils`: card label
-// `starter: true` adds it to the starter kit popup
-// `favorite: true` adds a star on its home card
+// ready: listed on the site, starter: in the starter kit popup, favorite: star on its home card
 export default [
     {
         category: "Animation",

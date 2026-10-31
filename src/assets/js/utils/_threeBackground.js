@@ -21,7 +21,6 @@ export class _threeBackground extends _emitter {
         this.scene = null;
         this.camera = null;
 
-        // pointer -1 to 1 over the target, progress 0 to 1 as it scrolls past
         this.pointer = { x: 0, y: 0, inside: false };
         this.progress = 0;
         this.size = { width: 0, height: 0 };
@@ -57,7 +56,6 @@ export class _threeBackground extends _emitter {
         this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
         this.camera.position.z = 10;
 
-        // behind the content, the target keeps its own background
         const _canvas = this.renderer.domElement;
         _canvas.setAttribute("aria-hidden", "true");
         Object.assign(_canvas.style, { position: "absolute", inset: "0", zIndex: "-1", display: "block", width: "100%", height: "100%", pointerEvents: "none" });
@@ -69,7 +67,6 @@ export class _threeBackground extends _emitter {
 
         this.effect.setup?.(this);
 
-        // measure now and on resize
         _event.observeResize(this.resize, this.target);
         _event.scroll(this.scroll);
 
@@ -104,7 +101,6 @@ export class _threeBackground extends _emitter {
         this.camera.aspect = _width / _height;
         this.camera.updateProjectionMatrix();
 
-        // world size at z 0
         const _viewHeight = 2 * Math.tan(this.three.MathUtils.degToRad(this.camera.fov / 2)) * this.camera.position.z;
         this.view = { width: _viewHeight * this.camera.aspect, height: _viewHeight };
 
@@ -127,7 +123,6 @@ export class _threeBackground extends _emitter {
         this.pointer.inside = Math.abs(this.pointer.x) <= 1 && Math.abs(this.pointer.y) <= 1;
     }
 
-    // runs when not paused, in view, the tab is open and motion is ok
     loop() {
         const _run = !this.paused && this.visible && !document.hidden && !this.reduced.matches;
         if (_run === this.running) return;
@@ -140,7 +135,6 @@ export class _threeBackground extends _emitter {
     }
 
     frame(now) {
-        // seconds, capped after a long gap
         this.delta = this.last ? Math.min((now - this.last) / 1000, 0.1) : 0;
         this.last = now;
         this.time += this.delta;

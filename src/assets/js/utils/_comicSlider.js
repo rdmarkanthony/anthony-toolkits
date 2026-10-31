@@ -9,7 +9,6 @@ import { _tween } from "./_tween";
 // power1.out, for the page fade
 const _fadeEase = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
 
-// a frame's edges, missing ones are the page's own
 const _area = ({ top = 0, left = 0, right = 100, bottom = 100 }) => ({ top, left, right, bottom });
 
 export class _comicSlider extends _emitter {
@@ -27,11 +26,9 @@ export class _comicSlider extends _emitter {
         this.index = 0;
         this.page = -1;
         this.loaded = false;
-        // the shown area of the page, tweened between frames
         this.rect = null;
         this.swipe = null;
 
-        // resolves once the pages loaded and the first frame shows
         this.ready = this.target ? this.init() : Promise.resolve(this);
     }
 
@@ -40,7 +37,6 @@ export class _comicSlider extends _emitter {
         this.el.prev = this.target.querySelector(".js-comic-prev");
         this.el.next = this.target.querySelector(".js-comic-next");
 
-        // a frame-sized box clips each page
         this.pages = [...this.el.stage.querySelectorAll("img")].map((img) => {
             const _box = document.createElement("div");
             const _layer = document.createElement("div");
@@ -75,7 +71,6 @@ export class _comicSlider extends _emitter {
                 e.preventDefault();
             },
             down: (e) => (this.swipe = { x: e.clientX, y: e.clientY }),
-            // a sideways swipe on the stage turns the frame
             up: (e) => {
                 if (!this.swipe) return;
                 const _x = e.clientX - this.swipe.x;
@@ -93,7 +88,6 @@ export class _comicSlider extends _emitter {
         this.el.stage.addEventListener("pointerdown", this.handlers.down);
         this.el.stage.addEventListener("pointerup", this.handlers.up);
 
-        // resize may switch to or from mobile frames
         this.offResize = _event.observeResize(() => this.refresh(), this.el.stage);
 
         this.show(this.index, { duration: 0 });
@@ -104,7 +98,6 @@ export class _comicSlider extends _emitter {
         return typeof this.mobile === "function" ? this.mobile() : matchMedia(this.mobile).matches;
     }
 
-    // the frame's page and area, its mobile area on mobile
     frame(index) {
         const _frame = this.frames[index] ?? {};
         return { page: _frame.page ?? 0, ..._area(this.isMobile() && _frame.mobile ? _frame.mobile : _frame) };
@@ -120,7 +113,6 @@ export class _comicSlider extends _emitter {
         this.tween?.stop();
 
         if (page === this.page) {
-            // same page: pan and zoom to the new area
             const _from = { ...this.rect };
             this.tween = _tween({
                 duration: _duration * 1000,
@@ -131,7 +123,6 @@ export class _comicSlider extends _emitter {
                 },
             });
         } else {
-            // a new page fades in on top, already at its frame
             const _old = this.pages[this.page];
             const _new = this.pages[page];
             this.page = page;
@@ -139,14 +130,12 @@ export class _comicSlider extends _emitter {
             this.render();
 
             const _fade = _duration * 750;
-            // the old page's opacity, it may be mid-fade
             const _opacity = _old ? getComputedStyle(_old.box).opacity : 0;
             [_new.box, _old?.box].forEach((box) => box?.getAnimations().forEach((animation) => animation.cancel()));
 
             Object.assign(_new.box.style, { zIndex: 1, opacity: 1, visibility: "visible" });
             _new.box.animate({ opacity: [0, 1] }, { duration: _fade, easing: _fadeEase });
 
-            // the old page hides once the new one is in
             if (_old) {
                 Object.assign(_old.box.style, { zIndex: 0, opacity: 0, visibility: "hidden" });
                 _old.box.animate({ opacity: [_opacity, _opacity], visibility: ["visible", "visible"] }, { duration: _fade });
@@ -167,7 +156,6 @@ export class _comicSlider extends _emitter {
         this.show(this.index - 1);
     }
 
-    // redraw the current frame without a tween
     refresh() {
         if (!this.rect) return;
         this.tween?.stop();
@@ -177,13 +165,11 @@ export class _comicSlider extends _emitter {
         this.render();
     }
 
-    // fit the area in the stage, centered
     render() {
         const _page = this.pages[this.page];
         const { top, left, right, bottom } = this.rect;
         const _stageWidth = this.el.stage.offsetWidth;
         const _stageHeight = this.el.stage.offsetHeight;
-        // the area's share of the page, 0 to 1
         const _spanX = Math.max(right - left, 0.1) / 100;
         const _spanY = Math.max(bottom - top, 0.1) / 100;
         const _ratio = (_page.width * _spanX) / (_page.height * _spanY);

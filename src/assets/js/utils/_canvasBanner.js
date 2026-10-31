@@ -10,15 +10,14 @@ export class _canvasBanner extends _emitter {
         this.target = props.target ?? null;
         this.context = this.target?.getContext("2d");
 
-        // for smaller frames on phones
         const _mobile = props.assets?.mobile;
         const _assets = _mobile && window.matchMedia(_mobile.media ?? "(max-width: 767px)").matches ? { ...props.assets, ..._mobile } : (props.assets ?? {});
 
         this.image = null;
         this.assets = {
             count: _assets.count ?? 0,
-            frames: [], // file number of each frame
-            list: [], // decoded frames, null until loaded
+            frames: [],
+            list: [],
             path: _assets.path ?? "",
             type: _assets.type ?? "jpg",
             digits: _assets.digits ?? String((_assets.count ?? 1) - 1).length,
@@ -52,7 +51,6 @@ export class _canvasBanner extends _emitter {
     }
 
     init() {
-        // every step frames, always with the last one
         for (let i = 0; i < this.assets.count; i += this.assets.step) this.assets.frames.push(i);
         if (this.assets.count && this.assets.frames.at(-1) !== this.assets.count - 1) this.assets.frames.push(this.assets.count - 1);
 
@@ -65,7 +63,6 @@ export class _canvasBanner extends _emitter {
         this.emit("init");
     }
 
-    // progress from 0 (first frame) to 1 (last frame)
     update(progress = 0) {
         const _index = Math.round(Math.min(Math.max(progress, 0), 1) * (this.assets.list.length - 1));
         if (_index === this.assets.current || !this.assets.list.length) return;
@@ -81,7 +78,6 @@ export class _canvasBanner extends _emitter {
         this.emit("afterUpdate");
     }
 
-    // draw the current frame, or the nearest loaded one until it loads
     show() {
         const _index = this.nearest(this.assets.current);
         if (_index < 0 || _index === this.assets.shown) return;
@@ -94,7 +90,6 @@ export class _canvasBanner extends _emitter {
         this.fade(_previousImage, this.image);
     }
 
-    // index of the loaded frame nearest to the given one
     nearest(index) {
         for (let i = 0; i < this.assets.list.length; i++) {
             if (this.assets.list[index - i]) return index - i;
@@ -104,11 +99,9 @@ export class _canvasBanner extends _emitter {
         return -1;
     }
 
-    // load the frames around the current one, nearest first
     load() {
         const { list, current, buffer } = this.assets;
 
-        // unload frames outside the buffer, except the shown one
         list.forEach((frame, index) => {
             if (!frame || index === this.assets.shown || Math.abs(index - current) <= buffer) return;
 
@@ -127,7 +120,6 @@ export class _canvasBanner extends _emitter {
         this.next();
     }
 
-    // start loading from the queue, a few at a time
     next() {
         while (this.loading.active < this.loading.concurrency && this.loading.queue.length) {
             const _index = this.loading.queue.shift();
@@ -137,7 +129,6 @@ export class _canvasBanner extends _emitter {
 
             this.decode(this.src(_index))
                 .then((frame) => {
-                    // skip if scrolled out of the buffer while loading
                     if (this.destroyed || Math.abs(_index - this.assets.current) > this.assets.buffer) return frame.close?.();
 
                     this.assets.list[_index] = frame;
@@ -152,7 +143,6 @@ export class _canvasBanner extends _emitter {
         }
     }
 
-    // decoded before drawing, off the main thread where supported
     async decode(src) {
         if (window.createImageBitmap) {
             try {
@@ -188,7 +178,6 @@ export class _canvasBanner extends _emitter {
         const _animate = (time) => {
             const _progress = Math.min((time - _start) / this.transition.duration, 1);
 
-            // the next image fades in over the previous one
             this.draw(previousImage);
             this.draw(nextImage, _progress, false);
 
@@ -204,7 +193,6 @@ export class _canvasBanner extends _emitter {
     }
 
     draw(image = this.image, alpha = 1, clear = true) {
-        // skip unloaded frames
         if (!image?.width) return;
 
         if (clear) this.context.clearRect(0, 0, this.target.width, this.target.height);
@@ -218,7 +206,6 @@ export class _canvasBanner extends _emitter {
         const _parent = this.target.parentElement;
         if (!_parent) return;
 
-        // parent content box, without the padding
         const _style = getComputedStyle(_parent);
         const _parentWidth = _parent.clientWidth - parseFloat(_style.paddingLeft) - parseFloat(_style.paddingRight);
         const _parentHeight = _parent.clientHeight - parseFloat(_style.paddingTop) - parseFloat(_style.paddingBottom);
@@ -235,12 +222,10 @@ export class _canvasBanner extends _emitter {
         this.target.style.width = `${_width}px`;
         this.target.style.height = `${_height}px`;
 
-        // sharp on retina, capped at the image size
         const _scale = Math.min(window.devicePixelRatio || 1, this.assets.size[0] / _width);
         const _canvasWidth = Math.round(_width * _scale);
         const _canvasHeight = Math.round(_height * _scale);
 
-        // setting the size clears the canvas, so only when it changed
         if (this.target.width !== _canvasWidth || this.target.height !== _canvasHeight) {
             this.target.width = _canvasWidth;
             this.target.height = _canvasHeight;

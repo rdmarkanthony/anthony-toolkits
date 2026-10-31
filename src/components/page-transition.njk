@@ -8,7 +8,6 @@ title: Page transition | Anthony Toolkits
 
 {% set headLine %}<script>try{const t=JSON.parse(sessionStorage.pageTransition);sessionStorage.removeItem("pageTransition");if(Date.now()-t.time<1e4)document.documentElement.dataset.pageEnter=t.name}catch{}</script>{% endset %}
 
-{# scribble and twirl's lines, the css shows the one that plays #}
 {% set scribbleSvg %}<svg class="page-scribble" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
     <path data-page-scribble="scribble" pathLength="1" d="M150 850C50 600 450 80 700 150C950 220 300 520 250 700C200 880 800 900 880 650C940 450 700 300 850 120"/>
     <path data-page-scribble="twirl" pathLength="1" d="M520 520C440 600 330 540 360 440C390 340 560 330 600 430C650 560 480 720 300 700C100 680 60 420 180 260C320 80 760 60 860 240C960 420 820 760 620 860C480 930 260 920 140 860"/>
@@ -68,7 +67,6 @@ title: Page transition | Anthony Toolkits
     { name: 'wipe', text: 'Your own, from the CSS below.' }
 ] %}
 
-{# demo: each look, back to this page #}
 <section class="px-4 py-16">
     <div class="mx-auto flex max-w-295 flex-col gap-6">
         <div>
@@ -86,7 +84,6 @@ title: Page transition | Anthony Toolkits
     </div>
 </section>
 
-{# demo: on a parent, a link can opt out #}
 <section class="bg-gray-50 px-4 py-16">
     <div class="mx-auto flex max-w-295 flex-col gap-6">
         <div>
@@ -103,7 +100,6 @@ title: Page transition | Anthony Toolkits
     </div>
 </section>
 
-{# demo: from code #}
 <section class="px-4 py-16">
     <div class="mx-auto flex max-w-295 flex-col items-start gap-6">
         <div>

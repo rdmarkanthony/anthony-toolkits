@@ -47,14 +47,12 @@ const _tag = (el, attrs = {}) =>
 
 export const _load = {
     script(src, options = {}) {
-        // async false: downloads together, runs in the array's order
         const ordered = Array.isArray(src);
 
         return _many(
             src,
             (item) =>
                 _once(`script ${_url(item)}`, async () => {
-                    // already in the html, taken as loaded
                     const existing = [...document.scripts].find((el) => el.src === _url(item));
                     if (existing) return existing;
 
@@ -88,7 +86,6 @@ export const _load = {
     json(url, options = {}) {
         const load = async (item) => {
             const response = await fetch(item);
-            // fetch doesn't throw on a 404 or 500
             if (!response.ok) throw new Error(`_load: ${item} ${response.status}`);
             return response.json();
         };
@@ -96,7 +93,6 @@ export const _load = {
         return _many(url, (item) => (options.fresh ? load(item) : _once(`json ${_url(item)}`, () => load(item))), options.progress);
     },
 
-    // decoded too, so it shows without a flash
     image(src, options = {}) {
         return _many(
             src,

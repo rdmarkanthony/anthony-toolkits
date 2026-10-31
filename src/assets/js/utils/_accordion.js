@@ -24,7 +24,6 @@ export class _accordion extends _emitter {
     init() {
         const { signal } = this.abort;
 
-        // its own sets only, not the ones of a nested accordion
         this.sets = [...this.target.querySelectorAll(".js-accordion-set")].filter((set) => {
             const _content = set.parentElement.closest(".js-accordion-set-content");
             return !_content || !this.target.contains(_content);
@@ -92,7 +91,6 @@ export class _accordion extends _emitter {
     update(set, open, animate = true) {
         const { title, content } = this.parts(set);
 
-        // from the current height, so it can reverse mid-way
         const _from = content.hidden ? 0 : content.offsetHeight;
         content.getAnimations().forEach((animation) => animation.cancel());
 

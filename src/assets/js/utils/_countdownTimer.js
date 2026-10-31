@@ -10,7 +10,7 @@ export class _countdownTimer extends _emitter {
         // a luxon DateTime or an ISO string
         const _parsedDateTime = DateTime.isDateTime(props.dateTime) ? props.dateTime : props.dateTime ? DateTime.fromISO(props.dateTime) : null;
         this.dateTime = {
-            target: _parsedDateTime && _parsedDateTime.isValid ? _parsedDateTime.setZone(this.timeZone).startOf("second") : null, // whole seconds, so ticks line up with the clock
+            target: _parsedDateTime && _parsedDateTime.isValid ? _parsedDateTime.setZone(this.timeZone).startOf("second") : null,
             now: null,
             diff: null,
             ended: false,
@@ -31,7 +31,6 @@ export class _countdownTimer extends _emitter {
         this.emit("afterInit");
     }
 
-    // schedule each tick on the next real second so every tab flips together
     tick() {
         this.update();
         if (this.dateTime.ended) return;

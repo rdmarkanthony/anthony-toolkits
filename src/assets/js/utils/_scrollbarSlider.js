@@ -44,7 +44,6 @@ export class _scrollbarSlider extends _emitter {
             prev: () => this.prev(),
             next: () => this.next(),
             dragstart: (e) => e.preventDefault(),
-            // a drag isn't a click on the card under it
             click: (e) => {
                 if (!this.dragged) return;
                 e.preventDefault();
@@ -64,7 +63,6 @@ export class _scrollbarSlider extends _emitter {
         this.el.prev?.addEventListener("click", this.handlers.prev);
         this.el.next?.addEventListener("click", this.handlers.next);
 
-        // the row, and cards that change size
         this.observed = [_track, ..._track.children];
         this.observed.forEach((item) => _event.observeResize(this.handlers.resize, item));
     }
@@ -73,7 +71,6 @@ export class _scrollbarSlider extends _emitter {
         return this.el.track.scrollWidth - this.el.track.clientWidth;
     }
 
-    // scroll positions that put each card at the start
     positions() {
         const _track = this.el.track;
         const _first = _track.children[0]?.offsetLeft ?? 0;
@@ -156,7 +153,7 @@ export class _scrollbarSlider extends _emitter {
     down(e) {
         this.dragged = false;
         if (e.pointerType !== "mouse" || e.button !== 0) return;
-        e.preventDefault(); // no text selection
+        e.preventDefault();
 
         this.stop();
         this.drag = { x: e.clientX, left: this.el.track.scrollLeft, time: performance.now(), speed: 0 };
@@ -176,7 +173,6 @@ export class _scrollbarSlider extends _emitter {
             this.el.track.dataset.dragging = "";
         }
 
-        // px per ms, for the throw on release
         _drag.speed = (_left - this.el.track.scrollLeft) / Math.max(_now - _drag.time, 1);
         _drag.time = _now;
         this.el.track.scrollLeft = _left;
@@ -188,14 +184,12 @@ export class _scrollbarSlider extends _emitter {
         window.removeEventListener("pointercancel", this.handlers.up);
         delete this.el.track.dataset.dragging;
 
-        // no snap, it coasts on
         const _speed = performance.now() - this.drag.time > 80 ? 0 : this.drag.speed;
         if (_speed) this.glide(this.el.track.scrollLeft + _speed * 250);
 
         this.drag = null;
     }
 
-    // the thumb's width and left in px
     thumb() {
         const _width = this.el.bar.clientWidth;
         const _size = Math.min(this.el.track.clientWidth / this.el.track.scrollWidth, 1) * _width;
@@ -203,7 +197,6 @@ export class _scrollbarSlider extends _emitter {
         return { width: _size, left: _progress * (_width - _size), room: _width - _size };
     }
 
-    // on the thumb it drags, off it the thumb glides there first
     barDown(e) {
         if (e.button !== 0 || this.max <= 1) return;
         e.preventDefault();

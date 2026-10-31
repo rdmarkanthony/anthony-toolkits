@@ -35,7 +35,6 @@ export class _autocomplete extends _emitter {
         this.list.setAttribute("role", "listbox");
         this.list.hidden = true;
 
-        // typing only, not values set by a script
         this.onInput = () => document.activeElement === this.input && this.update();
         this.onFocus = () => this.input.value.trim() && this.update();
         this.onKeydown = (e) => this.keydown(e);
@@ -104,7 +103,6 @@ export class _autocomplete extends _emitter {
             e.preventDefault();
 
             const step = e.key === "ArrowDown" ? 1 : -1;
-            // -1 is nothing picked, between last and first
             this.select(((this.active + 1 + step + total + 1) % (total + 1)) - 1);
         } else if (e.key === "Enter" && !this.list.hidden && this.options[this.active]) {
             e.preventDefault();
@@ -138,7 +136,6 @@ export class _autocomplete extends _emitter {
         if (changed) this.emit("select");
     }
 
-    // click or Enter
     pick(index) {
         if (index < 0) return;
         this.picked = this.results[index] ?? null;

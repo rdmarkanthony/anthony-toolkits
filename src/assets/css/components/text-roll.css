@@ -32,7 +32,6 @@
             translate: 0 calc(var(--roll) * -1);
         }
 
-        /* flip: the cube turns on its middle, half a line deep */
         [data-text-roll="flip"] .text-roll {
             overflow: visible;
         }

@@ -15,14 +15,12 @@ title: Lottie scroll | Anthony Toolkits
 </section>
 {% endraw %}{% endset %}
 
-{# demo: pinned below the sticky site header #}
 <section class="js-lottie-section relative min-h-[300vh] bg-gray-50">
     <div class="sticky top-(--header-height) flex h-[calc(100svh-var(--header-height,0px))] flex-col items-center justify-center gap-6 px-4">
         <div class="js-lottie-sunrise w-full max-w-xl" data-lottie="/assets/lottie/sunrise.json"></div>
     </div>
 </section>
 
-{# demo: draws in as it passes, no pin #}
 <section class="px-4 py-24">
     <div class="mx-auto flex max-w-295 flex-col gap-24">
         {% for step in ['Plan', 'Build', 'Launch'] %}

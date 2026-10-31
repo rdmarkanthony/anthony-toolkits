@@ -27,14 +27,12 @@ export class _lottie extends _emitter {
         this.reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         this.abort = new AbortController();
 
-        // resolves with the lottie-web animation
         this.ready = new Promise((resolve) => (this.resolve = resolve));
 
         if (this.target && this.src) this.init();
     }
 
     init() {
-        // load once near the screen
         this.near = new IntersectionObserver(
             ([entry]) => {
                 if (!entry.isIntersecting) return;
@@ -73,7 +71,6 @@ export class _lottie extends _emitter {
         const _on = (type, callback) => this.trigger.addEventListener(type, callback, { signal });
 
         if (this.play === "inview") {
-            // a still frame: the start of a loop, the end of a one-off
             if (this.reduce) return this.animation.goToAndStop(this.loop ? 0 : this.animation.totalFrames - 1, true);
 
             this.view = new IntersectionObserver(([entry]) => {
@@ -93,18 +90,15 @@ export class _lottie extends _emitter {
 
         if (this.play === "click") _on("click", () => this.toggle());
 
-        // a seek or toggle from before it loaded
         if (this.progress !== null) this.seek(this.progress);
         if (this.isOn) this.animation.goToAndStop(this.animation.totalFrames - 1, true);
     }
 
-    // plays toward the end, or back to the start
     direction(value) {
         this.animation.setDirection(value);
         this.animation.play();
     }
 
-    // loops while hovered, on leave it ends the round it is in
     hoverLoop(on) {
         this.animation.setLoop(on);
         if (on && this.animation.isPaused) this.animation.goToAndPlay(0, true);

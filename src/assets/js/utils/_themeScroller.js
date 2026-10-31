@@ -50,7 +50,6 @@ export class _themeScroller extends _emitter {
             if (!_rect.height) return;
 
             if (_line !== null) {
-                // the last one wins, e.g. a sticky section on top
                 if (_rect.top <= _line && _rect.bottom > _line) _picked = section;
                 return;
             }
@@ -71,7 +70,6 @@ export class _themeScroller extends _emitter {
 
         if (_theme === this.theme) return;
 
-        // the first time, clear the theme set in the html
         const _first = this.theme === null;
         (_first ? this.themes() : this.split(this.theme)).forEach((name) => this.target.classList.remove(name));
         this.split(_theme).forEach((name) => this.target.classList.add(name));

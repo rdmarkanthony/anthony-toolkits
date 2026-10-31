@@ -19,7 +19,6 @@ title: Snap slider | Sliders | Anthony Toolkits
 ] %}
 {% set button = 'grid size-9 cursor-pointer place-items-center rounded-full bg-gray-200 text-lg text-gray-700 transition-colors duration-300 hover:bg-gray-300 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-gray-200' %}
 
-{# demo: lined up with the column, runs to the edge #}
 <section class="pb-16">
     <h2 class="mx-auto mb-8 max-w-295 px-4 text-3xl font-bold tracking-tight [box-sizing:content-box]">Card row</h2>
     <div class="js-snap-slider">
@@ -53,7 +52,6 @@ title: Snap slider | Sliders | Anthony Toolkits
 ] %}
 {% set parallax = 'translate-x-[calc(var(--offset,0)*-10rem)] opacity-[calc(var(--near,1)*var(--near,1)*var(--near,1))] will-change-transform' %}
 
-{# demo: centered card, the text slides and fades #}
 <section class="bg-gray-50 py-16">
     <h2 class="mx-auto mb-8 max-w-295 px-4 text-3xl font-bold tracking-tight [box-sizing:content-box]">One card, parallax text</h2>
     <div class="js-snap-slider @container">
@@ -80,7 +78,6 @@ title: Snap slider | Sliders | Anthony Toolkits
     </div>
 </section>
 
-{# text spot: flex alignment, plus a shade on that side #}
 {% set spots = {
     'bottom-left': { place: 'justify-end items-start', shade: 'bg-linear-to-t from-black/70 via-black/20 to-transparent' },
     'top-left': { place: 'justify-start items-start', shade: 'bg-linear-to-b from-black/70 via-black/20 to-transparent' },
@@ -96,7 +93,6 @@ title: Snap slider | Sliders | Anthony Toolkits
     { spot: 'top-right', crop: 'scale-110 object-[20%_50%]', title: 'Vel deleniti ipsam mollitia.' }
 ] %}
 
-{# demo: full images, text in a different spot each #}
 <section class="py-16">
     <h2 class="mx-auto mb-8 max-w-295 px-4 text-3xl font-bold tracking-tight [box-sizing:content-box]">Full images, text in place</h2>
     <div class="js-snap-slider @container">

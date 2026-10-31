@@ -32,11 +32,9 @@ export class _typing extends _emitter {
     init() {
         this.original = [...this.target.childNodes];
 
-        // screen readers get the label, the typing is hidden from them
         const _label = _span("typing-label");
         _label.textContent = this.label;
 
-        // invisible copies hold the tallest line's height
         const _box = _span("typing");
         _box.setAttribute("aria-hidden", "true");
         this.lines.forEach((line) => _box.append(_parts(line, "typing-ghost")));
@@ -51,7 +49,6 @@ export class _typing extends _emitter {
         if (this.autoplay) this.play();
     }
 
-    // shows the first `count` letters of a line
     render(line, count) {
         if (this.line !== line) {
             this.line = line;
@@ -68,14 +65,12 @@ export class _typing extends _emitter {
             _left -= part.text.length;
         });
 
-        // the cursor takes the color of the part being typed
         if (this.el.cursor) this.el.cursor.className = `typing-cursor ${_active?.className ?? ""}`.trim();
     }
 
     async play() {
         this.stop();
 
-        // reduced motion: the last line, no typing
         if (_reduced()) {
             this.index = this.lines.length - 1;
             this.render(this.lines[this.index], Infinity);
@@ -114,7 +109,6 @@ export class _typing extends _emitter {
         return this.animate(0, this.eraseSpeed);
     }
 
-    // count to `to` letters over time, the cursor holds still meanwhile
     animate(to, speed) {
         const _from = Math.min(this.count, _lineText(this.line).length);
         const _duration = _reduced() ? 0 : Math.abs(to - _from) * speed;
@@ -137,7 +131,6 @@ export class _typing extends _emitter {
         return new Promise((resolve) => (this.timer = setTimeout(resolve, ms)));
     }
 
-    // stops where it is, a running play() never goes on
     stop() {
         cancelAnimationFrame(this.frame);
         clearTimeout(this.timer);

@@ -15,7 +15,6 @@
         white-space: nowrap;
         overflow: hidden;
     }
-    /* the halves, screen readers skip them */
     .split-hover::before,
     .split-hover::after {
         content: attr(data-text);

@@ -40,7 +40,6 @@ export class _rangeSlider extends _emitter {
 
         this.target.addEventListener("pointerdown", (e) => this.press(e), { signal });
 
-        // a form reset puts the values back after the event
         this.inputs[0]?.form?.addEventListener("reset", () => setTimeout(() => this.update()), { signal });
 
         this.update();
@@ -58,7 +57,6 @@ export class _rangeSlider extends _emitter {
         return Number(this.inputs[0].max || 100);
     }
 
-    // the moved one stops at the other, gap apart
     keep(index) {
         if (this.inputs.length < 2) return;
 
@@ -76,7 +74,6 @@ export class _rangeSlider extends _emitter {
         this.target.style.setProperty("--start", _start);
         this.target.style.setProperty("--end", _end);
 
-        // on top when both sit together: the first near the end, so it can still move back
         if (this.inputs.length > 1) {
             const _firstOnTop = _values[0] > this.min + _range / 2;
             this.inputs[0].style.zIndex = _firstOnTop ? 2 : 1;
@@ -86,7 +83,6 @@ export class _rangeSlider extends _emitter {
         this.outputs.forEach((output, i) => this.inputs[i] && (output.textContent = this.format(_values[i], this.inputs[i], i)));
     }
 
-    // the value under the pointer, the input's height is the thumb size
     valueAt(x) {
         const _rect = this.inputs[0].getBoundingClientRect();
         const _thumb = _rect.height;
@@ -94,12 +90,10 @@ export class _rangeSlider extends _emitter {
         return this.min + _ratio * (this.max - this.min);
     }
 
-    // presses on the track, the thumbs are the inputs' own drag
     press(e) {
         if (e.button !== 0 || this.inputs.includes(e.target) || !this.inputs.length) return;
         e.preventDefault();
 
-        // the nearest thumb, past both when they sit together
         const _value = this.valueAt(e.clientX);
         const [_from, _to] = this.values;
         let _index = 0;

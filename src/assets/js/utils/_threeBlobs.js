@@ -15,10 +15,8 @@ export const _threeBlobs = (props = {}) => {
     const _pointer = { x: 0, y: 0 };
 
     const _random = (min, max) => min + Math.random() * (max - min);
-    // css colors as srgb, so the blend matches css gradients
     const _srgb = (color) => new _THREE.Color(color).convertLinearToSRGB();
 
-    // spread across the area's width, in a random order
     const _spots = () => {
         const [_left, _right, _bottom, _top] = _options.area;
         const _slots = [...Array(_count).keys()].sort(() => Math.random() - 0.5);
@@ -26,7 +24,6 @@ export const _threeBlobs = (props = {}) => {
         return _slots.map((slot) => [_left + ((slot + _random(0.2, 0.8)) * (_right - _left)) / _count, _random(_bottom, _top)]);
     };
 
-    // ease the current values to the targets
     const _glide = (snap) => {
         const _ease = snap ? 1 : 1 - Math.exp((-_instance.delta * 4) / _options.transition);
 
@@ -48,7 +45,6 @@ export const _threeBlobs = (props = {}) => {
         _pointer.x += ((pointer.inside ? pointer.x : 0) - _pointer.x) * _ease;
         _pointer.y += ((pointer.inside ? pointer.y : 0) - _pointer.y) * _ease;
 
-        // spot, plus a slow wobble and the pointer lean
         _blobs.forEach((blob, i) => {
             const _t = time * speed;
             const _x = blob.x + Math.sin(_t * blob.speed[0] + blob.phase[0]) * wobble + _pointer.x * follow * blob.depth;
@@ -92,7 +88,6 @@ export const _threeBlobs = (props = {}) => {
             });
             _background = { current: _srgb(_options.background), to: _srgb(_options.background) };
 
-            // one plane over the view, the shader draws the blobs
             const _material = new THREE.ShaderMaterial({
                 defines: { COUNT: _count },
                 uniforms: {
@@ -138,10 +133,8 @@ export const _threeBlobs = (props = {}) => {
                     void main() {
                         vec2 p = (vUv - 0.5) * 2.0 * vec2(uAspect, 1.0);
 
-                        // bend the space slowly, the colors swirl
                         p += uFlow * vec2(sin(p.y * 1.3 + uTime * 1.1), sin(p.x * 1.1 - uTime * 0.9));
 
-                        // soft weights, the background fills the gaps
                         float total = 0.1;
                         vec3 color = uBackground * total;
 
@@ -154,7 +147,6 @@ export const _threeBlobs = (props = {}) => {
 
                         color = mix(uBackground, color / total, uOpacity);
 
-                        // film grain
                         float noise = hash(gl_FragCoord.xy) - 0.5;
                         color = overlay(color, 0.5 + noise * uGrain);
                         color += noise * uGrain / 7.0;
@@ -168,7 +160,6 @@ export const _threeBlobs = (props = {}) => {
             _mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), _material);
             scene.add(_mesh);
 
-            // set() before three loaded
             if (_pending) this.set(_pending);
         },
 
@@ -195,7 +186,6 @@ export const _threeBlobs = (props = {}) => {
             });
             if (state.background) _background.to = _srgb(state.background);
 
-            // not animating, show it now
             if (_instance.running) return;
             _glide(true);
             _instance.render();

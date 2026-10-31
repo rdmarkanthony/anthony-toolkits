@@ -44,14 +44,12 @@ export class _cursorBubble {
         _on("pointermove", (e) => e.pointerType === "mouse" && this.move(e));
         _on("pointerover", (e) => e.pointerType === "mouse" && this.check(e.target));
         _on("pointerout", (e) => !e.relatedTarget && this.show(false));
-        // the page moves under a still mouse
         _on("scroll", () => this.inside && this.check(document.elementFromPoint(this.mouse.x, this.mouse.y)));
     }
 
     move(e) {
         this.mouse = { x: e.clientX, y: e.clientY };
 
-        // back in the window, start at the mouse
         if (!this.inside) {
             this.pos = { ...this.mouse };
             this.render();
@@ -65,7 +63,6 @@ export class _cursorBubble {
     }
 
     tick(time) {
-        // same speed at 60 and 120hz
         const _ease = 1 - Math.pow(1 - this.ease, (this.time ? time - this.time : 16.7) / 16.7);
         this.time = time;
 
@@ -90,7 +87,6 @@ export class _cursorBubble {
         if (this.state) this.el.dataset.state = this.state;
         else this.el.removeAttribute("data-state");
 
-        // keep the old label while it slides out
         if (_text || _icon) this.label.replaceChildren(...(_icon ? [_icon.cloneNode(true)] : []), _text);
         this.el.toggleAttribute("data-text", Boolean(_text || _icon));
 

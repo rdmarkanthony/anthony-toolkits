@@ -22,37 +22,31 @@ title: Three.js background | Anthony Toolkits
             {% for demo in demos %}
             <a class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="{{ demo.url }}">
                 {% if demo.title == 'Particles' %}
-                {# preview: dots on dark #}
                 <div class="relative aspect-4/3 overflow-hidden bg-gray-950">
                     {% for i in range(1, 41) %}
                     <span class="absolute size-1 rounded-full bg-white" style="left: {{ (i * 37) % 100 }}%; top: {{ (i * 61) % 100 }}%; opacity: {{ 0.3 + (i % 3) * 0.2 }}"></span>
                     {% endfor %}
                 </div>
                 {% elif demo.title == 'Dot grid' %}
-                {# preview: a dot grid shown in soft patches #}
                 <div class="relative aspect-4/3 overflow-hidden bg-gray-950">
                     <span class="absolute inset-0 bg-[radial-gradient(circle,white_1px,transparent_1.5px)] bg-size-[8px_8px] opacity-70 [mask-image:radial-gradient(40%_35%_at_30%_40%,black_40%,transparent),radial-gradient(35%_30%_at_75%_70%,black_30%,transparent)]"></span>
                 </div>
                 {% elif demo.title == 'Grain text' %}
-                {# preview: a word filled with dots #}
                 <div class="relative flex aspect-4/3 items-center justify-center overflow-hidden bg-gray-950">
                     <span class="bg-[radial-gradient(circle,white_1px,transparent_1.5px)] bg-size-[5px_5px] bg-clip-text text-8xl font-black tracking-tight text-transparent">Aa</span>
                 </div>
                 {% elif demo.title == 'Reveal' %}
-                {# preview: gray photo with a color stroke #}
                 <div class="relative aspect-4/3 overflow-hidden">
                     <img class="absolute inset-0 size-full object-cover grayscale" src="/assets/img/sample-image.webp" alt="" width="2400" height="1600" loading="lazy" />
                     <img class="absolute inset-0 size-full object-cover [clip-path:ellipse(30%_20%_at_45%_50%)]" src="/assets/img/sample-image.webp" alt="" width="2400" height="1600" loading="lazy" />
                 </div>
                 {% elif demo.title == 'Blobs' %}
-                {# preview: soft colors with grain #}
                 <div class="relative aspect-4/3 overflow-hidden bg-[#b8a797]">
                     <span class="absolute -top-1/4 -right-1/6 size-48 rounded-full bg-[#ddc4b8] blur-3xl"></span>
                     <span class="absolute -right-1/6 -bottom-1/4 size-48 rounded-full bg-[#cf5e58] blur-3xl"></span>
                     <span class="absolute -bottom-1/3 -left-1/6 size-48 rounded-full bg-[#d6d3c5] blur-3xl"></span>
                 </div>
                 {% else %}
-                {# preview: one glow on dark #}
                 <div class="relative aspect-4/3 overflow-hidden bg-gray-950">
                     <span class="absolute top-1/4 right-1/6 size-36 rounded-full bg-indigo-400 opacity-40 blur-3xl"></span>
                 </div>

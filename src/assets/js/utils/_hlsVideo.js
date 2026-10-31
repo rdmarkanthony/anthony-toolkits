@@ -16,7 +16,6 @@ export class _hlsVideo {
     }
 
     init() {
-        // autoplays on screen only, not with reduced motion
         this.autoplay = this.target.autoplay && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         this.target.autoplay = false;
 
@@ -36,7 +35,6 @@ export class _hlsVideo {
             document.addEventListener("visibilitychange", this.onVisibility);
         }
 
-        // skip the gap when looping
         this.onWaiting = () => {
             const _buffered = this.target.buffered;
             if (_buffered.length && this.target.currentTime < _buffered.start(0)) this.target.currentTime = _buffered.start(0);
@@ -50,7 +48,6 @@ export class _hlsVideo {
 
         if (this.autoplay) this.target.addEventListener("canplay", () => this.toggle(), { once: true });
 
-        // use hls.js only if MSE is supported
         const _mse = this.src.endsWith(".m3u8") && ("MediaSource" in window || "ManagedMediaSource" in window);
         if (!_mse) {
             this.target.src = this.src;

@@ -30,7 +30,6 @@ export class _scrollSpy extends _emitter {
         _event.resize(this._onResize);
     }
 
-    // after links or sections change
     refresh() {
         this.links = [];
         this.sections = [];
@@ -43,7 +42,6 @@ export class _scrollSpy extends _emitter {
             this.sections.push(_section);
         });
 
-        // set again even if it's still none
         this.index = null;
         this.check();
     }
@@ -58,7 +56,6 @@ export class _scrollSpy extends _emitter {
         const _line = _header + (window.innerHeight - _header) * this.line;
         const _rects = this.sections.map((section) => section.getBoundingClientRect());
 
-        // the last one whose top passed the line, none before the first or past the last
         let _index = -1;
         _rects.forEach((rect, i) => rect.top <= _line && (_index = i));
         if (_index === _rects.length - 1 && _rects[_index].bottom <= _line) _index = -1;

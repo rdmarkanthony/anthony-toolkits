@@ -3,7 +3,6 @@
 // drag, touch and trackpad swipes move it, page scroll stays vertical
 // css: @import "swiper/css" layer(components);
 
-// swiper, loaded on first use so other pages don't download it
 const _importSwiper = () => Promise.all([import("swiper"), import("swiper/modules")]);
 
 export class _peekSlider {
@@ -17,7 +16,6 @@ export class _peekSlider {
         this.wheelLock = null;
         this.onWheel = (e) => this.wheel(e);
 
-        // resolves with the Swiper instance
         this.ready = this.target ? this.init() : Promise.resolve(null);
     }
 
@@ -40,10 +38,8 @@ export class _peekSlider {
             ...this.options,
         });
 
-        // a slow ease out, so slides glide to a stop
         this.swiper.wrapperEl.style.transitionTimingFunction = this.ease;
 
-        // before Swiper's own wheel listener
         this.target.addEventListener("wheel", this.onWheel, { capture: true, passive: false });
         this.swiper.on("scroll", () => {
             if (this.lastWheel) this.wheelLock = { ...this.lastWheel, peak: this.lastWheel.delta, min: this.lastWheel.delta };
@@ -52,8 +48,6 @@ export class _peekSlider {
         return this.swiper;
     }
 
-    // one trackpad swipe, one slide
-    // new swipe: a pause, a turn, or a rising delta
     wheel(e) {
         const _delta = Math.abs(e.deltaX);
         if (_delta <= Math.abs(e.deltaY)) return;

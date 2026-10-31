@@ -65,7 +65,6 @@ export class _youtubePlayer extends _emitter {
 
         this.emit("afterInit");
 
-        // the api is already loaded, e.g. a player made in a lightbox later
         if (window.YT?.loaded) this.generate();
 
         if (this.debug) console.log("_youtubePlayer", this);
@@ -107,7 +106,6 @@ export class _youtubePlayer extends _emitter {
 
                     if (this.autoplay) this.background(event.data);
 
-                    // pause other playing video
                     if (event.data === 1) {
                         this.isPlaying = true;
                         if (!this.autoplay) _pauseAll(this);
@@ -121,10 +119,8 @@ export class _youtubePlayer extends _emitter {
             },
         });
 
-        // the api replaces the placeholder div with an iframe
         if (this.player.getIframe) this.el.player = this.player.getIframe();
 
-        // autoplay vids are backgrounds; block hover/click ui and tab focus
         if (this.autoplay) {
             this.el.player.style.pointerEvents = "none";
             this.el.player.setAttribute("tabindex", "-1");
@@ -140,7 +136,6 @@ export class _youtubePlayer extends _emitter {
         this.emit("afterReady");
     }
 
-    // autoplay vids: hide captions and youtube's ui, loop manually
     background(state) {
         clearTimeout(this.timers.reveal);
         clearTimeout(this.timers.loop);
@@ -149,14 +144,11 @@ export class _youtubePlayer extends _emitter {
             this.player.unloadModule?.("captions");
             this.player.unloadModule?.("cc");
 
-            // youtube shows its ui briefly after play or seek
             this.timers.reveal = setTimeout(() => this.fade(true), this.revealDelay);
 
-            // fade out before the end
             const _remaining = (this.player.getDuration() - this.player.getCurrentTime()) * 1000;
             this.timers.loop = setTimeout(() => this.fade(false), _remaining - 1000);
         } else {
-            // hide right away
             this.el.player.style.transition = "none";
             this.el.player.style.opacity = 0;
 

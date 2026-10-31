@@ -6,7 +6,6 @@ title: Header | Anthony Toolkits
 
 {{ pageIntro({ label: '_header', title: 'Header', description: 'Scrolls away with the page at the top, then turns fixed and slides down on scroll up, up on scroll down. Works below a top bar, gives sticky content a var to sit under, and has a mobile menu that locks the page and closes on Esc.' }) }}
 
-{# the real demo markup, so the code shown is what the iframes run #}
 {% from "demos/header.njk" import demoHeader %}
 {% set markup %}
 {{ demoHeader() }}
@@ -23,7 +22,6 @@ title: Header | Anthony Toolkits
 <div class="h-[calc(100svh-var(--header-height,0px))]">...</div>
 {% endraw %}{% endset %}
 
-{# demos: the pages run in iframes, fixed needs a real window #}
 <section class="px-4 pb-16">
     <div class="mx-auto flex max-w-295 flex-col gap-6">
         <div>

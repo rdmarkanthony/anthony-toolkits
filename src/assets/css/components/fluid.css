@@ -9,7 +9,6 @@
 
     --spacing: calc(0.25 * var(--fluid-rem));
 
-    /* readable floor on small laptops */
     --text-xs: max(0.75rem, calc(0.75 * var(--fluid-rem)));
     --text-sm: max(0.75rem, calc(0.875 * var(--fluid-rem)));
     --text-base: max(0.875rem, var(--fluid-rem));
@@ -47,7 +46,6 @@
     --container-6xl: calc(72 * var(--fluid-rem));
     --container-7xl: calc(80 * var(--fluid-rem));
 
-    /* default text size, on children so cqw is this box */
     :where(& > *) {
         font-size: var(--text-base);
     }

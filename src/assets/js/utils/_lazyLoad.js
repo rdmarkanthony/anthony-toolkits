@@ -13,7 +13,6 @@ const _state = { options: null, observer: null, aheadObserver: null, watched: ne
 const _loading = new WeakMap();
 const _attributes = ["sizes", "srcset", "src", "href", "poster"];
 
-// data-src to src etc., true if anything moved
 const _swap = (node) => {
     let _changed = false;
 
@@ -29,11 +28,9 @@ const _swap = (node) => {
     return _changed;
 };
 
-// resolves once loaded or failed, same promise each call
 const _load = (el) => {
     if (_loading.has(el)) return _loading.get(el);
 
-    // loaded early, by ahead or target
     _state.observer?.unobserve(el);
 
     const _promise = new Promise((resolve) => {
@@ -48,7 +45,6 @@ const _load = (el) => {
             resolve(el);
         };
 
-        // background, preloaded so .is-loaded means it's ready to show
         if (el.dataset.bg) {
             const _url = el.dataset.bg;
             el.removeAttribute("data-bg");
@@ -64,13 +60,11 @@ const _load = (el) => {
         const _tag = el.localName;
         const _isVideo = _tag === "video";
 
-        // the sources first, so the browser picks from them
         const _sources = _isVideo ? [...el.querySelectorAll("source")] : el.parentElement?.localName === "picture" ? [...el.parentElement.querySelectorAll("source")] : [];
         let _changed = false;
         _sources.forEach((source) => (_changed = _swap(source) || _changed));
         _changed = _swap(el) || _changed;
 
-        // nothing left to load, e.g. a plain src, or loaded by another script
         if (!_changed) {
             if (_tag === "img" && el.complete) return _done(el.naturalWidth === 0);
             if (_isVideo && el.readyState >= 2) return _done(false);
@@ -80,7 +74,6 @@ const _load = (el) => {
 
         el.addEventListener(_isVideo ? "loadeddata" : "load", () => _done(false), { once: true });
         el.addEventListener("error", () => _done(true), { once: true });
-        // a video with <source>s reports the error on the last one
         if (_sources.length) _sources.at(-1).addEventListener("error", () => _done(true), { once: true });
 
         if (_isVideo && _changed) {
@@ -93,7 +86,6 @@ const _load = (el) => {
     return _promise;
 };
 
-// display: none is left for the observer
 const _isRendered = (el) => el.getClientRects().length > 0;
 
 const _watch = (options) => {
@@ -127,7 +119,6 @@ const _watch = (options) => {
 };
 
 export const _lazyLoad = (props = {}) => {
-    // load now
     if (props.target) {
         const _target = typeof props.target === "string" ? document.querySelector(props.target) : props.target;
         const _selector = props.selector ?? _state.options?.selector ?? _defaults.selector;
@@ -140,7 +131,6 @@ export const _lazyLoad = (props = {}) => {
         return _promise;
     }
 
-    // watch, the options of the first call stay
     if (!_state.observer) _watch({ ..._defaults, ...props });
 
     const { selector, ahead } = _state.options;

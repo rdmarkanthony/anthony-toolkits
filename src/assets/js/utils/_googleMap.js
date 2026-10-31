@@ -7,7 +7,6 @@ let _api = null;
 let _Overlay = null;
 const _instances = new Set();
 
-// google calls this on a bad or blocked key
 window.gm_authFailure = () => _instances.forEach((instance) => instance.emit("error"));
 
 const _loadAPI = (key) =>
@@ -22,7 +21,6 @@ const _loadAPI = (key) =>
         document.head.append(_script);
     }));
 
-// html pinned to a lat/lng by its bottom center, or its center
 const _overlay = (OverlayView) =>
     (_Overlay ??= class extends OverlayView {
         constructor({ position, el, pane, anchor, lift }) {
@@ -129,7 +127,6 @@ export class _googleMap extends _emitter {
             ...this.options,
         });
 
-        // where reset() goes back to
         event.addListenerOnce(this.map, "idle", () => (this.home = { center: this.map.getCenter(), zoom: this.map.getZoom() }));
         this.target.addEventListener("keydown", (e) => e.key === "Escape" && this.item && this.deselect(true), { signal: this.abort.signal });
 
@@ -177,7 +174,6 @@ export class _googleMap extends _emitter {
         this.map.fitBounds(_bounds, padding);
     }
 
-    // one level at a time so it animates, false if interrupted
     async zoomTo(zoom, position) {
         const _run = (this.run = {});
         if (position) this.map.panTo(position);
@@ -192,7 +188,6 @@ export class _googleMap extends _emitter {
 
     // by data or id, the selected one zooms back in
     async select(item) {
-        // before the map loads, picks it once ready
         if (!this.map) return void (this.pending = item);
         this.pending = null;
 
@@ -210,7 +205,6 @@ export class _googleMap extends _emitter {
 
         if (!this.selectZoom) return this.pan();
 
-        // zoomed in on another place: out, then in on this one
         const _homeZoom = this.home?.zoom ?? this.zoom;
         if (_switching && this.map.getZoom() > _homeZoom) {
             if (!(await this.zoomTo(_homeZoom))) return;
@@ -224,7 +218,6 @@ export class _googleMap extends _emitter {
         if (!this.selectZoom || (await this.zoomTo(this.selectZoom, this.item))) this.pan();
     }
 
-    // room for the popup above the pin
     pan() {
         if (!this.item) return;
         this.map.panTo(this.item);

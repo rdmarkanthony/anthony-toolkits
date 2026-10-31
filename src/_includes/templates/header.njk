@@ -1,11 +1,5 @@
 {%- from "components/atoms/icon.njk" import angle, external, search, menu, close -%}
 {%- from "components/atoms/code-block.njk" import codeBlock -%}
-{#
-    site header, sticky with a frosted background
-    url: page.url, marks Components active on component pages
-    search on inner pages, the home page has its own
-    below lg the links and search move into the sliding menu
-#}
 {% macro header(props) %}
 {%- set onHome = props.url == '/' -%}
 {%- set onComponents = props.url and props.url.startsWith('/components/') -%}
@@ -28,7 +22,6 @@
     </div>
 </header>
 
-{# sliding menu, outside the header so the blur doesn't trap it #}
 <div id="mobile-menu" class="group invisible fixed inset-0 z-50 transition-[visibility] delay-500 duration-0 data-open:visible data-open:delay-0 lg:hidden" data-mobile-menu>
     <div class="absolute inset-0 bg-kit-text/30 opacity-0 transition-opacity duration-500 group-data-open:opacity-100" data-mobile-menu-close></div>
     <div class="absolute inset-y-0 right-0 flex w-full max-w-sm translate-x-full flex-col overflow-y-auto bg-kit-bg px-4 pb-8 shadow-2xl transition-transform duration-500 ease-out-expo group-data-open:translate-x-0 sm:px-6" role="dialog" aria-modal="true" aria-label="Menu" data-mobile-menu-panel>
@@ -49,7 +42,6 @@
     </div>
 </div>
 
-{# components directory popup, names only, opened by the Components links #}
 <div class="hidden">
     <div id="components-directory" class="mx-auto w-full max-w-6xl rounded-3xl bg-kit-bg p-6 md:p-10">
         <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
@@ -82,7 +74,6 @@
     </div>
 </div>
 
-{# starter kit popup, opened by the Starter kit links #}
 {% if props.starterKit.items.length %}
 <div class="hidden">
     <div id="starter-kit" class="mx-auto w-full max-w-5xl rounded-3xl bg-kit-bg p-6 md:p-10">
@@ -113,7 +104,6 @@
 </div>
 {% endif %}
 
-{# the suggestions, same text the home page filters on #}
 {%- set searchItems = [] -%}
 {%- for group in props.components -%}
     {%- for item in group.items -%}
@@ -125,17 +115,12 @@
 <script type="application/json" id="search-items">{{ searchItems | dump | safe }}</script>
 {% endmacro %}
 
-{# Components link with the active dot, opens the directory popup #}
 {% macro componentsLink(active) %}
 <a class="flex items-center gap-2 transition-colors duration-300 hover:text-kit-text {{ 'text-kit-text' if active else 'text-kit-muted' }}" href="/#components" data-directory-open{% if active %} aria-current="true"{% endif %}>
     <span class="size-1.5 rounded-full bg-kit-accent transition-transform duration-300 {{ 'scale-100' if active else 'scale-0' }}" aria-hidden="true"></span>Components
 </a>
 {% endmacro %}
 
-{#
-    search with suggestions, set up in script.js
-    Enter with no pick goes to /?q=
-#}
 {% macro searchForm(props) %}
 <form class="relative {{ props.class }}" action="/" method="get" role="search" data-search>
     <label class="relative block">

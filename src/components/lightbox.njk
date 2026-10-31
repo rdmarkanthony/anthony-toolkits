@@ -9,7 +9,6 @@ title: Lightbox | Anthony Toolkits
 {% set button = 'inline-block rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700' %}
 {% set link = 'link-underline font-medium hover:text-gray-600' %}
 
-{# demo #}
 <section class="px-4 py-16">
     <div class="mx-auto max-w-295">
         <div class="flex flex-col gap-3 md:flex-row">
@@ -20,7 +19,6 @@ title: Lightbox | Anthony Toolkits
             <a class="{{ button }}" href="#sample-inside" data-lightbox="inside">Close button inside</a>
         </div>
 
-        {# the contents, hidden until opened #}
         <div class="hidden">
             <div id="sample-lightbox" class="mx-auto max-w-3xl rounded-2xl bg-white p-6 md:p-12">
                 <div class="flex flex-col gap-8">
@@ -103,7 +101,6 @@ title: Lightbox | Anthony Toolkits
 ] %}
 {% set product = ['0000', '0012', '0025', '0037'] %}
 
-{# demo: image links grouped by data-lightbox-gallery #}
 <section id="image-gallery" class="scroll-mt-20 border-t border-gray-200 px-4 py-16">
     <div class="mx-auto max-w-295">
         <h2 class="mb-2 text-3xl font-bold tracking-tight">Image gallery</h2>
@@ -142,7 +139,6 @@ title: Lightbox | Anthony Toolkits
     { label: 'YouTube', href: 'https://www.youtube.com/watch?v=23atch1EPLM', crop: 'scale-150 object-[30%_20%]' }
 ] %}
 
-{# demo: a video link opens a player in a lightbox #}
 <section id="video" class="scroll-mt-20 border-t border-gray-200 px-4 py-16">
     <div class="mx-auto max-w-295">
         <h2 class="mb-2 text-3xl font-bold tracking-tight">Video</h2>
@@ -152,9 +148,7 @@ title: Lightbox | Anthony Toolkits
             <a class="group block" href="{{ video.href }}" data-lightbox-video>
                 <span class="relative mb-3 block aspect-video overflow-hidden rounded-2xl bg-gray-950">
                     <img class="size-full object-cover {{ video.crop }}" src="/assets/img/sample-image.webp" alt="" loading="lazy" />
-                    {# the dim lifts on hover #}
                     <span class="absolute inset-0 bg-black/40 transition-colors duration-500 group-hover:bg-black/10 group-focus-visible:bg-black/10"></span>
-                    {# the glass circle zooms on hover, the script slides the icons #}
                     <span class="absolute top-1/2 left-1/2 grid size-16 -translate-1/2 place-items-center overflow-hidden rounded-full bg-white/80 text-gray-950 shadow-[0_10px_40px_rgb(0_0_0/0.35)] backdrop-blur-xl backdrop-saturate-150 transition-[background-color,scale] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-115 group-hover:bg-white/90 group-focus-visible:scale-115 motion-reduce:transition-none md:size-20">
                         <svg class="col-start-1 row-start-1 size-8 md:size-10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-play-icon="rest"><path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86A1 1 0 0 0 8 5.14z" /></svg>
                         <svg class="col-start-1 row-start-1 size-10 opacity-0 md:size-12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-play-icon="hover"><path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86A1 1 0 0 0 8 5.14z" /></svg>

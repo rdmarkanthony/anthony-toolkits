@@ -5,17 +5,14 @@ title: Video Intro | Scrolling Animation | Anthony Toolkits
 {% from "components/atoms/icon.njk" import angle %}
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
 
-{# covers the sticky video until the intro #}
 <div class="relative z-2 min-h-screen bg-kit-bg">
     {{ pageIntro({ back: { label: 'Scrolling animation', url: '/components/scrolling-animation/' }, label: '_parallaxScroller · _hlsVideo', title: 'Video intro', description: 'A sticky video whose dark cover fades as the section scrolls in, then titles step in one at a time as each reaches the middle of the screen.' }) }}
     <p class="mx-auto -mt-4 flex max-w-295 animate-bounce items-center gap-1 px-4 pb-16 text-sm font-medium [box-sizing:content-box]">Scroll down {{ angle('down') }}</p>
 </div>
 
-{# demo #}
 <div class="js-title-intro relative z-1 min-h-[150vh] bg-black text-white">
     <div class="sticky top-0 mt-[-100vh] h-screen w-full overflow-hidden">
         <video class="js-hls-video absolute inset-0 size-full object-cover" data-src="/assets/video/sample-video/sample-video.m3u8" muted playsinline loop autoplay disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
-        {# default dim, keeps the titles readable #}
         <div class="absolute inset-0 bg-black/50"></div>
         <div class="js-title-intro-cover absolute inset-0 bg-black"></div>
     </div>

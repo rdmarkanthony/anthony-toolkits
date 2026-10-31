@@ -59,7 +59,6 @@ export class _videoPlayer extends _emitter {
         this.el.video.setAttribute("playsinline", "");
         this.el.video.setAttribute("webkit-playsinline", "");
 
-        // m3u8: hls.js where MSE is supported, loaded only when needed
         if (this.src.endsWith(".m3u8") && ("MediaSource" in window || "ManagedMediaSource" in window)) {
             import("hls.js/light").then(({ default: Hls }) => {
                 if (!this.el) return; // destroyed while loading
@@ -123,7 +122,6 @@ export class _videoPlayer extends _emitter {
 
             this.emit("ended");
         });
-        // unmuting a muted video makes it pause the others too
         _on("volumechange", () => {
             this.updateSound();
             if (!this.isSilent && !this.el.video.paused) _pauseAll(this);
@@ -154,7 +152,6 @@ export class _videoPlayer extends _emitter {
     }
 
     play() {
-        // autoplay blocked is not an error
         return this.el.video.play()?.catch(() => {}) ?? Promise.resolve();
     }
 

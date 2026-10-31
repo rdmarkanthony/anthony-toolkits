@@ -17,7 +17,6 @@ let _ready = false;
 const _find = (e) => e.target.closest?.("[data-tooltip]");
 const _props = (target) => ({ place: target.dataset.tooltipPlace, anchor: target.dataset.tooltipAnchor, class: target.dataset.tooltipClass });
 
-// hover describes the target, content marks it open
 const _aria = (on) => {
     const target = _tooltip.target;
     if (!target) return;
@@ -39,10 +38,8 @@ const _position = () => {
     const w = _el.offsetWidth;
     const h = _el.offsetHeight;
 
-    // the other side only when it has room
     const room = { top: rect.top - h, bottom: innerHeight - rect.bottom - h, left: rect.left - w, right: width - rect.right - w };
     let place = room[_place] < gap && room[_flip[_place]] >= gap ? _flip[_place] : _place;
-    // no room left or right
     if (room[place] < gap && (place === "left" || place === "right")) place = room.top >= gap ? "top" : "bottom";
 
     const clamp = (value, max) => Math.min(Math.max(value, gap), max - gap);
@@ -50,7 +47,6 @@ const _position = () => {
     const x = place === "left" ? rect.left - w - gap : place === "right" ? rect.right + gap : clamp(rect.left + rect.width / 2 - w / 2, width - w);
     const y = place === "top" ? rect.top - h - gap : place === "bottom" ? rect.bottom + gap : clamp(rect.top + rect.height / 2 - h / 2, innerHeight - h);
 
-    // the arrow faces the anchor
     const side = place === "top" || place === "bottom";
     _el.style.left = `${x}px`;
     _el.style.top = `${y}px`;
@@ -59,7 +55,6 @@ const _position = () => {
     _el.dataset.place = place;
 };
 
-// one tooltip for the page, a popover so it sits above dialogs and overflow
 const _create = () => {
     if (_el) return;
 
@@ -73,7 +68,6 @@ const _create = () => {
 
     document.body.append(_el, _live);
 
-    // capture: scrolling inside any box moves it too, _event.scroll is the page only
     const update = () => _tooltip.target && _position();
     window.addEventListener("scroll", update, { capture: true, passive: true });
     _event.resize(update);
@@ -83,9 +77,7 @@ export const _tooltip = {
     // override with Object.assign(_tooltip.classes, {...})
     // data-visible, data-content for a template, data-place for the side
     classes: {
-        // always on: position, fade and the arrow
         base: "pointer-events-none fixed inset-auto m-0 overflow-visible opacity-0 transition-opacity duration-150 before:absolute before:top-(--arrow-y) before:left-(--arrow-x) before:size-2 before:-translate-1/2 before:rotate-45 before:bg-inherit data-visible:opacity-100 data-content:data-visible:pointer-events-auto starting:data-visible:opacity-0 motion-reduce:transition-none",
-        // the look, data-tooltip-class or { class } replaces it
         tip: "max-w-xs rounded-md bg-gray-950 px-3 py-1.5 text-sm font-medium text-white data-content:rounded-lg data-content:p-4 data-content:font-normal",
     },
 
@@ -95,9 +87,7 @@ export const _tooltip = {
         if (_ready) return;
         _ready = true;
 
-        // an open template wins over hover
         const open = (target) => target !== _tooltip.target && !_content && _tooltip.show(target, target.dataset.tooltip, _props(target));
-        // a timed message stays until its time is up
         const close = (target) => target === _tooltip.target && !_timer && !_content && _tooltip.hide();
 
         document.addEventListener("pointerover", (e) => e.pointerType === "mouse" && _find(e) && open(_find(e)));
@@ -132,7 +122,6 @@ export const _tooltip = {
         _create();
         _tooltip.hide();
 
-        // the target keeps focus and aria, the anchor is where it points
         _tooltip.target = _target;
         _anchor = (typeof options.anchor === "string" ? _target.closest(options.anchor) : options.anchor) ?? _target;
         _place = _flip[options.place] ? options.place : "top";
@@ -145,13 +134,11 @@ export const _tooltip = {
         _el.setAttribute("role", _content ? "dialog" : "tooltip");
         _el.toggleAttribute("data-content", _content);
 
-        // shown again to sit above a dialog opened after it, source: Tab moves into it
         if (_el.matches(":popover-open")) _el.hidePopover();
         _el.showPopover({ source: _target });
         _position();
         _el.toggleAttribute("data-visible", true);
 
-        // a timed message is read out once
         if (_content || !options.duration) _aria(true);
 
         if (options.duration) {
@@ -163,14 +150,12 @@ export const _tooltip = {
     hide(target) {
         if (!_el || (target && target !== _tooltip.target)) return;
 
-        // focus was inside, back to the target
         if (_el.contains(document.activeElement)) _tooltip.target?.focus();
 
         clearTimeout(_timer);
         _timer = null;
         _aria(false);
 
-        // data-content stays for the fade out
         _el.removeAttribute("data-visible");
         _live.textContent = "";
         _tooltip.target = null;

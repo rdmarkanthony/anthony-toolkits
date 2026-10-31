@@ -17,7 +17,6 @@ export const _urlVars = {
             else params.set(key, value);
         });
 
-        // commas stay readable, e.g. ?c=1_2,3_4
         const query = params.toString().replace(/%2C/g, ",");
         const url = `${location.pathname}${query ? `?${query}` : ""}${location.hash}`;
 

@@ -33,7 +33,6 @@ export class _hoverIndicator extends _emitter {
 
         this.items = [...this.target.querySelectorAll(this.selector)];
 
-        // none in the markup, make a plain box
         this.indicator = this.target.querySelector(":scope > .js-hover-indicator");
         if (!this.indicator) {
             this.created = true;
@@ -48,12 +47,10 @@ export class _hoverIndicator extends _emitter {
             this.target.style.position = "relative";
         }
 
-        // start hidden, no fade on load
         Object.assign(this.indicator.style, { pointerEvents: "none", transitionProperty: "none", opacity: "0" });
         this.indicator.offsetWidth;
         this.indicator.setAttribute("aria-hidden", "true");
 
-        // touch has no hover
         if (this.hover) {
             _on("pointerover", (e) => {
                 const _item = e.pointerType !== "touch" && this.itemOf(e.target);
@@ -83,12 +80,10 @@ export class _hoverIndicator extends _emitter {
             this.update();
         });
 
-        // the active item changed
         _on("change", () => this.update());
         this.observer = new MutationObserver(() => this.update());
         this.observer.observe(this.target, { subtree: true, attributes: true, attributeFilter: ["class", "aria-current", "aria-selected"] });
 
-        // measure now and on resize
         [this.target, ...this.items].forEach((element) => _event.observeResize(this.resize, element));
     }
 
@@ -103,7 +98,6 @@ export class _hoverIndicator extends _emitter {
     update(snap = false) {
         const _item = this.hovered ?? this.focused ?? this.current();
 
-        // slide between items, fade in when it appears
         const _shown = this.item || (_item && Number(getComputedStyle(this.indicator).opacity) > 0);
         const _slide = !snap && _shown && _item && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 

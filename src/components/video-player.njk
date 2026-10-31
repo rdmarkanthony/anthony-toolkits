@@ -8,7 +8,6 @@ title: Video player | Anthony Toolkits
 {% set video = '/assets/video/sample-video.mp4' %}
 {% set videoHls = '/assets/video/sample-video/sample-video.m3u8' %}
 
-{# demo: a stretched autoplay video as the background #}
 <section class="relative overflow-hidden bg-gray-950 px-4 pt-24 pb-16 text-white md:pt-32">
     <div class="pointer-events-none absolute inset-0">
         <div class="absolute inset-0" data-video-player="{{ video }},autoplay,stretch"></div>
@@ -22,7 +21,6 @@ title: Video player | Anthony Toolkits
     </div>
 </section>
 
-{# demo: MP4, HLS and Plyr players #}
 {% set groups = [
     {
         title: 'MP4',
@@ -82,7 +80,6 @@ title: Video player | Anthony Toolkits
 </section>
 {% endfor %}
 
-{# demo: a Plyr video in a lightbox #}
 <section class="px-4 pb-16">
     <div class="mx-auto max-w-295">
         <h2 class="mb-2 text-3xl font-bold tracking-tight">In a lightbox</h2>

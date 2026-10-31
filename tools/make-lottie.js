@@ -1,6 +1,5 @@
 // builds the toolkit's own lottie samples into src/assets/lottie/, no third-party files
 // usage: pnpm lottie, or pnpm lottie plane to build one
-// each sample below is a comp() of layer()s, shapes are group()s of path/ellipse/rect + stroke/fill/trim
 // frames are at 60fps, colors are 0 to 1, positions are in comp px
 import { mkdirSync, writeFileSync } from "node:fs";
 
@@ -13,10 +12,8 @@ const _easeOut = { i: { x: [0.16], y: [1] }, o: { x: [0.3], y: [0] } };
 const _easeInOut = { i: { x: [0.65], y: [1] }, o: { x: [0.35], y: [0] } };
 const _linear = { i: { x: [1], y: [1] }, o: { x: [0], y: [0] } };
 
-// a value that doesn't move
 const _static = (value) => ({ a: 0, k: value });
 
-// keyframes: [frame, value] pairs, eased into the next one
 const _anim = (keys, ease = _easeOut) => ({
     a: 1,
     k: keys.map(([t, value], index) => ({ t, s: [].concat(value), ...(index < keys.length - 1 ? ease : {}) })),
@@ -31,10 +28,8 @@ const _transform = ({ p, a, s, r, o } = {}) => ({
     o: o ?? _static(100),
 });
 
-// shapes, then its styles, the transform goes last
 const _group = (items, transform) => ({ ty: "gr", nm: "g", it: [...items, _transform(transform)], np: items.length });
 
-// straight edges, also a keyframe value for paths that morph
 const _shape = (points, closed = false) => {
     const _zero = points.map(() => [0, 0]);
     return { i: _zero, o: _zero, v: points, c: closed };
@@ -48,7 +43,6 @@ const _stroke = (width, color = _black, o) => ({ ty: "st", c: _static(color), o:
 
 const _fill = (color = _black, o) => ({ ty: "fl", c: _static(color), o: o ?? _static(100), r: 1 });
 
-// draws a path from s to e (0 to 100), o turns it around
 const _trim = ({ s, e, o } = {}) => ({ ty: "tm", s: s ?? _static(0), e: e ?? _static(100), o: o ?? _static(0), m: 1 });
 
 const _layer = (ind, shapes, op, p, name = "layer", { r, s, o } = {}) => ({
@@ -69,7 +63,6 @@ const _layer = (ind, shapes, op, p, name = "layer", { r, s, o } = {}) => ({
 const _comp = (name, w, h, op, layers) => ({ v: "5.9.0", fr: 60, ip: 0, op, w, h, nm: name, ddd: 0, assets: [], layers });
 
 const _samples = {
-    // an arc that spins around a faint ring, loops
     spinner: () =>
         _comp("spinner", 120, 120, 60, [
             _layer(
@@ -97,7 +90,6 @@ const _samples = {
             _layer(2, [_group([_ellipse(80), _stroke(10, _black, _static(12))])], 60, [60, 60], "ring"),
         ]),
 
-    // a dot grows, the tick draws, then a small pop
     check: () =>
         _comp("check", 120, 120, 60, [
             _layer(
@@ -148,7 +140,6 @@ const _samples = {
             ),
         ]),
 
-    // three lines turn into an X, play forward to open, back to close
     menu: () => {
         const _lines = [
             [-18, 45],
@@ -187,7 +178,6 @@ const _samples = {
         return _comp("menu", 100, 100, 30, [_layer(1, _lines, 30, [50, 50], "lines")]);
     },
 
-    // the ground draws, the sun rises and grows, the rays turn in, 100 frames for scroll
     sunrise: () => {
         const _rays = Array.from({ length: 8 }, (_, index) => {
             const _angle = (index * 45 * Math.PI) / 180;
@@ -265,11 +255,9 @@ const _samples = {
         const _start = [200, 120];
         const [_flyStart, _flyEnd] = [10, 66];
 
-        // up and to the right, a little dip first
         const _curve = (u) => [_start[0] + 230 * u, _start[1] + 18 * Math.sin(u * Math.PI * 1.2) - 150 * u ** 1.5];
         const _points = Array.from({ length: 9 }, (_, index) => _curve(index / 8));
 
-        // catmull-rom tangents, so the trail and the plane share one smooth curve
         const _tangents = _points.map((_, index) => {
             const _before = _points[Math.max(index - 1, 0)];
             const _after = _points[Math.min(index + 1, _points.length - 1)];
@@ -278,15 +266,12 @@ const _samples = {
 
         const _position = _points.map((point, index) => {
             const _key = { t: _flyStart + ((_flyEnd - _flyStart) * index) / (_points.length - 1), s: [...point, 0] };
-            // every key with one after it needs its easing, lottie-web stops updating the layer without it
             if (index === _points.length - 1) return { ..._key, ..._linear };
             return { ..._key, ..._linear, to: [..._tangents[index], 0], ti: [-_tangents[index + 1][0], -_tangents[index + 1][1], 0] };
         });
-        // resting before the take off, and back home for the return
         _position.unshift({ t: 0, s: [..._points[0], 0], ..._linear, to: [0, 0, 0], ti: [0, 0, 0] });
         _position.push({ t: 70, s: [..._points.at(-1), 0], ..._linear, h: 1 }, { t: 76, s: [..._points[0], 0] });
 
-        // the send icon, white inside so it shows on dark and light
         const _icon = [
             [10, -10],
             [3, 10],
@@ -345,7 +330,6 @@ const _samples = {
             }
         );
 
-        // the dashed trail on the same curve, drawn behind the plane, then wiped from the start
         const _trailPath = {
             ty: "sh",
             d: 1,
@@ -397,7 +381,6 @@ const _samples = {
 
     // two parts: 0-24 the bell pops in, 24-120 it rings then rests, the part to loop
     bell: () => {
-        // drawn from its hook, so it swings from the top
         const _body = [
             [-26, 42],
             [-20, 36],
@@ -440,11 +423,9 @@ const _samples = {
         ]);
     },
 
-    // like: an outline heart, forward fills it with a pop and a burst of dots, back unlikes
     heart: () => {
         const _red = [0.94, 0.27, 0.35, 1];
 
-        // the classic heart curve, centered
         const _curve = Array.from({ length: 64 }, (_, index) => {
             const t = (index / 64) * Math.PI * 2;
             return [16 * Math.sin(t) ** 3, -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t))];
@@ -508,7 +489,6 @@ const _samples = {
         ]);
     },
 
-    // play to pause: the triangle's two halves morph into the two bars
     play: () => {
         const _morph = (from, to) => ({
             ty: "sh",
@@ -552,7 +532,6 @@ const _samples = {
         return _comp("play", 100, 100, 20, [_layer(1, [_group([_left, _right, _fill()])], 20, [50, 50], "icon")]);
     },
 
-    // sound to muted: the waves shrink away, an X draws in
     sound: () => {
         const _wave = (size) => _group([_ellipse(size, [-2, 0]), _trim({ s: _static(12.5), e: _static(37.5) }), _stroke(6)]);
         const _line = (points, start) =>

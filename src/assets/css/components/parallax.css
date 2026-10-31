@@ -4,7 +4,6 @@
 */
 @layer components {
     @media (prefers-reduced-motion: no-preference) {
-        /* taller by the range, so it always covers */
         [data-parallax-background] {
             top: 0;
             height: calc(100% + var(--range, 500px));

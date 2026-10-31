@@ -5,7 +5,6 @@ export class _inview {
         this.target = props.target ?? null;
         this.observeOnce = props.observeOnce !== false;
         this.observeRatio = props.observeRatio ?? 0;
-        // thresholds must include the ratio
         this.threshold = props.threshold ?? this.observeRatio;
         this.delay = props.delay ?? 0;
 
@@ -27,7 +26,6 @@ export class _inview {
 
                         if (this.observeOnce) this.destroy();
                     } else {
-                        // only when it was in view, not on the first report
                         if (!this.visible) return;
                         this.visible = false;
 

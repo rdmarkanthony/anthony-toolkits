@@ -40,12 +40,10 @@ export class _splitText {
         this.split?.revert();
         this.split.split(this.params);
 
-        // for lines of texts
         this.split.lines?.forEach((line, index) => {
             line.setAttribute("style", `--index:${index}`);
         });
 
-        // for words per line/s
         this.split.words?.forEach((word, index) => {
             word.setAttribute("style", `display:inline-block;--index:${index}`);
 

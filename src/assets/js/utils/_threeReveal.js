@@ -11,7 +11,6 @@ export const _threeReveal = (props = {}) => {
     let _targets = [];
     const _last = { x: 0, y: 0, inside: false };
 
-    // the quad that fades the last trail and adds the brush along the pointer's path
     const _trailMesh = (THREE) =>
         new THREE.Mesh(
             new THREE.PlaneGeometry(2, 2),
@@ -44,7 +43,6 @@ export const _threeReveal = (props = {}) => {
                     varying vec2 vUv;
 
                     void main() {
-                        // distance to the segment, so fast moves leave no gaps
                         vec2 p = vUv * vec2(uAspect, 1.0);
                         vec2 a = uFrom * vec2(uAspect, 1.0);
                         vec2 b = uTo * vec2(uAspect, 1.0);
@@ -79,7 +77,6 @@ export const _threeReveal = (props = {}) => {
                     uGray: { value: _options.gray },
                     uSoft: { value: _options.soft },
                 },
-                // fills the canvas, no camera
                 vertexShader: `
                     varying vec2 vUv;
 
@@ -99,7 +96,6 @@ export const _threeReveal = (props = {}) => {
                     varying vec2 vUv;
 
                     void main() {
-                        // cover, like background-size
                         vec2 ratio = vec2(
                             min((uResolution.x / uResolution.y) / (uImageSize.x / uImageSize.y), 1.0),
                             min((uResolution.y / uResolution.x) / (uImageSize.y / uImageSize.x), 1.0)
@@ -109,7 +105,6 @@ export const _threeReveal = (props = {}) => {
                         vec4 top = texture2D(uImage, uv);
                         top.rgb = mix(top.rgb, vec3(dot(top.rgb, vec3(0.299, 0.587, 0.114))), uGray);
 
-                        // a soft edge that closes in as the trail fades
                         float mask = smoothstep(0.5 - uSoft, 0.5 + uSoft, texture2D(uTrail, vUv).r);
                         gl_FragColor = mix(top, texture2D(uReveal, uv), mask);
                         #include <colorspace_fragment>
@@ -123,7 +118,6 @@ export const _threeReveal = (props = {}) => {
             _mesh.visible = false;
             scene.add(_mesh);
 
-            // shown once both are in
             Promise.all([_loader.loadAsync(_options.image), _loader.loadAsync(_options.reveal || _options.image)]).then(([image, reveal]) => {
                 if (instance.destroyed) return [image, reveal].forEach((texture) => texture.dispose());
 
@@ -138,7 +132,6 @@ export const _threeReveal = (props = {}) => {
             });
         },
 
-        // two small trail textures, one read while the other is drawn, 256px on the long side
         resize({ three: THREE, size }) {
             const _scale = 256 / Math.max(size.width, size.height);
             _targets.forEach((target) => target.dispose());
@@ -156,7 +149,6 @@ export const _threeReveal = (props = {}) => {
             const _x = (pointer.x + 1) / 2;
             const _y = (pointer.y + 1) / 2;
 
-            // paint from where it was last frame, a fresh start when it comes back in
             if (pointer.inside && !_last.inside) Object.assign(_last, { x: _x, y: _y });
             _uniforms.uFrom.value.set(_last.x, _last.y);
             _uniforms.uTo.value.set(_x, _y);

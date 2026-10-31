@@ -1,8 +1,6 @@
-// libraries
 import { DateTime } from "luxon";
 import flatpickr from "flatpickr";
 
-// utils, copy each one with the files it imports
 import { _event } from "./utils/_event";
 import { _enquire } from "./utils/_enquire";
 import { _device } from "./utils/_device";
@@ -67,7 +65,6 @@ import { _horizontalLoop } from "./utils/_horizontalLoop";
 import { _comicSlider } from "./utils/_comicSlider";
 import { _deckSlider } from "./utils/_deckSlider";
 
-// for the inline page scripts
 Object.assign(window, {
     DateTime,
     flatpickr,
@@ -141,7 +138,6 @@ Object.assign(window, {
     _deckSlider,
 });
 
-// set before the page scripts measure
 const _headerContent = document.querySelector(".header-content");
 const _footer = document.querySelector(".footer-content");
 
@@ -151,12 +147,9 @@ _event.resize(() => {
     if (_footer) document.body.style.setProperty("--footer-height", `${_footer.offsetHeight}px`);
 });
 
-// before the page scripts read the hash
 _autoScrollHash();
 
-// components directory popup, from the header links or /#components-directory
 document.addEventListener("click", (e) => {
-    // a pick closes it, so "All with descriptions" can glide on the home page
     if (e.target.closest("#components-directory a")) return _lightbox.close();
     if (!e.target.closest("[data-directory-open]")) return;
     e.preventDefault();
@@ -181,7 +174,6 @@ document.querySelectorAll(".js-favorite").forEach((target) => {
             animation.setLoop(true);
             animation.playSegments([0, _end], true);
         });
-        // ends the loop it is in, then plays up to the full star
         _link.addEventListener("pointerleave", () => {
             const _frame = Math.floor(animation.firstFrame + animation.currentFrame);
             animation.setLoop(false);
@@ -190,7 +182,6 @@ document.querySelectorAll(".js-favorite").forEach((target) => {
     });
 });
 
-// starter kit popup, from the header links or /#starter-kit
 document.addEventListener("click", (e) => {
     if (!e.target.closest("[data-starter-open]")) return;
     e.preventDefault();
@@ -205,7 +196,6 @@ document.querySelector("[data-starter-copy]")?.addEventListener("click", async (
     setTimeout(() => (_button.textContent = "Copy file list"), 2000);
 });
 
-// data-auto-scroll links glide to their section, "#" to the top
 document.addEventListener("click", (e) => {
     const _link = e.target.closest("a[data-auto-scroll]");
     if (!_link) return;
@@ -220,13 +210,10 @@ document.addEventListener("click", (e) => {
     _autoScroll({ target: _target });
 });
 
-// header and home search, Enter with no pick goes to /?q=
-// same match as the home filter
 const _searchItems = JSON.parse(document.getElementById("search-items")?.textContent ?? "[]");
 const _escapeHTML = (text) => String(text).replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 
 document.querySelectorAll("[data-search]").forEach((form) => {
-    // home shows the results below, no "See all"
     const _onHome = form.hasAttribute("data-home-search");
 
     new _autocomplete({
@@ -241,7 +228,6 @@ document.querySelectorAll("[data-search]").forEach((form) => {
     });
 });
 
-// sliding menu below lg, the page is inert while open
 const _menu = document.querySelector("[data-mobile-menu]");
 const _menuButton = document.querySelector("[data-mobile-menu-open]");
 const _pageParts = [_headerContent, document.querySelector(".main-content"), _footer].filter(Boolean);
@@ -254,7 +240,6 @@ const _toggleMenu = (open) => {
     document.documentElement.classList.toggle("overflow-hidden", open);
     _pageParts.forEach((part) => (part.inert = open));
 
-    // not the search, so no phone keyboard pops up
     (open ? _menu.querySelector("button[data-mobile-menu-close]") : _menuButton).focus({ preventScroll: true });
 };
 

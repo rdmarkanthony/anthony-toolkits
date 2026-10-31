@@ -46,7 +46,6 @@ export const _groupHeight = {
         document.querySelectorAll("[data-rgh-parent]").forEach((parent) => {
             const _rows = {};
 
-            // group the items based on their top position
             parent.querySelectorAll("[data-rgh-item]").forEach((item) => {
                 if (!_rows[item.offsetTop]) _rows[item.offsetTop] = [];
                 _rows[item.offsetTop].push(...item.querySelectorAll("[data-rgh]"));

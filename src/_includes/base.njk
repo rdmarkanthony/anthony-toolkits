@@ -12,7 +12,6 @@
     <meta name="description" content="{{ pageDescription or site.description }}" />
     <link rel="canonical" href="{{ site.url }}{{ page.url }}" />
 
-    {# link previews (Messenger, Slack, WhatsApp, X...), banner source is tools/og-image.html #}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="{{ site.name }}" />
     <meta property="og:title" content="{{ title | default(site.name) }}" />
@@ -39,7 +38,6 @@
     {% getBundle "headerscript" %}
 </head>
 <body class="bg-kit-bg font-sans text-kit-text{% if bodyClass %} {{ bodyClass }}{% endif %}">
-    {# bare: no site header/footer, for demos shown in an iframe #}
     {% if bare %}
     {{ content | safe }}
     {% else %}

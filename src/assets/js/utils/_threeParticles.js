@@ -18,7 +18,6 @@ export const _threeParticles = (props = {}) => {
             const _scales = new Float32Array(count);
             const _colors = new Float32Array(count * 3);
 
-            // x y as part of the view, z in world units
             _base = new Float32Array(count * 3);
             _velocity = new Float32Array(count * 2);
             _offset = new Float32Array(count * 2);
@@ -38,7 +37,6 @@ export const _threeParticles = (props = {}) => {
             _geometry.setAttribute("aScale", new THREE.BufferAttribute(_scales, 1));
             _geometry.setAttribute("aColor", new THREE.BufferAttribute(_colors, 3));
 
-            // round dots, the same px size at z 0
             const _material = new THREE.ShaderMaterial({
                 uniforms: {
                     uSize: { value: _options.size },
@@ -96,7 +94,6 @@ export const _threeParticles = (props = {}) => {
                 const _i3 = i * 3;
                 const _i2 = i * 2;
 
-                // drift, wrap around past the edges
                 _base[_i3] += (_velocity[_i2] * speed * delta) / view.width;
                 _base[_i3 + 1] += (_velocity[_i2 + 1] * speed * delta) / view.height;
                 if (Math.abs(_base[_i3]) > 0.55) _base[_i3] -= Math.sign(_base[_i3]) * 1.1;
@@ -105,7 +102,6 @@ export const _threeParticles = (props = {}) => {
                 const _x = _base[_i3] * view.width;
                 const _y = _base[_i3 + 1] * view.height;
 
-                // pushed away inside the radius, eased back
                 let _pushX = 0;
                 let _pushY = 0;
                 const _dx = _x - _pointerX;
@@ -128,7 +124,6 @@ export const _threeParticles = (props = {}) => {
 
             _points.geometry.attributes.position.needsUpdate = true;
 
-            // tilt toward the pointer, the depth gives parallax
             _tilt.x += ((pointer.inside ? pointer.x : 0) * parallax - _tilt.x) * _ease;
             _tilt.y += ((pointer.inside ? pointer.y : 0) * parallax - _tilt.y) * _ease;
             scene.rotation.y = _tilt.x;

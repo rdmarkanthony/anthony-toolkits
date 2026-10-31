@@ -20,7 +20,6 @@ const _el = (tag, className, attrs = {}) => {
 export class _lightboxGallery extends _emitter {
     static classes = {
         cover: "bg-gray-950/95",
-        // fills the lightbox, past its side and bottom padding
         root: "-mx-4 -mb-4 flex h-[calc(100%+1rem)] flex-col text-white select-none focus:outline-none xl:-mx-10 xl:-mb-10 xl:h-[calc(100%+2.5rem)]",
         counter: "absolute -top-12 left-4 font-mono text-sm text-white/70 tabular-nums xl:left-10",
         stage: "relative min-h-0 flex-1",
@@ -31,10 +30,8 @@ export class _lightboxGallery extends _emitter {
         arrow: "absolute top-1/2 hidden size-12 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white/10 transition-colors hover:bg-white/20 disabled:cursor-default disabled:opacity-30 disabled:hover:bg-white/10 md:grid",
         prev: "left-4 xl:left-6",
         next: "right-4 xl:right-6",
-        // centered while they fit, scrolls when they don't
         thumbs: "flex shrink-0 gap-2 overflow-x-auto px-4 pt-1 pb-4 [scrollbar-width:none] xl:pb-6 [&::-webkit-scrollbar]:hidden [&>button:first-of-type]:ml-auto [&>button:last-of-type]:mr-auto",
         thumb: "size-14 shrink-0 cursor-pointer overflow-hidden rounded-md opacity-40 transition-opacity hover:opacity-80 aria-current:opacity-100 md:size-16",
-        // a _hoverIndicator ring: on the current thumbnail, follows the mouse over the others
         indicator: "absolute top-0 left-0 z-10 h-(--h) w-(--w) translate-x-(--x) translate-y-(--y) rounded-md ring-2 ring-white ring-inset duration-300 ease-out",
     };
 
@@ -58,7 +55,6 @@ export class _lightboxGallery extends _emitter {
     }
 
     init() {
-        // links added later work too
         this.onClick = (e) => {
             const _link = e.target.closest?.(`[${this.attribute}]`);
             if (!_link || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -80,7 +76,6 @@ export class _lightboxGallery extends _emitter {
         document.addEventListener("click", this.onClick);
     }
 
-    // a link, or { src, thumb, caption, alt }
     item(link) {
         if (!(link instanceof Element)) return { thumb: link.src, caption: "", alt: "", ...link };
 
@@ -108,7 +103,6 @@ export class _lightboxGallery extends _emitter {
         this.lightbox.el.cover.classList.remove("bg-black/50");
         this.lightbox.el.cover.classList.add(...this.classes.cover.split(" "));
 
-        // straight to the one clicked, then the slider takes over
         const _slides = [...this.el.track.children];
         const _index = Math.max(0, Math.min(index, _slides.length - 1));
         this.el.track.scrollLeft = _slides[_index].offsetLeft - _slides[0].offsetLeft;
@@ -176,7 +170,6 @@ export class _lightboxGallery extends _emitter {
     change(index) {
         this.index = index;
 
-        // this one and its neighbors
         [index - 1, index, index + 1].forEach((i) => {
             const _image = this.el.track.children[i]?.querySelector("img");
             if (_image && !_image.src) _image.src = _image.dataset.src;

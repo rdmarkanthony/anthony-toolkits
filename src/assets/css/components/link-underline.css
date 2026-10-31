@@ -37,7 +37,6 @@
         background-position: 100% 100%;
     }
 
-    /* fill: the solid line on top, the light line always under it */
     .link-underline-fill,
     .link-underline-fill-reverse {
         --underline-track: color-mix(in srgb, currentColor 25%, transparent);

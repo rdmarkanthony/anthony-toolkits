@@ -39,11 +39,9 @@ export class _header extends _emitter {
         this._onCheck = () => this.check();
         _event.scroll(this._onCheck);
 
-        // its own height, or something above it opening or closing
         _event.observeResize(this._onCheck, this.target);
         _event.observeResize(this._onCheck, document.body);
 
-        // keyboard users tabbing into it
         this.target.addEventListener("focusin", () => this.target.querySelector(":focus-visible") && this.show(), { signal });
 
         if (!this.menu) return;
@@ -72,11 +70,9 @@ export class _header extends _emitter {
         const _delta = _y - this.lastY;
         const _height = this.target.offsetHeight;
 
-        // where it sits in the page, below anything above it
         if (!this.isFixed) this.top = this.pageTop();
         const _offset = this.top + (this.offset ?? _height);
 
-        // a shown fixed header stays until its own spot, so it doesn't jump
         if (_y <= this.top || (_y <= _offset && this.isHidden)) this.unfix();
         else if (_y > _offset && !this.isFixed) this.fix();
         else if (_y > _offset && Math.abs(_delta) >= this.tolerance) {
@@ -88,7 +84,6 @@ export class _header extends _emitter {
         this.vars();
     }
 
-    // offsetTop, so a slide still running doesn't count
     pageTop() {
         let _top = 0;
         for (let _element = this.target; _element; _element = _element.offsetParent) _top += _element.offsetTop;
@@ -99,14 +94,12 @@ export class _header extends _emitter {
         const _height = this.target.offsetHeight;
         const _offset = this.isFixed ? (this.isHidden ? 0 : _height) : Math.max(0, Math.round(this.top + _height - window.scrollY));
 
-        // only on change, it runs on every scroll frame
         if (_height !== this.height) document.body.style.setProperty("--header-height", `${_height}px`);
         if (_offset !== this.visible) document.body.style.setProperty("--header-offset", `${_offset}px`);
         this.height = _height;
         this.visible = _offset;
     }
 
-    // swaps position without the slide
     instant(callback) {
         this.target.style.transition = "none";
         callback();
@@ -169,7 +162,6 @@ export class _header extends _emitter {
         document.documentElement.style.overflow = "hidden";
         this.inertOutside();
 
-        // the menu itself, not a search input, so no phone keyboard pops up
         if (!this.menu.hasAttribute("tabindex")) this.menu.tabIndex = -1;
         this.menu.focus({ preventScroll: true });
 
@@ -195,7 +187,6 @@ export class _header extends _emitter {
         this.emit("close");
     }
 
-    // everything goes inert except the menu and its toggles
     inertOutside() {
         const _keep = [this.menu, ...this.toggles];
 

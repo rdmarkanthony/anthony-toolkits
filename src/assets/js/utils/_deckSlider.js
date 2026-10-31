@@ -55,7 +55,6 @@ export class _deckSlider extends _emitter {
         return this.order[0];
     }
 
-    // leans the other way from the card above it
     lean(above) {
         const _side = parseFloat(above.style.getPropertyValue("--deck-tilt")) > 0 ? -1 : 1;
         return `${_side * this.tilt * (0.6 + Math.random() * 0.4)}deg`;
@@ -82,7 +81,6 @@ export class _deckSlider extends _emitter {
         }
     }
 
-    // up and a little to the side, clear of the stack
     away(card, side) {
         return { x: card.offsetWidth * 0.2 * side, y: -card.offsetHeight * 1.1, rotate: 12 * side };
     }
@@ -92,7 +90,6 @@ export class _deckSlider extends _emitter {
         this.order.push(this.order.shift());
         _card.style.setProperty("--deck-tilt", this.lean(this.el.cards[this.order.at(-2)]));
 
-        // over the others while it's out
         return this.fly(_card, away ?? this.away(_card, Math.random() > 0.5 ? 1 : -1), this.el.cards.length + 1 + this.flying.size, from);
     }
 
@@ -100,11 +97,9 @@ export class _deckSlider extends _emitter {
         const _card = this.el.cards[this.order.at(-1)];
         this.order.unshift(this.order.pop());
 
-        // out from behind, in on top
         return this.fly(_card, this.away(_card, -1), 0);
     }
 
-    // out, then in at its new place, from where it is now or from the drag
     async fly(card, away, z, from = this.now(card)) {
         card.getAnimations().forEach((animation) => animation.cancel());
         this.flying.set(card, z);
@@ -113,7 +108,6 @@ export class _deckSlider extends _emitter {
         const _away = { translate: `${away.x}px ${away.y}px`, rotate: `${away.rotate}deg` };
         const _out = card.animate([from, _away], { duration: this.time(0.45), easing: "cubic-bezier(0.2, 0.6, 0.35, 1)", fill: "forwards" });
 
-        // thrown again on its way
         try {
             await _out.finished;
         } catch {
@@ -123,7 +117,6 @@ export class _deckSlider extends _emitter {
         this.flying.delete(card);
         this.update();
 
-        // the end is its css place
         card.animate([_away, {}], { duration: this.time(1), easing: "cubic-bezier(0.6, 0, 0.2, 1)" });
         _out.cancel();
     }
@@ -159,7 +152,6 @@ export class _deckSlider extends _emitter {
             _drag.card.dataset.dragging = "";
         }
 
-        // px per ms, for a quick flick
         _drag.speed = Math.hypot(_dx - _drag.dx, _dy - _drag.dy) / Math.max(_now - _drag.time, 1);
         Object.assign(_drag, { dx: _dx, dy: _dy, time: _now });
 
@@ -179,7 +171,6 @@ export class _deckSlider extends _emitter {
         card.style.removeProperty("translate");
         card.style.removeProperty("rotate");
 
-        // far enough, or flicked, it's thrown that way
         const _length = Math.hypot(dx, dy);
         const _flick = performance.now() - time < 80 && speed > 0.5;
         if (_length > card.offsetWidth * 0.3 || (_flick && _length > 20)) {
@@ -190,7 +181,6 @@ export class _deckSlider extends _emitter {
         }
     }
 
-    // the top card throws, unless it was dragged or a link in it was clicked
     click(e) {
         if (this.dragged) {
             this.dragged = false;
