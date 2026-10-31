@@ -34,10 +34,8 @@ const _osName = _os();
 export const _device = {
     os: _osName,
     browser: _browser(),
-    // phone or tablet
     mobile: _osName === "ios" || _osName === "android",
 
-    // read live, they change when a mouse is plugged in
     get touch() {
         return window.matchMedia("(pointer: coarse)").matches;
     },

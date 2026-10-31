@@ -31,7 +31,6 @@ export class _formValidation extends _emitter {
         this.rules = props.rules ?? {};
         this.messages = { ..._messages, ...props.messages };
 
-        // the one being reported in events
         this.field = null;
         this.message = "";
         this.invalid = [];
@@ -56,7 +55,6 @@ export class _formValidation extends _emitter {
                 const _input = this.fieldOf(e.target);
                 if (!_input) return;
 
-                // a server error goes once they change it
                 this.errors.delete(_input);
                 if (this.live || this.checked.has(_input)) this.validate(_input);
                 this.recheck(_input);
@@ -64,7 +62,6 @@ export class _formValidation extends _emitter {
             { signal }
         );
 
-        // ticks and picks count right away, text once they leave it with a value
         this.target.addEventListener("change", (e) => this.isChoice(e.target) && this.fieldOf(e.target) && this.validate(e.target), { signal });
         this.target.addEventListener(
             "focusout",
@@ -91,7 +88,6 @@ export class _formValidation extends _emitter {
         return ["checkbox", "radio"].includes(input.type) || input.tagName === "SELECT";
     }
 
-    // a radio stands for its whole group
     group(input) {
         return input.type === "radio" && input.name ? this.fields().filter((el) => el.type === "radio" && el.name === input.name) : [input];
     }
@@ -108,12 +104,10 @@ export class _formValidation extends _emitter {
         return typeof _message === "function" ? _message(input) : _message;
     }
 
-    // true when valid
     validate(input) {
         const _group = this.group(input);
         _group.forEach((el) => this.checked.add(el));
 
-        // rules and server errors go through setCustomValidity, so checkValidity agrees
         let _custom = this.errors.get(input) ?? "";
         if (!_custom) {
             for (const selector in this.rules) {
@@ -141,7 +135,6 @@ export class _formValidation extends _emitter {
         return !_message;
     }
 
-    // rules that read other fields, like a matching password
     recheck(changed) {
         this.fields().forEach((input) => {
             if (input === changed || !this.checked.has(input)) return;
@@ -172,7 +165,6 @@ export class _formValidation extends _emitter {
         });
     }
 
-    // true when all are valid
     validateAll() {
         const _seen = new Set();
         this.invalid = [];

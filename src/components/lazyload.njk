@@ -9,7 +9,6 @@ title: Lazyload | Anthony Toolkits
 {% set fade = 'opacity-0 transition-opacity duration-700 [&.is-loaded]:opacity-100' %}
 {% set button = 'rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700 disabled:opacity-50' %}
 
-{# demo: images, the counter stays on screen #}
 <section class="px-4 py-16">
     <div class="mx-auto max-w-295">
         <h2 class="mb-2 text-3xl font-bold tracking-tight">Images</h2>
@@ -35,7 +34,6 @@ title: Lazyload | Anthony Toolkits
     </div>
 </section>
 
-{# demo: a background and a video #}
 <section class="px-4 py-16">
     <div class="mx-auto max-w-295">
         <h2 class="mb-8 text-3xl font-bold tracking-tight">Background and video</h2>
@@ -49,14 +47,13 @@ title: Lazyload | Anthony Toolkits
             <div class="flex flex-col gap-3">
                 <p class="font-semibold">Autoplay video <code class="ml-2 font-mono text-xs font-normal text-gray-500">data-src</code></p>
                 <div class="relative aspect-3/2 overflow-hidden rounded-2xl bg-gray-100">
-                    <video class="js-lazy absolute inset-0 size-full object-cover {{ fade }}" data-src="/assets/video/sample-video.mp4" autoplay muted loop playsinline></video>
+                    <video class="js-lazy absolute inset-0 size-full object-cover {{ fade }}" data-src="/assets/video/sample.mp4" autoplay muted loop playsinline></video>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-{# demo: hidden frames, loaded first, then shown #}
 <section class="px-4 py-16">
     <div class="mx-auto max-w-295">
         <h2 class="mb-2 text-3xl font-bold tracking-tight">Load before showing</h2>

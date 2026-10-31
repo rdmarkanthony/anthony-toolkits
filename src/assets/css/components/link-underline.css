@@ -2,12 +2,15 @@
     link underline, css only
     hover or focus and the line draws in from the left, leave and it keeps going out to the right
     .link-underline-reverse runs the other way, in from the right, out to the left
+    .link-underline-fill keeps a light line under it, the solid line draws over it, -fill-reverse too
     keep the link inline so it wraps, the line then runs line by line
-    --underline-color, --underline-size
+    --underline-color, --underline-size, --underline-track for the light line
 */
 @layer components {
     .link-underline,
-    .link-underline-reverse {
+    .link-underline-reverse,
+    .link-underline-fill,
+    .link-underline-fill-reverse {
         --underline-color: currentColor;
         --underline-size: 1px;
         text-decoration: none;
@@ -34,9 +37,35 @@
         background-position: 100% 100%;
     }
 
+    .link-underline-fill,
+    .link-underline-fill-reverse {
+        --underline-track: color-mix(in srgb, currentColor 25%, transparent);
+        background-image:
+            linear-gradient(var(--underline-color), var(--underline-color)),
+            linear-gradient(var(--underline-track), var(--underline-track));
+        background-size: 0% var(--underline-size), 100% var(--underline-size);
+        background-position: 100% 100%, 0% 100%;
+    }
+    .link-underline-fill:hover,
+    .link-underline-fill:focus-visible {
+        background-size: 100% var(--underline-size), 100% var(--underline-size);
+        background-position: 0% 100%, 0% 100%;
+    }
+
+    .link-underline-fill-reverse {
+        background-position: 0% 100%, 0% 100%;
+    }
+    .link-underline-fill-reverse:hover,
+    .link-underline-fill-reverse:focus-visible {
+        background-size: 100% var(--underline-size), 100% var(--underline-size);
+        background-position: 100% 100%, 0% 100%;
+    }
+
     @media (prefers-reduced-motion: reduce) {
         .link-underline,
-        .link-underline-reverse {
+        .link-underline-reverse,
+        .link-underline-fill,
+        .link-underline-fill-reverse {
             transition: color var(--animation-delay) ease-in-out;
         }
     }

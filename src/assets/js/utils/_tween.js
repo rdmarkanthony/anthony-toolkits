@@ -2,7 +2,6 @@
 // usage: const tween = _tween({ duration, ease, update(progress), complete }), tween.stop()
 // duration in ms, ease is a gsap-style name ("power2.out", "power4.inOut"...) or (p) => p
 
-// the "in" curves, out and inOut are made from them
 const _eases = {
     none: (p) => p,
     power0: (p) => p,
@@ -26,7 +25,6 @@ export const _easing = (ease = "power1.out") => {
     return (p) => 1 - _in(1 - p);
 };
 
-// duration 0 updates and completes right away
 export const _tween = ({ duration = 500, ease, update, complete } = {}) => {
     const _ease = _easing(ease);
     const _start = performance.now();

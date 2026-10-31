@@ -12,7 +12,6 @@ export const _threeGlow = (props = {}) => {
     const _pointer = { x: 0, y: 0, follow: 0, inside: false };
     const _fine = window.matchMedia("(pointer: fine)");
 
-    // css colors as srgb, so the mix matches css
     const _srgb = (THREE, color) => new THREE.Color(color).convertLinearToSRGB();
 
     return {
@@ -38,14 +37,12 @@ export const _threeGlow = (props = {}) => {
                     uColor: { value: new THREE.Vector3() },
                     uBackground: { value: new THREE.Vector3() },
                 },
-                // fills the canvas, no camera
                 vertexShader: `
                     void main() {
                         gl_Position = vec4(position.xy, 0.0, 1.0);
                     }
                 `,
                 fragmentShader: `
-                    // css pixels, y down like the dom
                     uniform vec2 uResolution;
                     uniform float uPixelRatio;
                     uniform vec2 uCenter;
@@ -64,7 +61,6 @@ export const _threeGlow = (props = {}) => {
                         return fract((p3.x + p3.y) * p3.z);
                     }
 
-                    // blurred disc, tanh(0.85x) is close to a gaussian edge
                     float disc(vec2 p, vec2 center, float radius, float blur) {
                         return 0.5 - 0.5 * tanh((distance(p, center) - radius) * 0.85 / blur);
                     }
@@ -77,7 +73,6 @@ export const _threeGlow = (props = {}) => {
                         vec2 p = vec2(gl_FragCoord.x, uResolution.y * uPixelRatio - gl_FragCoord.y) / uPixelRatio;
                         float glow = disc(p, uCenter, uRadius, uBlur);
 
-                        // smaller one across the middle
                         vec2 middle = uResolution * 0.5;
                         vec2 opposite = clamp(middle - (uCenter - middle) * 1.6, vec2(0.0), uResolution);
                         glow = max(glow, disc(p, opposite, uRadius * 0.75, uBlur * 0.75) * uMirror);
@@ -116,7 +111,6 @@ export const _threeGlow = (props = {}) => {
             const _x = ((pointer.x + 1) / 2) * size.width;
             const _y = ((1 - pointer.y) / 2) * size.height;
 
-            // jump in under the cursor, then ease after it
             if (_inside && !_pointer.inside) Object.assign(_pointer, { x: _x, y: _y });
             _pointer.inside = _inside;
             _pointer.x += (_x - _pointer.x) * _ease;
@@ -147,7 +141,6 @@ export const _threeGlow = (props = {}) => {
             if (state.strength !== undefined) _state.toStrength = state.strength;
             if (state.rest) _state.toRest = [...state.rest];
 
-            // not animating, show it now
             if (_instance.running) return;
             _color.current.copy(_color.to);
             _background.current.copy(_background.to);

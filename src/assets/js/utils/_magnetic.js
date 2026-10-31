@@ -9,7 +9,6 @@ export class _magnetic extends _emitter {
         super(props.events);
 
         this.target = props.target ?? null;
-        // 0 to 1 of the mouse's distance from the center
         const _data = parseFloat(this.target?.dataset.magnetic);
         this.strength = props.strength ?? (Number.isNaN(_data) ? 0.35 : _data);
         this.radius = props.radius ?? 40;
@@ -37,14 +36,12 @@ export class _magnetic extends _emitter {
             this.check();
         });
         _on(document, "pointerout", (e) => !e.relatedTarget && this.release());
-        // the page moves under a still mouse
         _on(window, "scroll", () => this.mouse && this.check());
 
         this.render();
     }
 
     check() {
-        // its spot without the pull, so it doesn't chase itself
         const _rect = this.target.getBoundingClientRect();
         const _left = _rect.left - this.x;
         const _top = _rect.top - this.y;
@@ -77,7 +74,6 @@ export class _magnetic extends _emitter {
         if (!this.frame) this.frame = requestAnimationFrame(() => this.tick());
     }
 
-    // eases toward the mouse, stops once it's there
     tick() {
         this.frame = null;
         this.x += (this.to.x - this.x) * this.ease;

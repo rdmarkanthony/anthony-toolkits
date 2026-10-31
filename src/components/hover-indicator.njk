@@ -6,12 +6,10 @@ title: Hover indicator | Anthony Toolkits
 
 {{ pageIntro({ label: '_hoverIndicator', title: 'Hover indicator', description: 'A background, line or knob that slides to the hovered or selected item. For tabs, menus, tiles, radios and switches.' }) }}
 
-{# place from --x --y --w --h, each demo adds its look #}
 {% set box = 'js-hover-indicator absolute top-0 left-0 -z-10 h-(--h) w-(--w) translate-x-(--x) translate-y-(--y)' %}
 {% set line = 'js-hover-indicator absolute -bottom-px left-0 h-0.5 w-(--w) translate-x-(--x) bg-gray-950 duration-300 ease-out' %}
 {% set menu = ['Home', 'About', 'Services', 'Work', 'Contact'] %}
 
-{# demo: tabs #}
 {% set tabGroups = [
     { id: 'two', text: '2 tabs, a pill', tabs: ['Sign in', 'Sign up'], class: 'grid w-full max-w-xs grid-cols-2 text-center' },
     { id: 'three', text: '3 tabs', tabs: ['Tab 1', 'Tab 2', 'Tab 3'], class: 'flex w-fit flex-wrap gap-1' }
@@ -38,7 +36,6 @@ title: Hover indicator | Anthony Toolkits
     </div>
 </section>
 
-{# demo: menus #}
 <section class="bg-gray-50 px-4 py-16">
     <div class="mx-auto flex max-w-295 flex-col gap-10">
         <div class="flex flex-wrap items-end justify-between gap-4">
@@ -70,7 +67,6 @@ title: Hover indicator | Anthony Toolkits
     </div>
 </section>
 
-{# demo: tiles #}
 {% set tiles = [
     { title: 'Strategy', text: 'Research and planning, so every page has a goal.' },
     { title: 'Design', text: 'Layouts, type and motion that fit the brand.' },
@@ -105,7 +101,6 @@ title: Hover indicator | Anthony Toolkits
     </div>
 </section>
 
-{# demo: radio #}
 <section class="bg-gray-50 px-4 py-16">
     <div class="mx-auto flex max-w-295 flex-col gap-10">
         <h2 class="text-3xl font-bold tracking-tight">Radio</h2>
@@ -124,7 +119,6 @@ title: Hover indicator | Anthony Toolkits
     </div>
 </section>
 
-{# demo: checkbox switches #}
 {% set rows = [
     { name: 'email', title: 'Email', text: 'News and product updates.', checked: true },
     { name: 'sms', title: 'SMS', text: 'Reminders before your booking.' },

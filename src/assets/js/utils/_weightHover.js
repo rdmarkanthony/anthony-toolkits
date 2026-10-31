@@ -32,7 +32,6 @@ export class _weightHover extends _emitter {
     init() {
         this.min ??= parseFloat(getComputedStyle(this.target).fontWeight);
 
-        // screen readers get the text, not the letters
         this.html = this.target.innerHTML;
         this.label = document.createElement("span");
         this.label.textContent = this.target.textContent.trim();
@@ -53,12 +52,10 @@ export class _weightHover extends _emitter {
         });
         _on("pointerout", (e) => !e.relatedTarget && this.release());
 
-        // the page moves under a still mouse
         this.unsubscribe.push(_event.scroll(() => this.mouse && this.check()));
         this.unsubscribe.push(_event.observeResize(() => this.measure(), this.target));
     }
 
-    // each letter's center on the page
     measure() {
         this.letters.forEach((letter) => {
             const _rect = letter.element.getBoundingClientRect();
@@ -73,14 +70,12 @@ export class _weightHover extends _emitter {
         if (!_near) return this.release();
 
         if (!this.isActive) {
-            // content above may have moved it
             this.measure();
             this.isActive = true;
             this.target.setAttribute("data-active", "");
             this.emit("enter");
         }
 
-        // full weight on the mouse, eased off to min at the radius
         const _x = this.mouse.x + window.scrollX;
         const _y = this.mouse.y + window.scrollY;
         this.letters.forEach((letter) => {
@@ -104,7 +99,6 @@ export class _weightHover extends _emitter {
         if (!this.frame) this.frame = requestAnimationFrame(() => this.tick());
     }
 
-    // eases each letter to its weight, stops once they're all there
     tick() {
         this.frame = null;
         let _moving = false;

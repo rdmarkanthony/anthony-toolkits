@@ -9,7 +9,7 @@ export class _lightbox extends _emitter {
     constructor(props) {
         super(props.events);
 
-        if (!window._lightboxList) window._lightboxList = []; // the open lightboxes
+        if (!window._lightboxList) window._lightboxList = [];
 
         this.modal = props.modal || false;
         this.close = props.close || "page";
@@ -30,7 +30,7 @@ export class _lightbox extends _emitter {
         this.animation = props.animation || "zoom";
         this.animating = false;
 
-        if (this.isInLightbox(props.target)) return; // already open
+        if (this.isInLightbox(props.target)) return;
 
         this.init(props);
     }
@@ -95,7 +95,6 @@ export class _lightbox extends _emitter {
         this.show();
         window._lightboxList.push(this);
 
-        // for scripts that didn't open it, e.detail is this lightbox
         _event.dispatch(window, "lightboxReady", this);
     }
 
@@ -105,7 +104,6 @@ export class _lightbox extends _emitter {
         this.el.btn.close.href = "#";
         this.el.btn.close.innerHTML = `<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.207 6.207a1 1 0 0 0-1.414-1.414L12 10.586 6.207 4.793a1 1 0 0 0-1.414 1.414L10.586 12l-5.793 5.793a1 1 0 1 0 1.414 1.414L12 13.414l5.793 5.793a1 1 0 0 0 1.414-1.414L13.414 12l5.793-5.793z" fill="currentColor"/></svg>`;
 
-        // inside: on the content's corner, page: scrolls with long content, fixed on xl
         if (this.close === "inside") {
             this.el.btn.close.classList.add("text-gray-950");
             this.content.original.appendChild(this.el.btn.close);
@@ -127,7 +125,6 @@ export class _lightbox extends _emitter {
         }
     }
 
-    // short content is centered, long content scrolls
     resize() {
         const _mainStyle = getComputedStyle(this.el.main);
         const _mainHeight = this.el.main.offsetHeight - (parseFloat(_mainStyle.paddingTop) + parseFloat(_mainStyle.paddingBottom));
@@ -175,7 +172,6 @@ export class _lightbox extends _emitter {
     }
 
     hide(status, callback, delay = null) {
-        // before the animating check, so the others still close
         if (status === "all") {
             _lightbox.close("all");
             return;
@@ -219,11 +215,10 @@ export class _lightbox extends _emitter {
         if (callback) callback(this);
     }
 
-    // remove it now, without the animation, and put the content back
     destroy() {
-        if (!this.target) return; // already gone
+        if (!this.target) return;
 
-        if (this.close === "inside") this.el.btn.close?.remove(); // not left in the content
+        if (this.close === "inside") this.el.btn.close?.remove();
         this.content.original.classList.remove("js-lightbox-center", "lightbox-animate", "lightbox-fadeIn", "lightbox-fadeInUp", "lightbox-zoomIn", "lightbox-fadeOut", "lightbox-fadeOutDown", "lightbox-zoomOut");
         if (this.content.parent) this.content.parent.appendChild(this.content.original);
 
@@ -237,7 +232,6 @@ export class _lightbox extends _emitter {
         if (window._lightboxList.length === 0) document.body.classList.remove("lightbox-active");
     }
 
-    // the latest lightbox, or "all"
     static close(status) {
         [...window._lightboxList].forEach((item, index, arr) => {
             if (status === "all" || index === arr.length - 1) item.hide();

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600&family=DM+Sans:wght@400;500&display=block" />
+    <style>
+        :root {
+            --bg: #ffffff;
+            --surface: #f5f4ef;
+            --line: #dddbd2;
+            --text: #111113;
+            --muted: #65656d;
+            --accent: #5b8fe0;
+        }
+        * {
+            margin: 0;
+            box-sizing: border-box;
+        }
+        body {
+            position: relative;
+            width: 1200px;
+            height: 630px;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "DM Sans", sans-serif;
+        }
+        .rows {
+            position: absolute;
+            top: -120px;
+            left: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            transform: rotate(-12deg);
+        }
+        .row {
+            display: flex;
+            gap: 14px;
+            white-space: nowrap;
+        }
+        .row span {
+            padding: 14px 26px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--surface);
+            font-size: 26px;
+            font-weight: 500;
+        }
+        .row span.on {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: #0c0c0e;
+        }
+        .shade {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, var(--bg) 42%, color-mix(in srgb, var(--bg) 80%, transparent) 64%, color-mix(in srgb, var(--bg) 20%, transparent) 100%);
+        }
+        .content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 64px 72px;
+        }
+        .logo {
+            width: 64px;
+            height: 64px;
+        }
+        .accent {
+            color: var(--accent);
+        }
+        h1 {
+            margin-top: auto;
+            font-family: "Bricolage Grotesque", sans-serif;
+            font-size: 104px;
+            font-weight: 600;
+            line-height: 0.95;
+            letter-spacing: -0.035em;
+        }
+        p {
+            max-width: 620px;
+            margin-top: 28px;
+            font-size: 30px;
+            color: var(--muted);
+        }
+        .count {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            align-self: flex-start;
+            margin-top: 40px;
+            padding: 12px 24px 12px 12px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--bg);
+            font-size: 26px;
+            font-weight: 500;
+        }
+        .count b {
+            padding: 6px 16px;
+            border-radius: 999px;
+            background: var(--text);
+            color: var(--bg);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="rows"></div>
+    <div class="shade"></div>
+    <div class="content">
+        <img class="logo" src="../src/assets/favicon/favicon.svg" alt="" />
+        <h1>Anthony<br />Toolkits<span class="accent">.</span></h1>
+        <p>Components and utilities, ready to copy into any website.</p>
+        <div class="count"><b>75+</b> components with markup and script</div>
+    </div>
+
+    <script>
+        const _labels = ["Page transition", "Smooth scroll", "Lottie", "Text roll", "Parallax", "Card stack", "Tabs", "Preloader", "Scramble text", "Loop slider", "Lightbox", "Count up", "Dot grid", "Accordion", "Magnetic button", "Horizontal scroll", "Tooltip", "Typing", "Video player", "Theme scroller", "Blur reveal", "Snap slider", "QR code", "Inview", "Cursor bubble", "Range slider", "Text wave", "Countdown", "Select box", "Glow"];
+        const _rows = document.querySelector(".rows");
+
+        for (let r = 0; r < 9; r++) {
+            const _row = document.createElement("div");
+            _row.className = "row";
+            _row.style.marginLeft = `${(r % 3) * -70}px`;
+            for (let i = 0; i < 6; i++) {
+                const _tag = document.createElement("span");
+                _tag.textContent = _labels[(r * 6 + i + r * 2) % _labels.length];
+                if ((r * 5 + i * 3) % 11 === 4) _tag.className = "on";
+                _row.append(_tag);
+            }
+            _rows.append(_row);
+        }
+    </script>
+</body>
+</html>

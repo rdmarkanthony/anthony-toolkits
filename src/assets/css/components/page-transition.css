@@ -5,19 +5,16 @@
     --page-layer-1 to --page-layer-3: the rings and squares, outside in
     scribble and twirl need their svg in the body of every page, see page-transition.njk
 */
-/* blinds: one progress drives all five bars */
 @property --page-blinds {
     syntax: "<number>";
     inherits: false;
     initial-value: 0;
 }
-/* rings: one progress drives all three rings */
 @property --page-rings {
     syntax: "<number>";
     inherits: false;
     initial-value: 0;
 }
-/* squares: the same for the squares */
 @property --page-squares {
     syntax: "<number>";
     inherits: false;
@@ -25,12 +22,10 @@
 }
 
 @layer components {
-    /* no sideways scroll as a cover moves in */
     [data-page-leave] {
         overflow-x: hidden;
     }
 
-    /* the cover, hidden until a transition shows it */
     [data-page-leave]::after,
     [data-page-enter]::after {
         content: "";
@@ -42,7 +37,6 @@
         pointer-events: none;
     }
 
-    /* scribble and twirl's svg, a line for each, hidden until a transition shows it */
     .page-scribble {
         position: fixed;
         inset: 0;
@@ -63,7 +57,6 @@
     }
 
     @media (prefers-reduced-motion: no-preference) {
-        /* fade: the page fades out, the next fades in */
         [data-page-leave="fade"] body {
             animation: page-fade-out 0.4s ease-in both;
         }
@@ -71,7 +64,6 @@
             animation: page-fade-in 0.6s ease-out both;
         }
 
-        /* circle: grows from the click */
         [data-page-leave="circle"]::after {
             inset: auto;
             top: var(--page-y, 50%);
@@ -86,7 +78,6 @@
             animation: page-cover-out 0.5s ease both;
         }
 
-        /* slide: in from the right, out to the left */
         [data-page-leave="slide"]::after {
             animation: page-slide-in 0.6s cubic-bezier(0.65, 0, 0.35, 1) both;
         }
@@ -97,7 +88,6 @@
             animation: page-slide-out 0.6s cubic-bezier(0.65, 0, 0.35, 1) both;
         }
 
-        /* blinds: five bars drop in one after another, then lift off */
         :is([data-page-leave="blinds"], [data-page-enter="blinds"])::after {
             --bar: linear-gradient(var(--page-cover, #fff) 0 0) no-repeat;
             --bar-w: calc(20% + 1px);
@@ -113,13 +103,11 @@
         [data-page-leave="blinds"]::after {
             animation: page-blinds-in 0.8s cubic-bezier(0.65, 0, 0.35, 1) both;
         }
-        /* flipped, so the first bar lifts first */
         [data-page-enter="blinds"]::after {
             scale: -1 1;
             animation: page-blinds-out 0.8s cubic-bezier(0.65, 0, 0.35, 1) both;
         }
 
-        /* curtain: two halves close from the sides, then open */
         :is([data-page-leave="curtain"], [data-page-enter="curtain"])::before,
         :is([data-page-leave="curtain"], [data-page-enter="curtain"])::after {
             --side: -1;
@@ -144,7 +132,6 @@
             animation: page-curtain-open 0.8s 0.1s cubic-bezier(0.7, 0, 0.25, 1) both;
         }
 
-        /* zoom: the page shrinks back to the click, the next grows into place */
         [data-page-leave="zoom"] {
             animation: page-zoom-cover 0.5s both;
         }
@@ -161,7 +148,6 @@
             animation: page-zoom-in 0.6s 0.05s cubic-bezier(0.25, 1, 0.5, 1) backwards;
         }
 
-        /* blob: two shapes spin opposite ways as they grow, so the edge wobbles */
         :is([data-page-leave="blob"], [data-page-enter="blob"])::before,
         :is([data-page-leave="blob"], [data-page-enter="blob"])::after {
             --spin: 120deg;
@@ -194,8 +180,6 @@
             animation: page-blob-out 0.8s 0.05s cubic-bezier(0.65, 0, 0.35, 1) both;
         }
 
-        /* scribble and twirl: a line draws over the page and swells until it covers it, backwards on the next one */
-        /* scribble sweeps across, twirl curls out from the middle */
         [data-page-leave="scribble"] [data-page-scribble="scribble"],
         [data-page-leave="twirl"] [data-page-scribble="twirl"] {
             visibility: visible;
@@ -207,20 +191,17 @@
             animation: page-scribble 0.9s 0.1s cubic-bezier(0.45, 0, 0.55, 1) reverse both;
         }
 
-        /* rings and squares: the colors, outside in */
         :is([data-page-leave="rings"], [data-page-enter="rings"], [data-page-leave="squares"], [data-page-enter="squares"])::after {
             --layer-1: var(--page-layer-1, #111113);
             --layer-2: var(--page-layer-2, #a1a1aa);
             --layer-3: var(--page-layer-3, #fff);
         }
 
-        /* rings: three circles grow from the click one after another, then ripple out on the next page */
         :is([data-page-leave="rings"], [data-page-enter="rings"])::after {
             --ring: circle at var(--page-x, 50%) var(--page-y, 50%);
             --ring-p: calc(var(--page-rings) * 1.4);
             opacity: 1;
         }
-        /* the last on top, so each one shows as a band */
         [data-page-leave="rings"]::after {
             background:
                 radial-gradient(var(--ring), var(--layer-3) calc(clamp(0, var(--ring-p) - 0.4, 1) * 150vmax), transparent calc(clamp(0, var(--ring-p) - 0.4, 1) * 150vmax + 1px)),
@@ -228,7 +209,6 @@
                 radial-gradient(var(--ring), var(--layer-1) calc(clamp(0, var(--ring-p), 1) * 150vmax), transparent calc(clamp(0, var(--ring-p), 1) * 150vmax + 1px));
             animation: page-rings-in 1.4s cubic-bezier(0.45, 0, 0.55, 1) both;
         }
-        /* starts on the last color, the rings come back in and a hole opens the page */
         [data-page-enter="rings"]::after {
             --hole: calc(clamp(0, var(--ring-p) - 0.4, 1) * 150vmax);
             background:
@@ -239,7 +219,6 @@
             animation: page-rings-in 1.4s 0.05s cubic-bezier(0.45, 0, 0.55, 1) both;
         }
 
-        /* squares: three squares grow from the click and turn, then ripple out on the next page */
         :is([data-page-leave="squares"], [data-page-enter="squares"])::after {
             --square-p: calc(var(--page-squares) * 1.4);
             --square-1: calc(clamp(0, var(--square-p), 1) * 100%);
@@ -255,7 +234,6 @@
             scale: 6;
             opacity: 1;
         }
-        /* the last on top, so each one shows as a band */
         [data-page-leave="squares"]::after {
             background:
                 linear-gradient(var(--layer-3) 0 0) center / var(--square-3) var(--square-3) no-repeat,
@@ -263,7 +241,6 @@
                 linear-gradient(var(--layer-1) 0 0) center / var(--square-1) var(--square-1) no-repeat;
             animation: page-squares-in 1.4s cubic-bezier(0.45, 0, 0.55, 1) both;
         }
-        /* starts on the last color, the squares come back in and a hole opens the page */
         [data-page-enter="squares"]::after {
             background:
                 linear-gradient(var(--layer-1) 0 0) center / var(--square-2) var(--square-2) no-repeat,
@@ -392,7 +369,6 @@
             rotate: var(--spin);
         }
     }
-    /* drawn from nothing, swelling as it goes */
     @keyframes page-scribble {
         from {
             stroke-dashoffset: 1;

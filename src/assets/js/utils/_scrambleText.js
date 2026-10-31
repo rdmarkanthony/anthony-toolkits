@@ -30,7 +30,6 @@ export class _scrambleText extends _emitter {
     init() {
         const _on = (type, callback) => this.trigger.addEventListener(type, callback, { signal: this.abort.signal });
 
-        // screen readers get the plain text
         Object.assign(this.label.style, { position: "absolute", width: "1px", height: "1px", overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap" });
         this.render();
 
@@ -40,7 +39,6 @@ export class _scrambleText extends _emitter {
         _on("focusin", (e) => e.target.matches(":focus-visible") && this.play());
     }
 
-    // one span per letter, its real letter keeps the width
     render() {
         this.label.textContent = this.text;
         this.letters = [];
@@ -53,7 +51,6 @@ export class _scrambleText extends _emitter {
             if (!word) return;
             if (/^\s+$/.test(word)) return _visual.append(word);
 
-            // no line break inside a word
             const _word = document.createElement("span");
             _word.style.whiteSpace = "nowrap";
 
@@ -78,7 +75,6 @@ export class _scrambleText extends _emitter {
         this.target.replaceChildren(this.label, _visual);
     }
 
-    // when each letter settles, 0 to 1
     schedule() {
         const _count = this.letters.length;
 
@@ -90,7 +86,6 @@ export class _scrambleText extends _emitter {
         });
     }
 
-    // same case as the real letter
     randomChar(final) {
         const _chars = this.chars ?? this.ownChars;
         const _char = _chars[Math.floor(Math.random() * _chars.length)];
@@ -107,7 +102,6 @@ export class _scrambleText extends _emitter {
             this.render();
         } else if (this.playing) return;
 
-        // reduced motion: no scramble
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
             this.emit("start");
             return this.emit("complete");
@@ -131,7 +125,6 @@ export class _scrambleText extends _emitter {
             _start ??= time;
             this.progress = Math.min((time - _start) / this.duration, 1);
 
-            // flip at the speed, not every frame
             if (time - _last >= this.speed || this.progress === 1) {
                 _last = time;
 
@@ -165,7 +158,6 @@ export class _scrambleText extends _emitter {
         this.emit("complete");
     }
 
-    // jump to the real text
     stop(complete = true) {
         if (!this.playing) return;
 

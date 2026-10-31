@@ -6,7 +6,6 @@
 
 import { _emitter } from "./_emitter";
 
-// lenis, loaded on first use so other pages don't download it
 const _importLenis = () => import("lenis");
 
 export class _smoothScroll extends _emitter {
@@ -23,7 +22,6 @@ export class _smoothScroll extends _emitter {
         const { default: Lenis } = await _importLenis();
         if (this.destroyed) return;
 
-        // Lenis runs its own frame loop, a long soft glide, a bit further per wheel tick
         this.lenis = new Lenis({ autoRaf: true, duration: 1.6, wheelMultiplier: 1.25, ...this.options });
         this.lenis.on("scroll", () => this.emit("scroll"));
 
@@ -32,7 +30,6 @@ export class _smoothScroll extends _emitter {
         this.emit("init");
     }
 
-    // #id links on this page glide there, instead of the browser's jump
     onClick = (e) => {
         const _link = e.target.closest("a[href*='#']");
         if (!_link || e.defaultPrevented || _link.pathname !== location.pathname || _link.search !== location.search) return;

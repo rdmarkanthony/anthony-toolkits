@@ -27,7 +27,6 @@ export class _preloader extends _emitter {
         const _page = document.readyState === "complete" ? Promise.resolve() : new Promise((resolve) => window.addEventListener("load", resolve, { once: true }));
         const _tasks = [_page, ...this.wait];
 
-        // a failed one still counts, the site shouldn't get stuck
         _tasks.forEach((task) => Promise.resolve(task).catch(() => {}).then(() => this.loaded++));
         this.total = _tasks.length;
 
@@ -44,7 +43,6 @@ export class _preloader extends _emitter {
         const _real = _elapsed > this.timeout ? 1 : this.loaded / this.total;
         const _cap = Math.min(_real, _elapsed / this.min);
 
-        // eased by time, the same at any frame rate
         this.progress += (_cap - this.progress) * (1 - Math.exp(-(now - (this._last ?? now)) / 120));
         this._last = now;
         if (_cap === 1 && this.progress > 0.999) this.progress = 1;
@@ -60,7 +58,6 @@ export class _preloader extends _emitter {
         _root.style.overflow = this._overflow;
         this.emit("leave");
 
-        // an animation or a promise, e.g. a gsap tween
         if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
             const _leave = this.leave(this.target);
             await (_leave?.finished ?? _leave);

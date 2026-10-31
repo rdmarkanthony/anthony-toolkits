@@ -39,7 +39,6 @@ export class _snapSlider extends _emitter {
             prev: () => this.prev(),
             next: () => this.next(),
             dragstart: (e) => e.preventDefault(),
-            // a drag isn't a click on the card under it
             click: (e) => {
                 if (!this.dragged) return;
                 e.preventDefault();
@@ -58,12 +57,10 @@ export class _snapSlider extends _emitter {
         this.el.prev?.addEventListener("click", this.handlers.prev);
         this.el.next?.addEventListener("click", this.handlers.next);
 
-        // the row, and cards that change size
         this.observed = [_track, ..._track.children];
         this.observed.forEach((item) => _event.observeResize(this.handlers.resize, item));
     }
 
-    // scroll positions that put each card at the snap spot
     positions() {
         const _track = this.el.track;
         const _first = _track.children[0]?.offsetLeft ?? 0;
@@ -72,7 +69,6 @@ export class _snapSlider extends _emitter {
         return [...new Set([..._track.children].map((item) => Math.min(item.offsetLeft - _first, _max)))];
     }
 
-    // the position nearest to a scroll left
     nearest(left, positions = this.positions()) {
         return positions.reduce((nearest, position, i) => (Math.abs(position - left) < Math.abs(positions[nearest] - left) ? i : nearest), 0);
     }
@@ -88,7 +84,6 @@ export class _snapSlider extends _emitter {
         if (this.el.prev) this.el.prev.disabled = _track.scrollLeft <= 1;
         if (this.el.next) this.el.next.disabled = _track.scrollLeft >= _max - 1;
 
-        // how far each card is from its snap spot, in cards
         const _cards = [..._track.children];
         const _first = _cards[0]?.offsetLeft ?? 0;
         const _offsets = _cards.map((item, i) => {
@@ -158,7 +153,7 @@ export class _snapSlider extends _emitter {
     down(e) {
         this.dragged = false;
         if (e.pointerType !== "mouse" || e.button !== 0) return;
-        e.preventDefault(); // no text selection
+        e.preventDefault();
 
         this.stop();
         this.el.track.style.scrollSnapType = "none";
@@ -179,7 +174,6 @@ export class _snapSlider extends _emitter {
             this.el.track.dataset.dragging = "";
         }
 
-        // px per ms, for the throw on release
         _drag.speed = (_left - this.el.track.scrollLeft) / Math.max(_now - _drag.time, 1);
         _drag.time = _now;
         this.el.track.scrollLeft = _left;
@@ -191,7 +185,6 @@ export class _snapSlider extends _emitter {
         window.removeEventListener("pointercancel", this.handlers.up);
         delete this.el.track.dataset.dragging;
 
-        // land on the nearest card, at most one further
         const _track = this.el.track;
         const _card = _track.children[0]?.offsetWidth ?? 0;
         const _speed = performance.now() - this.drag.time > 80 ? 0 : this.drag.speed;

@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-/* libraries */
 @import "animate.css";
 @import "flatpickr/dist/flatpickr.min.css";
 @import "plyr/dist/plyr.css";
@@ -22,11 +21,7 @@
 @import "./components/range-slider.css";
 @import "./components/chat-accordion.css";
 
-/*
-    toolkit look, light theme
-    kit-* colors: this site's frame only
-    demos use plain Tailwind colors, so they copy out
-*/
+/* kit-* colors: this site's frame only, demos use plain Tailwind colors */
 @theme {
     --color-kit-bg: #ffffff;
     --color-kit-surface: #f5f4ef;
@@ -35,7 +30,6 @@
     --color-kit-muted: #65656d;
     --color-kit-accent: #5b8fe0;
     --color-kit-accent-hover: #80aaee;
-    /* text on top of the accent */
     --color-kit-accent-ink: #0c0c0e;
 
     --font-sans: "DM Sans", Arial, Helvetica, sans-serif;

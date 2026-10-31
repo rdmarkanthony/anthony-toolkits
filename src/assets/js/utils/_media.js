@@ -1,14 +1,11 @@
 // shared by _videoPlayer and _youtubePlayer
 
-// every player on the page, so playing one can pause the others
 export const _players = [];
 
-// pause the other players with sound, muted background videos keep playing
 export const _pauseAll = (currentPlayer) => {
     _players.forEach((item) => {
         if (item === currentPlayer || (item.isSilent ?? item.autoplay)) return;
 
-        // don't play again when back in view
         item.outViewPaused = false;
 
         if (item.player?.getPlayerState?.() === 1) item.player.pauseVideo();
@@ -17,7 +14,6 @@ export const _pauseAll = (currentPlayer) => {
     });
 };
 
-// pauseOutView: pause while out of view, autoplay videos play again when back
 export const _watchView = (player) => {
     const _observer = new IntersectionObserver(([entry]) => {
         player.isInView = entry.isIntersecting;
@@ -35,16 +31,13 @@ export const _watchView = (player) => {
     return () => _observer.disconnect();
 };
 
-// also called on play, e.g. autoplay starting out of view
 export const _pauseOutView = (player) => {
     if (!player.pauseOutView || player.isInView !== false) return;
 
-    // sound videos stay paused
     player.outViewPaused = player.autoplay;
     player.pause();
 };
 
-// size and center a 16:9 element to cover its parent, like object-fit: cover
 export const _cover = (parent, element, aspectRatio = 16 / 9) => {
     const _width = parent.offsetWidth;
     const _height = parent.offsetHeight;

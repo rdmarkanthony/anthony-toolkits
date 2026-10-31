@@ -20,14 +20,12 @@
 /* dark: follows .dark, not the system setting */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* registered so the theme colors can ease on the target alone */
 @property --color-kit-bg { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
 @property --color-kit-surface { syntax: "<color>"; inherits: true; initial-value: #f5f4ef; }
 @property --color-kit-line { syntax: "<color>"; inherits: true; initial-value: #dddbd2; }
 @property --color-kit-text { syntax: "<color>"; inherits: true; initial-value: #111113; }
 @property --color-kit-muted { syntax: "<color>"; inherits: true; initial-value: #65656d; }
 
-/* while _themeScroller switches: kit colors ease, other color transitions pause */
 .theme-transition {
     transition-property: --color-kit-bg, --color-kit-surface, --color-kit-line, --color-kit-text, --color-kit-muted !important;
     transition-duration: 0.5s !important;

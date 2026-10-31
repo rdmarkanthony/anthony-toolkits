@@ -29,7 +29,6 @@ export class _animate {
         if (this.debug) console.log("_animate", this);
     }
 
-    // for content added later
     refresh(root = document) {
         const _find = (selector) => [...(root.matches?.(selector) ? [root] : []), ...root.querySelectorAll(selector)].filter((item) => !this.items.has(item));
 
@@ -56,7 +55,6 @@ export class _animate {
                     Array.from(_item.children).forEach((item) => {
                         const _item = item;
 
-                        // nested children
                         if (_item.dataset.animate === "children") {
                             Array.from(_item.children).forEach((item) => {
                                 const _item = item;
@@ -95,7 +93,6 @@ export class _animate {
 
         [..._items, ..._titles].forEach((item) => this.items.add(item));
 
-        // animate when in view
         _items.forEach((item) => {
             const _item = item;
             const _dataset = _item.dataset.animate.split(",");
@@ -120,7 +117,6 @@ export class _animate {
                             _event.dispatch(_item, "visible");
                         });
                     } else if (_relation === "children") {
-                        // a wrapper, just show it
                         _item.classList.remove("opacity-0");
                         _item.removeAttribute("data-animate");
                     } else {
@@ -134,7 +130,6 @@ export class _animate {
             });
         });
 
-        // for header titles or splittext animate
         _titles.forEach((item) => {
             const _item = item;
             const _splittext = new _splitText({ target: _item });
@@ -153,7 +148,6 @@ export class _animate {
 
                     if (this.debug || !_splittext.split?.words?.length) return;
 
-                    // revert once the last word is in place
                     const _onEnd = (e) => {
                         if (e.target !== _splittext.split?.words?.at(-1)) return;
 
@@ -195,9 +189,7 @@ export class _animate {
         target.classList.add("animate__animated", `animate__${_className}`);
 
         const _styles = window.getComputedStyle(target);
-        // if no animation-duration of its own
         if (!target.style.getPropertyValue("--animate-duration")) target.style.setProperty("--animate-duration", `${this.duration}s`);
-        // if no animation-delay
         if (!target.style.animationDelay && parseFloat(_styles.animationDelay) === 0) {
             const _delay = `${this.adjacentDelay.toFixed(2)}s`;
 
@@ -205,7 +197,6 @@ export class _animate {
             target.style.animationDelay = _delay;
         }
 
-        // stagger delay
         if (target.dataset.animateDelay) {
             const _delay = parseFloat(this.staggerDelay) ? `${this.staggerDelay.toFixed(2)}s` : this.staggerDelay;
 
@@ -213,11 +204,9 @@ export class _animate {
             target.style.animationDelay = _delay;
         }
 
-        // keep its own timing on clean
         target.style.animationDuration = _styles.animationDuration;
         target.style.animationDelay = _styles.animationDelay;
 
-        // for callback, once the keyframe ends
         if (callback) {
             const _animations = target.getAnimations().filter((animation) => animation.animationName === _className);
 

@@ -11,7 +11,6 @@ export const _threeDotGrid = (props = {}) => {
     const _state = { time: 0, amount: 0, toAmount: _options.amount };
     const _pointer = { x: 0, y: 0, inside: false };
 
-    // trail points x, y, life 0 to 1, a ring
     const _count = 24;
     const _trail = Array.from({ length: _count }, () => ({ x: 0, y: 0, life: 0 }));
     let _next = 0;
@@ -24,7 +23,6 @@ export const _threeDotGrid = (props = {}) => {
             const { three: THREE, scene } = instance;
             _instance = instance;
 
-            // fills in on the first play, already full with reduced motion
             if (instance.reduced.matches) _state.amount = _state.toAmount;
             _color = { current: new THREE.Color(_options.color), to: new THREE.Color(_options.color) };
 
@@ -44,14 +42,12 @@ export const _threeDotGrid = (props = {}) => {
                     uTrail: { value: _trail.map(() => new THREE.Vector3()) },
                     uRadius: { value: _options.radius },
                 },
-                // fills the canvas, no camera
                 vertexShader: `
                     void main() {
                         gl_Position = vec4(position.xy, 0.0, 1.0);
                     }
                 `,
                 fragmentShader: `
-                    // css pixels, y down like the dom
                     uniform vec2 uResolution;
                     uniform float uPixelRatio;
                     uniform float uGap;
@@ -109,7 +105,6 @@ export const _threeDotGrid = (props = {}) => {
                     void main() {
                         vec2 p = vec2(gl_FragCoord.x, uResolution.y * uPixelRatio - gl_FragCoord.y) / uPixelRatio;
 
-                        // centered grid, the cell and where in it
                         vec2 start = mod(uResolution, uGap) * 0.5;
                         vec2 cell = floor((p - start) / uGap);
                         vec2 local = p - start - (cell + 0.5) * uGap;
@@ -117,20 +112,17 @@ export const _threeDotGrid = (props = {}) => {
                         float shape = 1.0 - smoothstep(uSize * 0.5 - 0.5 / uPixelRatio, uSize * 0.5 + 0.5 / uPixelRatio, d);
                         if (shape <= 0.0) discard;
 
-                        // patches from warped noise, they drift and change shape
                         vec2 uv = (cell + 0.5) * uGap * uScale;
                         vec2 warp = vec2(fbm(uv + vec2(0.11, 0.07) * uTime), fbm(uv + vec2(5.2, 1.3) - 0.09 * uTime));
                         float field = fbm(uv + warp * 1.4 + 0.03 * uTime);
                         float mask = smoothstep(-0.12, 0.12, field + uAmount * 2.0 - 1.0) * smoothstep(0.0, 0.1, uAmount);
 
-                        // lit along the mouse trail, thinner as it fades
                         for (int i = 0; i < ${_count}; i++) {
                             vec3 point = uTrail[i];
                             if (point.z <= 0.0) continue;
                             mask = max(mask, (1.0 - smoothstep(0.0, uRadius * point.z, distance(p, point.xy))) * point.z);
                         }
 
-                        // the edges are part filled, a new pick each step when twinkling
                         if (hash(cell + uStep * vec2(13.1, 7.7)) > mask) discard;
 
                         gl_FragColor = vec4(uColor, uOpacity * shape * (0.4 + 0.6 * mask));
@@ -158,7 +150,6 @@ export const _threeDotGrid = (props = {}) => {
             const _x = ((pointer.x + 1) / 2) * size.width;
             const _y = ((1 - pointer.y) / 2) * size.height;
 
-            // a new point each half radius moved, filled in between on fast moves
             if (_inside && !_pointer.inside) Object.assign(_pointer, { x: _x, y: _y });
             _pointer.inside = _inside;
 
@@ -191,7 +182,6 @@ export const _threeDotGrid = (props = {}) => {
             if (state.color) _color.to.set(state.color);
             if (state.amount !== undefined) _state.toAmount = state.amount;
 
-            // not animating, show it now
             if (_instance.running) return;
             _color.current.copy(_color.to);
             _state.amount = _state.toAmount;

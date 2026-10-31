@@ -18,13 +18,11 @@ export const _threeText = (props = {}) => {
     const _canvas = document.createElement("canvas");
     const _context = _canvas.getContext("2d", { willReadFrequently: true });
 
-    // css font from the options or the target
     const _font = (px) => {
         const _style = getComputedStyle(_instance.target);
         return `${_options.weight ?? _style.fontWeight} ${px}px ${_options.font ?? _style.fontFamily}`;
     };
 
-    // the words drawn on a hidden canvas, a grain on every gap px inside the letters
     const _sample = (force) => {
         const { three: THREE, size, view, reduced } = _instance;
         const { gap, rows, spacing, depth } = _options;
@@ -33,7 +31,6 @@ export const _threeText = (props = {}) => {
         const _lines = String(_options.text).split("\n");
         Object.assign(_sampled, size);
 
-        // sized so the letters' own top and bottom fill most of a row, measured at 100px
         _canvas.width = size.width;
         _canvas.height = size.height;
         _context.font = _font(100);
@@ -43,7 +40,6 @@ export const _threeText = (props = {}) => {
         const _row = size.height / rows;
         const _px = (_row * 0.7 * 100) / (_ascent + _descent);
 
-        // each row repeats its line edge to edge, every other row shifted half a word
         _context.font = _font(_px);
         _context.textBaseline = "alphabetic";
 
@@ -59,7 +55,6 @@ export const _threeText = (props = {}) => {
         const _scale = view.width / size.width;
         const _spots = [];
 
-        // jittered so it reads as grain, not a grid
         for (let y = 0; y < size.height; y += gap) {
             for (let x = 0; x < size.width; x += gap) {
                 if (_data[(y * size.width + x) * 4 + 3] < 128) continue;
@@ -67,7 +62,6 @@ export const _threeText = (props = {}) => {
             }
         }
 
-        // shuffled, so a new word flows in from all over
         for (let i = _spots.length - 1; i > 0; i--) {
             const _j = Math.floor(Math.random() * (i + 1));
             [_spots[i], _spots[_j]] = [_spots[_j], _spots[i]];
@@ -79,7 +73,6 @@ export const _threeText = (props = {}) => {
         _position = new Float32Array(_count * 3);
         _velocity = new Float32Array(_count * 3);
 
-        // grains keep their place, new ones start on a random old one, the first ones scattered
         for (let i = 0; i < _count; i++) {
             const _i3 = i * 3;
             const _from = i < _old.count ? i : Math.floor(Math.random() * _old.count);
@@ -105,7 +98,6 @@ export const _threeText = (props = {}) => {
         if (!_instance.running) _instance.render();
     };
 
-    // pushed out from a spot, harder up close
     const _burst = (x, y) => {
         const { burst } = _options;
 
@@ -139,7 +131,6 @@ export const _threeText = (props = {}) => {
             _instance = instance;
             _palette = [_options.color].flat().map((color) => new THREE.Color(color));
 
-            // round dots, the same px size at z 0
             const _material = new THREE.ShaderMaterial({
                 uniforms: {
                     uSize: { value: _options.size },
@@ -164,7 +155,6 @@ export const _threeText = (props = {}) => {
                     varying float vAlpha;
 
                     void main() {
-                        // brighter and bigger near the pointer
                         float lens = smoothstep(uLight, 0.0, distance(position.xy, uLens.xy)) * uLens.z;
 
                         vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
@@ -193,10 +183,8 @@ export const _threeText = (props = {}) => {
             _points.frustumCulled = false;
             scene.add(_points);
 
-            // again once this exact web font is in
             document.fonts.load(_font(100)).then(() => !instance.destroyed && _sample(true));
 
-            // burst from where it's clicked, not on links, buttons or fields
             target.addEventListener(
                 "pointerdown",
                 (e) => {
@@ -224,7 +212,6 @@ export const _threeText = (props = {}) => {
             const _ease = 1 - Math.exp(-delta * 6);
             const _follow = 1 - Math.exp(-delta * _options.follow);
 
-            // the light eases after the pointer and fades when it leaves
             _lens.x += (_pointerX - _lens.x) * _follow;
             _lens.y += (_pointerY - _lens.y) * _follow;
             _lens.strength += ((pointer.inside ? 1 : 0) - _lens.strength) * _follow;
@@ -233,7 +220,6 @@ export const _threeText = (props = {}) => {
             for (let i = 0; i < _count; i++) {
                 const _i3 = i * 3;
 
-                // a spring back to its spot, pushed away inside the radius
                 let _ax = (_target[_i3] - _position[_i3]) * spring;
                 let _ay = (_target[_i3 + 1] - _position[_i3 + 1]) * spring;
                 const _az = (_target[_i3 + 2] - _position[_i3 + 2]) * spring;
@@ -261,7 +247,6 @@ export const _threeText = (props = {}) => {
 
             _points.geometry.attributes.position.needsUpdate = true;
 
-            // tilt toward the pointer, the depth gives parallax
             _tilt.x += ((pointer.inside ? pointer.x : 0) * parallax - _tilt.x) * _ease;
             _tilt.y += ((pointer.inside ? pointer.y : 0) * parallax - _tilt.y) * _ease;
             scene.rotation.y = _tilt.x;

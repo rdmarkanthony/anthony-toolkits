@@ -19,7 +19,6 @@ title: Scrollbar slider | Sliders | Anthony Toolkits
 {% set track = 'js-scrollbar-track flex cursor-grab gap-4 overflow-x-auto px-[max(1rem,calc((100%_-_73.75rem)/2))] py-2 [scrollbar-width:none] data-dragging:cursor-grabbing md:gap-6 [&::-webkit-scrollbar]:hidden' %}
 {% set thumb = 'absolute top-1/2 left-0 h-1 w-[calc(var(--thumb-size,1)*100%)] -translate-y-1/2 translate-x-[calc(var(--progress,0)*(100%/var(--thumb-size,1)_-_100%))] rounded-full bg-gray-950 transition-[height] duration-300 group-hover/bar:h-1.5 group-data-dragging/bar:h-1.5' %}
 
-{# demo: arrows over the images, a bar under the row #}
 <section class="bg-gray-50 py-16">
     <h2 class="mx-auto mb-8 max-w-295 px-4 text-3xl font-bold tracking-tight [box-sizing:content-box]">Cards with arrows</h2>
     <div class="js-scrollbar-slider group relative [--card:min(80vw,22rem)] lg:[--card:26rem]">
@@ -34,7 +33,6 @@ title: Scrollbar slider | Sliders | Anthony Toolkits
             </li>
             {% endfor %}
         </ul>
-        {# on the image middle, shown on hover with a mouse #}
         {% set arrow = 'absolute top-[calc(var(--card)/2+0.5rem)] grid size-12 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white text-xl text-gray-900 shadow-md transition-[opacity,background-color] duration-300 hover:bg-gray-100 focus-visible:opacity-100 disabled:pointer-events-none disabled:opacity-0! pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100' %}
         <button class="js-scrollbar-prev left-4 md:left-6 {{ arrow }}" type="button" disabled aria-label="Previous card">{{ angle('left') }}</button>
         <button class="js-scrollbar-next right-4 md:right-6 {{ arrow }}" type="button" aria-label="Next card">{{ angle('right') }}</button>
@@ -59,7 +57,6 @@ title: Scrollbar slider | Sliders | Anthony Toolkits
 ] %}
 {% set button = 'grid size-9 shrink-0 cursor-pointer place-items-center rounded-full bg-gray-200 text-lg text-gray-700 transition-colors duration-300 hover:bg-gray-300 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-gray-200' %}
 
-{# demo: any card width, buttons next to the bar #}
 <section class="py-16">
     <h2 class="mx-auto mb-8 max-w-295 px-4 text-3xl font-bold tracking-tight [box-sizing:content-box]">Mixed widths</h2>
     <div class="js-scrollbar-slider group">

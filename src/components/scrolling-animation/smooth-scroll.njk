@@ -6,7 +6,6 @@ title: Smooth Scroll | Scrolling Animation | Anthony Toolkits
 
 {{ pageIntro({ back: { label: 'Scrolling animation', url: '/components/scrolling-animation/' }, label: '_smoothScroll · _parallaxScroller', title: 'Smooth scroll', description: 'Lenis smooths the whole page scroll, and the scroll animations follow it. The columns slide against each other, the words lean with the scroll speed.' }) }}
 
-{# image: [photo, aspect, filter], or a tile: { text, label, tone, aspect } #}
 {% set columns = [
     { speed: 140, tone: '', items: [
         ['photo-1', 'aspect-3/4', ''],
@@ -36,7 +35,6 @@ title: Smooth Scroll | Scrolling Animation | Anthony Toolkits
     { direction: -1, words: ['Scroll', 'faster'], images: ['photo-6', 'photo-2'], filters: ['hue-rotate-90', 'grayscale'], tone: '' }
 ] %}
 
-{# demo #}
 <div class="relative">
     <section id="smooth-gallery" class="scroll-mt-(--header-height) overflow-hidden bg-stone-950 pt-24 pb-12 text-white md:pt-40">
         <div class="mx-auto max-w-295 px-4 text-center">
@@ -74,7 +72,6 @@ title: Smooth Scroll | Scrolling Animation | Anthony Toolkits
         {% endfor %}
     </section>
 
-    {# demo controls, stay at the bottom of the screen while the demo is in view #}
     <div class="sticky bottom-6 z-10 flex h-0 items-end justify-center">
         <nav class="flex items-center gap-1 rounded-full bg-white/85 p-1.5 text-sm font-medium shadow-lg ring-1 ring-black/5 backdrop-blur">
             <a class="rounded-full px-4 py-2 transition-colors hover:bg-black/5" href="#smooth-gallery">Gallery</a>

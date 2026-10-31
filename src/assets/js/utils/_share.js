@@ -28,7 +28,6 @@ export class _share extends _emitter {
         this.props = props;
         this.popup = props.popup ?? false;
 
-        // the one being reported in events
         this.network = null;
         this.error = null;
         this.canShare = false;
@@ -59,7 +58,6 @@ export class _share extends _emitter {
         this.target.addEventListener("click", (e) => this.click(e), { signal });
     }
 
-    // after the url or title changes
     refresh() {
         const _data = this.data;
         const _canShare = !!navigator.share && (!navigator.canShare || navigator.canShare({ url: _data.url }));
@@ -76,7 +74,6 @@ export class _share extends _emitter {
             }
 
             if (item.dataset.share !== "native") return;
-            // the sheet wins over the popover, no sheet and no popover hides it
             if (_canShare) item.removeAttribute("popovertarget");
             else if (!item.hasAttribute("popovertarget")) item.hidden = true;
         });
@@ -97,7 +94,6 @@ export class _share extends _emitter {
         }
 
         if (_name === "native") {
-            // no sheet here, the popover opens instead
             if (!this.canShare) return;
             e.preventDefault();
             return this.native();
@@ -106,7 +102,6 @@ export class _share extends _emitter {
         const _network = _share.networks[_name];
         if (!_network) return;
 
-        // a small window instead of a tab, not for email
         if (this.popup && _name !== "email") {
             e.preventDefault();
             const _width = 600;
@@ -125,7 +120,6 @@ export class _share extends _emitter {
         try {
             await navigator.clipboard.writeText(url);
         } catch (error) {
-            // older browsers, or no clipboard permission
             const _field = Object.assign(document.createElement("textarea"), { value: url });
             _field.style.cssText = "position:fixed;opacity:0";
             document.body.append(_field);
@@ -153,7 +147,6 @@ export class _share extends _emitter {
             await navigator.share({ url, title, text });
             this.emit("share");
         } catch (error) {
-            // closing the sheet isn't an error
             if (error.name === "AbortError") return;
             this.error = error;
             this.emit("error");

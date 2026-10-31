@@ -11,7 +11,6 @@ title: Frame generator | Comic slider | Anthony Toolkits
 {% set pill = 'cursor-pointer rounded-full border border-gray-300 px-4 py-2 text-sm font-medium transition-colors hover:border-gray-950' %}
 {% set field = 'h-10 w-full rounded-md border border-gray-300 px-3 focus:border-gray-950 focus:outline-none' %}
 
-{# one edge: hold − or + to repeat, shift + arrows step 5 #}
 {% macro edgeInput(edge, attr) -%}
 {% set step = 'grid size-10 shrink-0 cursor-pointer touch-manipulation place-items-center rounded-md bg-gray-100 text-lg text-gray-700 select-none hover:bg-gray-200 active:bg-gray-300' %}
 <div class="js-gen-num">
@@ -26,7 +25,6 @@ title: Frame generator | Comic slider | Anthony Toolkits
 
 <section class="px-4 pb-16">
     <div class="mx-auto grid max-w-295 items-start gap-10 lg:grid-cols-[1fr_26rem]">
-        {# preview: the slider and the page with the frame #}
         <div class="lg:sticky lg:top-24">
             <div class="mb-4 flex items-center gap-2">
                 <button class="js-gen-view {{ pill }} [&.is-active]:border-gray-950 [&.is-active]:bg-gray-950 [&.is-active]:text-white" type="button" data-view="desktop">Desktop</button>
@@ -84,7 +82,6 @@ title: Frame generator | Comic slider | Anthony Toolkits
     </div>
 </section>
 
-{# one frame in the list: only the active frame is open #}
 <template class="js-gen-frame-template">
     <li class="js-gen-frame group rounded-xl border border-gray-200 transition-colors [&.is-active]:border-gray-950">
         <div class="flex items-center gap-1 py-2 pr-2">
@@ -97,7 +94,6 @@ title: Frame generator | Comic slider | Anthony Toolkits
             <button class="js-gen-copy-frame rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-950" type="button">Copy</button>
             <button class="js-gen-delete rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100 hover:text-rose-600" type="button">Delete</button>
         </div>
-        {# grid rows 0fr to 1fr, so it opens to its own height #}
         <div class="js-gen-body grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 group-[.is-active]:grid-rows-[1fr]">
             <div class="overflow-hidden">
                 <div class="px-4 pt-1 pb-4">

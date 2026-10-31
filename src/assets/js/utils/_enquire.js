@@ -21,7 +21,6 @@ export class _enquire {
         const _match = this.queries.findLast(({ query }) => query.matches);
         const _breakpoint = _match?.width ?? null;
 
-        // crossing two breakpoints at once fires two changes
         if (_breakpoint === this.breakpoint) return;
 
         this.prevBreakpoint = this.breakpoint;

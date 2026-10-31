@@ -3,7 +3,6 @@
 // player.destroy() removes Plyr too
 // css, in your main css file: @import "plyr/dist/plyr.css";
 
-// plyr, loaded on first use so other pages don't download it
 const _importPlyr = () => import("plyr");
 
 export const _plyr = async (player, options = {}) => {
@@ -20,7 +19,6 @@ export const _plyr = async (player, options = {}) => {
         ...options,
     });
 
-    // fill the player's box, except in fullscreen
     const _fill = (fill) => Object.assign(player.plyr.elements.container.style, { position: fill ? "absolute" : "", inset: fill ? 0 : "" });
     _fill(true);
     player.plyr.on("enterfullscreen", () => _fill(false));

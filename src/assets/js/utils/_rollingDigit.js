@@ -82,10 +82,9 @@ export class _rollingDigit extends _emitter {
             if (_from === 0) _from = this.maxNumber;
         }
 
-        if (this.numeric && this.currentNumber === 0 && _from === 0 && parseFloat(_to) === this.maxNumber - 1) _from = this.el.numbers.length - 1; // for countdowns
+        if (this.numeric && this.currentNumber === 0 && _from === 0 && parseFloat(_to) === this.maxNumber - 1) _from = this.el.numbers.length - 1;
         if (_from === _to) return Promise.resolve(this);
 
-        // a newer roll cancels this one, it settles without a change
         const _landed = this.tween(_from * this.height, _to * this.height, _duration).finished.then(
             () => {
                 this.currentNumber = parseFloat(_to);
@@ -98,7 +97,6 @@ export class _rollingDigit extends _emitter {
         if (!this.numeric) {
             const _width = (index) => `${this.el.numbers[index].querySelector("span").offsetWidth}px`;
 
-            // the width follows in the second half
             this.widthAnimation?.cancel();
             this.target.style.width = _width(_to);
             this.widthAnimation = this.target.animate({ width: [_width(_from), _width(_to)] }, { duration: _duration * 0.5, delay: _duration * 0.5, easing: _ease, fill: "backwards" });
@@ -124,13 +122,11 @@ export class _rollingDigit extends _emitter {
         this.tween(status === "init" ? this.startNumber * this.height : this.currentOffset, (status === "init" ? this.startNumber : this.currentNumber) * this.height, this.duration);
     }
 
-    // where the digits strip is, mid-roll too
     get currentOffset() {
         const _transform = getComputedStyle(this.el.main).transform;
         return _transform === "none" ? 0 : -new DOMMatrix(_transform).m42;
     }
 
-    // move the digits strip, durations in ms
     tween(from, to, duration) {
         this.animation?.cancel();
         this.el.main.style.transform = `translate3d(0, -${to}px, 0)`;

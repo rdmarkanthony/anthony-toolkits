@@ -6,7 +6,6 @@ title: Scramble text | Text effects | Anthony Toolkits
 
 {{ pageIntro({ back: { label: 'Text effects', url: '/components/text-effects/' }, label: '_scrambleText', title: 'Scramble text', description: 'Letters flip through random characters, then settle into the text. Hover the buttons, or play it from your own script.' }) }}
 
-{# demo: hover #}
 <section class="px-4 pb-4">
     <div class="mx-auto grid max-w-295 gap-4 md:grid-cols-2">
         <div class="flex min-h-72 flex-col justify-between gap-10 rounded-3xl bg-gray-100 p-8">
@@ -21,7 +20,6 @@ title: Scramble text | Text effects | Anthony Toolkits
         <div class="flex min-h-72 flex-col justify-between gap-10 rounded-3xl bg-gray-950 p-8 text-white">
             <h2 class="text-3xl font-bold tracking-tight">Own characters</h2>
             <div class="flex flex-wrap gap-3 font-mono">
-                {# unsettled letters glow green #}
                 <button class="js-scramble-hover cursor-pointer rounded-full border border-emerald-400/40 px-6 py-3 text-emerald-300 [&_[data-scrambling]]:text-emerald-400 [&_[data-scrambling]]:[text-shadow:0_0_8px_currentColor]" type="button" data-chars="ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789">Enter the code</button>
                 <button class="js-scramble-hover cursor-pointer rounded-full border border-white/30 px-6 py-3 [&_[data-scrambling]]:opacity-50" type="button" data-chars="01">Binary</button>
             </div>
@@ -29,7 +27,6 @@ title: Scramble text | Text effects | Anthony Toolkits
     </div>
 </section>
 
-{# demo: plays from a script #}
 <section class="px-4 pt-12 pb-16">
     <div class="mx-auto grid max-w-295 gap-4 md:grid-cols-2">
         <div class="flex min-h-72 flex-col justify-between gap-10 rounded-3xl border border-gray-200 p-8">

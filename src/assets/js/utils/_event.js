@@ -28,7 +28,6 @@ export const _event = {
             window.addEventListener("load", (e) => _run(_resizeState.callbacks, "ready", e));
 
             window.addEventListener("resize", (e) => {
-                // skip the phone address bar resize
                 if (_isToolbarResize()) return;
 
                 _run(_resizeState.callbacks, "resize", e);
@@ -41,7 +40,6 @@ export const _event = {
         _resizeState.callbacks.add(callback);
 
         callback("init");
-        // if already loaded
         if (document.readyState === "complete") callback("ready");
 
         return () => _event.offResize(callback);
@@ -50,7 +48,6 @@ export const _event = {
         _resizeState.callbacks.delete(callback);
     },
 
-    // once per frame
     scroll(callback) {
         if (!_scrollState.listening) {
             _scrollState.listening = true;
@@ -81,12 +78,10 @@ export const _event = {
         _scrollState.callbacks.delete(callback);
     },
 
-    // for element size changes
     observeResize(callback, element = document.body) {
         if (!_observeState.observer) {
             _observeState.observer = new ResizeObserver((entries) => {
                 entries.forEach((entry) => {
-                    // skip the first report
                     if (_observeState.initial.has(entry.target)) {
                         _observeState.initial.delete(entry.target);
                         return;

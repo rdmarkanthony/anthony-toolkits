@@ -119,7 +119,6 @@
 .js-splittext-animated.pullDown .word {
     animation-name: pullDown;
 }
-/* the blur needs room past the line, the words wait in place */
 .js-splittext.blurIn .line-parent {
     overflow: visible;
 }

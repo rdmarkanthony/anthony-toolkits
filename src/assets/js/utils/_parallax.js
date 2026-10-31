@@ -3,7 +3,6 @@ import { _emitter } from "./_emitter";
 
 const _reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// the page scroll as a timeline, for _parallaxScroller.animate()
 let _timeline = null;
 const _pageTimeline = () => (_timeline ??= new ScrollTimeline({ source: document.documentElement }));
 
@@ -14,14 +13,12 @@ export const _parallax = {
     scrollTop() {
         return window.scrollY;
     },
-    // viewport without the scrollbar
     width() {
         return document.documentElement.clientWidth;
     },
     height(isDocument = false) {
         return isDocument ? document.documentElement.scrollHeight : document.documentElement.clientHeight;
     },
-    // position in the document, transforms are ignored
     getOffset(target) {
         let top = 0;
         let left = 0;
@@ -33,7 +30,6 @@ export const _parallax = {
 
         return { top, left, bottom: top + target.offsetHeight, right: left + target.offsetWidth };
     },
-    // progress, 0 at min and 1 at max
     getRange(min, max) {
         return (_parallax.scrollTop() - min) / (max - min);
     },
@@ -103,12 +99,10 @@ export class _parallaxScroller extends _emitter {
         this.emit("update");
     }
 
-    // scroll position from a percent or a position
     position(value) {
         return typeof value === "string" && value.includes("%") ? this.offset.top + (parseFloat(value) / 100) * (this.offset.bottom - this.offset.top) : value;
     }
 
-    // progress within a range, by percent or scroll position
     portion(min, max) {
         return _parallax.getRange(this.position(min), this.position(max));
     }
@@ -129,7 +123,6 @@ export class _parallaxScroller extends _emitter {
         const _range = typeof item.range === "function" ? item.range(this) : item.range;
         [item.min, item.max] = _range.map((value) => this.position(value));
 
-        // without scroll timelines, update() sets its time instead
         item.manual ??= !_parallax.scrollTimeline();
 
         if (item.manual) {
@@ -221,7 +214,6 @@ class _parallaxRange {
         this.target.style.setProperty("--range", this.range);
     }
 
-    // eased: the script sets --offset, a transition eases it
     follow(trigger, easing) {
         this.target.dataset.parallaxOffset = easing ? "easing" : "";
         this.offset = new _parallaxOffset({ target: this.target, trigger });

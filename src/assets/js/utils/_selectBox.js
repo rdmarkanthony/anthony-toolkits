@@ -9,7 +9,6 @@ const _instances = new WeakMap();
 let _count = 0;
 
 export class _selectBox extends _emitter {
-    // the look, states from aria-* and data-* attributes
     static classes = {
         box: "w-full",
         button: "flex w-full cursor-pointer items-center justify-between gap-3 rounded-md border border-gray-300 bg-white px-4 py-3 text-left transition-colors duration-200 hover:border-gray-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-950 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-red-600 data-placeholder:text-gray-400",
@@ -23,7 +22,6 @@ export class _selectBox extends _emitter {
         empty: "px-3 py-2 text-gray-500",
     };
 
-    // the instance of a select, e.g. from a script that didn't create it
     static get(target) {
         const _target = typeof target === "string" ? document.querySelector(target) : target;
         return _target ? _instances.get(_target) : undefined;
@@ -35,7 +33,6 @@ export class _selectBox extends _emitter {
         this.target = typeof props.target === "string" ? document.querySelector(props.target) : props.target;
         if (!this.target) return;
 
-        // one instance per select, a second call returns the first
         if (_instances.has(this.target)) return _instances.get(this.target);
 
         if (this.target.multiple) {
@@ -51,7 +48,7 @@ export class _selectBox extends _emitter {
 
         this.id = `select-box-${++_count}`;
         this.el = { box: null, button: null, label: null, dropdown: null, search: null, list: null, empty: null };
-        this.items = []; // { option, el } for every listed option
+        this.items = [];
         this.activeIndex = -1;
         this.active = false;
         this.typed = "";
@@ -63,7 +60,6 @@ export class _selectBox extends _emitter {
     init() {
         this.style();
 
-        // the box replaces the select, which stays inside
         this.el.box = this.create("div", "box");
         this.el.box.classList.add("js-select-box");
         this.el.box.classList.toggle("is-native", this.native);
@@ -78,7 +74,6 @@ export class _selectBox extends _emitter {
         this.el.button.setAttribute("aria-haspopup", "listbox");
         this.el.button.setAttribute("aria-expanded", "false");
         this.el.button.setAttribute("aria-controls", `${this.id}-list`);
-        // native: the select takes focus and screen readers
         if (this.native) {
             this.el.button.tabIndex = -1;
             this.el.button.setAttribute("aria-hidden", "true");
@@ -103,7 +98,7 @@ export class _selectBox extends _emitter {
 
         this.el.list = this.create("div", "list");
         this.el.list.id = `${this.id}-list`;
-        this.el.list.tabIndex = -1; // a click inside keeps the focus in the box
+        this.el.list.tabIndex = -1;
         this.el.list.setAttribute("role", "listbox");
         this.el.dropdown.append(this.el.list);
 
@@ -127,7 +122,6 @@ export class _selectBox extends _emitter {
         return _el;
     }
 
-    // name the button with the select's <label>, or its aria-label
     labelBy() {
         const _label = this.target.id && document.querySelector(`label[for="${CSS.escape(this.target.id)}"]`);
 
@@ -151,7 +145,6 @@ export class _selectBox extends _emitter {
     listen() {
         this.onButtonClick = () => (this.active ? this.hide() : this.show());
         this.onKeydown = (e) => this.keydown(e);
-        // Space opens on keydown, skip the keyup click
         this.onKeyup = (e) => e.key === " " && e.preventDefault();
         this.onSearch = () => this.filter();
         this.onListClick = (e) => {
@@ -164,14 +157,12 @@ export class _selectBox extends _emitter {
         };
         this.onFocusout = (e) => this.active && !this.el.box.contains(e.relatedTarget) && this.hide();
         this.onOutsideClick = (e) => this.active && !this.el.box.contains(e.target) && this.hide();
-        // every change comes through the select's change event
         this.onChange = () => {
             this.update();
             this.emit("change");
         };
         this.onReset = () => setTimeout(() => this.update());
         this.onInvalid = () => this.el.button.setAttribute("aria-invalid", "true");
-        // new options or disabled, from a script
         this.observer = new MutationObserver(() => this.refresh());
 
         this.el.button.addEventListener("click", this.onButtonClick);
@@ -189,7 +180,6 @@ export class _selectBox extends _emitter {
         this.observer.observe(this.target, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["disabled", "hidden", "label"] });
     }
 
-    // rebuild the list, runs when the options change
     refresh() {
         this.items = [];
         this.el.list.innerHTML = "";
@@ -235,7 +225,6 @@ export class _selectBox extends _emitter {
         parent.append(_el);
     }
 
-    // show the selected option, after any change
     update() {
         const _option = this.target.selectedOptions[0];
 
@@ -256,7 +245,6 @@ export class _selectBox extends _emitter {
         return this.target.value;
     }
 
-    // sets it like a pick, with the change event
     set value(value) {
         const _before = this.target.value;
         this.target.value = value;
@@ -269,7 +257,6 @@ export class _selectBox extends _emitter {
         this.target.dispatchEvent(new Event("change", { bubbles: true }));
     }
 
-    // pick an option of the list by its index
     pick(index) {
         const _item = this.items[index];
         if (!_item || this.isDisabled(_item)) return;
@@ -298,7 +285,6 @@ export class _selectBox extends _emitter {
         this.el.box.classList.add("is-active");
         this.el.button.setAttribute("aria-expanded", "true");
 
-        // open upwards when there's no room below
         const _box = this.el.box.getBoundingClientRect();
         const _height = this.el.dropdown.offsetHeight;
         const _below = window.innerHeight - _box.bottom;
@@ -327,7 +313,6 @@ export class _selectBox extends _emitter {
         this.emit("hide");
     }
 
-    // keyboard highlight, aria-activedescendant points to it
     highlight(index, scroll = true) {
         this.activeIndex = index;
         const _item = this.items[index];
@@ -340,7 +325,6 @@ export class _selectBox extends _emitter {
             else el.removeAttribute("aria-activedescendant");
         });
 
-        // scroll the list only, not the page
         if (_item && scroll) {
             const _list = this.el.list;
             const _top = _item.el.offsetTop - _list.offsetTop;
@@ -351,7 +335,6 @@ export class _selectBox extends _emitter {
         }
     }
 
-    // next pickable option in that direction, or the last
     step(from, direction, count = 1) {
         let _index = from;
         let _found = from;
@@ -373,7 +356,6 @@ export class _selectBox extends _emitter {
         const _inSearch = e.target === this.el.search;
         const _last = this.items.length;
 
-        // closed: open it, like a native select
         if (!this.active) {
             if (["ArrowDown", "ArrowUp", "Enter", " "].includes(e.key)) {
                 e.preventDefault();
@@ -423,7 +405,7 @@ export class _selectBox extends _emitter {
                 break;
             case "Escape":
                 e.preventDefault();
-                e.stopPropagation(); // e.g. a lightbox around it stays open
+                e.stopPropagation();
                 this.hide();
                 break;
             case "Tab":
@@ -434,12 +416,10 @@ export class _selectBox extends _emitter {
         }
     }
 
-    // typing jumps to a matching option, like a native select
     typeahead(key) {
         clearTimeout(this.typedTimer);
         this.typedTimer = setTimeout(() => (this.typed = ""), 500);
 
-        // the same letter again goes to the next match
         this.typed = this.typed === key ? key : this.typed + key;
         const _typed = this.typed.toLowerCase();
 
@@ -453,7 +433,6 @@ export class _selectBox extends _emitter {
         if (_index !== undefined) this.highlight(_index);
     }
 
-    // hide the options that don't match the search, and groups left empty
     filter() {
         const _query = this.el.search.value;
         let _total = 0;
@@ -475,7 +454,6 @@ export class _selectBox extends _emitter {
         if (!_current || !this.isVisible(_current)) this.highlight(this.step(-1, 1));
     }
 
-    // back to the plain select
     destroy() {
         if (!this.el.box) return;
 
@@ -497,7 +475,6 @@ export class _selectBox extends _emitter {
         _instances.delete(this.target);
     }
 
-    // the parts every select box needs, the look is in the classes
     style() {
         if (document.querySelector(".js-select-box-style")) return;
 
@@ -505,7 +482,6 @@ export class _selectBox extends _emitter {
         _style.classList.add("js-select-box-style");
         _style.innerHTML =
             `.js-select-box { position: relative; }` +
-            // the select stays under the button for validation
             `.js-select-box > select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }` +
             // nativeOnTouch: the select on top opens the phone's picker
             `.js-select-box.is-native > select { z-index: 2; pointer-events: auto; }` +

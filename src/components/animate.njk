@@ -6,7 +6,6 @@ title: Animate | Anthony Toolkits
 
 {{ pageIntro({ label: '_animate · _inview · _splitText', title: 'Animate', description: '<a class="link-underline hover:text-gray-900" href="https://animate.style/" target="_blank" rel="noopener">Animate.css</a> effects that play when elements scroll into view, set with a data attribute. Children can be staggered, and titles can pull up word by word.' }) }}
 
-{# demo: a parent with staggered children #}
 <section id="split-text" class="px-4 py-16" data-animate>
     <div class="mx-auto max-w-295" data-animate="parent">
         <div class="flex max-w-5xl flex-col gap-10" data-animate="children">
@@ -26,21 +25,18 @@ title: Animate | Anthony Toolkits
     </div>
 </section>
 
-{# demo: a single element with its own keyframe, delay and duration #}
 <section class="bg-gray-50 px-4 py-16">
     <div class="mx-auto max-w-295">
         <p class="text-3xl font-bold tracking-tight" data-animate="fadeInDown,1,0.8">fadeInDown, 1s delay</p>
     </div>
 </section>
 
-{# demo: a title, the words pull down #}
 <section class="px-4 py-16">
     <div class="mx-auto max-w-295">
         <h2 class="js-splittext max-w-5xl text-4xl font-bold tracking-tight md:text-6xl md:leading-[1.2]" data-animate="fadeInDownSmall">Words pull down with a Down keyframe</h2>
     </div>
 </section>
 
-{# demo: content added later, set up with refresh() #}
 <section class="bg-gray-50 px-4 py-16">
     <div class="mx-auto max-w-295">
         <div class="js-animate-list grid gap-4 sm:grid-cols-2 md:grid-cols-4"></div>

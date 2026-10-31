@@ -6,7 +6,6 @@ bare: true
 
 {% from "demos/header.njk" import demoHeader, demoHero, demoGrid, demoEvent %}
 
-{# anything above the header: a notice that closes, a bar that stays #}
 <div class="js-top-bar grid grid-rows-[1fr] bg-indigo-600 text-white transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] data-closed:grid-rows-[0fr]">
     <div class="overflow-hidden">
         <div class="relative px-12 py-2.5 text-center text-sm">

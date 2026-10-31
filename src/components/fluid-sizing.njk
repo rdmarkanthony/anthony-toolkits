@@ -11,7 +11,6 @@ htmlClass: lg:fluid
 {% set probe = '<span class="js-rem-probe invisible absolute w-4" aria-hidden="true"></span>' %}
 {% set readout = 'font-mono text-sm text-gray-500' %}
 
-{# demo: lg:fluid on the section, the same classes as any page #}
 <section class="relative bg-gray-50 py-16 lg:fluid">
     {{ probe | safe }}
     <div class="container-1">
@@ -36,7 +35,6 @@ htmlClass: lg:fluid
     </div>
 </section>
 
-{# demo: fluid on a box, sizes follow the box #}
 <section class="px-4 py-16">
     <div class="mx-auto max-w-295">
         <div class="mb-10 flex flex-wrap items-end justify-between gap-4">
@@ -65,7 +63,6 @@ htmlClass: lg:fluid
     </div>
 </section>
 
-{# demo: one-off sizes, px to cqw #}
 {% set input = 'h-12 w-full rounded-md border border-gray-300 bg-white px-3 font-mono focus:border-gray-950 focus:outline-none' %}
 <section class="bg-gray-50 px-4 py-16">
     <div class="mx-auto max-w-295">
