@@ -12,6 +12,7 @@ title: Three.js background | Anthony Toolkits
     { url: '/components/three-background/glow/', title: 'Glow', text: 'One soft glow that follows the mouse, over film grain.', utils: '_threeGlow' },
     { url: '/components/three-background/particles/', title: 'Particles', text: 'Dots that drift and move away from the mouse.', utils: '_threeParticles' },
     { url: '/components/three-background/reveal/', title: 'Reveal', text: 'The mouse paints a trail that shows the color photo.', utils: '_threeReveal' },
+    { url: '/components/three-background/dot-grid/', title: 'Dot grid', text: 'Dots that show in drifting patches, the mouse leaves a lit trail.', utils: '_threeDotGrid' },
     { url: '/components/three-background/text/', title: 'Grain text', text: 'Words made of grains in every row, the mouse pushes them.', utils: '_threeText' }
 ] %}
 <section id="demos" class="px-4 pb-16">
@@ -26,6 +27,11 @@ title: Three.js background | Anthony Toolkits
                     {% for i in range(1, 41) %}
                     <span class="absolute size-1 rounded-full bg-white" style="left: {{ (i * 37) % 100 }}%; top: {{ (i * 61) % 100 }}%; opacity: {{ 0.3 + (i % 3) * 0.2 }}"></span>
                     {% endfor %}
+                </div>
+                {% elif demo.title == 'Dot grid' %}
+                {# preview: a dot grid shown in soft patches #}
+                <div class="relative aspect-4/3 overflow-hidden bg-gray-950">
+                    <span class="absolute inset-0 bg-[radial-gradient(circle,white_1px,transparent_1.5px)] bg-size-[8px_8px] opacity-70 [mask-image:radial-gradient(40%_35%_at_30%_40%,black_40%,transparent),radial-gradient(35%_30%_at_75%_70%,black_30%,transparent)]"></span>
                 </div>
                 {% elif demo.title == 'Grain text' %}
                 {# preview: a word filled with dots #}
@@ -83,7 +89,7 @@ title: Three.js background | Anthony Toolkits
 
 const _background = new _threeBackground({
     target: document.querySelector('.js-three-bg'),
-    effect: _threeParticles(), // or _threeBlobs(), _threeGlow(), your own
+    effect: _threeParticles(), // or _threeBlobs(), _threeGlow(), _threeDotGrid(), your own
     pixelRatio: 2, // the max, for phones
     events: {
         ready: (instance) => {},

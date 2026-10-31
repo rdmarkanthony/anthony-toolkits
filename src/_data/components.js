@@ -57,6 +57,7 @@ export default [
             { label: "Glow", url: "/components/three-background/glow/", description: "One soft glow that follows the mouse, over film grain.", utils: "_threeGlow", ready: true },
             { label: "Particles", url: "/components/three-background/particles/", description: "Dots that drift and move away from the mouse.", utils: "_threeParticles", ready: true },
             { label: "Reveal", url: "/components/three-background/reveal/", description: "The mouse paints a trail that shows the color photo, then it fades.", utils: "_threeReveal", ready: true },
+            { label: "Dot grid", url: "/components/three-background/dot-grid/", description: "A grid of dots that show in drifting patches, the mouse leaves a lit trail.", utils: "_threeDotGrid", ready: true },
             { label: "Grain text", url: "/components/three-background/text/", description: "Words made of grains in every row, the mouse pushes them.", utils: "_threeText", ready: true },
         ],
     },
