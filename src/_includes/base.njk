@@ -22,7 +22,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@200..800&family=DM+Sans:wght@100..1000&display=swap" />
-    <link rel="stylesheet" href="/assets/css/style.css" media="all" />
+    <link rel="stylesheet" href="/assets/css/style.css?v={{ site.version }}" media="all" />
     {% getBundle "styles" %}
     {% getBundle "headerscript" %}
 </head>
@@ -39,7 +39,7 @@
     {{ footer({ site: site, starterKit: starterKit }) }}
     {% endif %}
 
-    <script src="/assets/js/script.js" type="module"></script>
+    <script src="/assets/js/script.js?v={{ site.version }}" type="module"></script>
     {% getBundle "footerscript" %}
 </body>
 </html>

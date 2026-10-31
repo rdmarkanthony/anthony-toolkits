@@ -7,4 +7,6 @@ export default {
     year: new Date().getFullYear(),
     // Google Maps key, GOOGLE_MAPS_KEY in .env
     googleMapsKey: process.env.GOOGLE_MAPS_KEY ?? "",
+    // changes every build, added to css/js urls so a deploy is picked up straight away (see firebase.json)
+    version: Date.now().toString(36),
 };
