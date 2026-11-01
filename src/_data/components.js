@@ -19,7 +19,7 @@ export default [
             { label: "Blur reveal", url: "/components/text-effects/blur/", description: "Words come in from blurred to sharp as a title scrolls into view.", utils: "_animate · _splitText", ready: true },
             { label: "Highlight", url: "/components/text-effects/highlight/", description: "A marker color grows behind a few words as they come into view.", utils: "_animate · _inview", ready: true },
             { label: "Hover marquee", url: "/components/text-effects/marquee/", description: "A link whose label turns into an endless row while hovered.", utils: "_horizontalLoop · GSAP", ready: true },
-            { label: "Line reveal", url: "/components/animate/#split-text", description: "Title words slide up from behind each line's mask as they come into view.", utils: "_animate · _splitText", ready: true },
+            { label: "Line reveal", url: "/components/animate/#split-text", description: "Title words slide up from behind each line's mask as they come into view.", utils: "_animate · _splitText", ready: true, favorite: true },
             { label: "Scramble text", url: "/components/text-effects/scramble/", description: "Letters flip through random characters, then settle into the text.", utils: "_scrambleText", ready: true },
             { label: "Split hover", url: "/components/text-effects/split/", description: "The word splits at the middle, the halves slide apart and a copy opens.", utils: "CSS only", ready: true },
             { label: "Text roll", url: "/components/text-effects/roll/", description: "Link and button text that rolls up on hover, a copy coming in from below.", utils: "_textRoll", ready: true },
@@ -33,7 +33,7 @@ export default [
         url: "/components/button-effects/",
         items: [
             { label: "Hold to confirm", url: "/components/button-effects/hold/", description: "Press and hold to delete or send, let go early and nothing happens.", utils: "_holdButton", ready: true },
-            { label: "Hover fill", url: "/components/button-effects/hover-fill/", description: "A color fills in from the side the mouse comes in, and leaves the way it goes.", utils: "_hoverFill", ready: true },
+            { label: "Hover fill", url: "/components/button-effects/hover-fill/", description: "A color fills in from the side the mouse comes in, and leaves the way it goes.", utils: "_hoverFill", ready: true, favorite: true },
             { label: "Magnetic", url: "/components/button-effects/magnetic/", description: "Buttons and links that lean toward the mouse as it comes near.", utils: "_magnetic", ready: true },
             { label: "Ripple", url: "/components/button-effects/ripple/", description: "A ring spreads out from where the button is pressed.", utils: "_ripple", ready: true },
             { label: "State button", url: "/components/button-effects/state/", description: "Loading, done and error labels, the width eases to fit each one.", utils: "_stateButton", ready: true },
