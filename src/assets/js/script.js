@@ -31,6 +31,7 @@ import { _threeDotGrid } from "./utils/_threeDotGrid";
 import { _countdownTimer } from "./utils/_countdownTimer";
 import { _tabs } from "./utils/_tabs";
 import { _tooltip } from "./utils/_tooltip";
+import { _toast } from "./utils/_toast";
 import { _hoverIndicator } from "./utils/_hoverIndicator";
 import { _accordion } from "./utils/_accordion";
 import { _header } from "./utils/_header";
@@ -102,6 +103,7 @@ Object.assign(window, {
     _countdownTimer,
     _tabs,
     _tooltip,
+    _toast,
     _hoverIndicator,
     _accordion,
     _header,
