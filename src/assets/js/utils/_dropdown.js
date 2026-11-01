@@ -2,10 +2,32 @@ import { _emitter } from "./_emitter";
 import { _event } from "./_event";
 
 // usage: new _dropdown({ target, hover, delay, closeDelay, events }), target is the nav, position: relative
-// markup: target > .js-dropdown-item > .js-dropdown-toggle (a button or link) + .js-dropdown-panel
-// the open item and panel get data-open, other panels data-side="before" | "after" of it while one is open
-// target gets data-open, data-switch when moving between items, and the open panel's --dropdown-width, -height, -x, -y
+// markup: target > .js-dropdown-item > .js-dropdown-toggle (a button or link) + .js-dropdown-panel, or aria-controls="id" for a panel anywhere
+// the open item and panel get data-open, other panels data-side="before" | "after" of it, .js-dropdown-close in a panel closes it
+// target and an outside panel's parent get data-open, data-switch when moving between items, and the open panel's --dropdown-width, -height, -x, -y
 let _count = 0;
+
+// offsets ignore transforms, so a panel mid animation still measures right
+const _offset = (element, host) => {
+    let _x = 0;
+    let _y = 0;
+    let _element = element;
+    for (; _element && _element !== host; _element = _element.offsetParent) {
+        _x += _element.offsetLeft;
+        _y += _element.offsetTop;
+    }
+    if (_element) return [_x, _y];
+
+    const _rect = element.getBoundingClientRect();
+    const _hostRect = host.getBoundingClientRect();
+    return [_rect.left - _hostRect.left, _rect.top - _hostRect.top];
+};
+
+// a visibility transition keeps it hidden on the first frame, so it tries again
+const _focus = (element) => {
+    element?.focus();
+    if (element && document.activeElement !== element) requestAnimationFrame(() => requestAnimationFrame(() => element.focus()));
+};
 
 export class _dropdown extends _emitter {
     constructor(props = {}) {
@@ -17,6 +39,8 @@ export class _dropdown extends _emitter {
         this.closeDelay = props.closeDelay ?? 300;
 
         this.items = [];
+        this.zones = [];
+        this.hosts = [];
         this.active = -1;
         this.timer = null;
         this.abort = new AbortController();
@@ -31,7 +55,7 @@ export class _dropdown extends _emitter {
 
         this.items = [...this.target.querySelectorAll(".js-dropdown-item")].map((item) => {
             const _toggle = item.querySelector(".js-dropdown-toggle");
-            const _panel = item.querySelector(".js-dropdown-panel");
+            const _panel = item.querySelector(".js-dropdown-panel") ?? document.getElementById(_toggle.getAttribute("aria-controls"));
 
             _panel.id ||= `dropdown-${++_count}`;
             _panel.inert = true;
@@ -41,71 +65,62 @@ export class _dropdown extends _emitter {
             return { item, toggle: _toggle, panel: _panel };
         });
 
-        this.target.addEventListener(
-            "pointerover",
-            (e) => {
-                if (!this.hover || e.pointerType !== "mouse") return;
-                const _index = this.indexOf(e.target);
-                if (_index === this.active) return clearTimeout(this.timer);
-                this.later(() => (_index < 0 ? this.close() : this.open(_index)), _index < 0 ? this.closeDelay : this.delay);
-            },
-            { signal }
-        );
+        const _outside = this.items.map(({ panel }) => panel).filter((panel) => !this.target.contains(panel));
+        this.zones = [this.target, ..._outside];
+        this.hosts = [...new Set([this.target, ..._outside.map((panel) => panel.parentElement)])];
 
-        this.target.addEventListener("pointerleave", (e) => this.hover && e.pointerType === "mouse" && this.later(() => this.close(), this.closeDelay), { signal });
+        const _on = (type, callback) => this.zones.forEach((zone) => zone.addEventListener(type, callback, { signal }));
 
-        this.target.addEventListener(
-            "click",
-            (e) => {
-                const _index = this.items.findIndex(({ toggle }) => toggle.contains(e.target));
-                if (_index < 0) return;
+        _on("pointerover", (e) => {
+            if (!this.hover || e.pointerType !== "mouse") return;
+            const _index = this.indexOf(e.target);
+            if (_index === this.active) return clearTimeout(this.timer);
+            this.later(() => (_index < 0 ? this.close() : this.open(_index)), _index < 0 ? this.closeDelay : this.delay);
+        });
 
-                const _isLink = this.items[_index].toggle.matches("a[href]");
-                const _byHover = this.hover && _fine.matches && e.detail > 0;
+        _on("pointerleave", (e) => this.hover && e.pointerType === "mouse" && !this.inside(e.relatedTarget) && this.later(() => this.close(), this.closeDelay));
 
-                // a link opens on the first tap, goes on the second, with a mouse it just goes
-                if (_isLink && (_byHover || this.active === _index)) return;
-                e.preventDefault();
+        _on("click", (e) => {
+            if (e.target.closest(".js-dropdown-close")) return this.close(true);
 
-                if (_byHover) this.open(_index);
-                else this.toggle(_index);
-            },
-            { signal }
-        );
+            const _index = this.items.findIndex(({ toggle }) => toggle.contains(e.target));
+            if (_index < 0) return;
 
-        this.target.addEventListener(
-            "keydown",
-            (e) => {
-                if (e.key === "Escape" && this.active > -1) {
-                    const { item, toggle } = this.items[this.active];
-                    if (item.contains(document.activeElement)) toggle.focus();
-                    this.close();
-                    return;
-                }
+            const _isLink = this.items[_index].toggle.matches("a[href]");
+            const _byHover = this.hover && _fine.matches && e.detail > 0;
 
-                const _index = this.items.findIndex(({ toggle }) => toggle === e.target);
-                if (e.key !== "ArrowDown" || _index < 0) return;
+            // a link opens on the first tap, goes on the second, with a mouse it just goes
+            if (_isLink && (_byHover || this.active === _index)) return;
+            e.preventDefault();
 
-                e.preventDefault();
-                this.open(_index);
+            if (_byHover) this.open(_index);
+            else this.toggle(_index);
+        });
 
-                // a visibility transition keeps it hidden on the first frame
-                const _first = this.items[_index].panel.querySelector("a[href], button, input, select, textarea, [tabindex]");
-                _first?.focus();
-                if (_first && document.activeElement !== _first) requestAnimationFrame(() => requestAnimationFrame(() => _first.focus()));
-            },
-            { signal }
-        );
+        _on("keydown", (e) => {
+            if (e.key === "Escape" && this.active > -1) return this.close(true);
 
-        this.target.addEventListener("focusin", (e) => this.active > -1 && !this.items[this.active].item.contains(e.target) && this.close(), { signal });
-        this.target.addEventListener("focusout", (e) => !this.target.contains(e.relatedTarget) && e.relatedTarget && this.close(), { signal });
-        document.addEventListener("pointerdown", (e) => !this.target.contains(e.target) && this.close(), { signal });
+            const _index = this.items.findIndex(({ toggle }) => toggle === e.target);
+            if (e.key !== "ArrowDown" || _index < 0) return;
+
+            e.preventDefault();
+            this.open(_index);
+            _focus(this.items[_index].panel.querySelector("a[href], button, input, select, textarea, [tabindex]"));
+        });
+
+        _on("focusin", (e) => this.active > -1 && this.indexOf(e.target) !== this.active && this.close());
+        _on("focusout", (e) => e.relatedTarget && !this.inside(e.relatedTarget) && this.close());
+        document.addEventListener("pointerdown", (e) => !this.inside(e.target) && this.close(), { signal });
 
         _event.resize(this._onSize);
     }
 
+    inside(element) {
+        return !!element && this.zones.some((zone) => zone.contains(element));
+    }
+
     indexOf(element) {
-        return this.items.findIndex(({ item }) => item.contains(element));
+        return this.items.findIndex(({ item, panel }) => item.contains(element) || panel.contains(element));
     }
 
     later(callback, delay) {
@@ -127,23 +142,32 @@ export class _dropdown extends _emitter {
 
         this.active = index;
         this.update();
-        this.target.toggleAttribute("data-switch", _switch);
-        this.target.setAttribute("data-open", "");
+        this.hosts.forEach((host) => {
+            host.toggleAttribute("data-switch", _switch);
+            host.setAttribute("data-open", "");
+        });
         _event.observeResize(this._onSize, this.items[index].panel);
 
         if (!_switch) this.emit("open");
         this.emit("change");
     }
 
-    close() {
+    // focus: true puts focus back on the toggle if it was in the panel, e.g. a back button
+    close(focus = false) {
         clearTimeout(this.timer);
         if (this.active < 0) return;
 
-        _event.offObserveResize(this._onSize, this.items[this.active].panel);
+        const { item, toggle, panel } = this.items[this.active];
+        const _hadFocus = focus && (item.contains(document.activeElement) || panel.contains(document.activeElement));
+
+        _event.offObserveResize(this._onSize, panel);
         this.active = -1;
         this.update();
-        this.target.removeAttribute("data-open");
-        this.target.removeAttribute("data-switch");
+        this.hosts.forEach((host) => {
+            host.removeAttribute("data-open");
+            host.removeAttribute("data-switch");
+        });
+        if (_hadFocus) _focus(toggle);
 
         this.emit("close");
         this.emit("change");
@@ -162,23 +186,17 @@ export class _dropdown extends _emitter {
         });
     }
 
-    // offsets ignore transforms, so a panel mid animation still measures right
     vars() {
         const _panel = this.items[this.active]?.panel;
         if (!_panel) return;
 
-        let _x = 0;
-        let _y = 0;
-        for (let _element = _panel; _element && _element !== this.target; _element = _element.offsetParent) {
-            _x += _element.offsetLeft;
-            _y += _element.offsetTop;
-        }
-
-        const _style = this.target.style;
-        _style.setProperty("--dropdown-width", `${_panel.offsetWidth}px`);
-        _style.setProperty("--dropdown-height", `${_panel.offsetHeight}px`);
-        _style.setProperty("--dropdown-x", `${_x}px`);
-        _style.setProperty("--dropdown-y", `${_y}px`);
+        this.hosts.forEach((host) => {
+            const [_x, _y] = _offset(_panel, host);
+            host.style.setProperty("--dropdown-width", `${_panel.offsetWidth}px`);
+            host.style.setProperty("--dropdown-height", `${_panel.offsetHeight}px`);
+            host.style.setProperty("--dropdown-x", `${_x}px`);
+            host.style.setProperty("--dropdown-y", `${_y}px`);
+        });
     }
 
     destroy() {

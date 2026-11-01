@@ -125,21 +125,37 @@ title: Dropdown | Anthony Toolkits
     <div class="mx-auto flex max-w-295 flex-col gap-6">
         <div>
             <h2 class="mb-2 text-3xl font-bold tracking-tight">Mega menu</h2>
-            <p class="max-w-xl text-gray-600">Full width, clips down on open. Moving to the other menu crossfades instead, a panel with <code class="font-mono text-sm">data-side</code> skips the clip. Hovering the shade closes it.</p>
+            <p class="max-w-xl text-gray-600">The panels sit in their own box below the header, linked with <code class="font-mono text-sm">aria-controls</code>. The white background grows to each panel's height, then the content fades in. Hovering the shade closes it.</p>
         </div>
-        <div class="relative min-h-[28rem] overflow-hidden rounded-3xl border border-gray-200 bg-white">
-            <nav class="js-dropdown group/nav relative z-10 flex items-center gap-8 border-b border-gray-200 bg-white px-6" aria-label="Shop">
+        <div class="relative min-h-[30rem] overflow-hidden rounded-3xl border border-gray-200 bg-white">
+            <header class="relative z-10 flex items-center gap-10 border-b border-gray-200 bg-white px-6">
                 <a class="py-5 text-xl font-bold tracking-tight" href="#">Studio.</a>
-                <ul class="flex items-center gap-6 font-medium">
-                    {% for menu in [
-                        { label: 'Shop', columns: [['Furniture', ['Chairs', 'Tables', 'Sofas', 'Shelves']], ['Lighting', ['Floor lamps', 'Pendants', 'Desk lamps']], ['Living', ['Rugs', 'Mirrors', 'Plants']]] },
-                        { label: 'Collections', columns: [['Seasons', ['Autumn edit', 'Winter warm']], ['Rooms', ['Bedroom', 'Office', 'Kitchen']], ['Makers', ['Oak & Co', 'Linen Lab']]] }
-                    ] %}
-                    <li class="js-dropdown-item group/item">
-                        <a class="js-dropdown-toggle flex items-center gap-1 py-5 transition-colors hover:text-gray-500" href="#">{{ menu.label }} {{ chevron() }}</a>
-                        <div class="js-dropdown-panel invisible absolute inset-x-0 top-full border-b border-gray-200 bg-white [clip-path:inset(0_0_100%_0)] transition-[clip-path,opacity,visibility] duration-500 {{ ease }} data-open:visible data-open:[clip-path:inset(0)] data-side:opacity-0 data-side:[clip-path:inset(0)] data-side:duration-300">
-                            <div class="grid grid-cols-4 gap-8 p-8">
-                                {% for column in menu.columns %}
+                <nav class="js-dropdown" aria-label="Shop">
+                    <ul class="flex items-center gap-6 font-medium">
+                        {% for menu in [{ label: 'Shop', id: 'mega-shop' }, { label: 'Rooms', id: 'mega-rooms' }] %}
+                        <li class="js-dropdown-item group/item">
+                            <a class="js-dropdown-toggle relative flex py-5 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:origin-left after:scale-x-0 after:bg-gray-950 after:transition-transform after:duration-300 group-data-open/item:after:scale-x-100" href="#" aria-controls="{{ menu.id }}">{{ menu.label }}</a>
+                        </li>
+                        {% endfor %}
+                        <li><a class="flex py-5" href="#">Journal</a></li>
+                    </ul>
+                </nav>
+
+                {% set panel = 'js-dropdown-panel invisible absolute inset-x-0 top-0 translate-y-2 opacity-0 transition-[opacity,translate,visibility] duration-300 data-open:visible data-open:translate-y-0 data-open:opacity-100 data-open:delay-150' %}
+                {% set intro = 'flex flex-col items-start gap-3 border-r border-gray-200 pr-8' %}
+                <div class="group/panels absolute inset-x-0 top-full">
+                    <div class="pointer-events-none absolute inset-x-0 top-0 h-screen bg-gray-950/30 opacity-0 transition-opacity duration-500 group-data-open/panels:pointer-events-auto group-data-open/panels:opacity-100"></div>
+                    <div class="absolute inset-x-0 top-0 h-0 bg-white transition-[height] duration-500 {{ ease }} group-data-open/panels:h-(--dropdown-height)"></div>
+
+                    <div class="{{ panel }}" id="mega-shop">
+                        <div class="grid grid-cols-[12rem_1fr] gap-8 p-8">
+                            <div class="{{ intro }}">
+                                <p class="text-2xl font-bold tracking-tight">Shop</p>
+                                <p class="text-sm text-gray-500">Pieces made to last, from our own workshop.</p>
+                                <a class="text-sm font-medium underline underline-offset-4" href="#">View all</a>
+                            </div>
+                            <div class="grid grid-cols-3 gap-8">
+                                {% for column in [['Furniture', ['Chairs', 'Tables', 'Sofas', 'Shelves']], ['Lighting', ['Floor lamps', 'Pendants', 'Desk lamps']], ['Living', ['Rugs', 'Mirrors', 'Plants']]] %}
                                 <div>
                                     <p class="mb-3 font-mono text-xs tracking-wide text-gray-500 uppercase">{{ column[0] }}</p>
                                     <ul class="flex flex-col gap-2">
@@ -147,21 +163,72 @@ title: Dropdown | Anthony Toolkits
                                     </ul>
                                 </div>
                                 {% endfor %}
-                                <a class="group/card flex flex-col gap-2" href="#">
-                                    <span class="block aspect-4/3 overflow-hidden rounded-xl bg-gray-100"><img class="size-full object-cover transition-transform duration-500 group-hover/card:scale-105" src="/assets/img/sample-image.webp" alt="" loading="lazy" /></span>
-                                    <span class="font-medium">New in {{ menu.label | lower }}</span>
-                                </a>
                             </div>
                         </div>
-                    </li>
-                    {% endfor %}
-                    <li><a class="transition-colors hover:text-gray-500" href="#">Journal</a></li>
-                </ul>
-                <div class="pointer-events-none absolute inset-x-0 top-full -z-10 h-screen bg-gray-950/30 opacity-0 transition-opacity duration-500 group-data-open/nav:pointer-events-auto group-data-open/nav:opacity-100"></div>
-            </nav>
+                    </div>
+
+                    <div class="{{ panel }}" id="mega-rooms">
+                        <div class="grid grid-cols-[12rem_1fr] gap-8 p-8">
+                            <div class="{{ intro }}">
+                                <p class="text-2xl font-bold tracking-tight">Rooms</p>
+                                <a class="text-sm font-medium underline underline-offset-4" href="#">View all</a>
+                            </div>
+                            <ul class="grid grid-cols-3 gap-2">
+                                {% for room in [['Living room', 'Sofas, rugs and side tables'], ['Bedroom', 'Beds, linen and lamps'], ['Office', 'Desks and task chairs']] %}
+                                <li>
+                                    <a class="block rounded-xl p-3 transition-colors hover:bg-gray-100" href="#">
+                                        <span class="block font-medium">{{ room[0] }}</span>
+                                        <span class="block text-sm text-gray-500">{{ room[1] }}</span>
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </header>
             <div class="grid gap-4 p-6 sm:grid-cols-3">
                 {% for i in range(0, 6) %}<div class="aspect-4/3 rounded-xl bg-gray-100"></div>{% endfor %}
             </div>
+        </div>
+    </div>
+</section>
+
+{% set back = 'group-data-open/nav:invisible group-data-open/nav:-translate-x-8 group-data-open/nav:opacity-0' %}
+<section class="px-4 py-16">
+    <div class="mx-auto grid max-w-295 items-center gap-10 lg:grid-cols-[1fr_auto]">
+        <div class="flex flex-col gap-6">
+            <h2 class="text-3xl font-bold tracking-tight">Drill-down, for phones</h2>
+            <p class="max-w-md text-gray-600">Tap an item and its links slide over the list. Back, Esc or a tap outside goes back. This one has <code class="font-mono text-sm">hover: false</code>.</p>
+        </div>
+        <div class="h-[40rem] w-[23rem] max-w-full justify-self-center overflow-hidden rounded-[2.5rem] border-10 border-gray-950 bg-white">
+            <nav class="js-dropdown-drill group/nav relative size-full overflow-hidden" aria-label="Menu">
+                <ul class="flex flex-col p-6 pt-12">
+                    {% for menu in [
+                        { label: 'Services', links: ['Branding', 'Websites', 'Campaigns', 'Packaging'] },
+                        { label: 'Work', links: ['All projects', 'Case studies', 'Awards'] },
+                        { label: 'Studio', links: ['About', 'Team', 'Careers'] }
+                    ] %}
+                    <li class="js-dropdown-item">
+                        <button class="js-dropdown-toggle flex w-full items-center justify-between py-3 text-3xl font-bold tracking-tight transition-[translate,opacity,visibility] duration-500 {{ ease }} {{ back }}" type="button">
+                            {{ menu.label }}
+                            <svg class="size-6 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+                        </button>
+                        <div class="js-dropdown-panel invisible absolute inset-0 flex translate-x-full flex-col bg-white p-6 pt-12 transition-[translate,visibility] duration-500 {{ ease }} data-open:visible data-open:translate-x-0">
+                            <button class="js-dropdown-close -ml-1 flex items-center gap-1 self-start text-sm font-medium text-gray-500" type="button">
+                                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6" /></svg>
+                                Back
+                            </button>
+                            <p class="mt-6 mb-4 font-mono text-xs tracking-wide text-gray-500 uppercase">{{ menu.label }}</p>
+                            <ul class="flex flex-col gap-1">
+                                {% for item in menu.links %}<li><a class="block py-2 text-2xl font-medium" href="#">{{ item }}</a></li>{% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                    {% endfor %}
+                    <li><a class="block py-3 text-3xl font-bold tracking-tight transition-[translate,opacity,visibility] duration-500 {{ ease }} {{ back }}" href="#">Contact</a></li>
+                </ul>
+            </nav>
         </div>
     </div>
 </section>
@@ -212,6 +279,47 @@ title: Dropdown | Anthony Toolkits
 </nav>
 {% endraw %}{% endset %}
 
+{% set megaCode %}{% raw %}
+<header class="relative">
+    <nav class="js-dropdown">
+        <ul class="flex">
+            <!-- aria-controls points to a panel anywhere, the underline shows on the open item -->
+            <li class="js-dropdown-item group/item">
+                <a class="js-dropdown-toggle relative after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:scale-x-0 after:bg-gray-950 after:transition-transform group-data-open/item:after:scale-x-100" href="/shop/" aria-controls="mega-shop">Shop</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- the panels' box gets data-open and --dropdown-height too -->
+    <div class="group/panels absolute inset-x-0 top-full">
+        <div class="pointer-events-none absolute inset-x-0 top-0 h-screen bg-gray-950/30 opacity-0 transition-opacity group-data-open/panels:pointer-events-auto group-data-open/panels:opacity-100"></div>
+        <div class="absolute inset-x-0 top-0 h-0 bg-white transition-[height] duration-500 group-data-open/panels:h-(--dropdown-height)"></div>
+
+        <!-- delay, so the background grows first -->
+        <div class="js-dropdown-panel invisible absolute inset-x-0 top-0 translate-y-2 opacity-0 transition-[opacity,translate,visibility] data-open:visible data-open:translate-y-0 data-open:opacity-100 data-open:delay-150" id="mega-shop">
+            ...
+        </div>
+    </div>
+</header>
+{% endraw %}{% endset %}
+
+{% set drillCode %}{% raw %}
+<nav class="js-dropdown-drill group/nav relative overflow-hidden">
+    <ul>
+        <!-- the item is static, so the panel covers the whole nav -->
+        <li class="js-dropdown-item">
+            <!-- hidden while a panel is open, so tab skips it -->
+            <button class="js-dropdown-toggle transition-[translate,opacity,visibility] group-data-open/nav:invisible group-data-open/nav:-translate-x-8 group-data-open/nav:opacity-0" type="button">Services</button>
+            <div class="js-dropdown-panel invisible absolute inset-0 translate-x-full transition-[translate,visibility] data-open:visible data-open:translate-x-0">
+                <!-- closes it, focus goes back to Services -->
+                <button class="js-dropdown-close" type="button">Back</button>
+                <ul>...</ul>
+            </div>
+        </li>
+    </ul>
+</nav>
+{% endraw %}{% endset %}
+
 {% set pageScript %}{% raw %}
 // Requirements
     // JS
@@ -232,16 +340,21 @@ document.querySelectorAll('.js-dropdown').forEach((target) => {
         },
     });
 });
+
+// a phone menu, opens on tap only
+new _dropdown({ target: document.querySelector('.js-dropdown-drill'), hover: false });
 {% endraw %}{% endset %}
 
 {{ scriptUsage({
     markup: markup,
-    markupNote: 'The open item and panel get <code class="font-mono text-sm">data-open</code>, closed panels are <code class="font-mono text-sm">inert</code>. Keep <code class="font-mono text-sm">visibility</code> in the transition so it hides after the animation.',
+    markupNote: 'The open item and panel get <code class="font-mono text-sm">data-open</code>, closed panels are <code class="font-mono text-sm">inert</code>. Keep <code class="font-mono text-sm">visibility</code> in the transition so it hides after the animation. <code class="font-mono text-sm">.js-dropdown-close</code> in a panel closes it. Down arrow on a toggle moves into its panel.',
     code: pageScript,
-    note: '<code class="font-mono text-sm">new _dropdown({ target, hover, delay, closeDelay, events })</code>. <code class="font-mono text-sm">hover: false</code> opens on click only. Methods: <code class="font-mono text-sm">open(index)</code>, <code class="font-mono text-sm">close()</code>, <code class="font-mono text-sm">toggle(index)</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">open</code>, <code class="font-mono text-sm">change</code>, <code class="font-mono text-sm">close</code>, <code class="font-mono text-sm">dropdown.active</code> is the open index, -1 when closed. In a mobile menu, use <code class="font-mono text-sm">_accordion</code>.',
+    note: '<code class="font-mono text-sm">new _dropdown({ target, hover, delay, closeDelay, events })</code>. <code class="font-mono text-sm">hover: false</code> opens on click only. Methods: <code class="font-mono text-sm">open(index)</code>, <code class="font-mono text-sm">close()</code>, <code class="font-mono text-sm">toggle(index)</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">open</code>, <code class="font-mono text-sm">change</code>, <code class="font-mono text-sm">close</code>, <code class="font-mono text-sm">dropdown.active</code> is the open index, -1 when closed. <code class="font-mono text-sm">close(true)</code> also puts focus back on the toggle.',
     more: [
         { title: 'Other animations', note: 'Swap the panel classes, the rest stays.', code: looksCode, lang: 'html' },
-        { title: 'One background', note: 'The nav gets <code class="font-mono text-sm">--dropdown-width</code>, <code class="font-mono text-sm">-height</code>, <code class="font-mono text-sm">-x</code>, <code class="font-mono text-sm">-y</code> of the open panel, <code class="font-mono text-sm">data-open</code>, and <code class="font-mono text-sm">data-switch</code> while moving between items. While one is open, the other panels get <code class="font-mono text-sm">data-side="before"</code> or <code class="font-mono text-sm">"after"</code>.', code: morphCode, lang: 'html' }
+        { title: 'One background', note: 'The nav gets <code class="font-mono text-sm">--dropdown-width</code>, <code class="font-mono text-sm">-height</code>, <code class="font-mono text-sm">-x</code>, <code class="font-mono text-sm">-y</code> of the open panel, <code class="font-mono text-sm">data-open</code>, and <code class="font-mono text-sm">data-switch</code> while moving between items. While one is open, the other panels get <code class="font-mono text-sm">data-side="before"</code> or <code class="font-mono text-sm">"after"</code>.', code: morphCode, lang: 'html' },
+        { title: 'Mega menu', note: 'A panel outside the nav, e.g. one box below the header. That box gets the same <code class="font-mono text-sm">data-open</code>, <code class="font-mono text-sm">data-switch</code> and <code class="font-mono text-sm">--dropdown-*</code> as the nav.', code: megaCode, lang: 'html' },
+        { title: 'Drill-down', note: 'For a phone menu, with <code class="font-mono text-sm">hover: false</code>. Back is a <code class="font-mono text-sm">.js-dropdown-close</code>.', code: drillCode, lang: 'html' }
     ]
 }) }}
 
