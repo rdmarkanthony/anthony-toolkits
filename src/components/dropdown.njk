@@ -87,6 +87,38 @@ title: Dropdown | Anthony Toolkits
 <section class="px-4 pb-16">
     <div class="mx-auto flex max-w-295 flex-col gap-6">
         <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">With a hover indicator</h2>
+            <p class="max-w-xl text-gray-600">Adds <code class="font-mono text-sm">_hoverIndicator</code>. The pill follows the mouse and stays on the open item, and a background slides between the links in each panel.</p>
+        </div>
+        <div class="{{ box }} min-h-80">
+            <nav class="js-dropdown" aria-label="With a hover indicator">
+                <ul class="js-dropdown-pill relative isolate flex flex-wrap items-center gap-1">
+                    <span class="js-hover-indicator absolute top-0 left-0 -z-10 h-(--h) w-(--w) translate-x-(--x) translate-y-(--y) rounded-full bg-gray-950 duration-300 ease-out"></span>
+                    {% for menu in [
+                        { label: 'Products', links: ['Analytics', 'Automation', 'Reports', 'Integrations'] },
+                        { label: 'Solutions', links: ['For startups', 'For agencies', 'For enterprise'] },
+                        { label: 'Resources', links: ['Docs', 'Guides', 'Blog'] }
+                    ] %}
+                    <li class="js-dropdown-item group/item relative">
+                        <button class="js-dropdown-toggle flex items-center gap-1 rounded-full px-4 py-2 font-medium transition-colors duration-300 data-indicator:text-white" type="button">{{ menu.label }} {{ chevron() }}</button>
+                        <div class="js-dropdown-panel invisible absolute top-full left-0 z-10 -translate-y-2 pt-2 opacity-0 transition-[opacity,translate,visibility] duration-300 {{ ease }} data-open:visible data-open:translate-y-0 data-open:opacity-100">
+                            <ul class="js-dropdown-links relative isolate {{ card }}">
+                                <span class="js-hover-indicator absolute top-0 left-0 -z-10 h-(--h) w-(--w) translate-x-(--x) translate-y-(--y) rounded-lg bg-gray-100 duration-300 ease-out"></span>
+                                {% for item in menu.links %}<li><a class="block px-3 py-2" href="#">{{ item }}</a></li>{% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                    {% endfor %}
+                    <li><a class="block rounded-full px-4 py-2 font-medium transition-colors duration-300 data-indicator:text-white" href="#">Pricing</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
             <h2 class="mb-2 text-3xl font-bold tracking-tight">One background, slides between</h2>
             <p class="max-w-xl text-gray-600">The white card resizes to each panel with <code class="font-mono text-sm">--dropdown-*</code>, and the content slides in from the side you moved to with <code class="font-mono text-sm">data-side</code>.</p>
         </div>
@@ -320,6 +352,40 @@ title: Dropdown | Anthony Toolkits
 </nav>
 {% endraw %}{% endset %}
 
+{% set pillCode %}{% raw %}
+<nav class="js-dropdown">
+    <!-- the pill's box holds the toggles, and Pricing -->
+    <ul class="js-dropdown-pill relative isolate flex">
+        <span class="js-hover-indicator absolute top-0 left-0 -z-10 h-(--h) w-(--w) translate-x-(--x) translate-y-(--y) rounded-full bg-gray-950 duration-300"></span>
+        <li class="js-dropdown-item relative">
+            <button class="js-dropdown-toggle data-indicator:text-white" type="button">Products</button>
+            <div class="js-dropdown-panel ...">
+                <ul class="js-dropdown-links relative isolate">
+                    <span class="js-hover-indicator absolute top-0 left-0 -z-10 h-(--h) w-(--w) translate-x-(--x) translate-y-(--y) rounded-lg bg-gray-100 duration-300"></span>
+                    <li><a href="#">Analytics</a></li>
+                </ul>
+            </div>
+        </li>
+        <li><a class="data-indicator:text-white" href="/pricing/">Pricing</a></li>
+    </ul>
+</nav>
+{% endraw %}{% endset %}
+
+{% set pillScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_hoverIndicator.js
+
+// on the open item while the mouse is in its panel, or it opened by tap or keyboard
+new _hoverIndicator({
+    target: document.querySelector('.js-dropdown-pill'),
+    items: ':scope > li > :first-child',
+    active: '[aria-expanded="true"]',
+});
+
+document.querySelectorAll('.js-dropdown-links').forEach((target) => new _hoverIndicator({ target }));
+{% endraw %}{% endset %}
+
 {% set pageScript %}{% raw %}
 // Requirements
     // JS
@@ -353,6 +419,8 @@ new _dropdown({ target: document.querySelector('.js-dropdown-drill'), hover: fal
     more: [
         { title: 'Other animations', note: 'Swap the panel classes, the rest stays.', code: looksCode, lang: 'html' },
         { title: 'One background', note: 'The nav gets <code class="font-mono text-sm">--dropdown-width</code>, <code class="font-mono text-sm">-height</code>, <code class="font-mono text-sm">-x</code>, <code class="font-mono text-sm">-y</code> of the open panel, <code class="font-mono text-sm">data-open</code>, and <code class="font-mono text-sm">data-switch</code> while moving between items. While one is open, the other panels get <code class="font-mono text-sm">data-side="before"</code> or <code class="font-mono text-sm">"after"</code>.', code: morphCode, lang: 'html' },
+        { title: 'With a hover indicator', note: 'Same markup, plus a <code class="font-mono text-sm">.js-hover-indicator</code> in the list and in each panel.', code: pillCode, lang: 'html' },
+        { title: 'Its script', note: 'Only for this sample. <code class="font-mono text-sm">active</code> keeps the pill on the open toggle.', code: pillScript },
         { title: 'Mega menu', note: 'A panel outside the nav, e.g. one box below the header. That box gets the same <code class="font-mono text-sm">data-open</code>, <code class="font-mono text-sm">data-switch</code> and <code class="font-mono text-sm">--dropdown-*</code> as the nav.', code: megaCode, lang: 'html' },
         { title: 'Drill-down', note: 'For a phone menu, with <code class="font-mono text-sm">hover: false</code>. Back is a <code class="font-mono text-sm">.js-dropdown-close</code>.', code: drillCode, lang: 'html' }
     ]
@@ -360,4 +428,5 @@ new _dropdown({ target: document.querySelector('.js-dropdown-drill'), hover: fal
 
 {% footerscript %}
 <script type="module">{{ pageScript | safe }}</script>
+<script type="module">{{ pillScript | safe }}</script>
 {% endfooterscript %}
