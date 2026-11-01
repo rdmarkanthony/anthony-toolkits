@@ -1,0 +1,250 @@
+---
+title: Dropdown | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_dropdown · _event', title: 'Dropdown', description: 'Menus that open on hover, click, tap or keyboard. The script only handles the behavior, so each project writes its own animation in CSS with <code class="font-mono text-base">data-open</code>.' }) }}
+
+{% set ease = 'ease-[cubic-bezier(0.16,1,0.3,1)]' %}
+{% set box = 'rounded-3xl border border-gray-200 bg-gray-50 p-4' %}
+{% set toggle = 'js-dropdown-toggle flex items-center gap-1 rounded-full px-4 py-2 font-medium transition-colors hover:bg-gray-200/70 group-data-open/item:bg-gray-200/70' %}
+{% set card = 'w-56 rounded-2xl bg-white p-2 shadow-lg ring-1 ring-gray-200' %}
+{% set link = 'block rounded-lg px-3 py-2 transition-colors hover:bg-gray-100' %}
+
+{% macro chevron() %}<svg class="size-4 transition-transform duration-300 group-data-open/item:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>{% endmacro %}
+
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Basic</h2>
+            <p class="max-w-xl text-gray-600">Hover, click, or tab and press the down arrow. Resources is a link: a mouse click goes to it, the first tap on a phone opens it.</p>
+        </div>
+        <div class="{{ box }} min-h-80">
+            <nav class="js-dropdown relative" aria-label="Main">
+                <ul class="flex flex-wrap items-center gap-1">
+                    {% for menu in [
+                        { label: 'Products', links: ['Analytics', 'Automation', 'Reports', 'Integrations'] },
+                        { label: 'Solutions', links: ['For startups', 'For agencies', 'For enterprise'] },
+                        { label: 'Resources', href: '#', links: ['Docs', 'Guides', 'Blog'] }
+                    ] %}
+                    <li class="js-dropdown-item group/item relative">
+                        {% if menu.href %}
+                        <a class="{{ toggle }}" href="{{ menu.href }}">{{ menu.label }} {{ chevron() }}</a>
+                        {% else %}
+                        <button class="{{ toggle }}" type="button">{{ menu.label }} {{ chevron() }}</button>
+                        {% endif %}
+                        <div class="js-dropdown-panel invisible absolute top-full left-0 z-10 -translate-y-2 pt-2 opacity-0 transition-[opacity,translate,visibility] duration-300 {{ ease }} data-open:visible data-open:translate-y-0 data-open:opacity-100">
+                            <ul class="{{ card }}">
+                                {% for item in menu.links %}<li><a class="{{ link }}" href="#">{{ item }}</a></li>{% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                    {% endfor %}
+                    <li><a class="rounded-full px-4 py-2 font-medium transition-colors hover:bg-gray-200/70" href="#">Pricing</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+{% set looks = [
+    { title: 'Scale from the corner', panel: 'origin-top-left scale-95 opacity-0 transition-[opacity,scale,visibility] duration-300 ' + ease + ' data-open:scale-100 data-open:opacity-100' },
+    { title: 'Clip down', panel: '[clip-path:inset(0_-1rem_100%_-1rem)] transition-[clip-path,visibility] duration-500 ' + ease + ' data-open:[clip-path:inset(-1rem)]' },
+    { title: 'Blur in', panel: 'translate-y-1 opacity-0 blur-sm transition-[opacity,translate,filter,visibility] duration-500 ' + ease + ' data-open:translate-y-0 data-open:opacity-100 data-open:blur-none' }
+] %}
+
+<section class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Swap the animation</h2>
+            <p class="max-w-xl text-gray-600">Same script, only the panel classes change.</p>
+        </div>
+        <div class="grid gap-4 lg:grid-cols-3">
+            {% for look in looks %}
+            <div class="{{ box }} flex min-h-72 flex-col gap-4">
+                <p class="font-mono text-xs tracking-wide text-gray-500 uppercase">{{ look.title }}</p>
+                <nav class="js-dropdown relative" aria-label="{{ look.title }}">
+                    <ul class="flex items-center gap-1">
+                        {% for menu in [{ label: 'Work', links: ['Branding', 'Websites', 'Campaigns'] }, { label: 'Studio', links: ['About', 'Team', 'Careers'] }] %}
+                        <li class="js-dropdown-item group/item relative">
+                            <button class="{{ toggle }}" type="button">{{ menu.label }} {{ chevron() }}</button>
+                            <div class="js-dropdown-panel invisible absolute top-full left-0 z-10 pt-2 data-open:visible {{ look.panel }}">
+                                <ul class="{{ card }}">
+                                    {% for item in menu.links %}<li><a class="{{ link }}" href="#">{{ item }}</a></li>{% endfor %}
+                                </ul>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">One background, slides between</h2>
+            <p class="max-w-xl text-gray-600">The white card resizes to each panel with <code class="font-mono text-sm">--dropdown-*</code>, and the content slides in from the side you moved to with <code class="font-mono text-sm">data-side</code>.</p>
+        </div>
+        <div class="{{ box }} min-h-96">
+            <nav class="js-dropdown group/nav relative flex justify-center" aria-label="Products">
+                <div class="pointer-events-none absolute top-(--dropdown-y) left-(--dropdown-x) h-(--dropdown-height) w-(--dropdown-width) rounded-2xl bg-white opacity-0 shadow-xl ring-1 ring-gray-200 transition-opacity duration-300 {{ ease }} group-data-open/nav:opacity-100 group-data-switch/nav:transition-[opacity,left,top,width,height]"></div>
+                <ul class="flex items-center gap-1">
+                    {% for menu in [
+                        { label: 'Products', width: 'w-[28rem]', columns: 'grid-cols-2', links: [['Analytics', 'See where visits come from'], ['Automation', 'Run tasks on a schedule'], ['Reports', 'Weekly numbers by email'], ['Integrations', 'Connect your tools']] },
+                        { label: 'Developers', width: 'w-72', columns: '', links: [['API', 'REST and webhooks'], ['SDKs', 'JS, PHP and Python'], ['Status', 'Uptime and incidents']] },
+                        { label: 'Company', width: 'w-48', columns: '', links: [['About'], ['Careers'], ['Contact']] }
+                    ] %}
+                    <li class="js-dropdown-item group/item">
+                        <button class="{{ toggle }}" type="button">{{ menu.label }} {{ chevron() }}</button>
+                        <div class="js-dropdown-panel invisible absolute inset-x-0 top-full z-10 mx-auto mt-3 w-fit opacity-0 transition-[opacity,translate,visibility] duration-300 {{ ease }} data-open:visible data-open:opacity-100 data-[side=after]:translate-x-12 data-[side=before]:-translate-x-12">
+                            <ul class="{{ menu.width }} grid {{ menu.columns }} gap-1 p-3">
+                                {% for item in menu.links %}
+                                <li>
+                                    <a class="{{ link }}" href="#">
+                                        <span class="block font-medium">{{ item[0] }}</span>
+                                        {% if item[1] %}<span class="block text-sm text-gray-500">{{ item[1] }}</span>{% endif %}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Mega menu</h2>
+            <p class="max-w-xl text-gray-600">Full width, clips down on open. Moving to the other menu crossfades instead, a panel with <code class="font-mono text-sm">data-side</code> skips the clip. Hovering the shade closes it.</p>
+        </div>
+        <div class="relative min-h-[28rem] overflow-hidden rounded-3xl border border-gray-200 bg-white">
+            <nav class="js-dropdown group/nav relative z-10 flex items-center gap-8 border-b border-gray-200 bg-white px-6" aria-label="Shop">
+                <a class="py-5 text-xl font-bold tracking-tight" href="#">Studio.</a>
+                <ul class="flex items-center gap-6 font-medium">
+                    {% for menu in [
+                        { label: 'Shop', columns: [['Furniture', ['Chairs', 'Tables', 'Sofas', 'Shelves']], ['Lighting', ['Floor lamps', 'Pendants', 'Desk lamps']], ['Living', ['Rugs', 'Mirrors', 'Plants']]] },
+                        { label: 'Collections', columns: [['Seasons', ['Autumn edit', 'Winter warm']], ['Rooms', ['Bedroom', 'Office', 'Kitchen']], ['Makers', ['Oak & Co', 'Linen Lab']]] }
+                    ] %}
+                    <li class="js-dropdown-item group/item">
+                        <a class="js-dropdown-toggle flex items-center gap-1 py-5 transition-colors hover:text-gray-500" href="#">{{ menu.label }} {{ chevron() }}</a>
+                        <div class="js-dropdown-panel invisible absolute inset-x-0 top-full border-b border-gray-200 bg-white [clip-path:inset(0_0_100%_0)] transition-[clip-path,opacity,visibility] duration-500 {{ ease }} data-open:visible data-open:[clip-path:inset(0)] data-side:opacity-0 data-side:[clip-path:inset(0)] data-side:duration-300">
+                            <div class="grid grid-cols-4 gap-8 p-8">
+                                {% for column in menu.columns %}
+                                <div>
+                                    <p class="mb-3 font-mono text-xs tracking-wide text-gray-500 uppercase">{{ column[0] }}</p>
+                                    <ul class="flex flex-col gap-2">
+                                        {% for item in column[1] %}<li><a class="transition-colors hover:text-gray-500" href="#">{{ item }}</a></li>{% endfor %}
+                                    </ul>
+                                </div>
+                                {% endfor %}
+                                <a class="group/card flex flex-col gap-2" href="#">
+                                    <span class="block aspect-4/3 overflow-hidden rounded-xl bg-gray-100"><img class="size-full object-cover transition-transform duration-500 group-hover/card:scale-105" src="/assets/img/sample-image.webp" alt="" loading="lazy" /></span>
+                                    <span class="font-medium">New in {{ menu.label | lower }}</span>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                    <li><a class="transition-colors hover:text-gray-500" href="#">Journal</a></li>
+                </ul>
+                <div class="pointer-events-none absolute inset-x-0 top-full -z-10 h-screen bg-gray-950/30 opacity-0 transition-opacity duration-500 group-data-open/nav:pointer-events-auto group-data-open/nav:opacity-100"></div>
+            </nav>
+            <div class="grid gap-4 p-6 sm:grid-cols-3">
+                {% for i in range(0, 6) %}<div class="aspect-4/3 rounded-xl bg-gray-100"></div>{% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- target is the nav, position: relative -->
+<nav class="js-dropdown relative">
+    <ul class="flex">
+        <li class="js-dropdown-item group/item relative">
+            <!-- a button, or a link: a mouse click goes, the first tap on a phone opens -->
+            <button class="js-dropdown-toggle group-data-open/item:bg-gray-200" type="button">Products</button>
+
+            <!-- pt-2, not mt-2, so the gap still counts as the panel -->
+            <div class="js-dropdown-panel invisible absolute top-full left-0 -translate-y-2 pt-2 opacity-0 transition-[opacity,translate,visibility] duration-300 data-open:visible data-open:translate-y-0 data-open:opacity-100">
+                <ul>...</ul>
+            </div>
+        </li>
+        <li><a href="/pricing/">Pricing</a></li>
+    </ul>
+</nav>
+{% endraw %}{% endset %}
+
+{% set looksCode %}{% raw %}
+<!-- scale from the corner -->
+<div class="js-dropdown-panel invisible origin-top-left scale-95 opacity-0 transition-[opacity,scale,visibility] duration-300 data-open:visible data-open:scale-100 data-open:opacity-100">
+
+<!-- clip down, -1rem leaves room for the shadow -->
+<div class="js-dropdown-panel invisible [clip-path:inset(0_-1rem_100%_-1rem)] transition-[clip-path,visibility] duration-500 data-open:visible data-open:[clip-path:inset(-1rem)]">
+
+<!-- blur in -->
+<div class="js-dropdown-panel invisible translate-y-1 opacity-0 blur-sm transition-[opacity,translate,filter,visibility] duration-500 data-open:visible data-open:translate-y-0 data-open:opacity-100 data-open:blur-none">
+{% endraw %}{% endset %}
+
+{% set morphCode %}{% raw %}
+<nav class="js-dropdown group/nav relative flex justify-center">
+    <!-- one background, sized to the open panel, it only moves while switching -->
+    <div class="absolute top-(--dropdown-y) left-(--dropdown-x) h-(--dropdown-height) w-(--dropdown-width) rounded-2xl bg-white opacity-0 transition-opacity group-data-open/nav:opacity-100 group-data-switch/nav:transition-[opacity,left,top,width,height]"></div>
+    <ul class="flex">
+        <!-- the item is static, so panels sit in the nav -->
+        <li class="js-dropdown-item group/item">
+            <button class="js-dropdown-toggle" type="button">Products</button>
+            <!-- centered with mx-auto w-fit, a translate would throw off --dropdown-x -->
+            <div class="js-dropdown-panel invisible absolute inset-x-0 top-full mx-auto mt-3 w-fit opacity-0 transition-[opacity,translate,visibility] data-open:visible data-open:opacity-100 data-[side=after]:translate-x-12 data-[side=before]:-translate-x-12">
+                ...
+            </div>
+        </li>
+    </ul>
+</nav>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_dropdown.js
+
+document.querySelectorAll('.js-dropdown').forEach((target) => {
+    new _dropdown({
+        target,
+        // hover: true,
+        // delay: 100,
+        // closeDelay: 300,
+        events: {
+            // open: (dropdown) => console.log('open'),
+            // change: (dropdown) => console.log(dropdown.active),
+            // close: (dropdown) => console.log('close'),
+        },
+    });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The open item and panel get <code class="font-mono text-sm">data-open</code>, closed panels are <code class="font-mono text-sm">inert</code>. Keep <code class="font-mono text-sm">visibility</code> in the transition so it hides after the animation.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _dropdown({ target, hover, delay, closeDelay, events })</code>. <code class="font-mono text-sm">hover: false</code> opens on click only. Methods: <code class="font-mono text-sm">open(index)</code>, <code class="font-mono text-sm">close()</code>, <code class="font-mono text-sm">toggle(index)</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">open</code>, <code class="font-mono text-sm">change</code>, <code class="font-mono text-sm">close</code>, <code class="font-mono text-sm">dropdown.active</code> is the open index, -1 when closed. In a mobile menu, use <code class="font-mono text-sm">_accordion</code>.',
+    more: [
+        { title: 'Other animations', note: 'Swap the panel classes, the rest stays.', code: looksCode, lang: 'html' },
+        { title: 'One background', note: 'The nav gets <code class="font-mono text-sm">--dropdown-width</code>, <code class="font-mono text-sm">-height</code>, <code class="font-mono text-sm">-x</code>, <code class="font-mono text-sm">-y</code> of the open panel, <code class="font-mono text-sm">data-open</code>, and <code class="font-mono text-sm">data-switch</code> while moving between items. While one is open, the other panels get <code class="font-mono text-sm">data-side="before"</code> or <code class="font-mono text-sm">"after"</code>.', code: morphCode, lang: 'html' }
+    ]
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

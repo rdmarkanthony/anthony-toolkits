@@ -34,6 +34,7 @@ import { _tooltip } from "./utils/_tooltip";
 import { _toast } from "./utils/_toast";
 import { _hoverIndicator } from "./utils/_hoverIndicator";
 import { _accordion } from "./utils/_accordion";
+import { _dropdown } from "./utils/_dropdown";
 import { _header } from "./utils/_header";
 import { _scrollSpy } from "./utils/_scrollSpy";
 import { _scrollProgress } from "./utils/_scrollProgress";
@@ -106,6 +107,7 @@ Object.assign(window, {
     _toast,
     _hoverIndicator,
     _accordion,
+    _dropdown,
     _header,
     _scrollSpy,
     _scrollProgress,
