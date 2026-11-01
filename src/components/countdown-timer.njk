@@ -4,7 +4,7 @@ title: Countdown timer | Anthony Toolkits
 
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
 
-{{ pageIntro({ label: '_countdownTimer · _rollingDigit', title: 'Countdown timer', description: 'Counts down to a date and time in a set time zone, updating every second. The second timer rolls its digits with the rolling digit util.' }) }}
+{{ pageIntro({ label: '_countdownTimer · _rollingDigit · _datePicker', title: 'Countdown timer', description: 'Counts down to a date and time in a set time zone, updating every second. The second timer rolls its digits with the rolling digit util.' }) }}
 
 {% macro countdown() %}
 <div class="js-countdown-timer flex flex-col gap-4 text-center">
@@ -40,8 +40,10 @@ title: Countdown timer | Anthony Toolkits
         // src/assets/js/utils/_emitter.js
         // src/assets/js/utils/_countdownTimer.js
         // src/assets/js/utils/_rollingDigit.js (optional, for rolling digits)
+        // src/assets/js/utils/_datePicker.js (optional, for the date picker)
     // CSS
         // flatpickr/dist/flatpickr.min.css (optional, for the date picker)
+        // src/assets/css/components/date-picker.css (optional, for the date picker)
 
 const _timeZone = 'Asia/Manila';
 const _minDateTime = DateTime.now().setZone(_timeZone).plus({ minutes: 3 }).set({ second: 0 }); // earliest date to select
@@ -120,14 +122,16 @@ const _updateCountdown = (dateTime) => {
 };
 _updateCountdown(_minDateTime);
 
-// date and time picker
-flatpickr(_picker, {
-    enableTime: true,
-    dateFormat: 'F j, Y h:i K',
-    defaultDate: _minDateTime.toJSDate(),
-    minDate: _minDateTime.toJSDate(),
-    onClose: (selectedDates) => {
-        if (selectedDates.length) _updateCountdown(DateTime.fromJSDate(selectedDates[0]).setZone(_timeZone));
+// date and time picker, it shows the time in _timeZone, whatever the visitor's own zone
+const _toPicker = (dateTime) => dateTime.setZone('local', { keepLocalTime: true }).toJSDate();
+new _datePicker({
+    target: _picker,
+    time: true,
+    format: 'F j, Y h:i K',
+    defaultDate: _toPicker(_minDateTime),
+    minDate: _toPicker(_minDateTime),
+    events: {
+        close: ({ dates }) => dates.length && _updateCountdown(DateTime.fromJSDate(dates[0]).setZone(_timeZone, { keepLocalTime: true })),
     },
 });
 {% endraw %}{% endset %}

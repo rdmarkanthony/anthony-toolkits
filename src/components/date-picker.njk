@@ -1,0 +1,205 @@
+---
+title: Date picker | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_datePicker · flatpickr', title: 'Date picker', description: 'A calendar for date fields, from one date to a check-in and check-out, with time if needed. People see "Nov 4, 2026", the form sends 2026-11-04. Built on flatpickr, loaded only where it is used.' }) }}
+
+{% set field = 'w-full rounded-xl border border-gray-300 bg-white py-3 pr-11 pl-4 text-gray-950 placeholder:text-gray-400 focus:border-gray-950 focus:outline-none' %}
+{% set card = 'flex flex-col gap-6 rounded-3xl border border-gray-200 p-6 md:p-8' %}
+
+{% macro calendarIcon() %}
+<svg class="pointer-events-none absolute top-1/2 right-4 size-5 -translate-y-1/2 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3" /><path d="M3.5 10h17M8 3v4M16 3v4" /></svg>
+{% endmacro %}
+
+{% set markup %}{% raw %}
+<!-- the form gets name="delivery" as 2026-11-04 -->
+<input class="js-date" name="delivery" type="text" placeholder="Pick a date" />
+
+<!-- a range, check_out keeps its name too -->
+<input class="js-check-in" name="check_in" type="text" placeholder="Check-in" />
+<input class="js-check-out" name="check_out" type="text" placeholder="Check-out" />
+
+<!-- an inline calendar, the value goes in a hidden input -->
+<input class="js-calendar" name="day" type="hidden" />
+{% endraw %}{% endset %}
+
+<section class="px-4 py-16">
+    <form class="js-date-form mx-auto flex max-w-295 flex-col gap-6">
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-[1fr_1.5fr_1fr]">
+            <div class="{{ card }}">
+                <div>
+                    <h2 class="text-2xl font-bold tracking-tight">One date</h2>
+                    <p class="mt-2 text-gray-600">Weekdays in the next 60 days.</p>
+                </div>
+                <label class="relative">
+                    <span class="sr-only">Delivery date</span>
+                    <input class="js-date {{ field }}" name="delivery" type="text" placeholder="Pick a date" />
+                    {{ calendarIcon() }}
+                </label>
+            </div>
+
+            <div class="{{ card }}">
+                <div>
+                    <h2 class="text-2xl font-bold tracking-tight">Check-in, check-out</h2>
+                    <p class="mt-2 text-gray-600">Two fields, one calendar, two months on wide screens.</p>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="relative">
+                            <span class="sr-only">Check-in</span>
+                            <input class="js-check-in {{ field }}" name="check_in" type="text" placeholder="Check-in" />
+                            {{ calendarIcon() }}
+                        </label>
+                        <label class="relative">
+                            <span class="sr-only">Check-out</span>
+                            <input class="js-check-out {{ field }}" name="check_out" type="text" placeholder="Check-out" />
+                            {{ calendarIcon() }}
+                        </label>
+                    </div>
+                    <p class="js-nights text-sm text-gray-500">Pick your dates</p>
+                </div>
+            </div>
+
+            <div class="{{ card }}">
+                <div>
+                    <h2 class="text-2xl font-bold tracking-tight">Date and time</h2>
+                    <p class="mt-2 text-gray-600">Every 15 minutes, 9 am to 5 pm, no Sundays.</p>
+                </div>
+                <label class="relative">
+                    <span class="sr-only">Appointment</span>
+                    <input class="js-date-time {{ field }}" name="appointment" type="text" placeholder="Pick a date and time" />
+                    {{ calendarIcon() }}
+                </label>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-gray-50 px-5 py-4">
+            <p class="font-mono text-sm text-gray-600">form sends: <span class="js-date-sends text-gray-950">-</span></p>
+            <button class="rounded-full border border-gray-300 px-4 py-1.5 text-sm font-medium transition-colors hover:border-gray-950" type="reset">Reset</button>
+        </div>
+    </form>
+</section>
+
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Event calendar</h2>
+            <p class="max-w-xl text-gray-600">Always open, in your own color. Days with events get a dot, pick one to see them.</p>
+        </div>
+        <div class="flex flex-col gap-8 md:flex-row md:items-start">
+            <input class="js-calendar" name="day" type="hidden" />
+            <div class="flex-1 md:pt-2">
+                <h3 class="js-calendar-day text-xl font-semibold"></h3>
+                <ul class="js-calendar-events mt-4 flex flex-col gap-3"></ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // flatpickr
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_datePicker.js
+    // CSS
+        // flatpickr/dist/flatpickr.min.css
+        // src/assets/css/components/date-picker.css
+
+const _inDays = (days) => new Date(new Date().setDate(new Date().getDate() + days));
+
+const _sends = document.querySelector('.js-date-sends'); // demo
+const _form = document.querySelector('.js-date-form'); // demo
+const _showSends = () => (_sends.textContent = [...new FormData(_form)].map(([name, value]) => `${name}=${value || '-'}`).join(', ')); // demo
+
+// one date, defaults: format 'M j, Y', the value is Y-m-d
+new _datePicker({
+    target: document.querySelector('.js-date'),
+    minDate: 'today',
+    maxDate: _inDays(60),
+    disable: [(date) => date.getDay() === 0 || date.getDay() === 6],
+    events: {
+        // change: (picker) => console.log(picker.value, picker.dates),
+        change: _showSends, // demo
+    },
+});
+
+// check-in, check-out
+const _nights = document.querySelector('.js-nights');
+new _datePicker({
+    target: document.querySelector('.js-check-in'),
+    end: document.querySelector('.js-check-out'),
+    months: 2,
+    minDate: 'today',
+    events: {
+        change: ({ dates }) => {
+            const _count = dates.length === 2 ? Math.round((dates[1] - dates[0]) / 864e5) : 0;
+            _nights.textContent = _count ? `${_count} night${_count > 1 ? 's' : ''}` : 'Pick your dates';
+            _showSends(); // demo
+        },
+    },
+});
+
+// date and time, the value is Y-m-d H:i
+new _datePicker({
+    target: document.querySelector('.js-date-time'),
+    time: true,
+    minDate: 'today',
+    minTime: '09:00',
+    maxTime: '17:00',
+    minuteIncrement: 15,
+    defaultHour: 10,
+    disable: [(date) => date.getDay() === 0],
+    events: {
+        change: _showSends, // demo
+    },
+});
+
+_showSends(); // demo
+
+// inline event calendar, the dots are added as each day is drawn
+const _iso = (date) => date.toLocaleDateString('en-CA'); // Y-m-d
+const _events = [
+    { date: _iso(_inDays(2)), title: 'Design review', time: '10:00 am' },
+    { date: _iso(_inDays(2)), title: 'Team lunch', time: '12:30 pm' },
+    { date: _iso(_inDays(6)), title: 'Site launch', time: '9:00 am' },
+    { date: _iso(_inDays(13)), title: 'Client workshop', time: '2:00 pm' },
+];
+
+const _day = document.querySelector('.js-calendar-day');
+const _list = document.querySelector('.js-calendar-events');
+const _showDay = ({ dates, value }) => {
+    const _items = _events.filter((event) => event.date === value);
+    _day.textContent = dates[0]?.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) ?? '';
+    _list.innerHTML = _items.length ? _items.map((event) => `<li class="rounded-2xl bg-white px-5 py-4 shadow-sm"><p class="font-medium">${event.title}</p><p class="text-sm text-gray-500">${event.time}</p></li>`).join('') : '<li class="text-gray-500">Nothing planned</li>';
+};
+
+new _datePicker({
+    target: document.querySelector('.js-calendar'),
+    inline: true,
+    defaultDate: _events[0].date,
+    class: '[--date-picker-accent:var(--color-teal-700)] [--date-picker-hover:var(--color-teal-50)]',
+    onDayCreate: (dates, value, fp, day) => {
+        if (_events.some((event) => event.date === _iso(day.dateObj))) day.insertAdjacentHTML('beforeend', '<span class="absolute bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full bg-current"></span>');
+    },
+    events: {
+        ready: _showDay,
+        change: _showDay,
+    },
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Plain inputs. The util shows a copy in the friendly format and keeps the Y-m-d value in the named input, so forms, required and reset work as usual.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _datePicker({ target, end, time, format, months, class, events, ...flatpickr options })</code>. <code class="font-mono text-sm">end</code> is a check-out input, <code class="font-mono text-sm">months: 2</code> shows two months from 768px up. Any <a class="underline" href="https://flatpickr.js.org/options/" target="_blank" rel="noopener">flatpickr option</a> passes through: minDate, disable, inline, mode. <code class="font-mono text-sm">dates</code>, <code class="font-mono text-sm">value</code>, <code class="font-mono text-sm">set(dates)</code>, <code class="font-mono text-sm">open()</code>, <code class="font-mono text-sm">close()</code>, <code class="font-mono text-sm">destroy()</code>, <code class="font-mono text-sm">ready</code> resolves the flatpickr instance. Events: <code class="font-mono text-sm">ready</code>, <code class="font-mono text-sm">open</code>, <code class="font-mono text-sm">close</code>, <code class="font-mono text-sm">change</code>.',
+    css: '@import "flatpickr/dist/flatpickr.min.css";\n@import "./components/date-picker.css";\n\n/* your colors, project-wide */\n@layer components {\n    .flatpickr-calendar {\n        --date-picker-accent: var(--color-indigo-600);\n        --date-picker-range: var(--color-indigo-50);\n    }\n}',
+    cssNote: 'date-picker.css is our look on top of flatpickr. Change the colors with its vars, for all calendars or one with the <code class="font-mono text-sm">class</code> option.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

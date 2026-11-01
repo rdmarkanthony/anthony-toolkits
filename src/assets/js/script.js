@@ -1,5 +1,4 @@
 import { DateTime } from "luxon";
-import flatpickr from "flatpickr";
 
 import { _event } from "./utils/_event";
 import { _enquire } from "./utils/_enquire";
@@ -29,6 +28,7 @@ import { _threeText } from "./utils/_threeText";
 import { _threeReveal } from "./utils/_threeReveal";
 import { _threeDotGrid } from "./utils/_threeDotGrid";
 import { _countdownTimer } from "./utils/_countdownTimer";
+import { _datePicker } from "./utils/_datePicker";
 import { _tabs } from "./utils/_tabs";
 import { _tooltip } from "./utils/_tooltip";
 import { _toast } from "./utils/_toast";
@@ -73,7 +73,6 @@ import { _deckSlider } from "./utils/_deckSlider";
 
 Object.assign(window, {
     DateTime,
-    flatpickr,
     _event,
     _enquire,
     _device,
@@ -102,6 +101,7 @@ Object.assign(window, {
     _threeReveal,
     _threeDotGrid,
     _countdownTimer,
+    _datePicker,
     _tabs,
     _tooltip,
     _toast,
