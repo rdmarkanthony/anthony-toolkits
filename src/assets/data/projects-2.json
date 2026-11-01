@@ -1,0 +1,8 @@
+{
+    "items": [
+        { "name": "Harbor", "type": "Website", "image": "/assets/img/gallery/photo-4-thumb.webp" },
+        { "name": "Fieldnote", "type": "App", "image": "/assets/img/gallery/photo-5-thumb.webp" },
+        { "name": "Copper", "type": "Branding", "image": "/assets/img/gallery/photo-6-thumb.webp" }
+    ],
+    "more": true
+}

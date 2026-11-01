@@ -55,6 +55,10 @@ import { _smoothScroll } from "./utils/_smoothScroll";
 import { _themeScroller } from "./utils/_themeScroller";
 import { _cursorBubble } from "./utils/_cursorBubble";
 import { _magnetic } from "./utils/_magnetic";
+import { _hoverFill } from "./utils/_hoverFill";
+import { _ripple } from "./utils/_ripple";
+import { _holdButton } from "./utils/_holdButton";
+import { _stateButton } from "./utils/_stateButton";
 import { _lottie } from "./utils/_lottie";
 import { _googleMap } from "./utils/_googleMap";
 import { _qrCode } from "./utils/_qrCode";
@@ -127,6 +131,10 @@ Object.assign(window, {
     _themeScroller,
     _cursorBubble,
     _magnetic,
+    _hoverFill,
+    _ripple,
+    _holdButton,
+    _stateButton,
     _lottie,
     _googleMap,
     _qrCode,

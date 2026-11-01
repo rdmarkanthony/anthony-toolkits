@@ -6,7 +6,6 @@ export default [
             { label: "Animate", url: "/components/animate/", description: "Animate.css effects triggered in view.", utils: "_animate · _inview · _splitText", ready: true, starter: true, favorite: true },
             { label: "Count up", url: "/components/count-up/", description: "Stats that count up on screen, prices that count to a new value.", utils: "_countUp · _inview", ready: true },
             { label: "Cursor bubble", url: "/components/cursor-bubble/", description: "A dot that trails the mouse, grows over big type and shows labels.", utils: "_cursorBubble", ready: true },
-            { label: "Magnetic button", url: "/components/magnetic-button/", description: "Buttons and links that lean toward the mouse as it comes near.", utils: "_magnetic", ready: true },
             { label: "Page transition", url: "/components/page-transition/", description: "An animation as a link leaves the page and as the next one shows, safe with the back button.", utils: "_pageTransition", ready: true, favorite: true },
             { label: "Preloader", url: "/components/preloader/", description: "Covers the page until it and its images are loaded, your own look, with a progress var.", utils: "_preloader · _load", ready: true },
             { label: "Rolling digit", url: "/components/rolling-digit/", description: "Odometer digits for a stat on screen or a cart total.", utils: "_rollingDigit · _inview", ready: true },
@@ -27,6 +26,18 @@ export default [
             { label: "Typing animation", url: "/components/text-effects/typing/", description: "Types and erases lines, with styled parts and a steady cursor.", utils: "_typing", ready: true },
             { label: "Weight hover", url: "/components/text-effects/weight/", description: "Letters near the mouse get bolder, a wave that follows the cursor.", utils: "_weightHover", ready: true },
             { label: "Weight pop", url: "/components/text-effects/weight-pop/", description: "On hover the letters pop bolder one after another, then settle back.", utils: "_weightPop", ready: true },
+        ],
+    },
+    {
+        category: "Button effects",
+        url: "/components/button-effects/",
+        items: [
+            { label: "Hold to confirm", url: "/components/button-effects/hold/", description: "Press and hold to delete or send, let go early and nothing happens.", utils: "_holdButton", ready: true },
+            { label: "Hover fill", url: "/components/button-effects/hover-fill/", description: "A color fills in from the side the mouse comes in, and leaves the way it goes.", utils: "_hoverFill", ready: true },
+            { label: "Magnetic", url: "/components/button-effects/magnetic/", description: "Buttons and links that lean toward the mouse as it comes near.", utils: "_magnetic", ready: true },
+            { label: "Ripple", url: "/components/button-effects/ripple/", description: "A ring spreads out from where the button is pressed.", utils: "_ripple", ready: true },
+            { label: "State button", url: "/components/button-effects/state/", description: "Loading, done and error labels, the width eases to fit each one.", utils: "_stateButton", ready: true },
+            { label: "Text roll", url: "/components/text-effects/roll/", description: "Button text that rolls up on hover, a copy coming in from below.", utils: "_textRoll", ready: true },
         ],
     },
     {

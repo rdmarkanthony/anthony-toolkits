@@ -1,0 +1,8 @@
+{
+    "items": [
+        { "name": "Alder", "type": "Branding", "image": "/assets/img/gallery/photo-2-thumb.webp" },
+        { "name": "Meridian", "type": "Website", "image": "/assets/img/gallery/photo-3-thumb.webp" },
+        { "name": "Pebble", "type": "App", "image": "/assets/img/gallery/photo-1-thumb.webp" }
+    ],
+    "more": false
+}

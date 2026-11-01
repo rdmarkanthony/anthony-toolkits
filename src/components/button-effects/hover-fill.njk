@@ -1,0 +1,82 @@
+---
+title: Hover fill | Button effects | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Button effects', url: '/components/button-effects/' }, label: '_hoverFill', title: 'Hover fill', description: 'A color fills the button from the side the mouse comes in, and leaves through the side it goes out.' }) }}
+
+{% set fill = 'js-hover-fill relative isolate overflow-hidden transition-colors duration-300' %}
+
+<section class="px-4 pb-4">
+    <div class="mx-auto flex max-w-295 flex-col gap-8 rounded-3xl border border-gray-200 p-8 md:p-12">
+        <div class="flex items-center justify-between gap-4">
+            <p class="font-mono text-sm text-gray-500">Buttons</p>
+            <p class="font-mono text-sm text-gray-500">last event: <span class="js-hover-fill-event">-</span></p>
+        </div>
+        <div class="flex flex-wrap items-center gap-4">
+            <a class="{{ fill }} inline-flex h-14 items-center rounded-full bg-gray-950 px-8 font-medium text-white data-active:text-gray-950 [--hover-fill:var(--color-lime-300)]" href="#">Get started</a>
+            <a class="{{ fill }} inline-flex h-14 items-center rounded-full border border-gray-950 px-8 font-medium data-active:text-white [--hover-fill:var(--color-gray-950)]" href="#">View work</a>
+            <a class="{{ fill }} flex size-14 items-center justify-center rounded-full border border-gray-300 data-active:text-white [--hover-fill:var(--color-indigo-500)]" href="#" aria-label="Next">{{ angle('right') }}</a>
+        </div>
+    </div>
+</section>
+
+<section class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-8 rounded-3xl bg-gray-950 p-8 text-white md:p-12">
+        <p class="font-mono text-sm text-white/60">List rows, come in from the top or the bottom</p>
+        <ul class="border-t border-white/15">
+            {% for item in [{ name: 'Branding', text: 'Logo, type, color' }, { name: 'Websites', text: 'Design and build' }, { name: 'Apps', text: 'iOS and Android' }, { name: 'Motion', text: 'Video and animation' }] %}
+            <li>
+                <a class="{{ fill }} flex items-center justify-between gap-6 border-b border-white/15 px-2 py-6 data-active:text-gray-950 md:px-6 md:py-8 [--hover-fill:var(--color-white)]" href="#">
+                    <span class="text-3xl font-semibold tracking-tight md:text-5xl">{{ item.name }}</span>
+                    <span class="hidden text-lg opacity-60 sm:block">{{ item.text }}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- relative isolate overflow-hidden for the circle, --hover-fill for its color -->
+<a class="js-hover-fill relative isolate overflow-hidden rounded-full bg-black text-white transition-colors data-active:text-black [--hover-fill:var(--color-lime-300)]" href="#">Get started</a>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_hoverFill.js
+
+const _label = document.querySelector('.js-hover-fill-event'); // demo
+document.querySelectorAll('.js-hover-fill').forEach((target) => {
+    new _hoverFill({
+        target,
+        // defaults: duration: 600
+        events: {
+            // enter: () => console.log('enter'),
+            // leave: () => console.log('leave'),
+            enter: () => (_label.textContent = 'enter'), // demo
+            leave: () => (_label.textContent = 'leave'), // demo
+        },
+    });
+});
+
+// demo-start
+// the links go nowhere
+document.querySelectorAll('.js-hover-fill').forEach((link) => link.addEventListener('click', (e) => e.preventDefault()));
+// demo-end
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The util adds the circle as the first child. <code class="font-mono text-sm">data-active</code> is on while hovered, use it for the text color.',
+    code: pageScript,
+    note: 'Options: <code class="font-mono text-sm">target</code>, <code class="font-mono text-sm">duration</code> (ms). Methods: <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">enter</code>, <code class="font-mono text-sm">leave</code>. If the mouse leaves before the fill is done, it shrinks back the way it came. Mouse only, off for touch and reduced motion.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

@@ -1,10 +1,10 @@
 ---
-title: Magnetic button | Anthony Toolkits
+title: Magnetic | Button effects | Anthony Toolkits
 ---
 
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
 
-{{ pageIntro({ label: '_magnetic', title: 'Magnetic button', description: 'Buttons and links that lean toward the mouse as it comes near, and spring back when it leaves. The util only gives the distance, the pull is your own CSS.' }) }}
+{{ pageIntro({ back: { label: 'Button effects', url: '/components/button-effects/' }, label: '_magnetic', title: 'Magnetic', description: 'Buttons and links that lean toward the mouse as it comes near, and spring back when it leaves. The util only gives the distance, the pull is your own CSS.' }) }}
 
 {% set pull = 'translate-x-(--x) translate-y-(--y)' %}
 {% set pullMore = 'translate-x-[calc(var(--x)*0.5)] translate-y-[calc(var(--y)*0.5)]' %}

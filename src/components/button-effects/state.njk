@@ -1,0 +1,135 @@
+---
+title: State button | Button effects | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Button effects', url: '/components/button-effects/' }, label: '_stateButton', title: 'State button', description: 'A button that shows loading, done or error while your code runs. The width eases to fit each label.' }) }}
+
+{% set control = 'inline-flex h-11 cursor-pointer items-center rounded-full border border-gray-300 px-5 font-mono text-sm transition-colors hover:border-gray-950' %}
+{% set button = 'inline-flex h-14 cursor-pointer items-center justify-center overflow-hidden rounded-full px-8 font-medium whitespace-nowrap' %}
+{% set spinner = '<svg class="size-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9" /></svg>' %}
+{% set check = '<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg>' %}
+
+<section class="px-4 pb-4">
+    <div class="mx-auto flex max-w-295 flex-col gap-8 rounded-3xl border border-gray-200 p-8 md:p-12">
+        <div class="flex items-center justify-between gap-4">
+            <p class="font-mono text-sm text-gray-500">Set it from code</p>
+            <p class="font-mono text-sm text-gray-500">state: <span class="js-state-event">idle</span></p>
+        </div>
+        <button class="js-state {{ button }} self-start bg-gray-950 text-white transition-colors data-[state=done]:bg-emerald-600 data-[state=error]:bg-rose-600" type="button">
+            <span data-label="idle">Add to cart</span>
+            <span class="inline-flex items-center gap-2" data-label="loading">{{ spinner | safe }} Adding</span>
+            <span class="inline-flex items-center gap-2" data-label="done">{{ check | safe }} Added</span>
+            <span data-label="error">Out of stock, try another size</span>
+        </button>
+        <div class="flex flex-wrap gap-2">
+            {% for state in ['idle', 'loading', 'done', 'error'] %}
+            <button class="js-state-set {{ control }}" type="button" data-set="{{ state }}">set('{{ state }}')</button>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="px-4 pb-4">
+    <div class="mx-auto flex max-w-295 flex-col gap-8 rounded-3xl bg-gray-950 p-8 text-white md:p-12">
+        <p class="font-mono text-sm text-white/60">Copy link, back after 2s</p>
+        <button class="js-state-copy {{ button }} self-start bg-white text-gray-950" type="button">
+            <span data-label="idle">Copy link</span>
+            <span class="inline-flex items-center gap-2" data-label="done">{{ check | safe }} Copied to clipboard</span>
+        </button>
+    </div>
+</section>
+
+<section class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col items-center gap-8 rounded-3xl bg-gray-100 p-8 md:p-12">
+        <p class="self-start font-mono text-sm text-gray-500">Load more, from a JSON file</p>
+        <div class="js-state-projects grid w-full gap-4 sm:grid-cols-3">
+            {% for card in [{ name: 'Lumen', type: 'Branding', photo: 1 }, { name: 'Northwind', type: 'Website', photo: 2 }, { name: 'Oakline', type: 'App', photo: 3 }] %}
+            <a class="flex flex-col gap-3" href="#">
+                <img class="aspect-4/3 w-full rounded-2xl object-cover" src="/assets/img/gallery/photo-{{ card.photo }}-thumb.webp" alt="" loading="lazy" />
+                <span class="flex justify-between gap-4"><b class="font-semibold">{{ card.name }}</b><span class="text-gray-500">{{ card.type }}</span></span>
+            </a>
+            {% endfor %}
+        </div>
+        <button class="js-state-more {{ button }} border border-gray-950 data-[state=done]:border-gray-300 data-[state=done]:text-gray-500" type="button">
+            <span data-label="idle">Load more</span>
+            <span class="inline-flex items-center gap-2" data-label="loading">{{ spinner | safe }} Loading</span>
+            <span data-label="done">That's all for now</span>
+            <span data-label="error">Couldn't load, try again</span>
+        </button>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- a label per state, the first one shows; overflow-hidden whitespace-nowrap for the width -->
+<button class="js-state inline-flex overflow-hidden whitespace-nowrap data-[state=done]:bg-emerald-600" type="button">
+    <span data-label="idle">Add to cart</span>
+    <span data-label="loading"><svg class="animate-spin">...</svg> Adding</span>
+    <span data-label="done">Added</span>
+    <span data-label="error">Out of stock, try another size</span>
+</button>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_stateButton.js
+
+const _label = document.querySelector('.js-state-event'); // demo
+const _state = new _stateButton({
+    target: document.querySelector('.js-state'),
+    // defaults: minTime: 600, duration: 450
+    events: {
+        // change: (button) => console.log(button.state),
+        change: (button) => (_label.textContent = button.state), // demo
+    },
+});
+document.querySelectorAll('.js-state-set').forEach((control) => control.addEventListener('click', () => _state.set(control.dataset.set)));
+
+// copy link, back to idle after 2s
+const _copy = new _stateButton({ target: document.querySelector('.js-state-copy') });
+let _copyTimer;
+_copy.target.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(location.href);
+    _copy.set('done');
+    clearTimeout(_copyTimer);
+    _copyTimer = setTimeout(() => _copy.set('idle'), 2000);
+});
+
+// load more, loading stays at least minTime so it doesn't flash
+const _grid = document.querySelector('.js-state-projects');
+const _more = new _stateButton({ target: document.querySelector('.js-state-more') });
+let _page = 2;
+_more.target.addEventListener('click', async () => {
+    if (_more.state === 'loading' || _more.state === 'done') return;
+    _more.set('loading');
+    try {
+        const _response = await fetch(`/assets/data/projects-${_page}.json`);
+        const _data = await _response.json();
+        const _cards = _data.items.map((item) => `<a class="flex flex-col gap-3" href="#"><img class="aspect-4/3 w-full rounded-2xl object-cover" src="${item.image}" alt="" /><span class="flex justify-between gap-4"><b class="font-semibold">${item.name}</b><span class="text-gray-500">${item.type}</span></span></a>`);
+        _grid.insertAdjacentHTML('beforeend', _cards.join(''));
+        _page++;
+        _more.set(_data.more ? 'idle' : 'done');
+    } catch {
+        _more.set('error');
+    }
+});
+
+// demo-start
+// the cards go nowhere
+_grid.addEventListener('click', (e) => e.target.closest('a') && e.preventDefault());
+// demo-end
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Each <code class="font-mono text-sm">data-label</code> is a state, use any names. The target gets <code class="font-mono text-sm">data-state</code> for colors, and <code class="font-mono text-sm">aria-busy</code> while loading.',
+    code: pageScript,
+    note: 'Options: <code class="font-mono text-sm">target</code>, <code class="font-mono text-sm">minTime</code> (ms loading stays at least), <code class="font-mono text-sm">duration</code> (ms). Methods: <code class="font-mono text-sm">set(state)</code>, <code class="font-mono text-sm">destroy()</code>. Props: <code class="font-mono text-sm">state</code>. Events: <code class="font-mono text-sm">change</code>. Reduced motion swaps the label without easing.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

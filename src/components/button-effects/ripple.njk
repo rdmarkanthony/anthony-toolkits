@@ -1,0 +1,100 @@
+---
+title: Ripple | Button effects | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle, search %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Button effects', url: '/components/button-effects/' }, label: '_ripple', title: 'Ripple', description: 'Press a button and a ring spreads out from your finger or mouse. Feels good on touch, where there is no hover.' }) }}
+
+{% set ripple = 'js-ripple relative isolate cursor-pointer overflow-hidden' %}
+
+<section class="px-4 pb-4">
+    <div class="mx-auto grid max-w-295 gap-4 md:grid-cols-2">
+        <div class="flex min-h-72 flex-col justify-between gap-10 rounded-3xl border border-gray-200 p-8 md:p-12">
+            <div class="flex items-center justify-between gap-4">
+                <p class="font-mono text-sm text-gray-500">Buttons</p>
+                <p class="font-mono text-sm text-gray-500">last event: <span class="js-ripple-event">-</span></p>
+            </div>
+            <div class="flex flex-wrap items-center gap-4">
+                <button class="{{ ripple }} h-14 rounded-full bg-gray-950 px-8 font-medium text-white" type="button">Get started</button>
+                <button class="{{ ripple }} h-14 rounded-full bg-gray-100 px-8 font-medium [--ripple:var(--color-indigo-500)]" type="button">Learn more</button>
+                <button class="{{ ripple }} flex size-14 items-center justify-center rounded-full border border-gray-300" type="button" aria-label="Next">{{ angle('right') }}</button>
+            </div>
+        </div>
+
+        <div class="flex min-h-72 flex-col justify-between gap-10 rounded-3xl bg-gray-950 p-8 text-white md:p-12">
+            <p class="font-mono text-sm text-white/60">Menu tiles, ripple: 0.15</p>
+            <nav class="grid grid-cols-2 gap-2">
+                {% for link in ['Work', 'Studio', 'Journal', 'Contact'] %}
+                <a class="js-ripple-tile relative isolate overflow-hidden rounded-2xl bg-white/10 px-5 py-6 text-xl font-semibold" href="#">{{ link }}</a>
+                {% endfor %}
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-8 rounded-3xl bg-gray-100 p-8 md:p-12">
+        <p class="font-mono text-sm text-gray-500">From code: press / to search</p>
+        <form class="flex max-w-xl gap-2" action="#">
+            <input class="js-ripple-input h-14 min-w-0 flex-1 rounded-full bg-white px-6 outline-none focus:ring-2 focus:ring-gray-950" type="search" placeholder="Search" aria-label="Search" />
+            <button class="js-ripple-search relative isolate flex size-14 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-gray-950 text-white" type="submit" aria-label="Search">{{ search('size-5') }}</button>
+        </form>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- relative isolate overflow-hidden for the ring, --ripple for its color, the text color by default -->
+<button class="js-ripple relative isolate overflow-hidden rounded-full bg-black text-white" type="button">Get started</button>
+<button class="js-ripple relative isolate overflow-hidden [--ripple:var(--color-indigo-500)]" type="button">Learn more</button>
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_ripple.js
+
+const _label = document.querySelector('.js-ripple-event'); // demo
+document.querySelectorAll('.js-ripple').forEach((target) => {
+    new _ripple({
+        target,
+        // defaults: duration: 700, opacity: 0.3
+        events: {
+            // ripple: () => console.log('ripple'),
+            ripple: () => (_label.textContent = `ripple ${new Date().toLocaleTimeString()}`), // demo
+        },
+    });
+});
+
+// menu tiles, a light ring
+document.querySelectorAll('.js-ripple-tile').forEach((target) => new _ripple({ target, opacity: 0.15 }));
+
+// a key press plays it from code, from the center
+const _search = new _ripple({ target: document.querySelector('.js-ripple-search') });
+const _input = document.querySelector('.js-ripple-input');
+document.addEventListener('keydown', (e) => {
+    if (e.key !== '/' || document.activeElement.matches('input, textarea')) return;
+    e.preventDefault();
+    _search.play();
+    _input.focus();
+});
+
+// demo-start
+// the links and the form go nowhere
+document.querySelectorAll('.js-ripple-tile').forEach((link) => link.addEventListener('click', (e) => e.preventDefault()));
+document.querySelector('.js-ripple-search').form.addEventListener('submit', (e) => e.preventDefault());
+// demo-end
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'Each press adds a ring as the first child and removes it when done.',
+    code: pageScript,
+    note: 'Options: <code class="font-mono text-sm">target</code>, <code class="font-mono text-sm">duration</code> (ms), <code class="font-mono text-sm">opacity</code> (where it starts). Methods: <code class="font-mono text-sm">play(x, y)</code> (px inside the target, the center by default), <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">ripple</code>. Enter and Space play it from the center. Off for reduced motion.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

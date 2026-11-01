@@ -1,0 +1,107 @@
+---
+title: Hold to confirm | Button effects | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import close %}
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ back: { label: 'Button effects', url: '/components/button-effects/' }, label: '_holdButton', title: 'Hold to confirm', description: 'Press and hold to delete, cancel or send. Let go early and nothing happens, so there is no confirm popup.' }) }}
+
+{% set control = 'inline-flex h-11 cursor-pointer items-center rounded-full border border-gray-300 px-5 font-medium transition-colors hover:border-gray-950' %}
+
+<section class="px-4 pb-4">
+    <div class="mx-auto flex max-w-295 flex-col gap-8 rounded-3xl border border-gray-200 p-8 md:p-12">
+        <div class="flex items-center justify-between gap-4">
+            <p class="font-mono text-sm text-gray-500">The defaults, a bar with scale-x-(--hold)</p>
+            <p class="font-mono text-sm text-gray-500">last event: <span class="js-hold-event">-</span></p>
+        </div>
+        <div class="flex flex-wrap items-center gap-4">
+            <button class="js-hold group relative isolate h-14 cursor-pointer touch-none overflow-hidden rounded-full bg-gray-950 px-8 font-medium text-white select-none" type="button">
+                <span class="absolute inset-0 -z-10 origin-left scale-x-(--hold) bg-rose-500"></span>
+                <span class="group-data-confirmed:hidden">Hold to delete</span>
+                <span class="hidden group-data-confirmed:inline">Deleted</span>
+            </button>
+            <button class="js-hold-reset {{ control }}" type="button">reset()</button>
+        </div>
+    </div>
+</section>
+
+<section class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-8 rounded-3xl bg-gray-100 p-8 md:p-12">
+        <p class="font-mono text-sm text-gray-500">A list, hold the ring to remove a row</p>
+        <ul class="flex max-w-xl flex-col gap-2">
+            {% for photo in [1, 2, 3, 4] %}
+            <li class="flex items-center gap-4 rounded-2xl bg-white p-3">
+                <img class="size-14 rounded-xl object-cover" src="/assets/img/gallery/photo-{{ photo }}-thumb.webp" alt="" loading="lazy" />
+                <p class="flex-1 font-medium">photo-{{ photo }}.webp</p>
+                <button class="js-hold-remove relative flex size-12 shrink-0 cursor-pointer touch-none items-center justify-center rounded-full text-gray-500 transition-colors select-none hover:text-rose-500 data-holding:text-rose-500" type="button" aria-label="Hold to remove photo-{{ photo }}.webp">
+                    <svg class="absolute inset-0 size-full -rotate-90" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                        <circle class="stroke-gray-200" cx="24" cy="24" r="22" stroke-width="2" />
+                        <circle class="stroke-rose-500 [stroke-dashoffset:calc(100-var(--hold)*100)]" cx="24" cy="24" r="22" stroke-width="2" pathLength="100" stroke-dasharray="100" />
+                    </svg>
+                    {{ close('size-5') }}
+                </button>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- a bar that grows with --hold; touch-none select-none so a hold doesn't scroll or select -->
+<button class="js-hold group relative isolate touch-none overflow-hidden select-none" type="button">
+    <span class="absolute inset-0 -z-10 origin-left scale-x-(--hold) bg-rose-500"></span>
+    <span class="group-data-confirmed:hidden">Hold to delete</span>
+    <span class="hidden group-data-confirmed:inline">Deleted</span>
+</button>
+
+<!-- or a ring: an svg circle with pathLength="100" -->
+<circle class="[stroke-dashoffset:calc(100-var(--hold)*100)]" cx="24" cy="24" r="22" pathLength="100" stroke-dasharray="100" />
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_holdButton.js
+
+const _label = document.querySelector('.js-hold-event'); // demo
+const _hold = new _holdButton({
+    target: document.querySelector('.js-hold'),
+    // defaults: duration: 1200, release: 3
+    events: {
+        // start: () => console.log('start'),
+        // cancel: () => console.log('cancel'),
+        // confirm: () => console.log('confirm'),
+        start: () => (_label.textContent = 'start'), // demo
+        cancel: () => (_label.textContent = 'cancel'), // demo
+        confirm: () => (_label.textContent = 'confirm'), // demo
+    },
+});
+document.querySelector('.js-hold-reset').addEventListener('click', () => _hold.reset());
+
+// a list: the row fades out and is removed
+document.querySelectorAll('.js-hold-remove').forEach((target) => {
+    new _holdButton({
+        target,
+        duration: 900,
+        events: {
+            confirm: (hold) => {
+                const _row = hold.target.closest('li');
+                _row.animate({ opacity: [1, 0], scale: [1, 0.96] }, { duration: 250, easing: 'ease-out' }).finished.then(() => _row.remove());
+            },
+        },
+    });
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The util runs <code class="font-mono text-sm">--hold</code> from 0 to 1 on the target, inside it reads the same var. <code class="font-mono text-sm">data-holding</code> while pressed, <code class="font-mono text-sm">data-confirmed</code> when done.',
+    code: pageScript,
+    note: 'Options: <code class="font-mono text-sm">target</code>, <code class="font-mono text-sm">duration</code> (ms to hold), <code class="font-mono text-sm">release</code> (how much faster it runs back). Methods: <code class="font-mono text-sm">start()</code>, <code class="font-mono text-sm">cancel()</code>, <code class="font-mono text-sm">reset()</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">start</code>, <code class="font-mono text-sm">cancel</code>, <code class="font-mono text-sm">confirm</code>. Works with mouse, touch, and Enter or Space held down. A plain click does nothing, use the confirm event.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}
