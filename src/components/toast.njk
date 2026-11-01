@@ -1,0 +1,151 @@
+---
+title: Toast | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_toast', title: 'Toast', description: 'Short notices like "Saved" or "Link copied" that stack in a corner and leave on their own. They can have an undo button, and a loading one can turn into done. Hover pauses them, swipe to close.' }) }}
+
+{% set button = 'rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700' %}
+{% set outline = 'rounded-md border border-gray-300 px-4 py-2 font-medium transition-colors hover:border-gray-950' %}
+
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Basic</h2>
+            <p class="max-w-xl text-gray-600">Each type, one that stays until closed, and a custom look.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            <button class="js-toast-info {{ button }}" type="button">Info</button>
+            <button class="js-toast-success {{ button }}" type="button">Success</button>
+            <button class="js-toast-error {{ button }}" type="button">Error</button>
+            <button class="js-toast-loading {{ button }}" type="button">Loading</button>
+            <button class="js-toast-stay {{ outline }}" type="button">Stays</button>
+            <button class="js-toast-custom {{ outline }}" type="button">Custom look</button>
+            <button class="js-toast-clear {{ outline }}" type="button">Clear all</button>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            {% for place in ['top-left', 'top', 'top-right', 'bottom-left', 'bottom', 'bottom-right'] %}
+            <button class="{{ outline }}" type="button" data-toast-place="{{ place }}">{{ place }}</button>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Undo</h2>
+            <p class="max-w-xl text-gray-600">Delete a file, Undo puts it back where it was.</p>
+        </div>
+        <ul class="js-toast-files flex max-w-md flex-col divide-y divide-gray-200 rounded-2xl border border-gray-200">
+            {% for file in ['Invoice-0412.pdf', 'Logo-final.svg', 'Brief.docx'] %}
+            <li class="flex items-center justify-between gap-4 px-5 py-3">
+                <span class="font-medium">{{ file }}</span>
+                <button class="rounded-md px-3 py-1.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50" type="button" data-toast-delete>Delete</button>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Loading, then done</h2>
+            <p class="max-w-xl text-gray-600"><code class="font-mono text-sm">_toast.promise()</code> shows loading while the video downloads, then done or failed.</p>
+        </div>
+        <div>
+            <button class="js-toast-download {{ button }}" type="button">Download video</button>
+        </div>
+    </div>
+</section>
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_toast.js
+
+// defaults, optional
+_toast.place = 'bottom-right';
+_toast.duration = 4000;
+
+document.querySelector('.js-toast-info').addEventListener('click', () => _toast.show('Your changes are saved as a draft'));
+document.querySelector('.js-toast-success').addEventListener('click', () => _toast.show('Profile updated', { type: 'success' }));
+document.querySelector('.js-toast-error').addEventListener('click', () => _toast.show('Payment failed, try another card', { type: 'error', duration: 6000 }));
+
+// loading stays until toast.update() or toast.close()
+document.querySelector('.js-toast-loading').addEventListener('click', () => _toast.show('Sending', { type: 'loading' }));
+
+// duration 0 stays until closed
+document.querySelector('.js-toast-stay').addEventListener('click', () => {
+    _toast.show('A new version is ready', {
+        duration: 0,
+        action: { label: 'Reload', onClick: () => location.reload() },
+        events: {
+            // close: (toast) => console.log('closed'),
+        },
+    });
+});
+
+// class replaces the default look
+document.querySelector('.js-toast-custom').addEventListener('click', () => {
+    _toast.show('Welcome back, Anthony', { class: 'pointer-events-auto flex items-center gap-3 rounded-full bg-white py-2 pr-2 pl-5 text-sm font-medium text-gray-950 shadow-lg ring-1 ring-gray-200' });
+});
+
+document.querySelector('.js-toast-clear').addEventListener('click', () => _toast.clear());
+
+document.querySelectorAll('[data-toast-place]').forEach((button) => {
+    button.addEventListener('click', () => _toast.show(`On the ${button.dataset.toastPlace}`, { place: button.dataset.toastPlace }));
+});
+
+// undo puts the row back where it was
+document.querySelector('.js-toast-files').addEventListener('click', (e) => {
+    const _row = e.target.closest('[data-toast-delete]')?.closest('li');
+    if (!_row) return;
+
+    const _list = _row.parentElement;
+    const _next = _row.nextElementSibling;
+    _row.remove();
+
+    _toast.show(`${_row.querySelector('span').textContent} deleted`, {
+        action: {
+            label: 'Undo',
+            onClick: (toast) => {
+                _list.insertBefore(_row, _next);
+                toast.close();
+            },
+        },
+    });
+});
+
+// loading, then done or failed, resolves to the result or undefined
+document.querySelector('.js-toast-download').addEventListener('click', async () => {
+    const _blob = await _toast.promise(
+        fetch('/assets/video/sample.mp4').then((response) => {
+            if (!response.ok) throw new Error(response.statusText);
+            return response.blob();
+        }),
+        {
+            loading: 'Downloading video',
+            success: (blob) => `Downloaded, ${(blob.size / 1e6).toFixed(1)} MB`,
+            error: 'Download failed, try again',
+        }
+    );
+    if (!_blob) return;
+
+    const _link = Object.assign(document.createElement('a'), { href: URL.createObjectURL(_blob), download: 'sample.mp4' });
+    _link.click();
+    URL.revokeObjectURL(_link.href);
+});
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    code: pageScript,
+    note: '<code class="font-mono text-sm">_toast.show(text, { type, duration, action, place, class, events })</code> returns the toast, with <code class="font-mono text-sm">update(text, options)</code> and <code class="font-mono text-sm">close()</code>. Type is success, error or loading, place is top-left, top, top-right, bottom-left, bottom or bottom-right. Only the newest <code class="font-mono text-sm">_toast.max</code> (3) stay. Change the look with <code class="font-mono text-sm">Object.assign(_toast.classes, {...})</code>. Screen readers read each message, errors right away.'
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

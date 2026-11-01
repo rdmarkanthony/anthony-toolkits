@@ -19,6 +19,7 @@
 @import "./components/typing.css";
 @import "./components/text-reveal.css";
 @import "./components/range-slider.css";
+@import "./components/date-picker.css";
 @import "./components/chat-accordion.css";
 
 /* kit-* colors: this site's frame only, demos use plain Tailwind colors */

@@ -1,0 +1,432 @@
+---
+title: Dropdown | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{{ pageIntro({ label: '_dropdown · _event', title: 'Dropdown', description: 'Menus that open on hover, click, tap or keyboard. The script only handles the behavior, so each project writes its own animation in CSS with <code class="font-mono text-base">data-open</code>.' }) }}
+
+{% set ease = 'ease-[cubic-bezier(0.16,1,0.3,1)]' %}
+{% set box = 'rounded-3xl border border-gray-200 bg-gray-50 p-4' %}
+{% set toggle = 'js-dropdown-toggle flex items-center gap-1 rounded-full px-4 py-2 font-medium transition-colors hover:bg-gray-200/70 group-data-open/item:bg-gray-200/70' %}
+{% set card = 'w-56 rounded-2xl bg-white p-2 shadow-lg ring-1 ring-gray-200' %}
+{% set link = 'block rounded-lg px-3 py-2 transition-colors hover:bg-gray-100' %}
+
+{% macro chevron() %}<svg class="size-4 transition-transform duration-300 group-data-open/item:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>{% endmacro %}
+
+<section class="px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Basic</h2>
+            <p class="max-w-xl text-gray-600">Hover, click, or tab and press the down arrow. Resources is a link: a mouse click goes to it, the first tap on a phone opens it.</p>
+        </div>
+        <div class="{{ box }} min-h-80">
+            <nav class="js-dropdown relative" aria-label="Main">
+                <ul class="flex flex-wrap items-center gap-1">
+                    {% for menu in [
+                        { label: 'Products', links: ['Analytics', 'Automation', 'Reports', 'Integrations'] },
+                        { label: 'Solutions', links: ['For startups', 'For agencies', 'For enterprise'] },
+                        { label: 'Resources', href: '#', links: ['Docs', 'Guides', 'Blog'] }
+                    ] %}
+                    <li class="js-dropdown-item group/item relative">
+                        {% if menu.href %}
+                        <a class="{{ toggle }}" href="{{ menu.href }}">{{ menu.label }} {{ chevron() }}</a>
+                        {% else %}
+                        <button class="{{ toggle }}" type="button">{{ menu.label }} {{ chevron() }}</button>
+                        {% endif %}
+                        <div class="js-dropdown-panel invisible absolute top-full left-0 z-10 -translate-y-2 pt-2 opacity-0 transition-[opacity,translate,visibility] duration-300 {{ ease }} data-open:visible data-open:translate-y-0 data-open:opacity-100">
+                            <ul class="{{ card }}">
+                                {% for item in menu.links %}<li><a class="{{ link }}" href="#">{{ item }}</a></li>{% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                    {% endfor %}
+                    <li><a class="rounded-full px-4 py-2 font-medium transition-colors hover:bg-gray-200/70" href="#">Pricing</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+{% set looks = [
+    { title: 'Scale from the corner', panel: 'origin-top-left scale-95 opacity-0 transition-[opacity,scale,visibility] duration-300 ' + ease + ' data-open:scale-100 data-open:opacity-100' },
+    { title: 'Clip down', panel: '[clip-path:inset(0_-1rem_100%_-1rem)] transition-[clip-path,visibility] duration-500 ' + ease + ' data-open:[clip-path:inset(-1rem)]' },
+    { title: 'Blur in', panel: 'translate-y-1 opacity-0 blur-sm transition-[opacity,translate,filter,visibility] duration-500 ' + ease + ' data-open:translate-y-0 data-open:opacity-100 data-open:blur-none' }
+] %}
+
+<section class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Swap the animation</h2>
+            <p class="max-w-xl text-gray-600">Same script, only the panel classes change.</p>
+        </div>
+        <div class="grid gap-4 lg:grid-cols-3">
+            {% for look in looks %}
+            <div class="{{ box }} flex min-h-72 flex-col gap-4">
+                <p class="font-mono text-xs tracking-wide text-gray-500 uppercase">{{ look.title }}</p>
+                <nav class="js-dropdown relative" aria-label="{{ look.title }}">
+                    <ul class="flex items-center gap-1">
+                        {% for menu in [{ label: 'Work', links: ['Branding', 'Websites', 'Campaigns'] }, { label: 'Studio', links: ['About', 'Team', 'Careers'] }] %}
+                        <li class="js-dropdown-item group/item relative">
+                            <button class="{{ toggle }}" type="button">{{ menu.label }} {{ chevron() }}</button>
+                            <div class="js-dropdown-panel invisible absolute top-full left-0 z-10 pt-2 data-open:visible {{ look.panel }}">
+                                <ul class="{{ card }}">
+                                    {% for item in menu.links %}<li><a class="{{ link }}" href="#">{{ item }}</a></li>{% endfor %}
+                                </ul>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">With a hover indicator</h2>
+            <p class="max-w-xl text-gray-600">Adds <code class="font-mono text-sm">_hoverIndicator</code>. The pill follows the mouse and stays on the open item, and a background slides between the links in each panel.</p>
+        </div>
+        <div class="{{ box }} min-h-80">
+            <nav class="js-dropdown" aria-label="With a hover indicator">
+                <ul class="js-dropdown-pill relative isolate flex flex-wrap items-center gap-1">
+                    <span class="js-hover-indicator absolute top-0 left-0 -z-10 h-(--h) w-(--w) translate-x-(--x) translate-y-(--y) rounded-full bg-gray-950 duration-300 ease-out"></span>
+                    {% for menu in [
+                        { label: 'Products', links: ['Analytics', 'Automation', 'Reports', 'Integrations'] },
+                        { label: 'Solutions', links: ['For startups', 'For agencies', 'For enterprise'] },
+                        { label: 'Resources', links: ['Docs', 'Guides', 'Blog'] }
+                    ] %}
+                    <li class="js-dropdown-item group/item relative">
+                        <button class="js-dropdown-toggle flex items-center gap-1 rounded-full px-4 py-2 font-medium transition-colors duration-300 data-indicator:text-white" type="button">{{ menu.label }} {{ chevron() }}</button>
+                        <div class="js-dropdown-panel invisible absolute top-full left-0 z-10 -translate-y-2 pt-2 opacity-0 transition-[opacity,translate,visibility] duration-300 {{ ease }} data-open:visible data-open:translate-y-0 data-open:opacity-100">
+                            <ul class="js-dropdown-links relative isolate {{ card }}">
+                                <span class="js-hover-indicator absolute top-0 left-0 -z-10 h-(--h) w-(--w) translate-x-(--x) translate-y-(--y) rounded-lg bg-gray-100 duration-300 ease-out"></span>
+                                {% for item in menu.links %}<li><a class="block px-3 py-2" href="#">{{ item }}</a></li>{% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                    {% endfor %}
+                    <li><a class="block rounded-full px-4 py-2 font-medium transition-colors duration-300 data-indicator:text-white" href="#">Pricing</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="px-4 pb-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">One background, slides between</h2>
+            <p class="max-w-xl text-gray-600">The white card resizes to each panel with <code class="font-mono text-sm">--dropdown-*</code>, and the content slides in from the side the mouse came from with <code class="font-mono text-sm">data-from</code>.</p>
+        </div>
+        <div class="{{ box }} min-h-96">
+            <nav class="js-dropdown group/nav relative flex justify-center" aria-label="Products">
+                <div class="pointer-events-none absolute top-(--dropdown-y) left-(--dropdown-x) h-(--dropdown-height) w-(--dropdown-width) rounded-2xl bg-white opacity-0 shadow-xl ring-1 ring-gray-200 transition-opacity duration-300 {{ ease }} group-data-open/nav:opacity-100 group-data-switch/nav:transition-[opacity,left,top,width,height]"></div>
+                <ul class="flex items-center gap-1">
+                    {% for menu in [
+                        { label: 'Products', width: 'w-[28rem]', columns: 'grid-cols-2', links: [['Analytics', 'See where visits come from'], ['Automation', 'Run tasks on a schedule'], ['Reports', 'Weekly numbers by email'], ['Integrations', 'Connect your tools']] },
+                        { label: 'Developers', width: 'w-72', columns: '', links: [['API', 'REST and webhooks'], ['SDKs', 'JS, PHP and Python'], ['Status', 'Uptime and incidents']] },
+                        { label: 'Company', width: 'w-48', columns: '', links: [['About'], ['Careers'], ['Contact']] }
+                    ] %}
+                    <li class="js-dropdown-item group/item">
+                        <button class="{{ toggle }}" type="button">{{ menu.label }} {{ chevron() }}</button>
+                        <div class="js-dropdown-panel invisible absolute inset-x-0 top-full z-10 mx-auto mt-3 w-fit opacity-0 transition-[opacity,translate,visibility] duration-300 {{ ease }} data-open:visible data-open:opacity-100 data-[from=left]:-translate-x-12 data-[from=right]:translate-x-12">
+                            <ul class="{{ menu.width }} grid {{ menu.columns }} gap-1 p-3">
+                                {% for item in menu.links %}
+                                <li>
+                                    <a class="{{ link }}" href="#">
+                                        <span class="block font-medium">{{ item[0] }}</span>
+                                        {% if item[1] %}<span class="block text-sm text-gray-500">{{ item[1] }}</span>{% endif %}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="bg-gray-50 px-4 py-16">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div>
+            <h2 class="mb-2 text-3xl font-bold tracking-tight">Mega menu</h2>
+            <p class="max-w-xl text-gray-600">The panels sit in their own box below the header, linked with <code class="font-mono text-sm">aria-controls</code>. The white background grows to each panel's height, then the content fades in. Hovering the shade closes it.</p>
+        </div>
+        <div class="relative min-h-[30rem] overflow-hidden rounded-3xl border border-gray-200 bg-white">
+            <header class="relative z-10 flex items-center gap-10 border-b border-gray-200 bg-white px-6">
+                <a class="py-5 text-xl font-bold tracking-tight" href="#">Studio.</a>
+                <nav class="js-dropdown" aria-label="Shop">
+                    <ul class="flex items-center gap-6 font-medium">
+                        {% for menu in [{ label: 'Shop', id: 'mega-shop' }, { label: 'Rooms', id: 'mega-rooms' }] %}
+                        <li class="js-dropdown-item group/item">
+                            <a class="js-dropdown-toggle relative flex py-5 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:origin-left after:scale-x-0 after:bg-gray-950 after:transition-transform after:duration-300 group-data-open/item:after:scale-x-100" href="#" aria-controls="{{ menu.id }}">{{ menu.label }}</a>
+                        </li>
+                        {% endfor %}
+                        <li><a class="flex py-5" href="#">Journal</a></li>
+                    </ul>
+                </nav>
+
+                {% set panel = 'js-dropdown-panel invisible absolute inset-x-0 top-0 translate-y-2 opacity-0 transition-[opacity,translate,visibility] duration-300 data-open:visible data-open:translate-y-0 data-open:opacity-100 data-open:delay-150' %}
+                {% set intro = 'flex flex-col items-start gap-3 border-r border-gray-200 pr-8' %}
+                <div class="group/panels absolute inset-x-0 top-full">
+                    <div class="pointer-events-none absolute inset-x-0 top-0 h-screen bg-gray-950/30 opacity-0 transition-opacity duration-500 group-data-open/panels:pointer-events-auto group-data-open/panels:opacity-100"></div>
+                    <div class="absolute inset-x-0 top-0 h-0 bg-white transition-[height] duration-500 {{ ease }} group-data-open/panels:h-(--dropdown-height)"></div>
+
+                    <div class="{{ panel }}" id="mega-shop">
+                        <div class="grid grid-cols-[12rem_1fr] gap-8 p-8">
+                            <div class="{{ intro }}">
+                                <p class="text-2xl font-bold tracking-tight">Shop</p>
+                                <p class="text-sm text-gray-500">Pieces made to last, from our own workshop.</p>
+                                <a class="text-sm font-medium underline underline-offset-4" href="#">View all</a>
+                            </div>
+                            <div class="grid grid-cols-3 gap-8">
+                                {% for column in [['Furniture', ['Chairs', 'Tables', 'Sofas', 'Shelves']], ['Lighting', ['Floor lamps', 'Pendants', 'Desk lamps']], ['Living', ['Rugs', 'Mirrors', 'Plants']]] %}
+                                <div>
+                                    <p class="mb-3 font-mono text-xs tracking-wide text-gray-500 uppercase">{{ column[0] }}</p>
+                                    <ul class="flex flex-col gap-2">
+                                        {% for item in column[1] %}<li><a class="transition-colors hover:text-gray-500" href="#">{{ item }}</a></li>{% endfor %}
+                                    </ul>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="{{ panel }}" id="mega-rooms">
+                        <div class="grid grid-cols-[12rem_1fr] gap-8 p-8">
+                            <div class="{{ intro }}">
+                                <p class="text-2xl font-bold tracking-tight">Rooms</p>
+                                <a class="text-sm font-medium underline underline-offset-4" href="#">View all</a>
+                            </div>
+                            <ul class="grid grid-cols-3 gap-2">
+                                {% for room in [['Living room', 'Sofas, rugs and side tables'], ['Bedroom', 'Beds, linen and lamps'], ['Office', 'Desks and task chairs']] %}
+                                <li>
+                                    <a class="block rounded-xl p-3 transition-colors hover:bg-gray-100" href="#">
+                                        <span class="block font-medium">{{ room[0] }}</span>
+                                        <span class="block text-sm text-gray-500">{{ room[1] }}</span>
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <div class="grid gap-4 p-6 sm:grid-cols-3">
+                {% for i in range(0, 6) %}<div class="aspect-4/3 rounded-xl bg-gray-100"></div>{% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% set back = 'group-data-open/nav:invisible group-data-open/nav:-translate-x-8 group-data-open/nav:opacity-0' %}
+<section class="px-4 py-16">
+    <div class="mx-auto grid max-w-295 items-center gap-10 lg:grid-cols-[1fr_auto]">
+        <div class="flex flex-col gap-6">
+            <h2 class="text-3xl font-bold tracking-tight">Drill-down, for phones</h2>
+            <p class="max-w-md text-gray-600">Tap an item and its links slide over the list. Back, Esc or a tap outside goes back. This one has <code class="font-mono text-sm">hover: false</code>.</p>
+        </div>
+        <div class="h-[40rem] w-[23rem] max-w-full justify-self-center overflow-hidden rounded-[2.5rem] border-10 border-gray-950 bg-white">
+            <nav class="js-dropdown-drill group/nav relative size-full overflow-hidden" aria-label="Menu">
+                <ul class="flex flex-col p-6 pt-12">
+                    {% for menu in [
+                        { label: 'Services', links: ['Branding', 'Websites', 'Campaigns', 'Packaging'] },
+                        { label: 'Work', links: ['All projects', 'Case studies', 'Awards'] },
+                        { label: 'Studio', links: ['About', 'Team', 'Careers'] }
+                    ] %}
+                    <li class="js-dropdown-item">
+                        <button class="js-dropdown-toggle flex w-full items-center justify-between py-3 text-3xl font-bold tracking-tight transition-[translate,opacity,visibility] duration-500 {{ ease }} {{ back }}" type="button">
+                            {{ menu.label }}
+                            <svg class="size-6 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+                        </button>
+                        <div class="js-dropdown-panel invisible absolute inset-0 flex translate-x-full flex-col bg-white p-6 pt-12 transition-[translate,visibility] duration-500 {{ ease }} data-open:visible data-open:translate-x-0">
+                            <button class="js-dropdown-close -ml-1 flex items-center gap-1 self-start text-sm font-medium text-gray-500" type="button">
+                                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6" /></svg>
+                                Back
+                            </button>
+                            <p class="mt-6 mb-4 font-mono text-xs tracking-wide text-gray-500 uppercase">{{ menu.label }}</p>
+                            <ul class="flex flex-col gap-1">
+                                {% for item in menu.links %}<li><a class="block py-2 text-2xl font-medium" href="#">{{ item }}</a></li>{% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                    {% endfor %}
+                    <li><a class="block py-3 text-3xl font-bold tracking-tight transition-[translate,opacity,visibility] duration-500 {{ ease }} {{ back }}" href="#">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+{% set markup %}{% raw %}
+<!-- target is the nav, position: relative -->
+<nav class="js-dropdown relative">
+    <ul class="flex">
+        <li class="js-dropdown-item group/item relative">
+            <!-- a button, or a link: a mouse click goes, the first tap on a phone opens -->
+            <button class="js-dropdown-toggle group-data-open/item:bg-gray-200" type="button">Products</button>
+
+            <!-- pt-2, not mt-2, so the gap still counts as the panel -->
+            <div class="js-dropdown-panel invisible absolute top-full left-0 -translate-y-2 pt-2 opacity-0 transition-[opacity,translate,visibility] duration-300 data-open:visible data-open:translate-y-0 data-open:opacity-100">
+                <ul>...</ul>
+            </div>
+        </li>
+        <li><a href="/pricing/">Pricing</a></li>
+    </ul>
+</nav>
+{% endraw %}{% endset %}
+
+{% set looksCode %}{% raw %}
+<!-- scale from the corner -->
+<div class="js-dropdown-panel invisible origin-top-left scale-95 opacity-0 transition-[opacity,scale,visibility] duration-300 data-open:visible data-open:scale-100 data-open:opacity-100">
+
+<!-- clip down, -1rem leaves room for the shadow -->
+<div class="js-dropdown-panel invisible [clip-path:inset(0_-1rem_100%_-1rem)] transition-[clip-path,visibility] duration-500 data-open:visible data-open:[clip-path:inset(-1rem)]">
+
+<!-- blur in -->
+<div class="js-dropdown-panel invisible translate-y-1 opacity-0 blur-sm transition-[opacity,translate,filter,visibility] duration-500 data-open:visible data-open:translate-y-0 data-open:opacity-100 data-open:blur-none">
+{% endraw %}{% endset %}
+
+{% set morphCode %}{% raw %}
+<nav class="js-dropdown group/nav relative flex justify-center">
+    <!-- one background, sized to the open panel, it only moves while switching -->
+    <div class="absolute top-(--dropdown-y) left-(--dropdown-x) h-(--dropdown-height) w-(--dropdown-width) rounded-2xl bg-white opacity-0 transition-opacity group-data-open/nav:opacity-100 group-data-switch/nav:transition-[opacity,left,top,width,height]"></div>
+    <ul class="flex">
+        <!-- the item is static, so panels sit in the nav -->
+        <li class="js-dropdown-item group/item">
+            <button class="js-dropdown-toggle" type="button">Products</button>
+            <!-- centered with mx-auto w-fit, a translate would throw off --dropdown-x -->
+            <div class="js-dropdown-panel invisible absolute inset-x-0 top-full mx-auto mt-3 w-fit opacity-0 transition-[opacity,translate,visibility] data-open:visible data-open:opacity-100 data-[from=left]:-translate-x-12 data-[from=right]:translate-x-12">
+                ...
+            </div>
+        </li>
+    </ul>
+</nav>
+{% endraw %}{% endset %}
+
+{% set megaCode %}{% raw %}
+<header class="relative">
+    <nav class="js-dropdown">
+        <ul class="flex">
+            <!-- aria-controls points to a panel anywhere, the underline shows on the open item -->
+            <li class="js-dropdown-item group/item">
+                <a class="js-dropdown-toggle relative after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:scale-x-0 after:bg-gray-950 after:transition-transform group-data-open/item:after:scale-x-100" href="/shop/" aria-controls="mega-shop">Shop</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- the panels' box gets data-open and --dropdown-height too -->
+    <div class="group/panels absolute inset-x-0 top-full">
+        <div class="pointer-events-none absolute inset-x-0 top-0 h-screen bg-gray-950/30 opacity-0 transition-opacity group-data-open/panels:pointer-events-auto group-data-open/panels:opacity-100"></div>
+        <div class="absolute inset-x-0 top-0 h-0 bg-white transition-[height] duration-500 group-data-open/panels:h-(--dropdown-height)"></div>
+
+        <!-- delay, so the background grows first -->
+        <div class="js-dropdown-panel invisible absolute inset-x-0 top-0 translate-y-2 opacity-0 transition-[opacity,translate,visibility] data-open:visible data-open:translate-y-0 data-open:opacity-100 data-open:delay-150" id="mega-shop">
+            ...
+        </div>
+    </div>
+</header>
+{% endraw %}{% endset %}
+
+{% set drillCode %}{% raw %}
+<nav class="js-dropdown-drill group/nav relative overflow-hidden">
+    <ul>
+        <!-- the item is static, so the panel covers the whole nav -->
+        <li class="js-dropdown-item">
+            <!-- hidden while a panel is open, so tab skips it -->
+            <button class="js-dropdown-toggle transition-[translate,opacity,visibility] group-data-open/nav:invisible group-data-open/nav:-translate-x-8 group-data-open/nav:opacity-0" type="button">Services</button>
+            <div class="js-dropdown-panel invisible absolute inset-0 translate-x-full transition-[translate,visibility] data-open:visible data-open:translate-x-0">
+                <!-- closes it, focus goes back to Services -->
+                <button class="js-dropdown-close" type="button">Back</button>
+                <ul>...</ul>
+            </div>
+        </li>
+    </ul>
+</nav>
+{% endraw %}{% endset %}
+
+{% set pillCode %}{% raw %}
+<nav class="js-dropdown">
+    <!-- the pill's box holds the toggles, and Pricing -->
+    <ul class="js-dropdown-pill relative isolate flex">
+        <span class="js-hover-indicator absolute top-0 left-0 -z-10 h-(--h) w-(--w) translate-x-(--x) translate-y-(--y) rounded-full bg-gray-950 duration-300"></span>
+        <li class="js-dropdown-item relative">
+            <button class="js-dropdown-toggle data-indicator:text-white" type="button">Products</button>
+            <div class="js-dropdown-panel ...">
+                <ul class="js-dropdown-links relative isolate">
+                    <span class="js-hover-indicator absolute top-0 left-0 -z-10 h-(--h) w-(--w) translate-x-(--x) translate-y-(--y) rounded-lg bg-gray-100 duration-300"></span>
+                    <li><a href="#">Analytics</a></li>
+                </ul>
+            </div>
+        </li>
+        <li><a class="data-indicator:text-white" href="/pricing/">Pricing</a></li>
+    </ul>
+</nav>
+{% endraw %}{% endset %}
+
+{% set pillScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_hoverIndicator.js
+
+// on the open item while the mouse is in its panel, or it opened by tap or keyboard
+new _hoverIndicator({
+    target: document.querySelector('.js-dropdown-pill'),
+    items: ':scope > li > :first-child',
+    active: '[aria-expanded="true"]',
+});
+
+document.querySelectorAll('.js-dropdown-links').forEach((target) => new _hoverIndicator({ target }));
+{% endraw %}{% endset %}
+
+{% set pageScript %}{% raw %}
+// Requirements
+    // JS
+        // src/assets/js/utils/_emitter.js
+        // src/assets/js/utils/_event.js
+        // src/assets/js/utils/_dropdown.js
+
+document.querySelectorAll('.js-dropdown').forEach((target) => {
+    new _dropdown({
+        target,
+        // hover: true,
+        // delay: 100,
+        // closeDelay: 300,
+        events: {
+            // open: (dropdown) => console.log('open'),
+            // change: (dropdown) => console.log(dropdown.active),
+            // close: (dropdown) => console.log('close'),
+        },
+    });
+});
+
+// a phone menu, opens on tap only
+new _dropdown({ target: document.querySelector('.js-dropdown-drill'), hover: false });
+{% endraw %}{% endset %}
+
+{{ scriptUsage({
+    markup: markup,
+    markupNote: 'The open item and panel get <code class="font-mono text-sm">data-open</code>, closed panels are <code class="font-mono text-sm">inert</code>. Keep <code class="font-mono text-sm">visibility</code> in the transition so it hides after the animation. <code class="font-mono text-sm">.js-dropdown-close</code> in a panel closes it. Down arrow on a toggle moves into its panel.',
+    code: pageScript,
+    note: '<code class="font-mono text-sm">new _dropdown({ target, hover, delay, closeDelay, events })</code>. <code class="font-mono text-sm">hover: false</code> opens on click only. Methods: <code class="font-mono text-sm">open(index)</code>, <code class="font-mono text-sm">close()</code>, <code class="font-mono text-sm">toggle(index)</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">open</code>, <code class="font-mono text-sm">change</code>, <code class="font-mono text-sm">close</code>, <code class="font-mono text-sm">dropdown.active</code> is the open index, -1 when closed. <code class="font-mono text-sm">close(true)</code> also puts focus back on the toggle.',
+    more: [
+        { title: 'Other animations', note: 'Swap the panel classes, the rest stays.', code: looksCode, lang: 'html' },
+        { title: 'One background', note: 'The nav gets <code class="font-mono text-sm">--dropdown-width</code>, <code class="font-mono text-sm">-height</code>, <code class="font-mono text-sm">-x</code>, <code class="font-mono text-sm">-y</code> of the open panel, <code class="font-mono text-sm">data-open</code>, and <code class="font-mono text-sm">data-switch</code> while moving between items. By mouse, the opening panel starts with <code class="font-mono text-sm">data-from="left"</code> or <code class="font-mono text-sm">"right"</code>, the side the mouse came from, and the closing one leaves to the other side. While one is open, the other panels get <code class="font-mono text-sm">data-side="before"</code> or <code class="font-mono text-sm">"after"</code>.', code: morphCode, lang: 'html' },
+        { title: 'With a hover indicator', note: 'Same markup, plus a <code class="font-mono text-sm">.js-hover-indicator</code> in the list and in each panel.', code: pillCode, lang: 'html' },
+        { title: 'Its script', note: 'Only for this sample. <code class="font-mono text-sm">active</code> keeps the pill on the open toggle.', code: pillScript },
+        { title: 'Mega menu', note: 'A panel outside the nav, e.g. one box below the header. That box gets the same <code class="font-mono text-sm">data-open</code>, <code class="font-mono text-sm">data-switch</code> and <code class="font-mono text-sm">--dropdown-*</code> as the nav.', code: megaCode, lang: 'html' },
+        { title: 'Drill-down', note: 'For a phone menu, with <code class="font-mono text-sm">hover: false</code>. Back is a <code class="font-mono text-sm">.js-dropdown-close</code>.', code: drillCode, lang: 'html' }
+    ]
+}) }}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+<script type="module">{{ pillScript | safe }}</script>
+{% endfooterscript %}

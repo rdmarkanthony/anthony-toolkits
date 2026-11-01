@@ -6,7 +6,6 @@ export default [
             { label: "Animate", url: "/components/animate/", description: "Animate.css effects triggered in view.", utils: "_animate · _inview · _splitText", ready: true, starter: true, favorite: true },
             { label: "Count up", url: "/components/count-up/", description: "Stats that count up on screen, prices that count to a new value.", utils: "_countUp · _inview", ready: true },
             { label: "Cursor bubble", url: "/components/cursor-bubble/", description: "A dot that trails the mouse, grows over big type and shows labels.", utils: "_cursorBubble", ready: true },
-            { label: "Magnetic button", url: "/components/magnetic-button/", description: "Buttons and links that lean toward the mouse as it comes near.", utils: "_magnetic", ready: true },
             { label: "Page transition", url: "/components/page-transition/", description: "An animation as a link leaves the page and as the next one shows, safe with the back button.", utils: "_pageTransition", ready: true, favorite: true },
             { label: "Preloader", url: "/components/preloader/", description: "Covers the page until it and its images are loaded, your own look, with a progress var.", utils: "_preloader · _load", ready: true },
             { label: "Rolling digit", url: "/components/rolling-digit/", description: "Odometer digits for a stat on screen or a cart total.", utils: "_rollingDigit · _inview", ready: true },
@@ -20,13 +19,25 @@ export default [
             { label: "Blur reveal", url: "/components/text-effects/blur/", description: "Words come in from blurred to sharp as a title scrolls into view.", utils: "_animate · _splitText", ready: true },
             { label: "Highlight", url: "/components/text-effects/highlight/", description: "A marker color grows behind a few words as they come into view.", utils: "_animate · _inview", ready: true },
             { label: "Hover marquee", url: "/components/text-effects/marquee/", description: "A link whose label turns into an endless row while hovered.", utils: "_horizontalLoop · GSAP", ready: true },
-            { label: "Line reveal", url: "/components/animate/#split-text", description: "Title words slide up from behind each line's mask as they come into view.", utils: "_animate · _splitText", ready: true },
+            { label: "Line reveal", url: "/components/animate/#split-text", description: "Title words slide up from behind each line's mask as they come into view.", utils: "_animate · _splitText", ready: true, favorite: true },
             { label: "Scramble text", url: "/components/text-effects/scramble/", description: "Letters flip through random characters, then settle into the text.", utils: "_scrambleText", ready: true },
             { label: "Split hover", url: "/components/text-effects/split/", description: "The word splits at the middle, the halves slide apart and a copy opens.", utils: "CSS only", ready: true },
             { label: "Text roll", url: "/components/text-effects/roll/", description: "Link and button text that rolls up on hover, a copy coming in from below.", utils: "_textRoll", ready: true },
             { label: "Typing animation", url: "/components/text-effects/typing/", description: "Types and erases lines, with styled parts and a steady cursor.", utils: "_typing", ready: true },
             { label: "Weight hover", url: "/components/text-effects/weight/", description: "Letters near the mouse get bolder, a wave that follows the cursor.", utils: "_weightHover", ready: true },
             { label: "Weight pop", url: "/components/text-effects/weight-pop/", description: "On hover the letters pop bolder one after another, then settle back.", utils: "_weightPop", ready: true },
+        ],
+    },
+    {
+        category: "Button effects",
+        url: "/components/button-effects/",
+        items: [
+            { label: "Hold to confirm", url: "/components/button-effects/hold/", description: "Press and hold to delete or send, let go early and nothing happens.", utils: "_holdButton", ready: true },
+            { label: "Hover fill", url: "/components/button-effects/hover-fill/", description: "A color fills in from the side the mouse comes in, and leaves the way it goes.", utils: "_hoverFill", ready: true, favorite: true },
+            { label: "Magnetic", url: "/components/button-effects/magnetic/", description: "Buttons and links that lean toward the mouse as it comes near.", utils: "_magnetic", ready: true },
+            { label: "Ripple", url: "/components/button-effects/ripple/", description: "A ring spreads out from where the button is pressed.", utils: "_ripple", ready: true },
+            { label: "State button", url: "/components/button-effects/state/", description: "Loading, done and error labels, the width eases to fit each one.", utils: "_stateButton", ready: true },
+            { label: "Text roll", url: "/components/text-effects/roll/", description: "Button text that rolls up on hover, a copy coming in from below.", utils: "_textRoll", ready: true },
         ],
     },
     {
@@ -94,6 +105,7 @@ export default [
         items: [
             { label: "Accordion", url: "/components/accordion/", description: "Titles that open and close their content in place, for FAQs, also as chat bubbles.", utils: "_accordion", ready: true },
             { label: "Breakpoints", url: "/components/breakpoints/", description: "The responsive breakpoints, shown live as you resize.", utils: "Tailwind @theme", ready: true },
+            { label: "Dropdown", url: "/components/dropdown/", description: "Menus and mega menus on hover, click or keyboard, your own animation in CSS.", utils: "_dropdown · _event", ready: true },
             { label: "Fluid sizing", url: "/components/fluid-sizing/", description: "Tailwind sizes that scale with their section width, using cqw.", utils: "fluid · cqw", ready: true, favorite: true },
             { label: "Group height", url: "/components/group-height/", description: "Equalize heights across grouped elements.", utils: "_groupHeight", ready: true },
             { label: "Header", url: "/components/header/", description: "Hides on scroll down, shows on scroll up, with a mobile menu that locks the page.", utils: "_header · _event", ready: true, favorite: true },
@@ -107,6 +119,7 @@ export default [
     {
         category: "Forms",
         items: [
+            { label: "Date picker", url: "/components/date-picker/", description: "A calendar for one date, a check-in and check-out, or a date and time.", utils: "_datePicker · flatpickr", ready: true },
             { label: "Form validation", url: "/components/form-validation/", description: "Checks fields as people type, with events to show errors your own way.", utils: "_formValidation", ready: true },
             { label: "Range slider", url: "/components/range-slider/", description: "A styled range input with one thumb or two, still a native input.", utils: "_rangeSlider", ready: true },
             { label: "Search suggestion", url: "/components/search-suggestion/", description: "Suggestions below a search input as you type, with keyboard support.", utils: "_autocomplete", ready: true },
@@ -120,6 +133,7 @@ export default [
             { label: "Google Map", url: "/components/google-map/", description: "Markers, popups and a custom theme, with a location list that flies to each place.", utils: "_googleMap", ready: true },
             { label: "QR code", url: "/components/qr-code/", description: "QR codes for links or Wi-Fi, saved as PNG or SVG.", utils: "_qrCode", ready: true },
             { label: "Share", url: "/components/share/", description: "Share links, a copy link button and the phone share sheet.", utils: "_share", ready: true },
+            { label: "Toast", url: "/components/toast/", description: "Short notices in a corner, with undo, loading to done, and swipe to close.", utils: "_toast", ready: true },
         ],
     },
     {

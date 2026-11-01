@@ -3,9 +3,9 @@ title: Cursor bubble | Anthony Toolkits
 ---
 
 {% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
-{% from "components/atoms/icon.njk" import external %}
+{% from "components/atoms/icon.njk" import external, angle, search %}
 
-{{ pageIntro({ label: '_cursorBubble', title: 'Cursor bubble', description: 'A dot that trails the mouse. It grows over big type and shows a label over cards. Mouse only, off on touch screens.' }) }}
+{{ pageIntro({ label: '_cursorBubble', title: 'Cursor bubble', description: 'A dot that trails the mouse. It grows over big type, shows a label over cards and sticks to buttons. Mouse only, off on touch screens.' }) }}
 
 <section class="px-4 pb-4">
     <div class="mx-auto grid max-w-295 gap-4 md:grid-cols-3">
@@ -20,6 +20,25 @@ title: Cursor bubble | Anthony Toolkits
         </div>
         <div class="rounded-3xl bg-gray-100 p-8 md:col-span-3" data-cursor="grow">
             <p class="text-5xl leading-none font-bold tracking-tight md:text-8xl">Big type, bigger dot.</p>
+        </div>
+    </div>
+</section>
+
+<section class="px-4 pt-12">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-2 text-3xl font-bold tracking-tight">Sticky</h2>
+        <p class="mb-8 max-w-2xl text-gray-600">Over a button the dot takes its shape and stays on it, still leaning toward the mouse.</p>
+        <div class="flex flex-wrap items-center gap-x-10 gap-y-6 rounded-3xl border border-gray-200 px-6 py-16 md:px-16">
+            <nav class="flex flex-wrap gap-2">
+                {% for link in ['Work', 'Studio', 'Contact'] %}
+                <a class="rounded-full px-4 py-2 font-medium" href="#" data-cursor-stick="4">{{ link }}</a>
+                {% endfor %}
+            </nav>
+            <a class="inline-flex h-14 items-center rounded-full bg-gray-950 px-8 font-medium text-white" href="#" data-cursor-stick>Get in touch</a>
+            <div class="flex gap-3">
+                <a class="flex size-12 items-center justify-center rounded-full border border-gray-300" href="#" data-cursor-stick="6" aria-label="Search">{{ search() }}</a>
+                <a class="flex size-12 items-center justify-center rounded-xl border border-gray-300" href="#" data-cursor-stick="6" aria-label="Next">{{ angle('right') }}</a>
+            </div>
         </div>
     </div>
 </section>
@@ -55,6 +74,9 @@ title: Cursor bubble | Anthony Toolkits
 <a data-cursor-icon="#cursor-arrow" data-cursor-text="Visit">...</a>
 <a data-cursor-text="👀">...</a>
 
+<!-- the dot sticks to it in its shape, 4px bigger each side -->
+<a class="rounded-full" data-cursor-stick="4">...</a>
+
 <!-- no dot over this -->
 <button data-cursor="hidden">...</button>
 
@@ -70,6 +92,7 @@ title: Cursor bubble | Anthony Toolkits
 // once per page, or just new _cursorBubble()
 new _cursorBubble({
     ease: 0.2, // 1 follows with no delay
+    pull: 0.15, // how far a stuck dot still follows the mouse
     // a "blue" state on top of the default look
     classes: {
         label: `${_cursorBubble.classes.label} group-data-[state=blue]:bg-blue-600`,
@@ -81,7 +104,7 @@ new _cursorBubble({
     markup: markup,
     markupNote: 'Only attributes, the script makes the dot.',
     code: pageScript,
-    note: 'Style a state with <code class="font-mono text-sm">group-data-[state=name]:</code>. The default look is in <code class="font-mono text-sm">_cursorBubble.classes</code>.'
+    note: 'A stuck dot takes the element\'s size and border radius, and the bubble gets <code class="font-mono text-sm">data-stuck</code>. Style a state with <code class="font-mono text-sm">group-data-[state=name]:</code>. The default look is in <code class="font-mono text-sm">_cursorBubble.classes</code>.'
 }) }}
 
 {% footerscript %}

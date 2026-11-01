@@ -1,5 +1,4 @@
 import { DateTime } from "luxon";
-import flatpickr from "flatpickr";
 
 import { _event } from "./utils/_event";
 import { _enquire } from "./utils/_enquire";
@@ -29,10 +28,13 @@ import { _threeText } from "./utils/_threeText";
 import { _threeReveal } from "./utils/_threeReveal";
 import { _threeDotGrid } from "./utils/_threeDotGrid";
 import { _countdownTimer } from "./utils/_countdownTimer";
+import { _datePicker } from "./utils/_datePicker";
 import { _tabs } from "./utils/_tabs";
 import { _tooltip } from "./utils/_tooltip";
+import { _toast } from "./utils/_toast";
 import { _hoverIndicator } from "./utils/_hoverIndicator";
 import { _accordion } from "./utils/_accordion";
+import { _dropdown } from "./utils/_dropdown";
 import { _header } from "./utils/_header";
 import { _scrollSpy } from "./utils/_scrollSpy";
 import { _scrollProgress } from "./utils/_scrollProgress";
@@ -55,6 +57,10 @@ import { _smoothScroll } from "./utils/_smoothScroll";
 import { _themeScroller } from "./utils/_themeScroller";
 import { _cursorBubble } from "./utils/_cursorBubble";
 import { _magnetic } from "./utils/_magnetic";
+import { _hoverFill } from "./utils/_hoverFill";
+import { _ripple } from "./utils/_ripple";
+import { _holdButton } from "./utils/_holdButton";
+import { _stateButton } from "./utils/_stateButton";
 import { _lottie } from "./utils/_lottie";
 import { _googleMap } from "./utils/_googleMap";
 import { _qrCode } from "./utils/_qrCode";
@@ -67,7 +73,6 @@ import { _deckSlider } from "./utils/_deckSlider";
 
 Object.assign(window, {
     DateTime,
-    flatpickr,
     _event,
     _enquire,
     _device,
@@ -96,10 +101,13 @@ Object.assign(window, {
     _threeReveal,
     _threeDotGrid,
     _countdownTimer,
+    _datePicker,
     _tabs,
     _tooltip,
+    _toast,
     _hoverIndicator,
     _accordion,
+    _dropdown,
     _header,
     _scrollSpy,
     _scrollProgress,
@@ -127,6 +135,10 @@ Object.assign(window, {
     _themeScroller,
     _cursorBubble,
     _magnetic,
+    _hoverFill,
+    _ripple,
+    _holdButton,
+    _stateButton,
     _lottie,
     _googleMap,
     _qrCode,

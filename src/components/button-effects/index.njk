@@ -1,0 +1,64 @@
+---
+title: Button effects | Anthony Toolkits
+---
+
+{% from "components/atoms/icon.njk" import angle %}
+{% from "components/atoms/component-page.njk" import pageIntro %}
+
+{{ pageIntro({ title: 'Button effects', description: 'Hover, press and state effects for buttons and links, each with its own script. Hover a card to try it. Each demo shows its markup and script, ready to copy.' }) }}
+
+{% set pill = 'relative isolate inline-flex h-14 items-center gap-2 overflow-hidden rounded-full px-8 font-medium whitespace-nowrap' %}
+{% set demos = [
+    { url: '/components/button-effects/hold/', title: 'Hold to confirm', text: 'Press and hold to delete or send, let go early and nothing happens.', utils: '_holdButton', id: 'hold', class: 'bg-gray-100', button: '<span class="js-hold-preview group ' + pill + ' bg-gray-950 text-white"><span class="absolute inset-0 -z-10 origin-left scale-x-(--hold) bg-rose-500"></span><span class="group-data-confirmed:hidden">Hold to delete</span><span class="hidden group-data-confirmed:inline">Deleted</span></span>' },
+    { url: '/components/button-effects/hover-fill/', title: 'Hover fill', text: 'A color fills in from the side the mouse comes in, and leaves the way it goes.', utils: '_hoverFill', id: 'fill', class: 'bg-gray-950', button: '<span class="js-fill-preview ' + pill + ' border border-white/30 text-white transition-colors duration-300 data-active:text-gray-950 [--hover-fill:var(--color-lime-300)]">Hover me</span>' },
+    { url: '/components/button-effects/magnetic/', title: 'Magnetic', text: 'Buttons and links that lean toward the mouse as it comes near.', utils: '_magnetic', id: 'magnetic', class: 'bg-gray-50', button: '<span class="js-magnetic-preview ' + pill + ' translate-x-(--x) translate-y-(--y) bg-gray-950 text-white"><span class="inline-block translate-x-[calc(var(--x)*0.5)] translate-y-[calc(var(--y)*0.5)]">Get in touch</span></span>' },
+    { url: '/components/button-effects/ripple/', title: 'Ripple', text: 'A ring spreads out from where the button is pressed.', utils: '_ripple', id: 'ripple', class: 'bg-indigo-500', button: '<span class="js-ripple-preview ' + pill + ' bg-white text-gray-950 [--ripple:var(--color-indigo-500)]">Press me</span>' },
+    { url: '/components/button-effects/state/', title: 'State button', text: 'Loading, done and error labels, the width eases to fit each one.', utils: '_stateButton', id: 'state', class: 'bg-gray-100', button: '<span class="js-state-preview ' + pill + ' justify-center bg-gray-950 text-white transition-colors data-[state=done]:bg-emerald-600"><span data-label="idle">Add to cart</span><span data-label="loading">Adding…</span><span data-label="done">Added to cart</span></span>' },
+    { url: '/components/text-effects/roll/', title: 'Text roll', text: 'Button text that rolls up on hover, a copy coming in from below, part of Text effects.', utils: '_textRoll', id: 'roll', class: 'bg-gray-950', button: '<span class="' + pill + ' bg-white text-gray-950"><span class="js-roll-preview">Let\'s talk</span></span>' }
+] %}
+<section id="demos" class="px-4 pb-16">
+    <div class="mx-auto max-w-295">
+        <h2 class="mb-8 text-3xl font-bold tracking-tight">Demos</h2>
+        <div class="grid gap-6 sm:grid-cols-2">
+            {% for demo in demos %}
+            <a class="js-{{ demo.id }}-card group/card flex flex-col overflow-hidden rounded-2xl border border-gray-200 transition-colors hover:border-gray-950" href="{{ demo.url }}">
+                <div class="flex aspect-4/3 items-center justify-center overflow-hidden px-6 {{ demo.class }}">{{ demo.button | safe }}</div>
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="mb-2 text-xl font-semibold">{{ demo.title }}</h3>
+                    <p class="mb-6 flex-1 text-gray-600">{{ demo.text }}</p>
+                    <p class="mb-4 font-mono text-xs text-gray-500">{{ demo.utils }}</p>
+                    <span class="inline-flex items-center gap-1 text-sm font-medium">Open demo {{ angle('right', 'group-hover/card:translate-x-0.5') }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% footerscript %}
+<script type="module">
+// demo only: each card plays its effect on hover
+const _card = (id) => document.querySelector(`.js-${id}-card`);
+
+const _hold = new _holdButton({ target: document.querySelector('.js-hold-preview') });
+_card('hold').addEventListener('pointerenter', () => _hold.start());
+_card('hold').addEventListener('pointerleave', () => (_hold.isConfirmed ? _hold.reset() : _hold.cancel()));
+
+new _hoverFill({ target: document.querySelector('.js-fill-preview') });
+
+new _magnetic({ target: document.querySelector('.js-magnetic-preview'), radius: 120 });
+
+const _press = new _ripple({ target: document.querySelector('.js-ripple-preview') });
+_card('ripple').addEventListener('pointerenter', () => _press.play());
+
+const _state = new _stateButton({ target: document.querySelector('.js-state-preview') });
+_card('state').addEventListener('pointerenter', () => {
+    _state.set('loading');
+    _state.set('done');
+});
+_card('state').addEventListener('pointerleave', () => _state.set('idle'));
+
+_textRoll('.js-roll-preview');
+_card('roll').dataset.textRoll = '';
+</script>
+{% endfooterscript %}

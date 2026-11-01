@@ -82,7 +82,7 @@ export class _hoverIndicator extends _emitter {
 
         _on("change", () => this.update());
         this.observer = new MutationObserver(() => this.update());
-        this.observer.observe(this.target, { subtree: true, attributes: true, attributeFilter: ["class", "aria-current", "aria-selected"] });
+        this.observer.observe(this.target, { subtree: true, attributes: true, attributeFilter: ["class", "aria-current", "aria-selected", "aria-expanded"] });
 
         [this.target, ...this.items].forEach((element) => _event.observeResize(this.resize, element));
     }
