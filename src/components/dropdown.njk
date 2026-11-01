@@ -120,7 +120,7 @@ title: Dropdown | Anthony Toolkits
     <div class="mx-auto flex max-w-295 flex-col gap-6">
         <div>
             <h2 class="mb-2 text-3xl font-bold tracking-tight">One background, slides between</h2>
-            <p class="max-w-xl text-gray-600">The white card resizes to each panel with <code class="font-mono text-sm">--dropdown-*</code>, and the content slides in from the side you moved to with <code class="font-mono text-sm">data-side</code>.</p>
+            <p class="max-w-xl text-gray-600">The white card resizes to each panel with <code class="font-mono text-sm">--dropdown-*</code>, and the content slides in from the side the mouse came from with <code class="font-mono text-sm">data-from</code>.</p>
         </div>
         <div class="{{ box }} min-h-96">
             <nav class="js-dropdown group/nav relative flex justify-center" aria-label="Products">
@@ -133,7 +133,7 @@ title: Dropdown | Anthony Toolkits
                     ] %}
                     <li class="js-dropdown-item group/item">
                         <button class="{{ toggle }}" type="button">{{ menu.label }} {{ chevron() }}</button>
-                        <div class="js-dropdown-panel invisible absolute inset-x-0 top-full z-10 mx-auto mt-3 w-fit opacity-0 transition-[opacity,translate,visibility] duration-300 {{ ease }} data-open:visible data-open:opacity-100 data-[side=after]:translate-x-12 data-[side=before]:-translate-x-12">
+                        <div class="js-dropdown-panel invisible absolute inset-x-0 top-full z-10 mx-auto mt-3 w-fit opacity-0 transition-[opacity,translate,visibility] duration-300 {{ ease }} data-open:visible data-open:opacity-100 data-[from=left]:-translate-x-12 data-[from=right]:translate-x-12">
                             <ul class="{{ menu.width }} grid {{ menu.columns }} gap-1 p-3">
                                 {% for item in menu.links %}
                                 <li>
@@ -303,7 +303,7 @@ title: Dropdown | Anthony Toolkits
         <li class="js-dropdown-item group/item">
             <button class="js-dropdown-toggle" type="button">Products</button>
             <!-- centered with mx-auto w-fit, a translate would throw off --dropdown-x -->
-            <div class="js-dropdown-panel invisible absolute inset-x-0 top-full mx-auto mt-3 w-fit opacity-0 transition-[opacity,translate,visibility] data-open:visible data-open:opacity-100 data-[side=after]:translate-x-12 data-[side=before]:-translate-x-12">
+            <div class="js-dropdown-panel invisible absolute inset-x-0 top-full mx-auto mt-3 w-fit opacity-0 transition-[opacity,translate,visibility] data-open:visible data-open:opacity-100 data-[from=left]:-translate-x-12 data-[from=right]:translate-x-12">
                 ...
             </div>
         </li>
@@ -418,7 +418,7 @@ new _dropdown({ target: document.querySelector('.js-dropdown-drill'), hover: fal
     note: '<code class="font-mono text-sm">new _dropdown({ target, hover, delay, closeDelay, events })</code>. <code class="font-mono text-sm">hover: false</code> opens on click only. Methods: <code class="font-mono text-sm">open(index)</code>, <code class="font-mono text-sm">close()</code>, <code class="font-mono text-sm">toggle(index)</code>, <code class="font-mono text-sm">destroy()</code>. Events: <code class="font-mono text-sm">open</code>, <code class="font-mono text-sm">change</code>, <code class="font-mono text-sm">close</code>, <code class="font-mono text-sm">dropdown.active</code> is the open index, -1 when closed. <code class="font-mono text-sm">close(true)</code> also puts focus back on the toggle.',
     more: [
         { title: 'Other animations', note: 'Swap the panel classes, the rest stays.', code: looksCode, lang: 'html' },
-        { title: 'One background', note: 'The nav gets <code class="font-mono text-sm">--dropdown-width</code>, <code class="font-mono text-sm">-height</code>, <code class="font-mono text-sm">-x</code>, <code class="font-mono text-sm">-y</code> of the open panel, <code class="font-mono text-sm">data-open</code>, and <code class="font-mono text-sm">data-switch</code> while moving between items. While one is open, the other panels get <code class="font-mono text-sm">data-side="before"</code> or <code class="font-mono text-sm">"after"</code>.', code: morphCode, lang: 'html' },
+        { title: 'One background', note: 'The nav gets <code class="font-mono text-sm">--dropdown-width</code>, <code class="font-mono text-sm">-height</code>, <code class="font-mono text-sm">-x</code>, <code class="font-mono text-sm">-y</code> of the open panel, <code class="font-mono text-sm">data-open</code>, and <code class="font-mono text-sm">data-switch</code> while moving between items. By mouse, the opening panel starts with <code class="font-mono text-sm">data-from="left"</code> or <code class="font-mono text-sm">"right"</code>, the side the mouse came from, and the closing one leaves to the other side. While one is open, the other panels get <code class="font-mono text-sm">data-side="before"</code> or <code class="font-mono text-sm">"after"</code>.', code: morphCode, lang: 'html' },
         { title: 'With a hover indicator', note: 'Same markup, plus a <code class="font-mono text-sm">.js-hover-indicator</code> in the list and in each panel.', code: pillCode, lang: 'html' },
         { title: 'Its script', note: 'Only for this sample. <code class="font-mono text-sm">active</code> keeps the pill on the open toggle.', code: pillScript },
         { title: 'Mega menu', note: 'A panel outside the nav, e.g. one box below the header. That box gets the same <code class="font-mono text-sm">data-open</code>, <code class="font-mono text-sm">data-switch</code> and <code class="font-mono text-sm">--dropdown-*</code> as the nav.', code: megaCode, lang: 'html' },

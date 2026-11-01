@@ -4,6 +4,7 @@ import { _event } from "./_event";
 // usage: new _dropdown({ target, hover, delay, closeDelay, events }), target is the nav, position: relative
 // markup: target > .js-dropdown-item > .js-dropdown-toggle (a button or link) + .js-dropdown-panel, or aria-controls="id" for a panel anywhere
 // the open item and panel get data-open, other panels data-side="before" | "after" of it, .js-dropdown-close in a panel closes it
+// by mouse, the opening panel starts with data-from="left" | "right", the side the mouse came from, the closing one leaves with the other
 // target and an outside panel's parent get data-open, data-switch when moving between items, and the open panel's --dropdown-width, -height, -x, -y
 let _count = 0;
 
@@ -75,7 +76,7 @@ export class _dropdown extends _emitter {
             if (!this.hover || e.pointerType !== "mouse") return;
             const _index = this.indexOf(e.target);
             if (_index === this.active) return clearTimeout(this.timer);
-            this.later(() => (_index < 0 ? this.close() : this.open(_index)), _index < 0 ? this.closeDelay : this.delay);
+            this.later(() => (_index < 0 ? this.close() : this.open(_index, e.clientX)), _index < 0 ? this.closeDelay : this.delay);
         });
 
         _on("pointerleave", (e) => this.hover && e.pointerType === "mouse" && !this.inside(e.relatedTarget) && this.later(() => this.close(), this.closeDelay));
@@ -93,7 +94,7 @@ export class _dropdown extends _emitter {
             if (_isLink && (_byHover || this.active === _index)) return;
             e.preventDefault();
 
-            if (_byHover) this.open(_index);
+            if (_byHover) this.open(_index, e.clientX);
             else this.toggle(_index);
         });
 
@@ -132,13 +133,19 @@ export class _dropdown extends _emitter {
         this.active === index ? this.close() : this.open(index);
     }
 
-    open(index) {
+    // x: the mouse x, so the panel comes in from that side of the toggle
+    open(index, x = null) {
         clearTimeout(this.timer);
         if (typeof index !== "number") index = this.indexOf(index);
         if (index < 0 || index === this.active) return;
 
         const _switch = this.active > -1;
         if (_switch) _event.offObserveResize(this._onSize, this.items[this.active].panel);
+
+        const _rect = this.items[index].toggle.getBoundingClientRect();
+        const _from = _switch ? (index > this.active ? "left" : "right") : x === null ? null : x < _rect.left + _rect.width / 2 ? "left" : "right";
+        this.from(index, _from);
+        if (_switch && _from) this.items[this.active].panel.dataset.from = _from === "left" ? "right" : "left";
 
         this.active = index;
         this.update();
@@ -173,6 +180,16 @@ export class _dropdown extends _emitter {
         this.emit("change");
     }
 
+    // the start side, set without a transition so it doesn't slide there first
+    from(index, side) {
+        const { panel } = this.items[index];
+        panel.style.transition = "none";
+        if (side) panel.dataset.from = side;
+        else panel.removeAttribute("data-from");
+        panel.offsetWidth;
+        panel.style.transition = "";
+    }
+
     update() {
         this.items.forEach(({ item, toggle, panel }, index) => {
             const _open = index === this.active;
@@ -181,6 +198,7 @@ export class _dropdown extends _emitter {
             panel.inert = !_open;
             toggle.setAttribute("aria-expanded", String(_open));
 
+            if (_open) panel.removeAttribute("data-from");
             if (this.active < 0 || _open) panel.removeAttribute("data-side");
             else panel.dataset.side = index < this.active ? "before" : "after";
         });
