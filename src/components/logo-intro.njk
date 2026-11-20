@@ -1,0 +1,60 @@
+---
+title: Logo intro | Anthony Toolkits
+---
+
+{% from "components/atoms/component-page.njk" import pageIntro, scriptUsage %}
+
+{# this page opens with the intro too #}
+{% include "demos/logo-intro.html" %}
+
+{{ pageIntro({ label: '_logoIntro · _load · GSAP', title: 'Logo intro', description: 'A ring spins while the page loads, then turns into a ball that knocks in the words, rolls in a line and sweeps in the logo. Then the cover slides up. Words, logo and colors are your markup, the scenes can be cut, moved or replaced.' }) }}
+
+{% set button = 'shrink-0 rounded-md bg-gray-950 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700' %}
+
+{% set samples = [
+    { name: 'full', title: 'The full intro', text: 'This page opened with it. Here it plays again, with a slow page so the ring spins longer.' }
+] %}
+
+{% for sample in samples %}
+<section class="px-4 py-16{% if loop.index0 % 2 %} bg-gray-50{% endif %}">
+    <div class="mx-auto flex max-w-295 flex-col gap-6">
+        <div class="flex items-end justify-between gap-6">
+            <div>
+                <h2 class="text-3xl font-bold tracking-tight">{{ sample.title }}</h2>
+                <p class="mt-2 text-gray-600">{{ sample.text }}</p>
+            </div>
+            <button class="{{ button }}" type="button" data-replay="{{ sample.name }}">Replay</button>
+        </div>
+        <iframe class="h-[32rem] w-full rounded-3xl border border-gray-200 bg-white" data-src="/components/logo-intro/demo/{{ sample.name }}/" title="Logo intro demo, {{ sample.title }}" data-frame="{{ sample.name }}"></iframe>
+    </div>
+</section>
+{% endfor %}
+
+{% set fullMarkup %}{% include "demos/logo-intro.html" %}{% endset %}
+{% set fullScript %}{% include "demos/logo-intro.js" %}{% endset %}
+
+{{ scriptUsage({
+    markup: fullMarkup,
+    markupNote: 'Put it first in the body. Words, line and logo sit on top of each other in the middle. <code class="font-mono text-sm">data-intro-split</code> flips the logo in letter by letter, or mark svg parts with <code class="font-mono text-sm">data-intro-char</code>. Colors default to the theme: <code class="font-mono text-sm">--intro-color</code> and <code class="font-mono text-sm">--intro-bg</code>. The ball size is <code class="font-mono text-sm">--intro-ball</code>, 0.8em.',
+    code: fullScript,
+    note: '<code class="font-mono text-sm">new _logoIntro({ target, wait, timeout, scenes, loader, hold, speed, events })</code>. Scenes play in order: <code class="font-mono text-sm">drop</code>, <code class="font-mono text-sm">knock</code>, <code class="font-mono text-sm">roll</code>, <code class="font-mono text-sm">logo</code>, or your own <code class="font-mono text-sm">(tl, intro) => {}</code> that adds tweens to <code class="font-mono text-sm">tl</code>; a scene skips itself when its markup is missing. It covers the page and a ring spins until window load and every promise in <code class="font-mono text-sm">wait</code> are done, a failed one still counts, <code class="font-mono text-sm">timeout</code> lets the page in if something hangs. Then the ring finishes its lap, closes into the ball and the scenes play. <code class="font-mono text-sm">loader: false</code> plays them at once. <code class="font-mono text-sm">hold</code> ms the logo stays, then it shrinks away and the cover slides up. The scenes are a GSAP timeline, <code class="font-mono text-sm">intro.timeline</code>, pause or seek it to check a frame. The ring and the close are WAAPI, so they stay smooth while the page is busy. Events: <code class="font-mono text-sm">scene</code> (also <code class="font-mono text-sm">loading</code> and <code class="font-mono text-sm">close</code>), <code class="font-mono text-sm">played</code>, <code class="font-mono text-sm">leave</code> (start the page animations here), <code class="font-mono text-sm">done</code>. With reduced motion only the logo shows.'
+}) }}
+
+{% set pageScript %}{% raw %}
+// this page's own intro, the samples start once it's gone
+const _intro = new _logoIntro({
+    target: document.querySelector('.js-logo-intro'),
+    events: {
+        leave: () => document.querySelectorAll('[data-frame]').forEach((frame) => (frame.src = frame.dataset.src)),
+    },
+});
+
+// replay reloads the iframe
+document.querySelectorAll('[data-replay]').forEach((button) => {
+    button.addEventListener('click', () => document.querySelector(`[data-frame="${button.dataset.replay}"]`).contentWindow.location.reload());
+});
+{% endraw %}{% endset %}
+
+{% footerscript %}
+<script type="module">{{ pageScript | safe }}</script>
+{% endfooterscript %}

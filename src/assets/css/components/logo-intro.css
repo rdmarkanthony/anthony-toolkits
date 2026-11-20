@@ -1,0 +1,74 @@
+/*
+    logo intro for _logoIntro.js
+    --intro-color: the ring, ball, words and logo, --intro-bg: the cover, --intro-ball: the ball size, --intro-spin: the loading ring size
+    words, line and logo sit on top of each other in the middle, the js measures them
+*/
+@layer components {
+    .logo-intro {
+        --intro-color: var(--color-kit-accent, #5b8fe0);
+        --intro-bg: var(--color-kit-bg, #fff);
+        --intro-ball: 0.8em;
+        --intro-spin: calc(var(--intro-ball) * 2.5);
+
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        background: var(--intro-bg);
+        color: var(--intro-color);
+    }
+
+    .logo-intro > * {
+        grid-area: 1 / 1;
+    }
+
+    [data-intro-words] {
+        display: flex;
+        gap: 0.4em;
+    }
+
+    [data-intro-word],
+    [data-intro-line],
+    [data-intro-logo],
+    [data-intro-ball] {
+        visibility: hidden;
+    }
+
+    .logo-intro-char {
+        display: inline-block;
+    }
+
+    [data-intro-ball] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: var(--intro-ball);
+        height: var(--intro-ball);
+        border-radius: 999px;
+        background: var(--intro-color);
+    }
+
+    .logo-intro-spin {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: var(--intro-spin);
+        height: var(--intro-spin);
+        margin: calc(var(--intro-spin) / -2) 0 0 calc(var(--intro-spin) / -2);
+    }
+
+    .logo-intro-spin > div,
+    .logo-intro-spin svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        [data-intro-logo] {
+            visibility: visible;
+        }
+    }
+}

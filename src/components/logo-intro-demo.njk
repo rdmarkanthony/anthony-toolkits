@@ -1,0 +1,27 @@
+---
+title: Logo intro demo | Anthony Toolkits
+pagination:
+    data: looks
+    size: 1
+    alias: look
+looks:
+    - { name: full, file: logo-intro, image: photo-1, title: 'The full intro' }
+permalink: "/components/logo-intro/demo/{{ look.name }}/"
+bare: true
+---
+
+{% include "demos/" + look.file + ".html" %}
+
+<main class="grid min-h-svh place-items-center p-6">
+    <div class="grid w-full max-w-4xl items-center gap-8 sm:grid-cols-2">
+        <div>
+            <h1 class="font-display text-5xl font-semibold tracking-tight">{{ look.title }}</h1>
+            <p class="mt-4 text-gray-600">The page is in.</p>
+        </div>
+        <img class="aspect-4/5 w-full rounded-3xl object-cover" src="/assets/img/gallery/{{ look.image }}.webp" alt="Sample" />
+    </div>
+</main>
+
+{% footerscript %}
+<script type="module">{% include "demos/" + look.file + ".js" %}</script>
+{% endfooterscript %}

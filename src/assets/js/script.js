@@ -6,6 +6,7 @@ import { _device } from "./utils/_device";
 import { _load } from "./utils/_load";
 import { _pageTransition } from "./utils/_pageTransition";
 import { _preloader } from "./utils/_preloader";
+import { _logoIntro } from "./utils/_logoIntro";
 import { _emitter } from "./utils/_emitter";
 import { _filter } from "./utils/_filter";
 import { _urlVars } from "./utils/_urlVars";
@@ -79,6 +80,7 @@ Object.assign(window, {
     _load,
     _pageTransition,
     _preloader,
+    _logoIntro,
     _emitter,
     _filter,
     _urlVars,
